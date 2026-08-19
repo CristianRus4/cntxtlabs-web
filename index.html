@@ -5,48 +5,72 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="theme-color" content="#FDFDFC" media="(prefers-color-scheme: light)">
 	<meta name="theme-color" content="#111110" media="(prefers-color-scheme: dark)">
-	<meta name="description" content="cntxt is a software company based in New Zealand, building apps for iPhone, iPad and Apple Watch.">
+	<meta name="description" content="cntxt is a software company based in New Zealand, building applications for iPhone, iPad and Apple Watch.">
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://cntxtlabs.co/">
 	<meta property="og:title" content="cntxt">
-	<meta property="og:description" content="cntxt is a software company based in New Zealand, building apps for iPhone, iPad and Apple Watch.">
+	<meta property="og:description" content="cntxt is a software company based in New Zealand, building applications for iPhone, iPad and Apple Watch.">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&display=swap">
 	<link rel="stylesheet" href="styles.css">
 	<title>cntxt</title>
 </head>
 <body class="reveal">
 
-	<h1 class="title"><a class="titlelink" href="./">c<span class="vowel">o</span>nt<span class="vowel">e</span>xt</a></h1>
+	<h1 class="title"><a class="titlelink reveals" href="./">c<span class="grow">o</span>nt<span class="grow">e</span>xt</a></h1>
 	<p class="sub">A software company, based in New Zealand.</p>
 
 	<nav>
 		<a href="./" aria-current="page">About</a>
-		<a href="contact/">Contact</a>
+		<a href="./contact/">Contact</a>
 	</nav>
 
-	<p>cntxt is a software company based in New Zealand. It builds apps for iPhone, iPad and Apple Watch, and the websites that go with them.</p>
+	<p>cntxt is a software company based in New Zealand. It builds applications for iPhone, iPad and Apple Watch, together with the websites that support them.</p>
 
-	<p>For over a decade the work here has come back to the same question: how design and technology shape the way people behave. The apps that come out of it are small, opinionated, and meant to be lived with rather than admired. Some are about time, some about health, some about getting outside.</p>
+	<p>For over a decade the work has focused on how design and technology influence the way people behave, and on turning that into software people continue to use. The apps cover time and attention, health and fitness, and the outdoors.</p>
 
 	<p>They have been downloaded by more than two million people around the world.</p>
 
 	<h2>Apps</h2>
 
-	<ul>
-		<li><a href="left/">Left</a>. Time you can see, so you actually use it. Habits, streaks, countdowns and a planner for the day.</li>
-		<li><a href="txtpod/">txtpod</a>. Turns articles, links and PDFs into a private podcast feed you can play anywhere.</li>
-		<li><a href="ftnss/">ftnss</a>. Training, food and recovery pulled together into one coach that reads your Apple Health data.</li>
-		<li><a href="kiwicamping/">KiwiCamping</a>. Every campsite, hut and holiday park in New Zealand, working offline.</li>
-		<li><a href="aussiecamps/">AussieCamps</a>. The same thing for Australia. Not out yet.</li>
-		<li><a href="nosnus/">NoSnus</a>. Quit nicotine pouches on a plan built from your own logs instead of a generic one.</li>
-		<li><a href="bites/">Bites</a>. Calories, macros and nutrients worked out from a sentence about what you ate.</li>
-		<li><a href="notsobusy/">NotSoBusy</a>. Show people when you are free without handing over your whole calendar.</li>
+	<ul class="apps">
+		<li>
+			<a href="left/">Left</a><span class="arrow">→</span>
+			<span class="desc">The time you have left, made visible, with habits, countdowns and a daily planner.</span>
+		</li>
+		<li>
+			<a href="txtpod/">txtpod</a><span class="arrow">→</span>
+			<span class="desc">Articles, links and PDFs converted into a private podcast feed.</span>
+		</li>
+		<li>
+			<a href="ftnss/">ftnss</a><span class="arrow">→</span>
+			<span class="desc">Training, nutrition and recovery in a single coach built on Apple Health.</span>
+		</li>
+		<li>
+			<a href="kiwicamping/">KiwiCamping</a><span class="arrow">→</span>
+			<span class="desc">Campsites, huts and holiday parks across New Zealand, available offline.</span>
+		</li>
+		<li>
+			<a href="aussiecamps/">AussieCamps</a><span class="arrow">→</span>
+			<span class="desc">Campsites, caravan parks and rest areas across Australia. In development.</span>
+		</li>
+		<li>
+			<a href="nosnus/">NoSnus</a><span class="arrow">→</span>
+			<span class="desc">A tapering plan for nicotine pouches, built from your own consumption.</span>
+		</li>
+		<li>
+			<a href="bites/">Bites</a><span class="arrow">→</span>
+			<span class="desc">Calories, macros and nutrients calculated from a description of your meal.</span>
+		</li>
+		<li>
+			<a href="notsobusy/">NotSoBusy</a><span class="arrow">→</span>
+			<span class="desc">Availability shared without giving access to your calendar.</span>
+		</li>
 	</ul>
 
 	<footer>
-		<p>&copy; <span class="year"></span> cntxt. Coded in New Zealand.</p>
+		<p>cntxt &ndash; Coded in <span class="reveals">N<span class="grow">ew </span>Z<span class="grow">ealand</span></span> &ndash; &copy; <span class="year"></span></p>
 	</footer>
 
 	<script>document.querySelectorAll(".year").forEach(function(e){e.textContent=new Date().getFullYear();});</script>

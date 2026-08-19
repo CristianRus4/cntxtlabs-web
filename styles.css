@@ -4,7 +4,7 @@
 	--bg: #FDFDFC;
 	--text: #555555;
 	--title: #21201C;
-	--rule: #C9C7C1;
+	--faint: #AEACA6;
 	--step: 60ms;
 }
 
@@ -13,7 +13,7 @@
 		--bg: #111110;
 		--text: #B5B3AD;
 		--title: #EEEEEC;
-		--rule: #3A3833;
+		--faint: #56544E;
 	}
 }
 
@@ -30,23 +30,28 @@ html {
 	-webkit-text-size-adjust: 100%;
 }
 
+/* 800px of text, plus the gutters. Footer sits at the bottom of the
+   viewport whenever the page is too short to push it there itself. */
+
 body {
 	font-size: 1em;
 	color: var(--text);
 	line-height: 1.65em;
 	text-align: left;
 	margin: 0 auto;
-	margin-top: 10%;
-	margin-bottom: 5em;
-	padding: 0 10%;
-	max-width: 644px;
+	padding: 6em 1.5em 2em;
+	max-width: calc(800px + 3em);
+	min-height: 100vh;
+	min-height: 100svh;
+	display: flex;
+	flex-direction: column;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
 
 @media (max-width: 34rem) {
 	body {
-		margin-top: 3em;
+		padding-top: 3em;
 	}
 }
 
@@ -84,12 +89,18 @@ strong {
 	color: var(--title);
 }
 
-/* Masthead. Same on every page. */
+/* Opening paragraph on a page with no heading of its own. */
+
+.lead {
+	margin-top: 3em;
+}
+
+/* Masthead. Identical on every page, and the heaviest thing on it. */
 
 .title {
 	margin-top: 0;
 	margin-bottom: 0;
-	font-weight: 650;
+	font-weight: 800;
 }
 
 .sub {
@@ -97,33 +108,36 @@ strong {
 	margin-bottom: 0;
 }
 
-/* Links. No underline until you hover. */
+/* Links. The underline is drawn on, left to right, and drawn back off. */
 
 a:link,
 a:visited {
 	color: var(--title);
 	font-weight: 500;
 	text-decoration: none;
+	background-image: linear-gradient(currentColor, currentColor);
+	background-repeat: no-repeat;
+	background-position: 0 100%;
+	background-size: 0 2px;
+	padding-bottom: 2px;
+	transition: background-size 300ms cubic-bezier(0.22, 0.61, 0.36, 1);
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
 }
 
 a:hover,
 a:focus-visible {
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-underline-offset: 3px;
+	background-size: 100% 2px;
 }
 
 a:focus-visible {
 	outline: none;
 }
 
-.titlelink {
-	font-weight: 600;
-}
+/* Reveals: text that unfolds on hover. Used by the wordmark, which puts
+   its vowels back, and by the footer, which spells out where it is. */
 
-/* The name puts its vowels back when you look at it. */
-
-.vowel {
+.grow {
 	display: inline-block;
 	max-width: 0;
 	opacity: 0;
@@ -132,18 +146,21 @@ a:focus-visible {
 	transition: max-width 340ms cubic-bezier(0.22, 0.61, 0.36, 1), opacity 260ms ease;
 }
 
-.titlelink:hover .vowel,
-.titlelink:focus-visible .vowel {
-	max-width: 1.2ch;
+.reveals:hover .grow,
+.reveals:focus-visible .grow {
+	max-width: 8ch;
 	opacity: 1;
 }
 
-.titlelink:hover,
-.titlelink:focus-visible {
-	text-decoration: none;
+.reveals {
+	background-image: none;
 }
 
-/* Nav */
+.titlelink {
+	font-weight: 800;
+}
+
+/* Nav. Home only. */
 
 nav {
 	margin-top: 2em;
@@ -152,17 +169,15 @@ nav {
 
 nav a {
 	margin-right: 1.5em;
+	font-weight: 500;
 }
 
 nav a[aria-current="page"] {
 	font-weight: 600;
+	background-image: none;
 }
 
-nav a[aria-current="page"]:hover {
-	text-decoration: none;
-}
-
-/* Lists */
+/* The app list. Name, then what it is, with an arrow that slides out. */
 
 ul {
 	margin: 0;
@@ -170,21 +185,50 @@ ul {
 	list-style: none;
 }
 
-li {
-	margin-bottom: 1em;
+.apps li {
+	margin-bottom: 1.5em;
 }
 
-/* Footer */
+.apps .desc {
+	display: block;
+	margin-top: 0.1em;
+}
+
+.apps .arrow {
+	display: inline-block;
+	max-width: 0;
+	padding-left: 0.35em;
+	opacity: 0;
+	overflow: hidden;
+	vertical-align: bottom;
+	color: var(--title);
+	font-weight: 500;
+	transition: max-width 300ms cubic-bezier(0.22, 0.61, 0.36, 1), opacity 240ms ease;
+}
+
+.apps li:hover .arrow {
+	max-width: 1.6em;
+	opacity: 1;
+}
+
+/* Footer. Held at the bottom, and quieter than everything above it. */
 
 footer {
-	margin-top: 4em;
-	padding-top: 1.5em;
-	border-top: 2px dashed var(--rule);
+	margin-top: auto;
+	padding-top: 0.75em;
+	border-top: 1px dashed var(--faint);
+	color: var(--faint);
 	text-align: left;
 }
 
 footer p {
 	margin: 0;
+}
+
+footer a:link,
+footer a:visited {
+	color: var(--faint);
+	font-weight: 400;
 }
 
 /* Everything eases up on arrival. */
@@ -222,7 +266,9 @@ footer p {
 		transform: none;
 	}
 
-	.vowel {
+	.grow,
+	a,
+	.apps .arrow {
 		transition: none;
 	}
 }
