@@ -1,20 +1,19 @@
-/* cntxt — cntxtlabs.co
-   Monochrome. Hierarchy by weight, not size. */
+/* cntxt · cntxtlabs.co */
 
 :root {
-	--paper: #ffffff;
-	--ink: #111111;
-	--muted: #8e8e8e;
-	--rule: #e6e6e6;
-	--step: 45ms;
+	--bg: #FDFDFC;
+	--text: #555555;
+	--title: #21201C;
+	--rule: #C9C7C1;
+	--step: 60ms;
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--paper: #0d0d0d;
-		--ink: #f2f2f2;
-		--muted: #7d7d7d;
-		--rule: #262626;
+		--bg: #111110;
+		--text: #B5B3AD;
+		--title: #EEEEEC;
+		--rule: #3A3833;
 	}
 }
 
@@ -25,164 +24,175 @@
 }
 
 html {
+	background-color: var(--bg);
+	font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+	font-weight: 350;
 	-webkit-text-size-adjust: 100%;
 }
 
 body {
-	margin: 0;
-	padding: 12vh 1.5rem 6rem;
-	background: var(--paper);
-	color: var(--ink);
-	font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-	font-size: 1rem;
-	font-weight: 400;
-	line-height: 1.65;
-	font-feature-settings: "cv05" 1, "ss01" 1;
+	font-size: 1em;
+	color: var(--text);
+	line-height: 1.65em;
+	text-align: left;
+	margin: 0 auto;
+	margin-top: 10%;
+	margin-bottom: 5em;
+	padding: 0 10%;
+	max-width: 644px;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
 
-@media (max-width: 40rem) {
+@media (max-width: 34rem) {
 	body {
-		padding-top: 3.5rem;
+		margin-top: 3em;
 	}
 }
 
-.wrap {
-	max-width: 40rem;
-	margin: 0 auto;
-}
-
-/* Type — one size, three weights. */
+/* Type. One size, weight carries the hierarchy. */
 
 h1,
 h2,
-h3 {
-	margin: 0;
-	font-size: 1rem;
-	line-height: 1.65;
+h3,
+p,
+footer {
+	font-size: 1em;
 }
 
 h1 {
-	font-weight: 700;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+	font-weight: 650;
+	color: var(--title);
 }
 
 h2 {
+	margin-top: 2.5em;
+	margin-bottom: 0.5em;
 	font-weight: 600;
+	color: var(--title);
 }
 
 p {
-	margin: 0 0 1.5rem;
+	margin-top: 0.5em;
+	margin-bottom: 1em;
 }
 
-p:last-child {
+strong {
+	font-weight: 500;
+	color: var(--title);
+}
+
+/* Masthead. Same on every page. */
+
+.title {
+	margin-top: 0;
 	margin-bottom: 0;
+	font-weight: 650;
 }
 
 .sub {
-	color: var(--ink);
+	margin-top: 0;
+	margin-bottom: 0;
 }
 
-.label {
-	margin: 0 0 1.5rem;
-	color: var(--muted);
-	font-weight: 400;
-}
+/* Links. No underline until you hover. */
 
-.note {
-	color: var(--muted);
-}
-
-/* Links */
-
-a {
-	color: inherit;
-	font-weight: 600;
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-underline-offset: 3px;
-	transition: text-decoration-thickness 120ms ease;
+a:link,
+a:visited {
+	color: var(--title);
+	font-weight: 500;
+	text-decoration: none;
 }
 
 a:hover,
 a:focus-visible {
-	text-decoration-thickness: 2px;
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
 }
 
 a:focus-visible {
-	outline: 1px solid var(--ink);
-	outline-offset: 3px;
+	outline: none;
 }
 
-/* Header + nav */
-
-.nav {
-	margin: 2.5rem 0 3rem;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 1.75rem;
+.titlelink {
+	font-weight: 600;
 }
 
-.nav a {
-	color: var(--muted);
+/* The name puts its vowels back when you look at it. */
+
+.vowel {
+	display: inline-block;
+	max-width: 0;
+	opacity: 0;
+	overflow: hidden;
+	vertical-align: bottom;
+	transition: max-width 340ms cubic-bezier(0.22, 0.61, 0.36, 1), opacity 260ms ease;
+}
+
+.titlelink:hover .vowel,
+.titlelink:focus-visible .vowel {
+	max-width: 1.2ch;
+	opacity: 1;
+}
+
+.titlelink:hover,
+.titlelink:focus-visible {
 	text-decoration: none;
 }
 
-.nav a:hover,
-.nav a:focus-visible {
-	color: var(--ink);
+/* Nav */
+
+nav {
+	margin-top: 2em;
+	margin-bottom: 2em;
 }
 
-.nav a[aria-current="page"] {
-	color: var(--ink);
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-underline-offset: 6px;
+nav a {
+	margin-right: 1.5em;
 }
 
-/* Sections */
-
-.section {
-	margin-top: 3.5rem;
+nav a[aria-current="page"] {
+	font-weight: 600;
 }
 
-.list {
+nav a[aria-current="page"]:hover {
+	text-decoration: none;
+}
+
+/* Lists */
+
+ul {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-.list li {
-	margin-bottom: 1.5rem;
-}
-
-.list li:last-child {
-	margin-bottom: 0;
-}
-
-.list .note {
-	display: block;
+li {
+	margin-bottom: 1em;
 }
 
 /* Footer */
 
-.foot {
-	margin-top: 5rem;
-	padding-top: 1.5rem;
-	border-top: 1px solid var(--rule);
-	color: var(--muted);
+footer {
+	margin-top: 4em;
+	padding-top: 1.5em;
+	border-top: 2px dashed var(--rule);
+	text-align: left;
 }
 
-.foot p {
+footer p {
 	margin: 0;
 }
 
-/* Entrance — everything eases up a few points. */
+/* Everything eases up on arrival. */
 
-@keyframes rise {
+@keyframes fadeInFromBottom {
 	from {
 		opacity: 0;
-		transform: translateY(8px);
+		transform: translateY(0.5em);
 	}
 	to {
 		opacity: 1;
@@ -191,19 +201,19 @@ a:focus-visible {
 }
 
 .reveal > * {
-	animation: rise 420ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+	animation: fadeInFromBottom 900ms ease forwards;
+	opacity: 0;
 }
 
-.reveal > *:nth-child(1)  { animation-delay: calc(0  * var(--step)); }
-.reveal > *:nth-child(2)  { animation-delay: calc(1  * var(--step)); }
-.reveal > *:nth-child(3)  { animation-delay: calc(2  * var(--step)); }
-.reveal > *:nth-child(4)  { animation-delay: calc(3  * var(--step)); }
-.reveal > *:nth-child(5)  { animation-delay: calc(4  * var(--step)); }
-.reveal > *:nth-child(6)  { animation-delay: calc(5  * var(--step)); }
-.reveal > *:nth-child(7)  { animation-delay: calc(6  * var(--step)); }
-.reveal > *:nth-child(8)  { animation-delay: calc(7  * var(--step)); }
-.reveal > *:nth-child(9)  { animation-delay: calc(8  * var(--step)); }
-.reveal > *:nth-child(n + 10) { animation-delay: calc(9 * var(--step)); }
+.reveal > *:nth-child(1) { animation-delay: calc(0 * var(--step)); }
+.reveal > *:nth-child(2) { animation-delay: calc(1 * var(--step)); }
+.reveal > *:nth-child(3) { animation-delay: calc(2 * var(--step)); }
+.reveal > *:nth-child(4) { animation-delay: calc(3 * var(--step)); }
+.reveal > *:nth-child(5) { animation-delay: calc(4 * var(--step)); }
+.reveal > *:nth-child(6) { animation-delay: calc(5 * var(--step)); }
+.reveal > *:nth-child(7) { animation-delay: calc(6 * var(--step)); }
+.reveal > *:nth-child(8) { animation-delay: calc(7 * var(--step)); }
+.reveal > *:nth-child(n + 9) { animation-delay: calc(8 * var(--step)); }
 
 @media (prefers-reduced-motion: reduce) {
 	.reveal > * {
@@ -212,7 +222,7 @@ a:focus-visible {
 		transform: none;
 	}
 
-	a {
+	.vowel {
 		transition: none;
 	}
 }

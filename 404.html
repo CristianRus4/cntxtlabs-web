@@ -3,39 +3,47 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-	<meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+	<meta name="theme-color" content="#FDFDFC" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#111110" media="(prefers-color-scheme: dark)">
 	<meta name="robots" content="noindex">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap">
 	<style>
-		/* Self-contained: GitHub serves this from the site root for any path,
+		/* Self-contained: GitHub serves this file for any missing path,
 		   so a relative stylesheet link cannot be relied on here. */
-		:root { --paper:#fff; --ink:#111; }
-		@media (prefers-color-scheme: dark) { :root { --paper:#0d0d0d; --ink:#f2f2f2; } }
-		body { margin:0; padding:12vh 1.5rem 6rem; background:var(--paper); color:var(--ink);
-			font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-			font-size:1rem; line-height:1.65; -webkit-font-smoothing:antialiased; }
-		.wrap { max-width:40rem; margin:0 auto; }
-		h1 { margin:0; font-size:1rem; font-weight:700; line-height:1.65; }
-		p { margin:0 0 1.5rem; }
-		a { color:inherit; font-weight:600; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
-		a:hover { text-decoration-thickness:2px; }
-		@keyframes rise { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
-		.reveal > * { animation:rise 420ms cubic-bezier(.22,.61,.36,1) backwards; }
-		.reveal > *:nth-child(2) { animation-delay:45ms; }
-		.reveal > *:nth-child(3) { animation-delay:90ms; }
-		@media (prefers-reduced-motion: reduce) { .reveal > * { animation:none; opacity:1; transform:none; } }
+		:root { --bg:#FDFDFC; --text:#555555; --title:#21201C; }
+		@media (prefers-color-scheme: dark) { :root { --bg:#111110; --text:#B5B3AD; --title:#EEEEEC; } }
+		html { background-color:var(--bg); font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; font-weight:400; }
+		body { font-size:1em; color:var(--text); line-height:1.65em; margin:0 auto; margin-top:10%; margin-bottom:5em; padding:0 10%; max-width:644px; -webkit-font-smoothing:antialiased; }
+		h1 { font-size:1em; margin-top:1.5em; margin-bottom:1.5em; font-weight:650; color:var(--title); }
+		.title { margin:0; font-weight:650; }
+		.sub { margin:0; }
+		p { font-size:1em; margin-top:0.5em; margin-bottom:1em; }
+		a:link, a:visited { color:var(--title); font-weight:500; text-decoration:none; }
+		a:hover { text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
+		.titlelink { font-weight:600; }
+		.titlelink:hover { text-decoration:none; }
+		.vowel { display:inline-block; max-width:0; opacity:0; overflow:hidden; vertical-align:bottom;
+			transition:max-width 340ms cubic-bezier(.22,.61,.36,1), opacity 260ms ease; }
+		.titlelink:hover .vowel { max-width:1.2ch; opacity:1; }
+		@keyframes fadeInFromBottom { from { opacity:0; transform:translateY(0.5em); } to { opacity:1; transform:none; } }
+		body > * { animation:fadeInFromBottom 900ms ease forwards; opacity:0; }
+		body > *:nth-child(2) { animation-delay:60ms; }
+		body > *:nth-child(3) { animation-delay:120ms; }
+		body > *:nth-child(4) { animation-delay:180ms; }
+		@media (prefers-reduced-motion: reduce) { body > * { animation:none; opacity:1; transform:none; } .vowel { transition:none; } }
 	</style>
-	<title>Not found — cntxt</title>
+	<title>Not found · cntxt</title>
 </head>
 <body>
-	<div class="wrap reveal">
-		<h1>Not found</h1>
-		<p class="sub">There is nothing at this address.</p>
 
-		<p><a href="/">Back to cntxt</a></p>
-	</div>
+	<h1 class="title"><a class="titlelink" href="/">c<span class="vowel">o</span>nt<span class="vowel">e</span>xt</a></h1>
+	<p class="sub">A software company, based in New Zealand.</p>
+
+	<h1>Not found</h1>
+
+	<p>There is nothing at this address. <a href="/">Head back</a> and try again.</p>
+
 </body>
 </html>
