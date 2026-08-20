@@ -3,16 +3,13 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="theme-color" content="#FDFDFC" media="(prefers-color-scheme: light)">
-	<meta name="theme-color" content="#111110" media="(prefers-color-scheme: dark)">
+	<meta name="theme-color" content="#F7F7F7" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#070707" media="(prefers-color-scheme: dark)">
 	<meta name="description" content="cntxt is a software company based in New Zealand, building applications for iPhone, iPad and Apple Watch.">
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://cntxtlabs.co/">
 	<meta property="og:title" content="cntxt">
 	<meta property="og:description" content="cntxt is a software company based in New Zealand, building applications for iPhone, iPad and Apple Watch.">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&display=swap">
 	<link rel="stylesheet" href="styles.css">
 	<title>cntxt</title>
 </head>
@@ -30,41 +27,41 @@
 
 	<p>For over a decade the work has focused on how design and technology influence the way people behave, and on turning that into software people continue to use. The apps cover time and attention, health and fitness, and the outdoors.</p>
 
-	<p>They have been downloaded by more than two million people around the world.</p>
+	<p><span class="counter" id="counter">1,800,000</span> people around the world have downloaded them.</p>
 
-	<h2>Apps</h2>
+	<h2>Projects</h2>
 
-	<ul class="apps">
+	<ul class="projects">
 		<li>
-			<a href="left/">Left</a><span class="arrow">→</span>
+			<a href="left/">Left</a>
 			<span class="desc">The time you have left, made visible, with habits, countdowns and a daily planner.</span>
 		</li>
 		<li>
-			<a href="txtpod/">txtpod</a><span class="arrow">→</span>
+			<a href="txtpod/">txtpod</a>
 			<span class="desc">Articles, links and PDFs converted into a private podcast feed.</span>
 		</li>
 		<li>
-			<a href="ftnss/">ftnss</a><span class="arrow">→</span>
+			<a href="ftnss/">ftnss</a>
 			<span class="desc">Training, nutrition and recovery in a single coach built on Apple Health.</span>
 		</li>
 		<li>
-			<a href="kiwicamping/">KiwiCamping</a><span class="arrow">→</span>
+			<a href="kiwicamping/">KiwiCamping</a>
 			<span class="desc">Campsites, huts and holiday parks across New Zealand, available offline.</span>
 		</li>
 		<li>
-			<a href="aussiecamps/">AussieCamps</a><span class="arrow">→</span>
-			<span class="desc">Campsites, caravan parks and rest areas across Australia. In development.</span>
+			<a href="aussiecamps/">AussieCamps</a>
+			<span class="desc">Campsites, caravan parks and rest areas across Australia, available offline.</span>
 		</li>
 		<li>
-			<a href="nosnus/">NoSnus</a><span class="arrow">→</span>
+			<a href="nosnus/">NoSnus</a>
 			<span class="desc">A tapering plan for nicotine pouches, built from your own consumption.</span>
 		</li>
 		<li>
-			<a href="bites/">Bites</a><span class="arrow">→</span>
+			<a href="bites/">Bites</a>
 			<span class="desc">Calories, macros and nutrients calculated from a description of your meal.</span>
 		</li>
 		<li>
-			<a href="notsobusy/">NotSoBusy</a><span class="arrow">→</span>
+			<a href="notsobusy/">NotSoBusy</a>
 			<span class="desc">Availability shared without giving access to your calendar.</span>
 		</li>
 	</ul>
@@ -74,5 +71,28 @@
 	</footer>
 
 	<script>document.querySelectorAll(".year").forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+	<script>
+	(function () {
+		var el = document.getElementById("counter");
+		if (!el) return;
+		// 1,800,000 on 20 August 2026, growing by 300 a day.
+		var days = Math.max(0, Math.floor((Date.now() - Date.UTC(2026, 7, 20)) / 86400000));
+		var total = 1800000 + days * 300;
+		var fmt = function (n) { return n.toLocaleString("en-US"); };
+		if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+			el.textContent = fmt(total);
+			return;
+		}
+		// Count the last stretch up on arrival.
+		var from = total - 2400, t0 = null, ms = 1400;
+		requestAnimationFrame(function step(t) {
+			if (t0 === null) t0 = t;
+			var p = Math.min(1, (t - t0) / ms);
+			var eased = 1 - Math.pow(1 - p, 3);
+			el.textContent = fmt(Math.round(from + (total - from) * eased));
+			if (p < 1) requestAnimationFrame(step);
+		});
+	})();
+	</script>
 </body>
 </html>

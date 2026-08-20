@@ -1,19 +1,23 @@
-/* cntxt · cntxtlabs.co */
+/* cntxt · cntxtlabs.co
+   Type after nelson.co: system stack, one size, weight carries hierarchy.
+   Colour after ia.net/writer. */
 
 :root {
-	--bg: #FDFDFC;
-	--text: #555555;
-	--title: #21201C;
-	--faint: #AEACA6;
+	--bg: #F7F7F7;
+	--text: #222222;
+	--muted: #A1A1AA;
+	--rule: #D6D6D6;
+	--blue: #00B2FF;
 	--step: 60ms;
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--bg: #111110;
-		--text: #B5B3AD;
-		--title: #EEEEEC;
-		--faint: #56544E;
+		--bg: #070707;
+		--text: #F0F0F0;
+		--muted: #71717A;
+		--rule: #2A2A2A;
+		--blue: #00B2FF;
 	}
 }
 
@@ -25,22 +29,27 @@
 
 html {
 	background-color: var(--bg);
-	font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-	font-weight: 350;
+	font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	font-size: 15px;
+	font-weight: 400;
 	-webkit-text-size-adjust: 100%;
 }
 
-/* 800px of text, plus the gutters. Footer sits at the bottom of the
-   viewport whenever the page is too short to push it there itself. */
+::selection {
+	background-color: rgba(0, 178, 255, 0.22);
+}
+
+/* 600px of text. Footer sits at the bottom of the viewport whenever the
+   page is too short to push it there itself. */
 
 body {
-	font-size: 1em;
+	font-size: 1rem;
 	color: var(--text);
-	line-height: 1.65em;
+	line-height: 1.6;
 	text-align: left;
 	margin: 0 auto;
-	padding: 6em 1.5em 2em;
-	max-width: calc(800px + 3em);
+	padding: 10em 1.5em 2em;
+	max-width: calc(600px + 3em);
 	min-height: 100vh;
 	min-height: 100svh;
 	display: flex;
@@ -51,56 +60,53 @@ body {
 
 @media (max-width: 34rem) {
 	body {
-		padding-top: 3em;
+		padding-top: 4em;
 	}
 }
 
-/* Type. One size, weight carries the hierarchy. */
+/* Type. Two weights for the page, a third for the wordmark. */
 
 h1,
 h2,
 h3,
 p,
 footer {
-	font-size: 1em;
+	font-size: 1rem;
 }
 
 h1 {
-	margin-top: 1.5em;
+	margin-top: 2.5em;
 	margin-bottom: 1.5em;
-	font-weight: 650;
-	color: var(--title);
+	font-weight: 500;
+	color: var(--text);
 }
 
 h2 {
 	margin-top: 2.5em;
-	margin-bottom: 0.5em;
-	font-weight: 600;
-	color: var(--title);
+	margin-bottom: 0.75em;
+	font-weight: 500;
+	color: var(--text);
 }
 
 p {
-	margin-top: 0.5em;
-	margin-bottom: 1em;
+	margin-top: 0;
+	margin-bottom: 1.2em;
 }
-
-strong {
-	font-weight: 500;
-	color: var(--title);
-}
-
-/* Opening paragraph on a page with no heading of its own. */
 
 .lead {
 	margin-top: 3em;
 }
 
-/* Masthead. Identical on every page, and the heaviest thing on it. */
+strong {
+	font-weight: 500;
+}
+
+/* Masthead. Identical on every page, heaviest thing on it. */
 
 .title {
 	margin-top: 0;
 	margin-bottom: 0;
-	font-weight: 800;
+	font-weight: 600;
 }
 
 .sub {
@@ -108,34 +114,34 @@ strong {
 	margin-bottom: 0;
 }
 
-/* Links. The underline is drawn on, left to right, and drawn back off. */
+/* Links. The underline rises into place and picks up the blue. */
 
 a:link,
 a:visited {
-	color: var(--title);
+	color: var(--text);
 	font-weight: 500;
-	text-decoration: none;
-	background-image: linear-gradient(currentColor, currentColor);
-	background-repeat: no-repeat;
-	background-position: 0 100%;
-	background-size: 0 2px;
-	padding-bottom: 2px;
-	transition: background-size 300ms cubic-bezier(0.22, 0.61, 0.36, 1);
-	-webkit-box-decoration-break: clone;
-	box-decoration-break: clone;
+	text-decoration: underline;
+	text-decoration-color: transparent;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 7px;
+	transition: color 170ms ease,
+		text-decoration-color 170ms ease,
+		text-underline-offset 170ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 a:hover,
 a:focus-visible {
-	background-size: 100% 2px;
+	color: var(--blue);
+	text-decoration-color: var(--blue);
+	text-underline-offset: 3px;
 }
 
 a:focus-visible {
 	outline: none;
 }
 
-/* Reveals: text that unfolds on hover. Used by the wordmark, which puts
-   its vowels back, and by the footer, which spells out where it is. */
+/* Reveals: text that unfolds on hover. The wordmark puts its vowels
+   back, the footer spells out where it is. No underline on either. */
 
 .grow {
 	display: inline-block;
@@ -152,12 +158,16 @@ a:focus-visible {
 	opacity: 1;
 }
 
-.reveals {
-	background-image: none;
+.titlelink {
+	font-weight: 600;
 }
 
-.titlelink {
-	font-weight: 800;
+.titlelink:link,
+.titlelink:visited,
+.titlelink:hover,
+.titlelink:focus-visible {
+	color: var(--text);
+	text-decoration: none;
 }
 
 /* Nav. Home only. */
@@ -169,15 +179,38 @@ nav {
 
 nav a {
 	margin-right: 1.5em;
+	font-weight: 400;
+}
+
+nav a:link,
+nav a:visited {
+	color: var(--muted);
+}
+
+nav a:hover {
+	color: var(--blue);
+}
+
+nav a[aria-current="page"]:link,
+nav a[aria-current="page"]:visited {
+	color: var(--text);
 	font-weight: 500;
 }
 
-nav a[aria-current="page"] {
-	font-weight: 600;
-	background-image: none;
+nav a[aria-current="page"]:hover {
+	color: var(--text);
+	text-decoration-color: transparent;
 }
 
-/* The app list. Name, then what it is, with an arrow that slides out. */
+/* The live count of people using the apps. */
+
+.counter {
+	color: var(--blue);
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Project list. Name, then what it is. */
 
 ul {
 	margin: 0;
@@ -185,50 +218,62 @@ ul {
 	list-style: none;
 }
 
-.apps li {
+.projects li {
 	margin-bottom: 1.5em;
 }
 
-.apps .desc {
+.projects .desc {
 	display: block;
 	margin-top: 0.1em;
 }
 
-.apps .arrow {
-	display: inline-block;
-	max-width: 0;
-	padding-left: 0.35em;
-	opacity: 0;
-	overflow: hidden;
-	vertical-align: bottom;
-	color: var(--title);
+/* Download button. Square corners, Apple mark, blue on hover. */
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.55em;
+	margin-bottom: 1.2em;
+	padding: 0.75em 1.15em;
+	border-radius: 0;
+	background-color: var(--text);
 	font-weight: 500;
-	transition: max-width 300ms cubic-bezier(0.22, 0.61, 0.36, 1), opacity 240ms ease;
+	line-height: 1;
+	transition: background-color 200ms ease, color 200ms ease;
 }
 
-.apps li:hover .arrow {
-	max-width: 1.6em;
-	opacity: 1;
+.btn:link,
+.btn:visited {
+	color: var(--bg);
+	text-decoration: none;
 }
 
-/* Footer. Held at the bottom, and quieter than everything above it. */
+.btn:hover,
+.btn:focus-visible {
+	background-color: var(--blue);
+	color: #ffffff;
+	text-decoration: none;
+}
+
+.btn svg {
+	width: 1.05em;
+	height: 1.05em;
+	flex: none;
+	margin-top: -0.12em;
+}
+
+/* Footer. Held to the bottom, and quieter than everything above it. */
 
 footer {
 	margin-top: auto;
 	padding-top: 0.75em;
-	border-top: 1px dashed var(--faint);
-	color: var(--faint);
+	border-top: 1px dashed var(--rule);
+	color: var(--muted);
 	text-align: left;
 }
 
 footer p {
 	margin: 0;
-}
-
-footer a:link,
-footer a:visited {
-	color: var(--faint);
-	font-weight: 400;
 }
 
 /* Everything eases up on arrival. */
@@ -268,7 +313,7 @@ footer a:visited {
 
 	.grow,
 	a,
-	.apps .arrow {
+	.btn {
 		transition: none;
 	}
 }
