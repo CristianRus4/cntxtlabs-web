@@ -81,9 +81,8 @@
 		// What kind of company, decided fresh on every load. Click for another.
 		var words = [
 			"software", "product", "design-led", "creative", "meaningful",
-			"frontier", "curious", "independent", "quiet", "deliberate",
-			"patient", "stubborn", "detail-obsessed", "craft-first", "practical",
-			"thoughtful", "unhurried", "privacy-first", "hands-on", "small but busy"
+			"frontier", "curious", "stubborn", "craft-first", "thoughtful",
+			"small but busy"
 		];
 		var el = document.getElementById("descriptor");
 		if (el) {
@@ -121,6 +120,20 @@
 			tick();
 			setInterval(tick, 20000);
 		}
+
+		// Type the name of the company and everything hiding shows itself.
+		var buf = "";
+		document.addEventListener("keydown", function (e) {
+			if (e.metaKey || e.ctrlKey || e.altKey || e.key.length !== 1) return;
+			buf = (buf + e.key.toLowerCase()).slice(-5);
+			if (buf !== "cntxt") return;
+			buf = "";
+			var root = document.documentElement;
+			root.classList.remove("egg");
+			void root.offsetWidth;
+			root.classList.add("egg");
+			setTimeout(function () { root.classList.remove("egg"); }, 5200);
+		});
 
 		console.log(
 			"%ccntxt%c\nA software company, based in New Zealand.\n\n" +
