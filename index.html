@@ -55,7 +55,7 @@
 
 	<ul class="projects">
 		<li>
-			<span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><a href="left/">Left</a>
+			<span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><a href="left/">Left</a>
 			<span class="desc">The time you have left, made visible, with habits, countdowns and a daily planner.</span>
 		</li>
 		<li>
@@ -67,11 +67,11 @@
 			<span class="desc">Training, nutrition and recovery in a single coach built on Apple Health.</span>
 		</li>
 		<li>
-			<span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 21 14 3"/><path d="M20.5 21 10 3"/><path d="M15.5 21 12 15l-3.5 6"/><path d="M2 21h20"/></svg></span><a href="kiwicamping/">KiwiCamping</a>
+			<span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 3 4 8 5-5 5 15H2Z"/></svg></span><a href="kiwicamping/">KiwiCamping</a>
 			<span class="desc">Campsites, huts and holiday parks across New Zealand, available offline.</span>
 		</li>
 		<li>
-			<span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 3 4 8 5-5 5 15H2Z"/></svg></span><a href="aussiecamps/">AussieCamps</a>
+			<span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 21 14 3"/><path d="M20.5 21 10 3"/><path d="M15.5 21 12 15l-3.5 6"/><path d="M2 21h20"/></svg></span><a href="aussiecamps/">AussieCamps</a>
 			<span class="desc">Campsites, caravan parks and rest areas across Australia, available offline.</span>
 		</li>
 		<li>
@@ -83,7 +83,7 @@
 			<span class="desc">Calories, macros and nutrients calculated from a description of your meal.</span>
 		</li>
 		<li>
-			<span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><a href="notsobusy/">NotSoBusy</a>
+			<span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><a href="notsobusy/">NotSoBusy</a>
 			<span class="desc">Availability shared without giving access to your calendar.</span>
 		</li>
 	</ul>
@@ -94,6 +94,7 @@
 
 	<script>
 	(function () {
+		var HOME = "./";
 		var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 		// Copyright year.
@@ -104,13 +105,18 @@
 		var words = [
 			"software", "product", "design-led", "creative", "meaningful",
 			"frontier", "curious", "stubborn", "craft-first", "thoughtful",
-			"small but busy"
+			"small but busy", "ambitious", "restless", "inventive", "modern",
+			"focused", "bold", "playful", "contrarian", "relentless"
 		];
+		// One load in twenty-five gets something it should not admit to.
+		var rare = ["caffeinated", "nocturnal", "occasionally brilliant",
+			"over-engineered", "jet-lagged"];
 		var el = document.getElementById("descriptor");
 		if (el) {
 			var current = -1;
 			var article = function (w) { return /^[aeiou]/i.test(w) ? "An" : "A"; };
 			var pick = function () {
+				if (Math.random() < 0.04) return rare[Math.floor(Math.random() * rare.length)];
 				var i = current;
 				while (i === current) i = Math.floor(Math.random() * words.length);
 				current = i;
@@ -143,19 +149,68 @@
 			setInterval(tick, 20000);
 		}
 
-		// Type the name of the company and everything hiding shows itself.
-		var buf = "";
-		document.addEventListener("keydown", function (e) {
-			if (e.metaKey || e.ctrlKey || e.altKey || e.key.length !== 1) return;
-			buf = (buf + e.key.toLowerCase()).slice(-5);
-			if (buf !== "cntxt") return;
-			buf = "";
-			var root = document.documentElement;
-			root.classList.remove("egg");
+		var root = document.documentElement;
+		var flash = function (cls, ms) {
+			root.classList.remove(cls);
 			void root.offsetWidth;
-			root.classList.add("egg");
-			setTimeout(function () { root.classList.remove("egg"); }, 5200);
+			root.classList.add(cls);
+			setTimeout(function () { root.classList.remove(cls); }, ms);
+		};
+
+		// Things you can type. Nothing is announced anywhere.
+		var typed = "";
+		var konami = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft",
+			"ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+		var kAt = 0;
+		var goTo = null;
+
+		document.addEventListener("keydown", function (e) {
+			if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+			// The old one. Turns the page over for a moment.
+			if (e.key === konami[kAt] || (konami[kAt].length === 1 && e.key.toLowerCase() === konami[kAt])) {
+				kAt++;
+				if (kAt === konami.length) { kAt = 0; flash("flip", 8000); }
+			} else {
+				kAt = (e.key === konami[0]) ? 1 : 0;
+			}
+
+			if (e.key.length !== 1) return;
+			var ch = e.key.toLowerCase();
+
+			// g, then a letter, goes somewhere.
+			if (goTo) {
+				clearTimeout(goTo);
+				goTo = null;
+				var dest = { h: "", c: "contact/", a: "appstore/" };
+				if (ch in dest) { window.location.href = HOME + dest[ch]; return; }
+			}
+			if (ch === "g") { goTo = setTimeout(function () { goTo = null; }, 900); return; }
+
+			typed = (typed + ch).slice(-8);
+
+			// The name of the company. Everything hiding shows itself.
+			if (typed.slice(-5) === "cntxt") { typed = ""; flash("egg", 5200); return; }
+
+			// Give the place its other name, for good.
+			if (typed.slice(-4) === "kiwi") {
+				typed = "";
+				document.querySelectorAll(".strike").forEach(function (n) { n.textContent = "Aotearoa"; });
+				flash("egg", 2400);
+			}
 		});
+
+		// Left alone long enough, the mark comes out on its own.
+		var idle = null;
+		var wake = function () {
+			root.classList.remove("idle");
+			clearTimeout(idle);
+			idle = setTimeout(function () { root.classList.add("idle"); }, 90000);
+		};
+		["pointermove", "pointerdown", "keydown", "scroll", "touchstart"].forEach(function (ev) {
+			window.addEventListener(ev, wake, { passive: true });
+		});
+		wake();
 
 		console.log(
 			"%ccntxt%c\nA software company, based in New Zealand.\n\n" +
