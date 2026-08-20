@@ -59,7 +59,7 @@ body {
 
 @media (max-width: 34rem) {
 	body {
-		padding-top: 5em;
+		padding-top: 10em;
 	}
 }
 
@@ -205,6 +205,34 @@ a:focus-visible {
 @keyframes bob {
 	0%, 100% { translate: 0 0; }
 	50% { translate: 0 -5px; }
+}
+
+/* No hover on a phone, so the mark arrives on its own and stays. Same
+   entrance as the hover on desktop, then it keeps bobbing. Desktop is
+   untouched. */
+
+@keyframes markIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px) scale(0.72) rotate(-150deg);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1) rotate(0deg);
+	}
+}
+
+@media (max-width: 34rem) {
+	.mark {
+		color: var(--text);
+		animation: markIn 560ms cubic-bezier(0.34, 1.4, 0.64, 1) 700ms forwards,
+			bob 2.4s ease-in-out 1260ms infinite;
+	}
+
+	.titlelink:hover .mark,
+	.titlelink:focus-visible .mark {
+		color: var(--text);
+	}
 }
 
 .titlelink:link,
@@ -405,6 +433,13 @@ footer p {
 
 	.mark {
 		transform: none;
+	}
+
+	@media (max-width: 34rem) {
+		.mark {
+			animation: none;
+			opacity: 1;
+		}
 	}
 
 	.btn:hover {
