@@ -40,7 +40,7 @@
 <body class="reveal">
 
 	<h1 class="title"><a class="titlelink reveals" href="../"><svg class="mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg>c<span class="grow">o</span>nt<span class="grow">e</span>xt<span class="grow">&nbsp;labs</span></a></h1>
-	<p class="sub">A software company, based in <span class="reveals"><span class="strike">New Zealand</span><span class="grow grow-wide">&nbsp;the most beautiful place in the world</span></span>.</p>
+	<p class="sub"><span class="descriptor" id="descriptor" role="button" tabindex="0">A software</span> company, based in <span class="reveals"><span class="strike">New Zealand</span><span class="grow grow-wide">&nbsp;the most beautiful place in the world</span></span>.</p>
 
 	<p class="lead">The best way to reach cntxt is to <a href="mailto:info@cntxtlabs.co">send an email</a>. It is the only address the company uses, it is read every day, and it goes directly to the people who build the apps rather than to a support desk.</p>
 
@@ -51,9 +51,70 @@
 	<p><a class="btn btn-send" href="mailto:info@cntxtlabs.co"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><g transform="rotate(-45 12 12)"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></g></svg><span>Contact</span></a></p>
 
 	<footer>
-		<p>cntxt &ndash; Coded in <span class="reveals">N<span class="grow">ew </span>Z<span class="grow">ealand</span></span> &ndash; &copy; <span class="reveals"><span class="grow">2017 to&nbsp;</span><span class="year"></span></span></p>
+		<p>cntxt &ndash; Coded in <span class="reveals">N<span class="grow">ew&nbsp;</span>Z<span class="grow">ealand</span><span class="grow grow-time" id="nztime"></span></span> &ndash; &copy; <span class="reveals"><span class="grow">2017 to&nbsp;</span><span class="year"></span></span></p>
 	</footer>
 
-	<script>document.querySelectorAll(".year").forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+	<script>
+	(function () {
+		var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		// Copyright year.
+		var y = new Date().getFullYear();
+		document.querySelectorAll(".year").forEach(function (e) { e.textContent = y; });
+
+		// What kind of company, decided fresh on every load. Click for another.
+		var words = [
+			"software", "product", "design-led", "creative", "meaningful",
+			"frontier", "curious", "independent", "quiet", "deliberate",
+			"patient", "stubborn", "detail-obsessed", "craft-first", "practical",
+			"thoughtful", "unhurried", "privacy-first", "hands-on", "small but busy"
+		];
+		var el = document.getElementById("descriptor");
+		if (el) {
+			var current = -1;
+			var article = function (w) { return /^[aeiou]/i.test(w) ? "An" : "A"; };
+			var pick = function () {
+				var i = current;
+				while (i === current) i = Math.floor(Math.random() * words.length);
+				current = i;
+				return words[i];
+			};
+			var set = function (w) { el.textContent = article(w) + " " + w; };
+			set(pick());
+			var cycle = function (ev) {
+				if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
+				ev.preventDefault();
+				if (reduce) { set(pick()); return; }
+				el.style.transition = "opacity 130ms ease";
+				el.style.opacity = "0";
+				setTimeout(function () { set(pick()); el.style.opacity = "1"; }, 130);
+			};
+			el.addEventListener("click", cycle);
+			el.addEventListener("keydown", cycle);
+		}
+
+		// The time where it is made, revealed with the rest of the footer line.
+		var t = document.getElementById("nztime");
+		if (t) {
+			var tick = function () {
+				var now = new Date().toLocaleTimeString("en-NZ", {
+					timeZone: "Pacific/Auckland", hour: "numeric", minute: "2-digit"
+				});
+				t.textContent = ", where it is " + now.toLowerCase().replace(/\s/g, "");
+			};
+			tick();
+			setInterval(tick, 20000);
+		}
+
+		console.log(
+			"%ccntxt%c\nA software company, based in New Zealand.\n\n" +
+			"This page is static HTML and one stylesheet. No framework, no trackers,\n" +
+			"no third party requests. The whole site in one file, for machines:\n" +
+			"https://cntxtlabs.co/llms.txt\n\n" +
+			"Something to build? info@cntxtlabs.co\n",
+			"font-weight:700;font-size:15px", "font-weight:400;font-size:12px"
+		);
+	})();
+	</script>
 </body>
 </html>
