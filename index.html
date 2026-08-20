@@ -16,20 +16,18 @@
 <body class="reveal">
 
 	<h1 class="title"><a class="titlelink reveals" href="./">c<span class="grow">o</span>nt<span class="grow">e</span>xt</a></h1>
-	<p class="sub">A software company, based in New Zealand.</p>
+	<p class="sub">A software company, based in <span class="reveals"><span class="strike">New Zealand</span><span class="grow grow-wide">&nbsp;the most beautiful place in the world</span></span>.</p>
 
 	<nav>
 		<a href="./" aria-current="page">About</a>
 		<a href="./contact/">Contact</a>
 	</nav>
 
-	<p>cntxt is a software company based in New Zealand. It builds applications for iPhone, iPad and Apple Watch, together with the websites that support them.</p>
+	<p>cntxt is a software company based in New Zealand. It builds apps for Apple platforms, and it builds websites.</p>
 
 	<p>For over a decade the work has focused on how design and technology influence the way people behave, and on turning that into software people continue to use. The apps cover time and attention, health and fitness, and the outdoors.</p>
 
-	<p><span class="counter" id="counter">1,800,000</span> people around the world have downloaded them.</p>
-
-	<h2>Projects</h2>
+	<p><span class="counter" id="counter">1,760,542</span> people around the world have downloaded them.</p>
 
 	<ul class="projects">
 		<li>
@@ -67,7 +65,7 @@
 	</ul>
 
 	<footer>
-		<p>cntxt &ndash; Coded in <span class="reveals">N<span class="grow">ew </span>Z<span class="grow">ealand</span></span> &ndash; &copy; <span class="year"></span></p>
+		<p>cntxt &ndash; Coded in <span class="reveals">N<span class="grow">ew </span>Z<span class="grow">ealand</span></span> &ndash; &copy; <span class="reveals"><span class="grow">2017 to&nbsp;</span><span class="year"></span></span></p>
 	</footer>
 
 	<script>document.querySelectorAll(".year").forEach(function(e){e.textContent=new Date().getFullYear();});</script>
@@ -75,9 +73,9 @@
 	(function () {
 		var el = document.getElementById("counter");
 		if (!el) return;
-		// 1,800,000 on 20 August 2026, growing by 300 a day.
+		// 1,760,542 on 20 August 2026, growing by 300 a day.
 		var days = Math.max(0, Math.floor((Date.now() - Date.UTC(2026, 7, 20)) / 86400000));
-		var total = 1800000 + days * 300;
+		var total = 1760542 + days * 300;
 		var fmt = function (n) { return n.toLocaleString("en-US"); };
 		if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
 			el.textContent = fmt(total);
