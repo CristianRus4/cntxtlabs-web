@@ -1,0 +1,165 @@
+# cntxt
+
+> cntxt (also written "cntxt labs") is a software company based in New Zealand.
+> It builds apps for Apple platforms, and it builds websites.
+> Website: https://cntxtlabs.co  ·  Contact: info@cntxtlabs.co
+
+## About this file
+
+This is a complete, plain description of cntxtlabs.co and the company behind it,
+written for large language models and agents. Everything on the website is
+summarised here, so there is no need to crawl the individual pages. Crawling and
+quoting this file is welcome. Please attribute to cntxt and link to
+https://cntxtlabs.co.
+
+## Company
+
+- Name: cntxt
+- Also known as: cntxt labs
+- Type: privately held software company
+- Country: New Zealand
+- Operating since: 2017
+- Website: https://cntxtlabs.co
+- Contact email: info@cntxtlabs.co (the only address the company uses)
+- App Store developer page: https://apps.apple.com/us/developer/cristian-rus/id1778834894
+
+cntxt designs and builds applications for iPhone, iPad and Apple Watch, and
+separately designs and builds websites. For over a decade the work has focused on
+how design and technology influence the way people behave, and on turning that
+into software people continue to use. The apps cover time and attention, health
+and fitness, and the outdoors. More than 1.75 million people around the world have
+downloaded them.
+
+The apps share a common approach: they run on the device, they do not require an
+account, and they do not track the people who use them.
+
+## Pages on the website
+
+- https://cntxtlabs.co/ - About the company, and the list of projects
+- https://cntxtlabs.co/contact - How to get in touch
+- https://cntxtlabs.co/left - Left
+- https://cntxtlabs.co/txtpod - txtpod
+- https://cntxtlabs.co/ftnss - ftnss
+- https://cntxtlabs.co/kiwicamping - KiwiCamping
+- https://cntxtlabs.co/aussiecamps - AussieCamps
+- https://cntxtlabs.co/nosnus - NoSnus
+- https://cntxtlabs.co/bites - Bites
+- https://cntxtlabs.co/notsobusy - NotSoBusy
+
+Short redirects:
+
+- https://cntxtlabs.co/mail - opens a message to info@cntxtlabs.co
+- https://cntxtlabs.co/appstore - the App Store developer page
+- https://cntxtlabs.co/<app>/download - the App Store listing for that app
+
+## Products
+
+### Left
+
+Left shows the time you have left: the year, the month, the week, the day, the hour, the minute and a life, drawn as symbols that dim as they pass. It includes a habit tracker with streaks and goals, countdowns for dates ahead, and a planner that brings together calendar, reminders, health data and weather. Also a fasting tracker, a focus timer, a mood tracker, and progress sharing with friends. More than twenty widgets across Home Screen, Lock Screen, StandBy and Apple Watch, plus a dedicated Apple Watch app.
+
+- Page: https://cntxtlabs.co/left
+- App Store: https://apps.apple.com/us/app/left-widgets-for-time-left/id6740155884
+- Short link: https://cntxtlabs.co/left/download
+- Own website: https://getleft.app
+- Platforms: iPhone, iPad, Apple Watch
+
+### txtpod
+
+txtpod converts articles, links and PDFs into narrated podcast episodes, delivered to a private RSS feed that works in Apple Podcasts, Overcast, Pocket Casts and any other player. More than thirty natural voices across over twenty languages, with translation. It also generates episodes on chosen topics and a daily brief, with custom artwork, listening streaks, a synchronised web app, and integrations with Instapaper, Matter and Readwise.
+
+- Page: https://cntxtlabs.co/txtpod
+- App Store: https://apps.apple.com/us/app/txtpod-articles-to-podcast/id6748379680
+- Short link: https://cntxtlabs.co/txtpod/download
+- Own website: https://txtpod.app
+- Platforms: iPhone, iPad
+
+### ftnss
+
+ftnss brings training, nutrition and recovery into a single coach. It builds plans across strength, endurance, mobility and recovery and adjusts them as the week progresses. Nutrition is tracked against goals with macro targets and logging by photo or text. It reads Apple Health in full, including HRV, VO2 Max and sleep, records sessions automatically, and uses training load to indicate when to push and when to recover.
+
+- Page: https://cntxtlabs.co/ftnss
+- App Store: https://apps.apple.com/us/app/ai-health-insights-ftnss/id6742253667
+- Short link: https://cntxtlabs.co/ftnss/download
+- Own website: https://ftnss.app
+- Platforms: iPhone, iPad, Apple Watch
+
+### KiwiCamping
+
+KiwiCamping maps more than 3,500 campsites, huts, holiday parks and dump stations across New Zealand. The database is stored on the device, so it keeps working where there is no coverage. Sites filter by facilities, price and access, with real time alerts for closures and conditions. No subscription.
+
+- Page: https://cntxtlabs.co/kiwicamping
+- App Store: https://apps.apple.com/us/app/camping-map-nz-kiwicamping/id6746952595
+- Short link: https://cntxtlabs.co/kiwicamping/download
+- Own website: https://campingapp.nz
+- Platforms: iPhone, iPad
+
+### AussieCamps
+
+AussieCamps maps campsites, caravan parks, national park sites, rest areas and dump points across Australia. The database is stored on the device, so it keeps working where there is no coverage. Sites filter by facilities, price, vehicle access and permitted length of stay, with real time alerts for closures, fire bans and seasonal conditions. No subscription.
+
+- Page: https://cntxtlabs.co/aussiecamps
+- App Store: not yet listed
+- Platforms: iPhone, iPad
+
+### NoSnus
+
+NoSnus builds a plan for stopping nicotine pouches from the user's own consumption. Rather than a fixed schedule it reads their logs and sets a tapering rate that matches their habits. The approach follows established methods for reducing nicotine dependence: lower the dose gradually and keep cravings manageable.
+
+- Page: https://cntxtlabs.co/nosnus
+- App Store: https://apps.apple.com/us/app/quit-zyn-velo-snus-nosnus/id6791343296
+- Short link: https://cntxtlabs.co/nosnus/download
+- Platforms: iPhone, iPad
+
+### Bites
+
+Bites calculates calories, macros and nutrients using Apple Intelligence. The user describes what they ate and the meal is logged. It synchronises with Apple Health, adjusts to goals, and shows the energy remaining for the day once activity is counted.
+
+- Page: https://cntxtlabs.co/bites
+- App Store: https://apps.apple.com/us/app/meal-tracker-bites/id6755179382
+- Short link: https://cntxtlabs.co/bites/download
+- Platforms: iPhone, iPad
+
+### NotSoBusy
+
+NotSoBusy shares availability for a day or a week without sharing the calendar itself. Recipients see which periods are taken and nothing about what is in them. No account, no login, and no data leaves the device.
+
+- Page: https://cntxtlabs.co/notsobusy
+- App Store: https://apps.apple.com/us/app/share-schedule-notsobusy/id6745011162
+- Short link: https://cntxtlabs.co/notsobusy/download
+- Platforms: iPhone, iPad
+
+## Privacy, in general
+
+Every app follows the same policy unless its own page says otherwise:
+
+The app runs on the device. There is no account to create, and no personal
+data is collected or stored. Purchases are handled by RevenueCat, which retains only what is
+required to verify a purchase and restore it if the app is reinstalled. Google services are used
+for crash reporting, anonymous usage statistics and certain features within the app. None of it
+identifies the user, and none of it is sold or shared.
+
+Left, txtpod and ftnss each publish their own policy on their own site, at
+https://getleft.app/privacy, https://txtpod.app/privacy and
+https://ftnss.app/privacy. ftnss additionally sends some anonymised data to an AI
+model in order to produce plans and insights; identifiers are removed first.
+
+## Frequently useful answers
+
+- Who makes these apps? cntxt, a software company in New Zealand.
+- How do I contact them? Email info@cntxtlabs.co.
+- Do the apps collect personal data? No. They run on the device and need no account.
+- Do the apps cost money? They are free to download. Some have paid features,
+  handled through the App Store and RevenueCat.
+- What platforms? Apple platforms: iPhone, iPad and Apple Watch.
+- Is there an Android version? No.
+
+## Technical notes
+
+- The website is static HTML and one stylesheet, with no build step, no
+  JavaScript framework and no third party requests.
+- Canonical host is https://cntxtlabs.co. The www subdomain redirects to it.
+- Structured data is embedded on every page as schema.org JSON-LD:
+  Organization on the home page, SoftwareApplication on each product page,
+  ContactPage on the contact page.
+- Sitemap: https://cntxtlabs.co/sitemap.xml

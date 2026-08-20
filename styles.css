@@ -248,29 +248,25 @@ nav a[aria-current="page"]:hover {
 	color: var(--text);
 }
 
-/* Live metrics. Tabular figures hold each number's width steady while it
-   counts, so the label beside it does not shuffle. */
+/* Live metrics, inline in the sentence. Tabular figures hold each number's
+   width steady while it counts, so the words after it do not shuffle. The
+   mark and the number take the accent only when you point at them. */
 
-.metrics {
-	margin: 0 0 1.2em;
+.metric {
+	white-space: nowrap;
 }
 
-.metrics li {
-	display: flex;
-	align-items: center;
-	gap: 0.6em;
-	margin-bottom: 0.4em;
-}
-
-.metrics li:last-child {
-	margin-bottom: 0;
+.metric .metric-label {
+	white-space: normal;
 }
 
 .metrics svg {
 	width: 1.05em;
 	height: 1.05em;
-	flex: none;
-	color: var(--blue);
+	margin-right: 0.35em;
+	vertical-align: -0.16em;
+	color: var(--text);
+	transition: color 170ms ease;
 }
 
 .figure {
@@ -279,10 +275,12 @@ nav a[aria-current="page"]:hover {
 	font-variant-numeric: tabular-nums;
 	font-feature-settings: "tnum" 1;
 	text-align: left;
+	transition: color 170ms ease;
 }
 
-.metric-label {
-	margin-left: -0.25em;
+.metric:hover svg,
+.metric:hover .figure {
+	color: var(--blue);
 }
 
 /* Project list. Name, then what it is. */
