@@ -170,8 +170,39 @@
 			if (typed.slice(-4) === "kiwi") {
 				typed = "";
 				document.querySelectorAll(".strike").forEach(function (n) { n.textContent = "Aotearoa"; });
-				flash("egg", 2400);
 			}
+		});
+
+		// A press of the space bar, and it rains squares.
+		var raining = false;
+		var rain = function () {
+			if (raining) return;
+			raining = true;
+			var layer = document.createElement("div");
+			layer.className = "confetti";
+			for (var i = 0; i < 46; i++) {
+				var bit = document.createElement("i");
+				var size = 5 + Math.random() * 7;
+				bit.style.left = (Math.random() * 100).toFixed(2) + "vw";
+				bit.style.width = bit.style.height = size.toFixed(1) + "px";
+				bit.style.animationDuration = (1500 + Math.random() * 1500).toFixed(0) + "ms";
+				bit.style.animationDelay = (Math.random() * 400).toFixed(0) + "ms";
+				bit.style.opacity = (0.5 + Math.random() * 0.5).toFixed(2);
+				bit.style.setProperty("--drift", ((Math.random() * 2 - 1) * 150).toFixed(0) + "px");
+				bit.style.setProperty("--spin", (Math.random() * 900 - 450).toFixed(0) + "deg");
+				layer.appendChild(bit);
+			}
+			document.body.appendChild(layer);
+			setTimeout(function () { layer.remove(); raining = false; }, 3600);
+		};
+
+		document.addEventListener("keydown", function (e) {
+			if (e.code !== "Space" && e.key !== " ") return;
+			if (e.metaKey || e.ctrlKey || e.altKey) return;
+			var t = e.target;
+			if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+			e.preventDefault();
+			if (!reduce) rain();
 		});
 
 		// Left alone long enough, the mark comes out on its own.

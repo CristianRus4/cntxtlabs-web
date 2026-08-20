@@ -428,7 +428,7 @@ ul {
 		display: block;
 		position: absolute;
 		right: 100%;
-		margin-right: 0.6em;
+		margin-right: 0.42em;
 		top: 0.12em;
 		width: 1.15em;
 		height: 1.15em;
@@ -445,7 +445,8 @@ ul {
 		height: 100%;
 	}
 
-	.projects li:hover .sym {
+	.projects a:hover + .sym,
+	.projects a:focus-visible + .sym {
 		opacity: 1;
 		transform: none;
 	}
@@ -547,7 +548,6 @@ footer p {
 	}
 
 	.titlelink:hover .mark,
-	.projects li:hover .sym,
 	.egg .mark,
 	.egg .sym {
 		animation: none;
@@ -578,5 +578,38 @@ footer p {
 
 	.btn:hover {
 		transform: none;
+	}
+}
+
+/* A press of the space bar. Fixed layer, no pointer events, gone in a few
+   seconds. It is a child of body, so it has to opt out of the arrival
+   animation that every other child gets. */
+
+.confetti {
+	position: fixed;
+	inset: 0;
+	z-index: 9;
+	overflow: hidden;
+	pointer-events: none;
+	opacity: 1;
+	animation: none;
+}
+
+.confetti i {
+	position: absolute;
+	top: -8vh;
+	display: block;
+	background-color: var(--blue);
+	animation-name: fall;
+	animation-timing-function: linear;
+	animation-fill-mode: forwards;
+}
+
+@keyframes fall {
+	from {
+		transform: translate(0, 0) rotate(0deg);
+	}
+	to {
+		transform: translate(var(--drift, 0), 116vh) rotate(var(--spin, 0deg));
 	}
 }
