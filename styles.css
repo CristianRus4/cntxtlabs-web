@@ -176,6 +176,35 @@ a:focus-visible {
 
 .titlelink {
 	font-weight: 700;
+	position: relative;
+}
+
+/* The mark sits above the wordmark, out of the flow so nothing below it
+   moves. It drops in, turns itself the right way up, then keeps bobbing
+   for as long as you stay. */
+
+.mark {
+	position: absolute;
+	left: 0;
+	bottom: calc(100% + 0.5em);
+	width: 1.7em;
+	height: 1.7em;
+	opacity: 0;
+	pointer-events: none;
+	transform: translateY(10px) scale(0.72) rotate(-150deg);
+	transition: opacity 240ms ease, transform 560ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.titlelink:hover .mark,
+.titlelink:focus-visible .mark {
+	opacity: 1;
+	transform: translateY(0) scale(1) rotate(0deg);
+	animation: bob 2.4s ease-in-out 560ms infinite;
+}
+
+@keyframes bob {
+	0%, 100% { translate: 0 0; }
+	50% { translate: 0 -5px; }
 }
 
 .titlelink:link,
@@ -287,15 +316,6 @@ ul {
 	height: 1.05em;
 	flex: none;
 	margin-top: -0.1em;
-	transition: transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.btn:hover svg {
-	transform: translateX(-0.15em);
-}
-
-.btn-send:hover svg {
-	transform: translateX(0.2em) translateY(-0.1em);
 }
 
 /* Footer. Held to the bottom, and quieter than everything above it. */
@@ -351,8 +371,16 @@ footer p {
 	.strike,
 	a,
 	.btn,
-	.btn svg {
+	.mark {
 		transition: none;
+	}
+
+	.titlelink:hover .mark {
+		animation: none;
+	}
+
+	.mark {
+		transform: none;
 	}
 
 	.btn:hover {
