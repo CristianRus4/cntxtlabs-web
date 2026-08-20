@@ -302,6 +302,7 @@ a:focus-visible {
 @media (max-width: 34rem), (hover: none) {
 	.mark {
 		color: var(--text);
+		pointer-events: auto;
 		animation: markIn 560ms cubic-bezier(0.34, 1.4, 0.64, 1) 700ms forwards,
 			bob 2.4s ease-in-out 1260ms infinite;
 	}

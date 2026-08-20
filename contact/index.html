@@ -162,13 +162,13 @@
 		});
 
 		// A press of the space bar, and it rains squares.
-		var raining = false;
+		// Every press starts its own fall. Old layers are capped so holding
+		// the key down cannot pile up forever.
+		var layers = [];
 		var rain = function () {
-			if (raining) return;
-			raining = true;
 			var layer = document.createElement("div");
 			layer.className = "confetti";
-			for (var i = 0; i < 46; i++) {
+			for (var i = 0; i < 150; i++) {
 				var bit = document.createElement("i");
 				var size = 5 + Math.random() * 7;
 				bit.style.left = (Math.random() * 100).toFixed(2) + "vw";
@@ -181,7 +181,13 @@
 				layer.appendChild(bit);
 			}
 			document.body.appendChild(layer);
-			setTimeout(function () { layer.remove(); raining = false; }, 3600);
+			layers.push(layer);
+			while (layers.length > 6) layers.shift().remove();
+			setTimeout(function () {
+				layer.remove();
+				var at = layers.indexOf(layer);
+				if (at > -1) layers.splice(at, 1);
+			}, 3600);
 		};
 
 		document.addEventListener("keydown", function (e) {
