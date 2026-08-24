@@ -190,6 +190,11 @@ a:focus-visible {
 	max-width: 22ch;
 }
 
+.reveals:hover .cap,
+.reveals:focus-visible .cap {
+	text-transform: capitalize;
+}
+
 /* What kind of company. Different on every load, and on every click. */
 
 .descriptor {
@@ -273,6 +278,11 @@ a:focus-visible {
 .egg .reveals .grow {
 	max-width: 40ch;
 	opacity: 1;
+}
+
+.egg .titlelink .cap,
+.egg .reveals .cap {
+	text-transform: capitalize;
 }
 
 .egg .reveals .strike {
