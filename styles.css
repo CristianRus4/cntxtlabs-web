@@ -62,6 +62,12 @@ html {
 	font-size: 15px;
 	font-weight: 400;
 	-webkit-text-size-adjust: 100%;
+	scrollbar-width: none;
+}
+
+/* Hide the scrollbar indicator while preserving normal scrolling. */
+html::-webkit-scrollbar {
+	display: none;
 }
 
 ::selection {
@@ -268,7 +274,7 @@ a:focus-visible {
 	animation: bob 2.4s ease-in-out infinite;
 }
 
-.egg .sym {
+.project-symbols-enabled.egg .sym {
 	display: block;
 	opacity: 1;
 	transform: none;
@@ -422,6 +428,8 @@ ul {
 	margin-top: 0.1em;
 }
 
+/* Symbols are dormant. Add project-symbols-enabled to html to restore them. */
+
 /* Each project keeps a symbol in the left margin. It stays out of the text
    flow, so nothing moves when it arrives. Pointer devices with room for it
    only: a phone never sees these. */
@@ -456,14 +464,28 @@ ul {
 		height: 100%;
 	}
 
-	.projects a:hover + .sym,
-	.projects a:focus-visible + .sym {
+	.project-symbols-enabled .projects a:hover + .sym,
+	.project-symbols-enabled .projects a:focus-visible + .sym {
 		opacity: 1;
 		transform: none;
 	}
 }
 
-/* Buttons. Square corners, a mark, and a small lift on hover. */
+.projects.collection {
+	margin-top: 0.75em;
+}
+
+/* Buttons. Square corners, a mark, and a small shrink on hover. */
+
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.65em;
+}
+
+.actions .btn {
+	margin-bottom: 0;
+}
 
 .btn {
 	display: inline-flex;
@@ -487,11 +509,11 @@ ul {
 .btn:focus-visible {
 	background-color: var(--blue);
 	color: #ffffff;
-	transform: translateY(-2px);
+	transform: scale(0.96);
 }
 
 .btn:active {
-	transform: translateY(0);
+	transform: scale(0.93);
 }
 
 .btn svg {
@@ -560,7 +582,7 @@ footer p {
 
 	.titlelink:hover .mark,
 	.egg .mark,
-	.egg .sym {
+	.project-symbols-enabled.egg .sym {
 		animation: none;
 	}
 

@@ -1,7 +1,7 @@
 # cntxt
 
 > cntxt (also written "cntxt labs") is a software company based in New Zealand.
-> It builds apps for Apple platforms, and it builds websites.
+> It builds apps for Apple platforms, Android and the web.
 > Website: https://cntxtlabs.co  ·  Contact: info@cntxtlabs.co
 
 ## About this file
@@ -30,13 +30,16 @@ into software people continue to use. The apps cover time and attention, health
 and fitness, and the outdoors. More than 1.75 million people around the world have
 downloaded them.
 
-The apps share a common approach: they run on the device, they do not require an
+The Apple apps share a common approach: they run on the device, they do not require an
 account, and they do not track the people who use them.
 
 ## Pages on the website
 
 - https://cntxtlabs.co/ - About the company, and the list of projects
 - https://cntxtlabs.co/contact - How to get in touch
+- https://cntxtlabs.co/camping - Camping apps
+- https://cntxtlabs.co/ios - iOS apps
+- https://cntxtlabs.co/safeplate - SafePlate
 - https://cntxtlabs.co/left - Left
 - https://cntxtlabs.co/txtpod - txtpod
 - https://cntxtlabs.co/ftnss - ftnss
@@ -53,6 +56,14 @@ Short redirects:
 - https://cntxtlabs.co/<app>/download - the App Store listing for that app
 
 ## Products
+
+### SafePlate
+
+SafePlate helps hospitality businesses in New Zealand manage food control plan compliance across web, Android and iPhone. Contact info@cntxtlabs.co for more information.
+
+- Page: https://cntxtlabs.co/safeplate
+- Own website: https://safeplate.nz
+- Platforms: Web, Android, iPhone
 
 ### Left
 
@@ -131,7 +142,7 @@ NotSoBusy shares availability for a day or a week without sharing the calendar i
 
 ## Privacy, in general
 
-Every app follows the same policy unless its own page says otherwise:
+The Apple apps below follow this policy unless their own page says otherwise. This does not describe SafePlate:
 
 The app runs on the device. There is no account to create, and no personal
 data is collected or stored. Purchases are handled by RevenueCat, which retains only what is
@@ -148,11 +159,11 @@ model in order to produce plans and insights; identifiers are removed first.
 
 - Who makes these apps? cntxt, a software company in New Zealand.
 - How do I contact them? Email info@cntxtlabs.co.
-- Do the apps collect personal data? No. They run on the device and need no account.
+- What about privacy? See each app's page and privacy policy; the Apple app policies do not describe SafePlate.
 - Do the apps cost money? They are free to download. Some have paid features,
   handled through the App Store and RevenueCat.
-- What platforms? Apple platforms: iPhone, iPad and Apple Watch.
-- Is there an Android version? No.
+- What platforms? iPhone, iPad and Apple Watch, with SafePlate also on web and Android.
+- Is there an Android version? SafePlate supports Android. The other listed apps focus on Apple platforms.
 
 ## Technical notes
 

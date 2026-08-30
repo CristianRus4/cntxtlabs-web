@@ -40,15 +40,13 @@
 <body class="reveal">
 
 	<h1 class="title"><a class="titlelink reveals" href="../"><svg class="mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg><span class="cap">c</span><span class="grow">o</span>nt<span class="grow">e</span>xt<span class="grow cap">&nbsp;labs</span></a></h1>
-	<p class="sub"><span class="descriptor" id="descriptor" role="button" tabindex="0">A software</span> company, based in <span class="reveals"><span class="strike">New Zealand</span><span class="grow grow-wide">&nbsp;the most beautiful place in the world</span></span>.</p>
+	<p class="sub"><span class="descriptor" id="descriptor" role="button" tabindex="0">A <em>software</em></span> company, based in <span class="reveals"><span class="strike">New Zealand</span><span class="grow grow-wide">&nbsp;the most beautiful place in the world</span></span>.</p>
 
 	<h1>NotSoBusy</h1>
 
 	<p>NotSoBusy shares your availability for a day or a week without sharing your calendar. Recipients see which periods are taken, and nothing about what is in them.</p>
 
 	<p>There is no account and no login, and no data leaves your device.</p>
-
-	<p><a class="btn" href="https://apps.apple.com/us/app/share-schedule-notsobusy/id6745011162" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.925-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span>Download</span></a></p>
 
 	<h2>Privacy</h2>
 
@@ -59,6 +57,8 @@
 	<p>Google services are used for crash reporting, anonymous usage statistics and certain features within the app. None of this identifies you, and none of it is sold or shared.</p>
 
 	<p>For anything else, <a href="mailto:info@cntxtlabs.co">send an email</a>.</p>
+
+	<p><a class="btn" href="https://apps.apple.com/us/app/share-schedule-notsobusy/id6745011162" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.925-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span>Download</span></a></p>
 
 	<footer>
 		<p>Cntxt Labs &ndash; Coded in <span class="reveals">N<span class="grow">ew&nbsp;</span>Z<span class="grow">ealand</span><span class="grow grow-time" id="nztime"></span></span> &ndash; &copy; <span class="reveals"><span class="grow">2017 to&nbsp;</span><span class="year"></span></span></p>
@@ -94,7 +94,13 @@
 				current = i;
 				return words[i];
 			};
-			var set = function (w) { el.textContent = article(w) + " " + w; };
+			var set = function (w) {
+				var parts = w.split(" ");
+				var word = document.createElement("em");
+				word.textContent = parts.shift();
+				el.replaceChildren(document.createTextNode(article(w) + " "), word);
+				if (parts.length) el.appendChild(document.createTextNode(" " + parts.join(" ")));
+			};
 			set(pick());
 			var cycle = function (ev) {
 				if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
