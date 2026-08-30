@@ -47,7 +47,7 @@
 		<a href="./contact/">Contact</a>
 	</nav>
 
-	<p class="lead">Cntxt Labs is a software company based in New Zealand. The work spans Apple platforms, Android and the web.</p>
+	<p class="lead">Cntxt Labs (pronounced ‘Context’) is a New Zealand-based software company founded by <a href="https://cristianrus.me" rel="noopener">Cristian Rus</a>. Specialised in building products and services across Apple platforms, web, and Android.</p>
 
 	<p>For over a decade the work has focused on how design and technology influence the way people behave, and on turning that into software people continue to use. The apps cover time and attention, health and fitness, and the outdoors.</p>
 
@@ -325,6 +325,20 @@ var set = function (w) {
 				metric.addEventListener("mouseenter", run);
 				metric.addEventListener("click", run);
 			}
+		});
+	})();
+	</script>
+	<script>
+	(function () {
+		var metrics = document.querySelector(".metrics");
+		if (!metrics) return;
+		metrics.childNodes.forEach(function (node) {
+			if (node.nodeType !== 3) return;
+			node.textContent = node.textContent.replace(", up ", ", with a growth of revenue of ").replace(". The codebase includes ", " and ");
+		});
+		metrics.querySelectorAll(".metric-label").forEach(function (label) {
+			if (label.textContent.indexOf("from last month") > -1 || label.textContent.indexOf("growth this month") > -1) label.textContent = " this month";
+			if (label.textContent === " contributions") label.textContent = " contributions to the codebase so far";
 		});
 	})();
 	</script>
