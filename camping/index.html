@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Camping apps · cntxt</title>
-	<meta name="description" content="Apps for finding campsites and outdoor places in Australia and New Zealand, with USA and Canada coming next.">
+	<meta name="description" content="Camping maps for New Zealand, Australia, the United States and Canada.">
 	<meta name="author" content="Cntxt Labs">
 	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 	<link rel="canonical" href="https://cntxtlabs.co/camping">
@@ -16,7 +16,7 @@
 	<meta property="og:locale" content="en_NZ">
 	<meta property="og:url" content="https://cntxtlabs.co/camping">
 	<meta property="og:title" content="Camping apps">
-	<meta property="og:description" content="Apps for finding campsites and outdoor places in Australia and New Zealand, with USA and Canada coming next.">
+	<meta property="og:description" content="Camping maps for New Zealand, Australia, the United States and Canada.">
 	<meta property="og:image" content="https://cntxtlabs.co/og.png">
 	<meta property="og:image:type" content="image/png">
 	<meta property="og:image:width" content="1200">
@@ -25,7 +25,7 @@
 
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:title" content="Camping apps">
-	<meta name="twitter:description" content="Apps for finding campsites and outdoor places in Australia and New Zealand, with USA and Canada coming next.">
+	<meta name="twitter:description" content="Camping maps for New Zealand, Australia, the United States and Canada.">
 	<meta name="twitter:image" content="https://cntxtlabs.co/og.png">
 	<meta name="twitter:image:alt" content="Cntxt Labs, a software company based in New Zealand">
 
@@ -34,7 +34,7 @@
 	<link rel="icon" href="../favicon.png" sizes="32x32">
 	<link rel="apple-touch-icon" href="../apple-touch-icon.png">
 	<link rel="stylesheet" href="../styles.css">
-	<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Camping apps","description":"Apps for finding campsites and outdoor places in Australia and New Zealand, with USA and Canada coming next.","url":"https://cntxtlabs.co/camping"}</script>
+	<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Camping apps","description":"Camping maps for New Zealand, Australia, the United States and Canada.","url":"https://cntxtlabs.co/camping"}</script>
 </head>
 <body class="reveal">
 
@@ -43,20 +43,26 @@
 
 	<h1>Camping apps</h1>
 
-	<p>Find campsites and outdoor places in Australia and New Zealand. Apps for the USA and Canada are coming next.</p>
+	<p>Maps for campsites, holiday parks and outdoor places across four countries.</p>
 
 	<ul class="projects collection">
 		<li>
 			<a href="../kiwicamping/">KiwiCamping</a><span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 3 4 8 5-5 5 15H2Z"/></svg></span>
-			<span class="desc">Campsites, huts and holiday parks across New Zealand, available offline.</span>
+			<span class="desc">Offline maps for New Zealand campsites, huts and holiday parks.</span>
 		</li>
 		<li>
 			<a href="../aussiecamps/">AussieCamps</a><span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 21 14 3"/><path d="M20.5 21 10 3"/><path d="M15.5 21 12 15l-3.5 6"/><path d="M2 21h20"/></svg></span>
-			<span class="desc">Campsites, caravan parks and rest areas across Australia, available offline.</span>
+			<span class="desc">Australia-wide listings for caravan parks, campsites and roadside rest areas.</span>
+		</li>
+		<li>
+			<a href="../kiwicamping/">CampUSA</a>
+			<span class="desc">A nationwide guide to campsites, public lands and outdoor stays across the United States.</span>
+		</li>
+		<li>
+			<a href="../kiwicamping/">CampCanada</a>
+			<span class="desc">Discover campgrounds, provincial parks and quiet places to stay throughout Canada.</span>
 		</li>
 	</ul>
-
-	<p>Looking for <a href="../kiwicamping/">USA</a> or <a href="../kiwicamping/">Canada</a>? For now, these links take you to KiwiCamping while we work on those apps.</p>
 
 	<footer>
 		<p>Cntxt Labs &ndash; Coded in <span class="reveals">N<span class="grow">ew&nbsp;</span>Z<span class="grow">ealand</span><span class="grow grow-time" id="nztime"></span></span> &ndash; &copy; <span class="reveals"><span class="grow">2017 to&nbsp;</span><span class="year"></span></span></p>
@@ -92,12 +98,10 @@
 				current = i;
 				return words[i];
 			};
-			var set = function (w) {
-				var parts = w.split(" ");
+var set = function (w) {
 				var word = document.createElement("em");
-				word.textContent = parts.shift();
+				word.textContent = w;
 				el.replaceChildren(document.createTextNode(article(w) + " "), word);
-				if (parts.length) el.appendChild(document.createTextNode(" " + parts.join(" ")));
 			};
 			set(pick());
 			var cycle = function (ev) {

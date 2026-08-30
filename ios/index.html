@@ -43,7 +43,7 @@
 
 	<h1>iOS apps</h1>
 
-	<p>A few of our apps on the App Store, for health, everyday habits and making time.</p>
+	<p>A few apps on the App Store, for health, everyday habits and making time.</p>
 
 	<ul class="projects collection">
 		<li>
@@ -98,12 +98,10 @@
 				current = i;
 				return words[i];
 			};
-			var set = function (w) {
-				var parts = w.split(" ");
+var set = function (w) {
 				var word = document.createElement("em");
-				word.textContent = parts.shift();
+				word.textContent = w;
 				el.replaceChildren(document.createTextNode(article(w) + " "), word);
-				if (parts.length) el.appendChild(document.createTextNode(" " + parts.join(" ")));
 			};
 			set(pick());
 			var cycle = function (ev) {

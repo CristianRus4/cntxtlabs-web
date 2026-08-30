@@ -84,12 +84,10 @@
 				current = i;
 				return words[i];
 			};
-			var set = function (w) {
-				var parts = w.split(" ");
+var set = function (w) {
 				var word = document.createElement("em");
-				word.textContent = parts.shift();
+				word.textContent = w;
 				el.replaceChildren(document.createTextNode(article(w) + " "), word);
-				if (parts.length) el.appendChild(document.createTextNode(" " + parts.join(" ")));
 			};
 			set(pick());
 			var cycle = function (ev) {

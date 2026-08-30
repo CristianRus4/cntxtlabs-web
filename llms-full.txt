@@ -38,7 +38,7 @@ account, and they do not track the people who use them.
 - https://cntxtlabs.co/ - About the company, and the list of projects
 - https://cntxtlabs.co/contact - How to get in touch
 - https://cntxtlabs.co/camping - Camping apps
-- https://cntxtlabs.co/ios - iOS apps
+- https://cntxtlabs.co/ios - More iOS apps
 - https://cntxtlabs.co/safeplate - SafePlate
 - https://cntxtlabs.co/left - Left
 - https://cntxtlabs.co/txtpod - txtpod
