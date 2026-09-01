@@ -195,19 +195,19 @@ a:focus-visible {
 	opacity: 1;
 }
 
-.reveals:hover .grow-wide,
-.reveals:focus-visible .grow-wide {
+.reveals:hover .grow.grow-wide,
+.reveals:focus-visible .grow.grow-wide {
 	max-width: 40ch;
 }
 
-.reveals:hover .grow-time,
-.reveals:focus-visible .grow-time {
+.reveals:hover .grow.grow-time,
+.reveals:focus-visible .grow.grow-time {
 	max-width: 22ch;
 }
 
-.reveals:hover .grow-say,
-.reveals:focus-visible .grow-say {
-	max-width: 28ch;
+.reveals:hover .grow.grow-long,
+.reveals:focus-visible .grow.grow-long {
+	max-width: 40ch;
 }
 
 .reveals:hover .cap,
