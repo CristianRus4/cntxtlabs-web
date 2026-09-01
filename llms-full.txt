@@ -53,6 +53,7 @@ Short redirects:
 
 - https://cntxtlabs.co/mail - opens a message to info@cntxtlabs.co
 - https://cntxtlabs.co/appstore - the App Store developer page
+- https://cntxtlabs.co/nzbn - the New Zealand Business Number listing
 - https://cntxtlabs.co/<app>/download - the App Store listing for that app
 
 ## Products

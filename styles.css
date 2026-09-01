@@ -463,7 +463,7 @@ ul {
 
 .projects .blurred .name,
 .projects .blurred .desc {
-	filter: blur(2.5px);
+	filter: blur(3.5px);
 	user-select: none;
 	-webkit-user-select: none;
 	pointer-events: none;
