@@ -26,7 +26,7 @@ https://cntxtlabs.co.
 cntxt designs and builds applications for iPhone, iPad and Apple Watch, and
 separately designs and builds websites. For over a decade the work has focused on
 how design and technology influence the way people behave, and on turning that
-into software people continue to use. The apps cover time and attention, health
+into software people continue to use. The products themes cover time and attention, health
 and fitness, and the outdoors. More than 1.75 million people around the world have
 downloaded them.
 
@@ -38,7 +38,7 @@ account, and they do not track the people who use them.
 - https://cntxtlabs.co/ - About the company, and the list of projects
 - https://cntxtlabs.co/contact - How to get in touch
 - https://cntxtlabs.co/camping - Camping apps
-- https://cntxtlabs.co/ios - More iOS apps
+- https://cntxtlabs.co/ios - Other iOS apps
 - https://cntxtlabs.co/safeplate - SafePlate
 - https://cntxtlabs.co/left - Left
 - https://cntxtlabs.co/txtpod - txtpod
