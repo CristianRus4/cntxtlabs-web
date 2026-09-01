@@ -440,6 +440,21 @@ ul {
 	margin-top: 0.1em;
 }
 
+.projects .name {
+	font-weight: 500;
+}
+
+/* Unpublished. The name and the description stay in place, just
+   out of focus, and they are no longer links. */
+
+.projects .blurred .name,
+.projects .blurred .desc {
+	filter: blur(6px);
+	user-select: none;
+	-webkit-user-select: none;
+	pointer-events: none;
+}
+
 /* Symbols are dormant. Add project-symbols-enabled to html to restore them. */
 
 /* Each project keeps a symbol in the left margin. It stays out of the text
