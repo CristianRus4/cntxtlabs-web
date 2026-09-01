@@ -67,7 +67,7 @@ SafePlate replaces the paper diary in a New Zealand kitchen. Fridge temperatures
 
 ### Left
 
-Left shows the time you have left: the year, the month, the week, the day, the hour, the minute and a life, drawn as symbols that dim as they pass. It includes a habit tracker with streaks and aims, countdowns for dates ahead, and a planner that brings together calendar, reminders, health data and weather. Also a fasting tracker, a focus timer, a mood tracker, and progress sharing with friends. More than twenty widgets across Home Screen, Lock Screen, StandBy and Apple Watch, plus a dedicated Apple Watch app.
+Left shows the time you have left: the year, the month, the week, the day, the hour, the minute and a life, drawn as symbols that dim as they pass. Habits run to a schedule you set, with streaks to protect and aims for anything you can count. Dates sit ahead as countdowns, and the planner brings calendar, reminders, weather, sleep and workouts into one view, with a fasting tracker, a focus timer and a mood log.
 
 - Page: https://cntxtlabs.co/left
 - App Store: https://apps.apple.com/us/app/left-widgets-for-time-left/id6740155884

@@ -205,6 +205,11 @@ a:focus-visible {
 	max-width: 22ch;
 }
 
+.reveals:hover .grow-say,
+.reveals:focus-visible .grow-say {
+	max-width: 28ch;
+}
+
 .reveals:hover .cap,
 .reveals:focus-visible .cap {
 	text-transform: capitalize;
@@ -559,20 +564,18 @@ ul {
 	margin-top: -0.1em;
 }
 
-.btn svg circle {
-	fill: currentColor;
-	stroke: none;
-}
-
-.btn svg polygon {
+.btn svg.globe ellipse,
+.btn svg.globe path {
 	fill: none;
 	stroke: var(--text);
-	stroke-width: 2;
-	stroke-linejoin: round;
+	stroke-width: 1.7;
+	stroke-linecap: round;
 }
 
-.btn:hover svg polygon,
-.btn:focus-visible svg polygon {
+.btn:hover svg.globe ellipse,
+.btn:hover svg.globe path,
+.btn:focus-visible svg.globe ellipse,
+.btn:focus-visible svg.globe path {
 	stroke: var(--blue);
 }
 
