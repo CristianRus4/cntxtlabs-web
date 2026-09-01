@@ -59,7 +59,7 @@ Short redirects:
 
 ### SafePlate
 
-SafePlate helps hospitality businesses in New Zealand manage food control plan compliance across web, Android and iPhone. Contact info@cntxtlabs.co for more information.
+SafePlate replaces the paper diary in a New Zealand kitchen. Fridge temperatures, deliveries, cooking and cooling checks, cleaning, training and sickness records are made when the work happens, kept for four years, and ready for a verifier visit. Web, Android and iPhone. Contact info@cntxtlabs.co for more information.
 
 - Page: https://cntxtlabs.co/safeplate
 - Own website: https://safeplate.nz
@@ -67,7 +67,7 @@ SafePlate helps hospitality businesses in New Zealand manage food control plan c
 
 ### Left
 
-Left shows the time you have left: the year, the month, the week, the day, the hour, the minute and a life, drawn as symbols that dim as they pass. It includes a habit tracker with streaks and goals, countdowns for dates ahead, and a planner that brings together calendar, reminders, health data and weather. Also a fasting tracker, a focus timer, a mood tracker, and progress sharing with friends. More than twenty widgets across Home Screen, Lock Screen, StandBy and Apple Watch, plus a dedicated Apple Watch app.
+Left shows the time you have left: the year, the month, the week, the day, the hour, the minute and a life, drawn as symbols that dim as they pass. It includes a habit tracker with streaks and aims, countdowns for dates ahead, and a planner that brings together calendar, reminders, health data and weather. Also a fasting tracker, a focus timer, a mood tracker, and progress sharing with friends. More than twenty widgets across Home Screen, Lock Screen, StandBy and Apple Watch, plus a dedicated Apple Watch app.
 
 - Page: https://cntxtlabs.co/left
 - App Store: https://apps.apple.com/us/app/left-widgets-for-time-left/id6740155884
@@ -77,7 +77,7 @@ Left shows the time you have left: the year, the month, the week, the day, the h
 
 ### txtpod
 
-txtpod converts articles, links and PDFs into narrated podcast episodes, delivered to a private RSS feed that works in Apple Podcasts, Overcast, Pocket Casts and any other player. More than thirty natural voices across over twenty languages, with translation. It also generates episodes on chosen topics and a daily brief, with custom artwork, listening streaks, a synchronised web app, and integrations with Instapaper, Matter and Readwise.
+txtpod converts articles, PDFs and links into narrated podcast episodes, delivered to a private RSS feed that works in Apple Podcasts, Spotify, Overcast, Pocket Casts and any other player. More than thirty natural voices across over twenty languages, with translation. It also generates episodes on chosen topics and a daily brief, with custom artwork, listening streaks, a synchronised web app, and integrations with Instapaper, Matter and Readwise.
 
 - Page: https://cntxtlabs.co/txtpod
 - App Store: https://apps.apple.com/us/app/txtpod-articles-to-podcast/id6748379680
@@ -87,7 +87,7 @@ txtpod converts articles, links and PDFs into narrated podcast episodes, deliver
 
 ### ftnss
 
-ftnss brings training, nutrition and recovery into a single coach. It builds plans across strength, endurance, mobility and recovery and adjusts them as the week progresses. Nutrition is tracked against goals with macro targets and logging by photo or text. It reads Apple Health in full, including HRV, VO2 Max and sleep, records sessions automatically, and uses training load to indicate when to push and when to recover.
+ftnss is a private AI coach over Apple Health. It can see training, nutrition and sleep from apps already in use, including Apple Watch, Strava, Garmin and MyFitnessPal. It builds plans across strength, endurance, mobility and recovery, logs meals from a photo or a description, and reads HRV, VO2 Max, sleep and training load from Apple Health.
 
 - Page: https://cntxtlabs.co/ftnss
 - App Store: https://apps.apple.com/us/app/ai-health-insights-ftnss/id6742253667
@@ -97,7 +97,7 @@ ftnss brings training, nutrition and recovery into a single coach. It builds pla
 
 ### KiwiCamping
 
-KiwiCamping maps more than 3,500 campsites, huts, holiday parks and dump stations across New Zealand. The database is stored on the device, so it keeps working where there is no coverage. Sites filter by facilities, price and access, with real time alerts for closures and conditions. No subscription.
+KiwiCamping is a camping map and road-trip planner for New Zealand. More than 6,500 places — DOC campsites, huts, freedom camping areas, holiday parks, dump stations and practical stops — are stored on the device. Search and filter, save collections, and turn a shortlist into a trip with routes, distances, dates, notes and to-dos.
 
 - Page: https://cntxtlabs.co/kiwicamping
 - App Store: https://apps.apple.com/us/app/camping-map-nz-kiwicamping/id6746952595
@@ -107,15 +107,16 @@ KiwiCamping maps more than 3,500 campsites, huts, holiday parks and dump station
 
 ### AussieCamps
 
-AussieCamps maps campsites, caravan parks, national park sites, rest areas and dump points across Australia. The database is stored on the device, so it keeps working where there is no coverage. Sites filter by facilities, price, vehicle access and permitted length of stay, with real time alerts for closures, fire bans and seasonal conditions. No subscription.
+AussieCamps is a camping map and road-trip planner for Australia. More than 74,000 places — campsites, caravan parks, national park sites, rest areas and useful stops — are stored on the device. Search and filter, save collections, and turn a shortlist into a trip with routes, distances, dates, notes and to-dos.
 
 - Page: https://cntxtlabs.co/aussiecamps
 - App Store: not yet listed
+- Own website: https://aussiecamps.app
 - Platforms: iPhone, iPad
 
 ### NoSnus
 
-NoSnus builds a plan for stopping nicotine pouches from the user's own consumption. Rather than a fixed schedule it reads their logs and sets a tapering rate that matches their habits. The approach follows established methods for reducing nicotine dependence: lower the dose gradually and keep cravings manageable.
+NoSnus builds a plan to get the user pouch-free, with a date on the calendar. It is made specifically for nicotine pouches and snus: every pouch is logged, cravings are handled in the moment, and money not spent is counted as it adds up.
 
 - Page: https://cntxtlabs.co/nosnus
 - App Store: https://apps.apple.com/us/app/quit-zyn-velo-snus-nosnus/id6791343296
@@ -124,7 +125,7 @@ NoSnus builds a plan for stopping nicotine pouches from the user's own consumpti
 
 ### Bites
 
-Bites calculates calories, macros and nutrients using Apple Intelligence. The user describes what they ate and the meal is logged. It synchronises with Apple Health, adjusts to goals, and shows the energy remaining for the day once activity is counted.
+Bites logs a meal from a sentence. Apple Intelligence returns the calories and macros. It synchronises with Apple Health, tracks a daily calorie goal, and shows the energy remaining once activity is counted. Frequent meals can be saved.
 
 - Page: https://cntxtlabs.co/bites
 - App Store: https://apps.apple.com/us/app/meal-tracker-bites/id6755179382
@@ -133,7 +134,7 @@ Bites calculates calories, macros and nutrients using Apple Intelligence. The us
 
 ### NotSoBusy
 
-NotSoBusy shares availability for a day or a week without sharing the calendar itself. Recipients see which periods are taken and nothing about what is in them. No account, no login, and no data leaves the device.
+NotSoBusy turns a day or a week into a picture of when the user is busy, without sharing the calendar. It reads Apple Calendar, Google Calendar and Outlook, and draws each event as a block of time with no names or details. No account, no login, and no data leaves the device.
 
 - Page: https://cntxtlabs.co/notsobusy
 - App Store: https://apps.apple.com/us/app/share-schedule-notsobusy/id6745011162
