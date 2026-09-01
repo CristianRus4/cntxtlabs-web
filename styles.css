@@ -516,19 +516,13 @@ ul {
 	margin-top: 0.75em;
 }
 
-/* Outbound links. Text, with a text-style arrow, not an emoji. */
+/* Outbound links. Underscore prefix, stacked, same type as the body. */
 
 .outlinks {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 0.1em;
-}
-
-.arrow {
-	font-family: "Segoe UI Symbol", "Apple Symbols", inherit;
-	font-style: normal;
-	font-variant-emoji: text;
 }
 
 /* Footer. Held to the bottom, and quieter than everything above it. */
