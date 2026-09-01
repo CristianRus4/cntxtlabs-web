@@ -190,27 +190,23 @@ a:focus-visible {
 }
 
 .reveals:hover .grow,
-.reveals:focus-visible .grow,
-.reveals:active .grow {
+.reveals:focus-visible .grow {
 	max-width: 8ch;
 	opacity: 1;
 }
 
 .reveals:hover .grow-wide,
-.reveals:focus-visible .grow-wide,
-.reveals:active .grow-wide {
+.reveals:focus-visible .grow-wide {
 	max-width: 40ch;
 }
 
 .reveals:hover .grow-time,
-.reveals:focus-visible .grow-time,
-.reveals:active .grow-time {
+.reveals:focus-visible .grow-time {
 	max-width: 22ch;
 }
 
 .reveals:hover .cap,
-.reveals:focus-visible .cap,
-.reveals:active .cap {
+.reveals:focus-visible .cap {
 	text-transform: capitalize;
 }
 
@@ -231,24 +227,13 @@ a:focus-visible {
 	text-decoration-thickness: 1px;
 }
 
-.reveals:hover .strike,
-.reveals:focus-visible .strike,
-.reveals:active .strike {
+.reveals:hover .strike {
 	text-decoration-color: currentColor;
 }
 
-/* On a phone the longer reveal has to wrap, otherwise a tap
-   strikes New Zealand and the rest of the line never arrives. */
 @media (max-width: 34rem) {
 	.grow-wide {
-		white-space: normal;
-	}
-
-	.reveals:hover .grow-wide,
-	.reveals:focus-visible .grow-wide,
-	.reveals:active .grow-wide,
-	.egg .reveals .grow-wide {
-		max-width: 18em;
+		display: none;
 	}
 }
 
@@ -572,6 +557,23 @@ ul {
 	height: 1.05em;
 	flex: none;
 	margin-top: -0.1em;
+}
+
+.btn svg circle {
+	fill: currentColor;
+	stroke: none;
+}
+
+.btn svg polygon {
+	fill: none;
+	stroke: var(--text);
+	stroke-width: 2;
+	stroke-linejoin: round;
+}
+
+.btn:hover svg polygon,
+.btn:focus-visible svg polygon {
+	stroke: var(--blue);
 }
 
 /* Footer. Held to the bottom, and quieter than everything above it. */
