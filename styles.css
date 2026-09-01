@@ -516,67 +516,19 @@ ul {
 	margin-top: 0.75em;
 }
 
-/* Buttons. Square corners, a mark, and a small shrink on hover. */
+/* Outbound links. Text, with a text-style arrow, not an emoji. */
 
-.actions {
+.outlinks {
 	display: flex;
-	flex-wrap: wrap;
-	gap: 0.65em;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.1em;
 }
 
-.actions .btn {
-	margin-bottom: 0;
-}
-
-.btn {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.55em;
-	margin-bottom: 1.2em;
-	padding: 0.75em 1.15em;
-	border-radius: 0;
-	background-color: var(--text);
-	font-weight: 500;
-	line-height: 1;
-	transition: background-color 320ms ease, color 320ms ease, transform 360ms cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.btn:link,
-.btn:visited {
-	color: var(--bg);
-}
-
-.btn:hover,
-.btn:focus-visible {
-	background-color: var(--blue);
-	color: #ffffff;
-	transform: scale(0.90);
-}
-
-.btn:active {
-	transform: scale(0.86);
-}
-
-.btn svg {
-	width: 1.05em;
-	height: 1.05em;
-	flex: none;
-	margin-top: -0.1em;
-}
-
-.btn svg.globe ellipse,
-.btn svg.globe path {
-	fill: none;
-	stroke: var(--text);
-	stroke-width: 1.7;
-	stroke-linecap: round;
-}
-
-.btn:hover svg.globe ellipse,
-.btn:hover svg.globe path,
-.btn:focus-visible svg.globe ellipse,
-.btn:focus-visible svg.globe path {
-	stroke: var(--blue);
+.arrow {
+	font-family: "Segoe UI Symbol", "Apple Symbols", inherit;
+	font-style: normal;
+	font-variant-emoji: text;
 }
 
 /* Footer. Held to the bottom, and quieter than everything above it. */
@@ -631,7 +583,6 @@ footer p {
 	.grow,
 	.strike,
 	a,
-	.btn,
 	.mark {
 		transition: none;
 	}
@@ -663,10 +614,6 @@ footer p {
 			animation: none;
 			opacity: 1;
 		}
-	}
-
-	.btn:hover {
-		transform: none;
 	}
 }
 
