@@ -49,7 +49,7 @@
 
 	<p class="lead"><span class="reveals">Cntxt Labs<span class="grow grow-long">&nbsp;(pronounced &ldquo;context&rdquo;)</span></span> is a design-focused <span class="reveals">company<span class="grow grow-long">&nbsp;founded by <a href="https://cristianrus.me" rel="noopener">Cristian Rus</a></span></span>, specialised in building software products and services across Apple platforms, web, and Android.</p>
 
-	<p>For over a decade the work has focused on how design and technology influence the way people behave, and on turning that into software people continue to use. The products themes cover time and attention, health and fitness, and the outdoors.</p>
+	<p>For over a decade the work has focused on how design and technology influence the way people behave, and on turning that into software people continue to use. The product themes cover time and attention, health and fitness, and the outdoors.</p>
 
 	<p class="metrics">Today, <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="figure" id="downloads">1,760,542</span><span class="metric-label"> people use these products around the world</span></span>. Revenue is showing <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span class="figure" id="growth">22%</span><span class="metric-label"> growth this month</span></span>. The codebase includes <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="1.5" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22.5" y2="12"/></svg><span class="figure" id="contributions">1,737</span><span class="metric-label"> contributions</span></span>.</p>
 
@@ -242,6 +242,18 @@ var set = function (w) {
 			window.addEventListener(ev, wake, { passive: true });
 		});
 		wake();
+
+		// On a phone there is no hover, so a tap opens a reveal.
+		if (window.matchMedia("(hover: none)").matches) {
+			document.querySelectorAll(".reveals").forEach(function (el) {
+				if (el.classList.contains("titlelink")) return;
+				el.addEventListener("click", function (e) {
+					if (el.querySelector(".grow-wide") && !el.querySelector(".grow:not(.grow-wide)")) return;
+					if (e.target.closest && e.target.closest("a") && !el.matches("a")) return;
+					el.classList.toggle("open");
+				});
+			});
+		}
 
 		console.log(
 			"%cCntxt Labs%c\nA software company, based in New Zealand.\n\n" +

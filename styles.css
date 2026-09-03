@@ -6,17 +6,20 @@
 :root {
 	--bg: #F7F7F7;
 	--text: #222222;
-	--muted: #A1A1AA;
+	--muted: #6B6B74;
 	--rule: #D6D6D6;
 	--blue: #00B2FF;
 	--step: 60ms;
+	--ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--duration: 340ms;
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
 		--bg: #070707;
 		--text: #F0F0F0;
-		--muted: #71717A;
+		--muted: #7A7A84;
 		--rule: #2A2A2A;
 		--blue: #00B2FF;
 	}
@@ -28,7 +31,7 @@
 :root.flip {
 	--bg: #070707;
 	--text: #F0F0F0;
-	--muted: #71717A;
+	--muted: #7A7A84;
 	--rule: #2A2A2A;
 }
 
@@ -36,7 +39,7 @@
 	:root.flip {
 		--bg: #F7F7F7;
 		--text: #222222;
-		--muted: #A1A1AA;
+		--muted: #6B6B74;
 		--rule: #D6D6D6;
 	}
 }
@@ -172,7 +175,8 @@ a:focus-visible {
 }
 
 a:focus-visible {
-	outline: none;
+	outline: 1px dotted currentColor;
+	outline-offset: 0.18em;
 }
 
 /* Reveals: text that unfolds on hover. The wordmark puts its vowels
@@ -186,32 +190,37 @@ a:focus-visible {
 	overflow: hidden;
 	vertical-align: bottom;
 	white-space: nowrap;
-	transition: max-width 340ms cubic-bezier(0.22, 0.61, 0.36, 1), opacity 260ms ease;
+	transition: max-width var(--duration) var(--ease), opacity 260ms ease;
 }
 
 .reveals:hover .grow,
-.reveals:focus-visible .grow {
+.reveals:focus-visible .grow,
+.reveals.open .grow {
 	max-width: 8ch;
 	opacity: 1;
 }
 
 .reveals:hover .grow.grow-wide,
-.reveals:focus-visible .grow.grow-wide {
+.reveals:focus-visible .grow.grow-wide,
+.reveals.open .grow.grow-wide {
 	max-width: 40ch;
 }
 
 .reveals:hover .grow.grow-time,
-.reveals:focus-visible .grow.grow-time {
+.reveals:focus-visible .grow.grow-time,
+.reveals.open .grow.grow-time {
 	max-width: 22ch;
 }
 
 .reveals:hover .grow.grow-long,
-.reveals:focus-visible .grow.grow-long {
+.reveals:focus-visible .grow.grow-long,
+.reveals.open .grow.grow-long {
 	max-width: 40ch;
 }
 
 .reveals:hover .cap,
-.reveals:focus-visible .cap {
+.reveals:focus-visible .cap,
+.reveals.open .cap {
 	text-transform: capitalize;
 }
 
@@ -232,7 +241,9 @@ a:focus-visible {
 	text-decoration-thickness: 1px;
 }
 
-.reveals:hover .strike {
+.reveals:hover .strike,
+.reveals:focus-visible .strike,
+.reveals.open .strike {
 	text-decoration-color: currentColor;
 }
 
@@ -260,7 +271,7 @@ a:focus-visible {
 	opacity: 0;
 	pointer-events: none;
 	transform: translateY(10px) scale(0.72) rotate(-150deg);
-	transition: opacity 240ms ease, transform 560ms cubic-bezier(0.34, 1.4, 0.64, 1);
+	transition: opacity 240ms ease, transform 560ms var(--ease-out);
 }
 
 .titlelink:hover .mark,
@@ -327,13 +338,18 @@ a:focus-visible {
 	.titlelink .grow {
 		display: none;
 	}
+
+	.reveals:not(a) {
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
 }
 
 @media (max-width: 34rem), (hover: none) {
 	.mark {
 		color: var(--text);
 		pointer-events: auto;
-		animation: markIn 560ms cubic-bezier(0.34, 1.4, 0.64, 1) 700ms forwards,
+		animation: markIn 560ms var(--ease-out) 700ms forwards,
 			bob 2.4s ease-in-out 1260ms infinite;
 	}
 
@@ -496,7 +512,7 @@ ul {
 		opacity: 0;
 		pointer-events: none;
 		transform: translateY(5px) scale(0.7) rotate(-90deg);
-		transition: opacity 130ms ease, transform 260ms cubic-bezier(0.34, 1.45, 0.64, 1);
+		transition: opacity 130ms ease, transform 260ms var(--ease);
 	}
 
 	.sym svg {
@@ -516,13 +532,20 @@ ul {
 	margin-top: 0.75em;
 }
 
-/* Outbound links. Underscore prefix, stacked, same type as the body. */
+/* Outbound links. Stacked, same type as the body, padded for a thumb. */
 
 .outlinks {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 0.1em;
+	gap: 0.15em;
+}
+
+.outlinks a {
+	padding: 0.45em 0;
+	min-height: 2.75em;
+	display: inline-flex;
+	align-items: center;
 }
 
 /* Footer. Held to the bottom, and quieter than everything above it. */

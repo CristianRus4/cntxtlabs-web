@@ -18,37 +18,41 @@
 	<style>
 		/* Self-contained: GitHub serves this file for any missing path,
 		   so a relative stylesheet link cannot be relied on here. */
-		:root { --bg:#F7F7F7; --text:#222222; --muted:#A1A1AA; --rule:#D6D6D6; --blue:#00B2FF; }
-		@media (prefers-color-scheme: dark) { :root { --bg:#070707; --text:#F0F0F0; --muted:#71717A; --rule:#2A2A2A; --blue:#00B2FF; } }
+		:root { --bg:#F7F7F7; --text:#222222; --muted:#6B6B74; --rule:#D6D6D6; --blue:#00B2FF; --ease:cubic-bezier(0.22, 0.61, 0.36, 1); }
+		@media (prefers-color-scheme: dark) { :root { --bg:#070707; --text:#F0F0F0; --muted:#7A7A84; --rule:#2A2A2A; --blue:#00B2FF; } }
 		*, *::before, *::after { box-sizing: border-box; }
 		html { background-color:var(--bg); font-size:15px; font-weight:400;
 			font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
 		::selection { background-color:rgba(0,178,255,0.22); }
 		body { font-size:1rem; color:var(--text); line-height:1.6; margin:0 auto; padding:15em 1.5em 2em;
 			max-width:calc(600px + 3em); min-height:100vh; display:flex; flex-direction:column; }
-		@media (max-width: 34rem) { body { padding-top:5em; } }
-		h1 { font-size:1rem; margin-top:2.5em; margin-bottom:1.5em; font-weight:500; color:var(--text); }
+		@media (max-width: 34rem) { body { padding-top:10em; } }
+		h1 { font-size:1rem; margin-top:3em; margin-bottom:0; font-weight:500; color:var(--text); line-height:1.6; }
+		h1 + p { margin-top:0; }
 		.title { margin:0; font-weight:700; }
 		.sub { margin:0; }
 		p { font-size:1rem; margin-top:0; margin-bottom:1.2em; }
 		a:link, a:visited { color:var(--text); font-weight:500; text-decoration:none; transition:color 170ms ease; }
-		a:hover { color:var(--blue); }
+		a:hover, a:focus-visible { color:var(--blue); }
+		a:focus-visible { outline:1px dotted currentColor; outline-offset:0.18em; }
 		.titlelink { font-weight:700; position:relative; }
 		.mark { position:absolute; left:0; bottom:calc(100% + 0.5em); width:1.7em; height:1.7em; opacity:0;
 			pointer-events:none; transform:translateY(10px) scale(.72) rotate(-150deg);
-			transition:opacity 240ms ease, transform 560ms cubic-bezier(.34,1.4,.64,1); }
-		.titlelink:hover .mark { opacity:1; transform:none; animation:bob 2.4s ease-in-out 560ms infinite; }
+			transition:opacity 240ms ease, transform 560ms var(--ease); }
+		.titlelink:hover .mark, .titlelink:focus-visible .mark { opacity:1; transform:none; animation:bob 2.4s ease-in-out 560ms infinite; }
 		@keyframes bob { 0%,100%{translate:0 0} 50%{translate:0 -5px} }
 		.titlelink:hover { color:var(--blue); }
 		.grow { display:inline-block; max-width:0; opacity:0; overflow:hidden; vertical-align:bottom; white-space:nowrap;
-			transition:max-width 340ms cubic-bezier(.22,.61,.36,1), opacity 260ms ease; }
-		.reveals:hover .grow { max-width:8ch; opacity:1; }
-		.reveals:hover .cap { text-transform:capitalize; }
-		.reveals:hover .grow-wide { max-width:40ch; }
+			transition:max-width 340ms var(--ease), opacity 260ms ease; }
+		.reveals:hover .grow, .reveals:focus-visible .grow, .reveals.open .grow { max-width:8ch; opacity:1; }
+		.reveals:hover .cap, .reveals:focus-visible .cap, .reveals.open .cap { text-transform:capitalize; }
+		.reveals:hover .grow-wide, .reveals:focus-visible .grow-wide, .reveals.open .grow-wide { max-width:40ch; }
+		.reveals:hover .grow-long, .reveals:focus-visible .grow-long, .reveals.open .grow-long { max-width:40ch; }
 		.strike { text-decoration:line-through; text-decoration-color:transparent; text-decoration-thickness:1px;
 			transition:text-decoration-color 200ms ease; }
-		.reveals:hover .strike { text-decoration-color:currentColor; }
+		.reveals:hover .strike, .reveals.open .strike { text-decoration-color:currentColor; }
 		@media (max-width: 34rem) { .grow-wide { display:none; } }
+		@media (hover: none) { .reveals:not(a) { cursor:pointer; } }
 		footer { font-size:1rem; margin-top:auto; padding-top:0.75em; border-top:1px dashed var(--rule); color:var(--muted); }
 		footer p { margin:0; }
 		@keyframes fadeInFromBottom { from { opacity:0; transform:translateY(0.5em); } to { opacity:1; transform:none; } }
@@ -56,23 +60,34 @@
 		body > *:nth-child(2) { animation-delay:60ms; }
 		body > *:nth-child(3) { animation-delay:120ms; }
 		body > *:nth-child(4) { animation-delay:180ms; }
-		@media (prefers-reduced-motion: reduce) { body > * { animation:none; opacity:1; transform:none; } .grow, .strike, a { transition:none; } }
+		@media (prefers-reduced-motion: reduce) { body > * { animation:none; opacity:1; transform:none; } .grow, .strike, a { transition:none; } .mark { animation:none; } }
 	</style>
 	<title>Not found · cntxt</title>
 </head>
 <body>
 
-	<h1 class="title"><a class="titlelink reveals" href="/"><svg class="mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg><span class="cap">c</span><span class="grow">o</span>nt<span class="grow">e</span>xt</a></h1>
+	<p class="title"><a class="titlelink reveals" href="/"><svg class="mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg><span class="cap">c</span><span class="grow">o</span>nt<span class="grow">e</span>xt</a></p>
 	<p class="sub">A software company, based in <span class="reveals"><span class="strike">New Zealand</span><span class="grow grow-wide">&nbsp;the most beautiful place in the world</span></span>.</p>
 
 	<h1>Not found</h1>
 
-	<p>There is nothing at this address. <a href="/">Return to the home page</a>.</p>
+	<p>There is nothing at this address. The page may have moved, or it was never here. <a href="/">Return to the home page</a>.</p>
 
 	<footer>
 		<p><span class="reveals">Cntxt Labs<span class="grow grow-long">&nbsp;(pronounced &ldquo;context&rdquo;)</span></span> &ndash; Coded in <span class="reveals">N<span class="grow">ew&nbsp;</span>Z<span class="grow">ealand</span></span> &ndash; &copy; <span class="reveals"><span class="grow">2017 to&nbsp;</span><span class="year"></span></span></p>
 	</footer>
 
-	<script>document.querySelectorAll(".year").forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+	<script>
+	document.querySelectorAll(".year").forEach(function(e){e.textContent=new Date().getFullYear();});
+	if (window.matchMedia("(hover: none)").matches) {
+		document.querySelectorAll(".reveals").forEach(function (el) {
+			if (el.classList.contains("titlelink")) return;
+			el.addEventListener("click", function (e) {
+				if (el.querySelector(".grow-wide") && !el.querySelector(".grow:not(.grow-wide)")) return;
+				el.classList.toggle("open");
+			});
+		});
+	}
+	</script>
 </body>
 </html>

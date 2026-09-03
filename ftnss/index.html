@@ -39,7 +39,7 @@
 </head>
 <body class="reveal">
 
-	<h1 class="title"><a class="titlelink reveals" href="../"><svg class="mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg><span class="cap">c</span><span class="grow">o</span>nt<span class="grow">e</span>xt<span class="grow cap">&nbsp;labs</span></a></h1>
+	<p class="title"><a class="titlelink reveals" href="../"><svg class="mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg><span class="cap">c</span><span class="grow">o</span>nt<span class="grow">e</span>xt<span class="grow cap">&nbsp;labs</span></a></p>
 	<p class="sub"><span class="descriptor" id="descriptor" role="button" tabindex="0">A <em>software</em></span> company, based in <span class="reveals"><span class="strike">New Zealand</span><span class="grow grow-wide">&nbsp;the most beautiful place in the world</span></span>.</p>
 
 	<h1>ftnss</h1>
@@ -219,6 +219,18 @@ var set = function (w) {
 			window.addEventListener(ev, wake, { passive: true });
 		});
 		wake();
+
+		// On a phone there is no hover, so a tap opens a reveal.
+		if (window.matchMedia("(hover: none)").matches) {
+			document.querySelectorAll(".reveals").forEach(function (el) {
+				if (el.classList.contains("titlelink")) return;
+				el.addEventListener("click", function (e) {
+					if (el.querySelector(".grow-wide") && !el.querySelector(".grow:not(.grow-wide)")) return;
+					if (e.target.closest && e.target.closest("a") && !el.matches("a")) return;
+					el.classList.toggle("open");
+				});
+			});
+		}
 
 		console.log(
 			"%cCntxt Labs%c\nA software company, based in New Zealand.\n\n" +
