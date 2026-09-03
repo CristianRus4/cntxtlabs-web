@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<title>Left · cntxt</title>
 	<meta name="description" content="Left shows the time you have left, with habits, streaks, countdowns and a daily planner.">
 	<meta name="keywords" content="Left app, time left widgets, life calendar, habit tracker, countdown widget, iOS widgets, Lock Screen widgets, Apple Watch habit tracker, time visualiser">
@@ -95,13 +95,17 @@ var set = function (w) {
 				el.replaceChildren(document.createTextNode(article(w) + " "), word);
 			};
 			set(pick());
+			var flashWord = function () {
+				el.classList.add("is-flash");
+				setTimeout(function () { el.classList.remove("is-flash"); }, 420);
+			};
 			var cycle = function (ev) {
 				if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
 				ev.preventDefault();
 				if (reduce) { set(pick()); return; }
 				el.style.transition = "opacity 130ms ease";
 				el.style.opacity = "0";
-				setTimeout(function () { set(pick()); el.style.opacity = "1"; }, 130);
+				setTimeout(function () { set(pick()); el.style.opacity = "1"; flashWord(); }, 130);
 			};
 			el.addEventListener("click", cycle);
 			el.addEventListener("keydown", cycle);
@@ -121,6 +125,18 @@ var set = function (w) {
 		}
 
 		var root = document.documentElement;
+
+		document.documentElement.classList.add("project-symbols-enabled");
+
+		if (!reduce && window.matchMedia("(hover: hover)").matches) {
+			window.addEventListener("pointermove", function (e) {
+				var dx = e.clientX / window.innerWidth - 0.5;
+				var dy = e.clientY / window.innerHeight - 0.5;
+				root.style.setProperty("--look-x", (dx * 10).toFixed(2) + "px");
+				root.style.setProperty("--look-y", (dy * 8).toFixed(2) + "px");
+				root.style.setProperty("--look-r", (dx * 14).toFixed(2) + "deg");
+			}, { passive: true });
+		}
 		var flash = function (cls, ms) {
 			root.classList.remove(cls);
 			void root.offsetWidth;

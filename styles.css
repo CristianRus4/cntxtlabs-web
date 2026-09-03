@@ -9,7 +9,7 @@
 	--muted: #6B6B74;
 	--rule: #D6D6D6;
 	--blue: #00B2FF;
-	--step: 60ms;
+	--step: 80ms;
 	--ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 	--duration: 340ms;
@@ -48,7 +48,7 @@
 
 .idle .mark {
 	opacity: 1;
-	transform: none;
+	transform: translate(var(--look-x, 0px), var(--look-y, 0px)) rotate(var(--look-r, 0deg));
 	animation: bob 2.4s ease-in-out infinite;
 }
 
@@ -60,6 +60,7 @@
 
 html {
 	background-color: var(--bg);
+	color-scheme: light dark;
 	transition: background-color 420ms ease, color 420ms ease;
 	font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 	font-size: 15px;
@@ -86,7 +87,7 @@ body {
 	line-height: 1.6;
 	text-align: left;
 	margin: 0 auto;
-	padding: 15em 1.5em 2em;
+	padding: 15em max(1.5em, env(safe-area-inset-right)) max(2em, env(safe-area-inset-bottom)) max(1.5em, env(safe-area-inset-left));
 	max-width: calc(600px + 3em);
 	min-height: 100vh;
 	min-height: 100svh;
@@ -96,7 +97,7 @@ body {
 
 @media (max-width: 34rem) {
 	body {
-		padding-top: 10em;
+		padding-top: 6.5em;
 	}
 }
 
@@ -116,6 +117,7 @@ h1 {
 	font-weight: 500;
 	color: var(--text);
 	line-height: 1.6;
+	text-wrap: balance;
 }
 
 h2 {
@@ -136,6 +138,7 @@ h2 + p {
 p {
 	margin-top: 0;
 	margin-bottom: 1.2em;
+	text-wrap: pretty;
 }
 
 .lead {
@@ -159,19 +162,32 @@ strong {
 	margin-bottom: 0;
 }
 
-/* Links. Heavier than the text, blue on hover. No underline. */
+/* Links. Heavier than the text, blue on hover. A cyan line draws under
+   them, except the wordmark, which is too heavy for a rule. */
 
 a:link,
 a:visited {
 	color: var(--text);
 	font-weight: 500;
 	text-decoration: none;
-	transition: color 170ms ease;
+	transition: color 170ms ease, background-size var(--duration) var(--ease);
+}
+
+a:not(.titlelink) {
+	background-image: linear-gradient(var(--blue), var(--blue));
+	background-size: 0 1px;
+	background-position: 0 calc(100% - 0.05em);
+	background-repeat: no-repeat;
 }
 
 a:hover,
 a:focus-visible {
 	color: var(--blue);
+}
+
+a:not(.titlelink):hover,
+a:not(.titlelink):focus-visible {
+	background-size: 100% 1px;
 }
 
 a:focus-visible {
@@ -228,10 +244,21 @@ a:focus-visible {
 
 .descriptor {
 	cursor: pointer;
+	border-bottom: 1px dotted currentColor;
+}
+
+.descriptor em {
+	font-style: italic;
+	transition: color 200ms ease;
+}
+
+.descriptor.is-flash em {
+	color: var(--blue);
 }
 
 .descriptor:focus-visible {
-	outline: none;
+	outline: 1px dotted currentColor;
+	outline-offset: 0.18em;
 }
 
 .strike {
@@ -268,6 +295,7 @@ a:focus-visible {
 	bottom: calc(100% + 0.5em);
 	width: 1.7em;
 	height: 1.7em;
+	color: var(--blue);
 	opacity: 0;
 	pointer-events: none;
 	transform: translateY(10px) scale(0.72) rotate(-150deg);
@@ -277,7 +305,7 @@ a:focus-visible {
 .titlelink:hover .mark,
 .titlelink:focus-visible .mark {
 	opacity: 1;
-	transform: translateY(0) scale(1) rotate(0deg);
+	transform: translate(var(--look-x, 0px), var(--look-y, 0px)) scale(1) rotate(var(--look-r, 0deg));
 	animation: bob 2.4s ease-in-out 560ms infinite;
 }
 
@@ -342,6 +370,12 @@ a:focus-visible {
 	.reveals:not(a) {
 		cursor: pointer;
 		-webkit-tap-highlight-color: transparent;
+	}
+
+	.projects a,
+	.projects .name {
+		display: inline-block;
+		padding: 0.4em 0;
 	}
 }
 
@@ -429,7 +463,11 @@ nav a[aria-current="page"]:hover {
 	font-variant-numeric: tabular-nums;
 	font-feature-settings: "tnum" 1;
 	text-align: left;
-	transition: color 170ms ease;
+	transition: color 280ms ease;
+}
+
+.figure.is-counting {
+	color: var(--blue);
 }
 
 .metric:hover svg,
@@ -512,7 +550,12 @@ ul {
 		opacity: 0;
 		pointer-events: none;
 		transform: translateY(5px) scale(0.7) rotate(-90deg);
-		transition: opacity 130ms ease, transform 260ms var(--ease);
+		transition: opacity 180ms ease, transform 320ms var(--ease);
+	}
+
+	.project-symbols-enabled .sym {
+		opacity: 0.4;
+		transform: none;
 	}
 
 	.sym svg {
@@ -522,9 +565,10 @@ ul {
 	}
 
 	.project-symbols-enabled .projects a:hover + .sym,
-	.project-symbols-enabled .projects a:focus-visible + .sym {
+	.project-symbols-enabled .projects a:focus-visible + .sym,
+	.project-symbols-enabled .projects li:hover .sym {
 		opacity: 1;
-		transform: none;
+		transform: translate(var(--look-x, 0px), 0) scale(1.05);
 	}
 }
 
@@ -548,18 +592,33 @@ ul {
 	align-items: center;
 }
 
-/* Footer. Held to the bottom, and quieter than everything above it. */
+/* Footer. Held to the bottom. The dashed rule walks slowly, like a
+   cursor at the end of the page. */
 
 footer {
 	margin-top: auto;
 	padding-top: 0.75em;
-	border-top: 1px dashed var(--rule);
+	border-top: none;
+	background-image: repeating-linear-gradient(
+		90deg,
+		var(--rule) 0 3px,
+		transparent 3px 9px
+	);
+	background-size: 12px 1px;
+	background-repeat: repeat-x;
+	background-position: 0 0;
+	animation: rule-crawl 22s linear infinite;
 	color: var(--muted);
 	text-align: left;
 }
 
+@keyframes rule-crawl {
+	to { background-position: 12px 0; }
+}
+
 footer p {
 	margin: 0;
+	overflow-wrap: break-word;
 }
 
 /* Everything eases up on arrival. */
@@ -567,7 +626,7 @@ footer p {
 @keyframes fadeInFromBottom {
 	from {
 		opacity: 0;
-		transform: translateY(0.5em);
+		transform: translateY(0.9em);
 	}
 	to {
 		opacity: 1;
@@ -576,7 +635,7 @@ footer p {
 }
 
 .reveal > * {
-	animation: fadeInFromBottom 900ms ease forwards;
+	animation: fadeInFromBottom 680ms var(--ease-out) forwards;
 	opacity: 0;
 }
 
@@ -624,6 +683,10 @@ footer p {
 
 	.mark {
 		transform: none;
+	}
+
+	footer {
+		animation: none;
 	}
 
 	@media (max-width: 34rem) {

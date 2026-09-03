@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<title>cntxt</title>
 	<meta name="description" content="Cntxt Labs is a software company based in New Zealand, building apps for Apple platforms, Android and the web.">
 	<meta name="keywords" content="iOS app development, New Zealand software company, iPhone apps, iPad apps, Apple Watch apps, app developer New Zealand, Swift development, indie apps, privacy first apps">
@@ -118,13 +118,17 @@ var set = function (w) {
 				el.replaceChildren(document.createTextNode(article(w) + " "), word);
 			};
 			set(pick());
+			var flashWord = function () {
+				el.classList.add("is-flash");
+				setTimeout(function () { el.classList.remove("is-flash"); }, 420);
+			};
 			var cycle = function (ev) {
 				if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
 				ev.preventDefault();
 				if (reduce) { set(pick()); return; }
 				el.style.transition = "opacity 130ms ease";
 				el.style.opacity = "0";
-				setTimeout(function () { set(pick()); el.style.opacity = "1"; }, 130);
+				setTimeout(function () { set(pick()); el.style.opacity = "1"; flashWord(); }, 130);
 			};
 			el.addEventListener("click", cycle);
 			el.addEventListener("keydown", cycle);
@@ -144,6 +148,18 @@ var set = function (w) {
 		}
 
 		var root = document.documentElement;
+
+		document.documentElement.classList.add("project-symbols-enabled");
+
+		if (!reduce && window.matchMedia("(hover: hover)").matches) {
+			window.addEventListener("pointermove", function (e) {
+				var dx = e.clientX / window.innerWidth - 0.5;
+				var dy = e.clientY / window.innerHeight - 0.5;
+				root.style.setProperty("--look-x", (dx * 10).toFixed(2) + "px");
+				root.style.setProperty("--look-y", (dy * 8).toFixed(2) + "px");
+				root.style.setProperty("--look-r", (dx * 14).toFixed(2) + "deg");
+			}, { passive: true });
+		}
 		var flash = function (cls, ms) {
 			root.classList.remove(cls);
 			void root.offsetWidth;
@@ -313,19 +329,28 @@ var set = function (w) {
 			el.textContent = fmt(total, suffix);
 			el.style.minWidth = el.getBoundingClientRect().width + "px";
 			if (reduce) return;
+			el.textContent = fmt(0, suffix);
 
 			var running = false;
+			var first = true;
 			var run = function () {
 				if (running) return;
 				running = true;
-				var from = total - back, t0 = null, ms = 1400;
+				el.classList.add("is-counting");
+				var from = first ? 0 : total - back;
+				var ms = first ? 1800 : 1400;
+				first = false;
+				var t0 = null;
 				requestAnimationFrame(function step(t) {
 					if (t0 === null) t0 = t;
 					var q = Math.min(1, (t - t0) / ms);
 					var eased = 1 - Math.pow(1 - q, 3);
 					el.textContent = fmt(Math.round(from + (total - from) * eased), suffix);
 					if (q < 1) requestAnimationFrame(step);
-					else running = false;
+					else {
+						running = false;
+						el.classList.remove("is-counting");
+					}
 				});
 			};
 
