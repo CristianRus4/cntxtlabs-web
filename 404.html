@@ -33,13 +33,11 @@
 		.title { margin:0; font-weight:700; }
 		.sub { margin:0; }
 		p { font-size:1rem; margin-top:0; margin-bottom:1.2em; text-wrap:pretty; }
-		a:link, a:visited { color:var(--text); font-weight:500; text-decoration:none; transition:color 170ms ease, background-size 340ms var(--ease);
-			background-image:linear-gradient(var(--blue),var(--blue)); background-size:0 1px; background-position:0 calc(100% - 0.05em); background-repeat:no-repeat; }
-		a:hover, a:focus-visible { color:var(--blue); background-size:100% 1px; }
+		a:link, a:visited { color:var(--text); font-weight:500; text-decoration:none; transition:color 170ms ease; }
+		a:hover, a:focus-visible { color:var(--blue); }
 		a:focus-visible { outline:1px dotted currentColor; outline-offset:0.18em; }
-		a.titlelink { background-image:none; }
 		.titlelink { font-weight:700; position:relative; }
-		.mark { position:absolute; left:0; bottom:calc(100% + 0.5em); width:1.7em; height:1.7em; color:var(--blue); opacity:1;
+		.mark { position:absolute; left:0; bottom:calc(100% + 0.5em); width:1.7em; height:1.7em; color:currentColor; opacity:1;
 			pointer-events:none; transform:none; animation:bob 2.4s ease-in-out infinite; }
 		@keyframes bob { 0%,100%{translate:0 0} 50%{translate:0 -5px} }
 		.titlelink:hover { color:var(--blue); }

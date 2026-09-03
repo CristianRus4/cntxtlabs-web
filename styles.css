@@ -162,32 +162,19 @@ strong {
 	margin-bottom: 0;
 }
 
-/* Links. Heavier than the text, blue on hover. A cyan line draws under
-   them, except the wordmark, which is too heavy for a rule. */
+/* Links. Heavier than the text, blue on hover. No underline. */
 
 a:link,
 a:visited {
 	color: var(--text);
 	font-weight: 500;
 	text-decoration: none;
-	transition: color 170ms ease, background-size var(--duration) var(--ease);
-}
-
-a:not(.titlelink) {
-	background-image: linear-gradient(var(--blue), var(--blue));
-	background-size: 0 1px;
-	background-position: 0 calc(100% - 0.05em);
-	background-repeat: no-repeat;
+	transition: color 170ms ease;
 }
 
 a:hover,
 a:focus-visible {
 	color: var(--blue);
-}
-
-a:not(.titlelink):hover,
-a:not(.titlelink):focus-visible {
-	background-size: 100% 1px;
 }
 
 a:focus-visible {
@@ -244,16 +231,6 @@ a:focus-visible {
 
 .descriptor {
 	cursor: pointer;
-	border-bottom: 1px dotted currentColor;
-}
-
-.descriptor em {
-	font-style: italic;
-	transition: color 200ms ease;
-}
-
-.descriptor.is-flash em {
-	color: var(--blue);
 }
 
 .descriptor:focus-visible {
@@ -295,7 +272,7 @@ a:focus-visible {
 	bottom: calc(100% + 0.5em);
 	width: 1.7em;
 	height: 1.7em;
-	color: var(--blue);
+	color: currentColor;
 	opacity: 0;
 	pointer-events: none;
 	transform: translateY(10px) scale(0.72) rotate(-150deg);
@@ -463,11 +440,7 @@ nav a[aria-current="page"]:hover {
 	font-variant-numeric: tabular-nums;
 	font-feature-settings: "tnum" 1;
 	text-align: left;
-	transition: color 280ms ease;
-}
-
-.figure.is-counting {
-	color: var(--blue);
+	transition: color 170ms ease;
 }
 
 .metric:hover svg,
@@ -550,12 +523,7 @@ ul {
 		opacity: 0;
 		pointer-events: none;
 		transform: translateY(5px) scale(0.7) rotate(-90deg);
-		transition: opacity 180ms ease, transform 320ms var(--ease);
-	}
-
-	.project-symbols-enabled .sym {
-		opacity: 0.4;
-		transform: none;
+		transition: opacity 130ms ease, transform 260ms var(--ease);
 	}
 
 	.sym svg {
@@ -565,10 +533,9 @@ ul {
 	}
 
 	.project-symbols-enabled .projects a:hover + .sym,
-	.project-symbols-enabled .projects a:focus-visible + .sym,
-	.project-symbols-enabled .projects li:hover .sym {
+	.project-symbols-enabled .projects a:focus-visible + .sym {
 		opacity: 1;
-		transform: translate(var(--look-x, 0px), 0) scale(1.05);
+		transform: none;
 	}
 }
 
