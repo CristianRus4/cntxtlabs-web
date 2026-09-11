@@ -111,7 +111,8 @@ KiwiCamping is a camping map and road-trip planner for New Zealand. More than 6,
 AussieCamps is a camping map and road-trip planner for Australia. More than 74,000 places — campsites, caravan parks, national park sites, rest areas and useful stops — are stored on the device. Search and filter, save collections, and turn a shortlist into a trip with routes, distances, dates, notes and to-dos.
 
 - Page: https://cntxtlabs.co/aussiecamps
-- App Store: not yet listed
+- App Store: https://apps.apple.com/app/id6801098680
+- Short link: https://cntxtlabs.co/aussiecamps/download
 - Own website: https://aussiecamps.app
 - Platforms: iPhone, iPad
 
