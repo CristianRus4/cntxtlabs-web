@@ -486,11 +486,14 @@ ul {
 }
 
 /* Unpublished. The name and the description stay in place, just
-   out of focus, and they are no longer links. */
+   out of focus, and they are no longer links. The blur is a shadow of
+   transparent text rather than filter: blur(), whose compositing layer
+   tinted the heavier names pink on some displays. */
 
 .projects .blurred .name,
 .projects .blurred .desc {
-	filter: blur(3.5px);
+	color: transparent;
+	text-shadow: 0 0 7px var(--text);
 	user-select: none;
 	-webkit-user-select: none;
 	pointer-events: none;
