@@ -317,17 +317,45 @@ h1 .grow {
 	font-weight: 400;
 }
 
-/* The years. Point at them and they count up from 2017. */
+/* Typed reveals. When motion is welcome, the script keeps each hidden part
+   in the page for screen readers but out of sight, and types a copy
+   beside it instead of sliding it open. The overrides are forceful on
+   purpose: every way a reveal opens (hover, focus, a tap, the company's
+   name typed) now goes through the typing. */
 
-.years {
-	font-variant-numeric: tabular-nums;
-	cursor: default;
-	-webkit-tap-highlight-color: transparent;
+.typing-reveals .grow {
+	position: absolute !important;
+	display: inline-block !important;
+	width: 1px !important;
+	height: 1px !important;
+	max-width: none !important;
+	margin: -1px !important;
+	padding: 0 !important;
+	overflow: hidden !important;
+	clip-path: inset(50%) !important;
+	white-space: nowrap !important;
+	opacity: 1 !important;
+	animation: none !important;
+}
+
+.typed {
+	display: inline;
+}
+
+.typed.caret::after,
+.descriptor.typing em::after {
+	content: "";
+	display: inline-block;
+	width: 1px;
+	height: 1.05em;
+	margin-left: 1px;
+	vertical-align: -0.15em;
+	background-color: var(--blue);
 }
 
 /* What kind of company. Different on every load, and on every click,
-   when the word is backspaced away and the next one typed in behind a
-   cyan caret. */
+   when the word is backspaced away and the next one typed in behind the
+   same cyan caret. On arrival at the site it is typed in too. */
 
 .descriptor.typing em::after {
 	content: "";

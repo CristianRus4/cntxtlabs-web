@@ -13,28 +13,13 @@
 		return t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
 	};
 
-	// Copyright year. Point at it, or tap it, and it counts up from the year
-	// it all started, like an odometer turning over.
+	// Copyright year.
 	var y = new Date().getFullYear();
 	document.querySelectorAll(".year").forEach(function (e) { e.textContent = y; });
-	document.querySelectorAll(".years").forEach(function (box) {
-		var yr = box.querySelector(".year");
-		var rolling = false;
-		var roll = function () {
-			if (rolling || reduce || !yr) return;
-			rolling = true;
-			var from = 2017, t0 = null, ms = 900;
-			requestAnimationFrame(function step(t) {
-				if (t0 === null) t0 = t;
-				var q = Math.min(1, (t - t0) / ms);
-				yr.textContent = from + Math.round((y - from) * (1 - Math.pow(1 - q, 3)));
-				if (q < 1) requestAnimationFrame(step);
-				else rolling = false;
-			});
-		};
-		box.addEventListener("mouseenter", roll);
-		box.addEventListener("click", roll);
-	});
+
+	// Every reveal registers how to open and close itself here, so typing
+	// the company's name can open them all at once.
+	var revealers = [];
 
 	// Live lines, hidden in reveals. How much of this year is already gone,
 	// for Left; how long this page would run as an episode, for txtpod.
@@ -86,10 +71,34 @@
 			word.textContent = w;
 			el.replaceChildren(document.createTextNode(article(w) + " "), word);
 		};
-		set(pick());
+		// A word typed in a letter at a time, behind a caret.
+		var typeIn = function (w, done) {
+			var em = el.querySelector("em"), j = 0;
+			el.firstChild.textContent = article(w) + " ";
+			el.classList.add("typing");
+			(function type() {
+				if (j < w.length) {
+					em.textContent = w.slice(0, ++j);
+					setTimeout(type, 45 + Math.random() * 55);
+					return;
+				}
+				el.classList.remove("typing");
+				if (done) done();
+			})();
+		};
 
-		// The old word is backspaced away and the new one typed in, a letter
-		// at a time, with a caret while it writes.
+		// Arriving on the site, the word is typed in. Moving between its
+		// pages, it is simply there.
+		var first = pick();
+		set(first);
+		if (!reduce && !root.classList.contains("within")) {
+			busy = true;
+			el.querySelector("em").textContent = "";
+			el.classList.add("typing");
+			setTimeout(function () { typeIn(first, function () { busy = false; }); }, 650);
+		}
+
+		// On a click, the word is backspaced away and the next one typed in.
 		var cycle = function (ev) {
 			if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
 			ev.preventDefault();
@@ -98,27 +107,16 @@
 			busy = true;
 			var w = pick();
 			var em = el.querySelector("em");
-			var from = em.textContent, i = from.length, j = 0;
+			var from = em.textContent, i = from.length;
 			el.classList.add("typing");
-			var type = function () {
-				if (j < w.length) {
-					em.textContent = w.slice(0, ++j);
-					setTimeout(type, 45 + Math.random() * 55);
-					return;
-				}
-				el.classList.remove("typing");
-				busy = false;
-			};
-			var erase = function () {
+			(function erase() {
 				if (i > 0) {
 					em.textContent = from.slice(0, --i);
 					setTimeout(erase, 26);
 					return;
 				}
-				el.firstChild.textContent = article(w) + " ";
-				setTimeout(type, 140);
-			};
-			erase();
+				setTimeout(function () { typeIn(w, function () { busy = false; }); }, 140);
+			})();
 		};
 		el.addEventListener("click", cycle);
 		el.addEventListener("keydown", cycle);
@@ -188,6 +186,10 @@
 		void root.offsetWidth;
 		root.classList.add(cls);
 		setTimeout(function () { root.classList.remove(cls); }, ms);
+		if (cls === "egg") {
+			revealers.forEach(function (r) { r(true); });
+			setTimeout(function () { revealers.forEach(function (r) { r(false); }); }, ms);
+		}
 	};
 
 	// Things you can type. Nothing is announced anywhere.
@@ -321,6 +323,85 @@
 				}
 				if (e.target.closest && e.target.closest("a")) return;
 				el.classList.toggle("open");
+			});
+		});
+	}
+
+	// Reveals type themselves, like the word in the subtitle. Under a
+	// pointer, on keyboard focus or after a tap, the hidden words are typed
+	// in a letter at a time behind the caret, and backspaced away again when
+	// the pointer leaves or the tap is undone. Each hidden part keeps its
+	// full text in the page for screen readers; what you see is a typed copy
+	// beside it, rebuilt on every opening so live text (the time in New
+	// Zealand, the year) is current. Less motion, asked for, keeps the plain
+	// reveals.
+	if (!reduce) {
+		root.classList.add("typing-reveals");
+		var pointer = window.matchMedia("(hover: hover)").matches;
+		document.querySelectorAll(".reveals").forEach(function (box) {
+			var grows = [].slice.call(box.querySelectorAll(".grow"));
+			if (!grows.length) return;
+			var twins = grows.map(function (g) {
+				var t = document.createElement("span");
+				t.className = g.className.replace(/\bgrow\b/, "typed");
+				t.setAttribute("aria-hidden", "true");
+				g.after(t);
+				return t;
+			});
+			var nodes = [], full = [], owner = [], total = 0, shown = 0, want = false, timer = null;
+			var build = function () {
+				nodes = []; full = []; owner = []; total = 0; shown = 0;
+				twins.forEach(function (t, i) {
+					var copy = grows[i].cloneNode(true);
+					copy.querySelectorAll("[id]").forEach(function (n) { n.removeAttribute("id"); });
+					copy.querySelectorAll("a").forEach(function (a) { a.tabIndex = -1; });
+					t.replaceChildren.apply(t, [].slice.call(copy.childNodes));
+					var walk = document.createTreeWalker(t, NodeFilter.SHOW_TEXT), n;
+					while ((n = walk.nextNode())) {
+						nodes.push(n); full.push(n.nodeValue); owner.push(t);
+						total += n.nodeValue.length;
+						n.nodeValue = "";
+					}
+				});
+			};
+			var paint = function () {
+				var left = shown, at = twins[0];
+				nodes.forEach(function (n, i) {
+					var k = Math.min(left, full[i].length);
+					n.nodeValue = full[i].slice(0, k);
+					if (k > 0) at = owner[i];
+					left -= k;
+				});
+				twins.forEach(function (t) { t.classList.toggle("caret", t === at && timer !== null); });
+			};
+			var step = function () {
+				if (want && shown < total) {
+					shown++;
+					timer = setTimeout(step, 14 + Math.random() * 26);
+				} else if (!want && shown > 0) {
+					shown--;
+					timer = setTimeout(step, 8);
+				} else {
+					timer = null;
+				}
+				paint();
+			};
+			var go = function (open) {
+				if (open === want) return;
+				if (open && shown === 0) build();
+				want = open;
+				if (timer === null) step();
+			};
+			revealers.push(go);
+			if (pointer) {
+				box.addEventListener("mouseenter", function () { go(true); });
+				box.addEventListener("mouseleave", function () { go(box.matches(":focus-visible")); });
+			}
+			box.addEventListener("focusin", function () { if (box.matches(":focus-visible")) go(true); });
+			box.addEventListener("focusout", function () { go(pointer && box.matches(":hover")); });
+			// On a phone, a tap has already toggled .open by the time this runs.
+			box.addEventListener("click", function () {
+				if (!pointer) go(box.classList.contains("open"));
 			});
 		});
 	}

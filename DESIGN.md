@@ -117,7 +117,7 @@ None. No shadows, no blur on the page (blur is reserved for unpublished product 
 - **Reveal:** inline text that opens on hover or keyboard focus. Without a pointer, a tap opens it and the words wrap like the rest of the sentence; hover styles never apply on touch, because iOS leaves :hover stuck. The wordmark opens on the first tap and follows its link on the second.
 - **Blurred product:** unpublished only. Name and description as transparent text with a 7px `text-shadow`, not a link, not selectable.
 - **Project row:** the name is the link, and its `::after` covers the row, so the description answers to it too.
-- **Privacy:** an app's policy is not on its page. It lives at `<app>/privacy/` in the same layout, linked by a quiet Privacy button; for Left, txtpod and ftnss that address redirects to the policy on the app's own site.
+- **Privacy:** an app's policy is not on its page. It lives at `<app>/privacy/` in the same layout, not linked from the app page (it is the address given to the App Store); for Left, txtpod and ftnss that address redirects to the policy on the app's own site.
 - **Copy button:** a `.button.quiet` with `data-copy`, in an `.action` that stays hidden until the browser can copy.
 - **Menu:** Command K, Control K or `/`. A full-page `<dialog>` in the same column: what you type over the dashed rule, then the list, with `>` marking the line you are on. Pages, the email, and the appearance.
 - **Appearance:** follows the system unless chosen in the menu, stored as `data-theme` on `html` and restored in the head before first paint.
@@ -134,10 +134,10 @@ None. No shadows, no blur on the page (blur is reserved for unpublished product 
 
 All text, all discovered rather than announced:
 
-- **Descriptor:** clicking "A ___ company" backspaces the word and types the next one in behind a cyan caret.
+- **Descriptor:** arriving on the site, "A ___ company" types its word in behind a cyan caret (not when moving between pages); clicking it backspaces the word and types the next one.
+- **Typed reveals:** every reveal (the wordmark, New Zealand, company, the footer, the live lines) types its hidden words in a letter at a time behind the same caret on hover, focus or a tap, and backspaces them away after. The real text stays in the page, out of sight, for screen readers; what shows is a typed copy (`.typed`). With less motion asked for, reveals slide open as before. The figures are not reveals and keep their count.
 - **Live lines** (`data-live`, `.grow-live`): Left's line and heading reveal how much of the year is already gone; txtpod's reveal how long the page would run as an episode, at 150 words a minute.
 - **Sky:** the footer's New Zealand reveal says the time in Auckland and what the sun is doing there (dark, nearly light, just up, up, high, going down, just set), worked out from the date in the page.
-- **Years:** pointing at or tapping the year in the footer counts it up from 2017.
 - **Keys:** typing an app's or a page's name (left, txtpod, safeplate, camping, aussie, nosnus, ftnss, bites, notsobusy, about, contact, home) goes there. g then a letter: h home, l Left, t txtpod, s SafePlate, k camping, n NoSnus, b about, c contact, a App Store. Typing cntxt shows everything hidden; kiwi renames New Zealand; the Konami code turns the page over; space at the end of a page rains squares; / or Command K opens the menu.
 
 ## Do's and Don'ts
