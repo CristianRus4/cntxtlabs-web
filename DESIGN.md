@@ -106,14 +106,14 @@ None. No shadows, no blur on the page (blur is reserved for unpublished product 
 
 ## Shapes
 
-**The Square Rule.** Radius is 0, except buttons, which are pills after iA, and the square a download button grows into. Icons are 24px strokes. The mark is the only custom shape.
+**The Square Rule.** Radius is 0, except buttons, which are pills after iA, and the card a download button grows into. Icons are 24px strokes. The mark is the only custom shape.
 
 ## Components
 
 - **Wordmark:** 700, vowels collapse into `.grow` until hover or the `cntxt` easter egg.
 - **Link:** 500, no underline, cyan on hover and `:focus-visible` with a 1px dotted outline.
 - **Button:** a small pill (padding 0.38em 0.95em) in the ink colour with the label in the paper colour, so it inverts in dark mode. `.quiet` is the secondary, in a tint of the ink. No captions. Each sits in `.action`, inside `.actions`. Hover leans in (scale 1.03), press gives (0.97). On touch screens the hit area is a little larger than the pill.
-- **Download button** (`.button.download`), after getleft.app: with a fine pointer, hovering or focusing the pill fades its label and grows it upward into a square of its own width and colour, filled by the App Store QR code (`img/<app>/qr.svg`, used as a mask) in the label's colour: light on the dark pill, dark on the light one. Nothing around the button shifts. On touch screens it is a plain link.
+- **Download button** (`.button.download`), after getleft.app: with a fine pointer, hovering or focusing the pill fades its label and grows it upward into a card of its own width and colour: the App Store QR code (`img/<app>/qr.svg`, used as a mask, with our rounded corner squares) in the label's colour, light on the dark pill and dark on the light one, and under it three set lines, "Scan or search / “App” / on the App Store." Nothing around the button shifts. On touch screens it is a plain link.
 - **Reveal:** inline text that opens on hover or keyboard focus. Without a pointer, a tap opens it and the words wrap like the rest of the sentence; hover styles never apply on touch, because iOS leaves :hover stuck. The wordmark opens on the first tap and follows its link on the second.
 - **Blurred product:** unpublished only. Name and description as transparent text with a 7px `text-shadow`, not a link, not selectable.
 - **Project row:** the name is the link, and its `::after` covers the row, so the description answers to it too.
