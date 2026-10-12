@@ -106,14 +106,14 @@ None. No shadows, no blur on the page (blur is reserved for unpublished product 
 
 ## Shapes
 
-**The Square Rule.** Radius is 0, except buttons, which are pills after iA, and the QR card a download button opens into. Icons are 24px strokes. The mark is the only custom shape.
+**The Square Rule.** Radius is 0, except buttons, which are pills after iA, and the box a download button grows into. Icons are 24px strokes. The mark is the only custom shape.
 
 ## Components
 
 - **Wordmark:** 700, vowels collapse into `.grow` until hover or the `cntxt` easter egg.
 - **Link:** 500, no underline, cyan on hover and `:focus-visible` with a 1px dotted outline.
 - **Button:** a small pill (padding 0.38em 0.95em) in the ink colour with the label in the paper colour, so it inverts in dark mode. `.quiet` is the secondary, in a tint of the ink. No captions. Each sits in `.action`, inside `.actions`. Hover leans in (scale 1.03), press gives (0.97). On touch screens the hit area is a little larger than the pill.
-- **Download button** (`.button.download`), after trysundrop.app: with a fine pointer, hovering or focusing the pill grows it upward into a card of the same colour holding the app's App Store QR code (`img/<app>/qr.svg`) and "Scan with your iPhone". It springs open and settles back without the spring, and carries the one soft shadow on the site. On touch screens it is a plain link.
+- **Download button** (`.button.download`), after trysundrop.app: with a fine pointer, hovering or focusing the pill keeps its width and grows upward into a box of the same colour. The App Store QR code (`img/<app>/qr.svg`, used as a mask) sits above the label in the label's colour, light on the dark pill and dark on the light one. The label does not move and nothing around the button shifts. On touch screens it is a plain link.
 - **Reveal:** inline text that opens on hover or keyboard focus. Without a pointer, a tap opens it and the words wrap like the rest of the sentence; hover styles never apply on touch, because iOS leaves :hover stuck. The wordmark opens on the first tap and follows its link on the second.
 - **Blurred product:** unpublished only. Name and description as transparent text with a 7px `text-shadow`, not a link, not selectable.
 - **Project row:** the name is the link, and its `::after` covers the row, so the description answers to it too.
