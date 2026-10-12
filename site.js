@@ -8,6 +8,10 @@
 	var HOME = script ? new URL("./", script.src).href : "/";
 	var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 	var root = document.documentElement;
+	var EMAIL = "info@cntxtlabs.co";
+	var typing = function (t) {
+		return t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
+	};
 
 	// Copyright year.
 	var y = new Date().getFullYear();
@@ -115,6 +119,7 @@
 
 	document.addEventListener("keydown", function (e) {
 		if (e.metaKey || e.ctrlKey || e.altKey) return;
+		if (typing(e.target)) return;
 
 		// The old one. Turns the page over for a moment.
 		if (e.key === konami[kAt] || (konami[kAt].length === 1 && e.key.toLowerCase() === konami[kAt])) {
@@ -185,7 +190,7 @@
 		if (e.code !== "Space" && e.key !== " ") return;
 		if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
 		var t = e.target;
-		if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+		if (typing(t)) return;
 		if (t && t.closest && t.closest("[role='button'], button")) return;
 		if (!atEnd()) return;
 		e.preventDefault();
@@ -290,11 +295,198 @@
 		});
 	})();
 
+	// Appearance, if chosen by hand. The head of every page applies a stored
+	// choice before anything is drawn; this keeps the browser bars in step.
+	var metas = document.querySelectorAll('meta[name="theme-color"]');
+	var system = [].map.call(metas, function (m) { return m.content; });
+	var paint = function () {
+		var t = root.getAttribute("data-theme");
+		metas.forEach(function (m, i) {
+			m.content = t ? (t === "dark" ? "#070707" : "#F7F7F7") : system[i];
+		});
+	};
+	var looksDark = function () {
+		var t = root.getAttribute("data-theme");
+		return t ? t === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+	};
+	var setTheme = function (t) {
+		try {
+			if (t) localStorage.setItem("theme", t);
+			else localStorage.removeItem("theme");
+		} catch (err) {}
+		if (t) root.setAttribute("data-theme", t);
+		else root.removeAttribute("data-theme");
+		paint();
+	};
+	paint();
+
+	// Copy, where the browser allows it. The button stays hidden otherwise.
+	var copy = function (text) {
+		return navigator.clipboard.writeText(text);
+	};
+	var canCopy = !!(navigator.clipboard && window.isSecureContext);
+	document.querySelectorAll("[data-copy]").forEach(function (b) {
+		if (!canCopy) return;
+		b.hidden = false;
+		var label = b.textContent;
+		b.addEventListener("click", function () {
+			copy(b.getAttribute("data-copy")).then(function () {
+				b.textContent = "> Copied";
+				setTimeout(function () { b.textContent = label; }, 1600);
+			}, function () {});
+		});
+	});
+
+	// The menu. Command K, Control K or a slash, from anywhere. Type to
+	// narrow it, arrows to move, return to go, escape to leave.
+	var menu = null, input = null, list = null, shown = [], at = 0;
+	var items = function () {
+		var go = function (path) { return function () { window.location.href = HOME + path; }; };
+		var out = [
+			{ name: "Home", hint: "About", find: "about index", run: go("") },
+			{ name: "Left", hint: "iPhone, iPad, Watch", find: "time habits", run: go("left/") },
+			{ name: "SafePlate", hint: "Web, Android, iPhone", find: "food kitchen", run: go("safeplate/") },
+			{ name: "KiwiCamping & AussieCamps", hint: "iPhone, iPad", find: "camping", run: go("camping/") },
+			{ name: "KiwiCamping", hint: "New Zealand", find: "camping nz", run: go("kiwicamping/") },
+			{ name: "AussieCamps", hint: "Australia", find: "camping", run: go("aussiecamps/") },
+			{ name: "txtpod", hint: "iPhone, iPad, web", find: "podcast audio", run: go("txtpod/") },
+			{ name: "NoSnus", hint: "iPhone, iPad", find: "quit pouches", run: go("nosnus/") },
+			{ name: "Contact", hint: "Page", find: "email support press", run: go("contact/") },
+			{ name: "Write an email", hint: EMAIL, find: "mail contact", run: function () { window.location.href = "mailto:" + EMAIL; } }
+		];
+		if (canCopy) out.push({ name: "Copy the email address", hint: EMAIL, find: "mail", run: function (li) {
+			copy(EMAIL).then(function () {
+				li.querySelector(".name").textContent = "Copied";
+				setTimeout(close, 700);
+			}, function () {});
+			return true;
+		} });
+		var dark = looksDark();
+		out.push({ name: dark ? "Light appearance" : "Dark appearance", hint: "Appearance", find: "theme mode colour color", run: function () { setTheme(dark ? "light" : "dark"); } });
+		if (root.hasAttribute("data-theme")) out.push({ name: "Match the system appearance", hint: "Appearance", find: "theme mode auto", run: function () { setTheme(null); } });
+		out.push({ name: "Apps on the App Store", hint: "Apple", find: "download ios", run: go("appstore/") });
+		return out;
+	};
+	var select = function (i) {
+		var rows = list.children;
+		if (!shown.length) return;
+		at = (i + shown.length) % shown.length;
+		for (var n = 0; n < rows.length; n++) rows[n].setAttribute("aria-selected", n === at ? "true" : "false");
+		input.setAttribute("aria-activedescendant", "menu-" + at);
+		rows[at].scrollIntoView({ block: "nearest" });
+	};
+	var render = function () {
+		var words = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+		shown = items().filter(function (it) {
+			var hay = (it.name + " " + it.hint + " " + it.find).toLowerCase();
+			return words.every(function (w) { return hay.indexOf(w) > -1; });
+		});
+		list.replaceChildren();
+		shown.forEach(function (it, i) {
+			var li = document.createElement("li");
+			var name = document.createElement("span");
+			var hint = document.createElement("span");
+			li.id = "menu-" + i;
+			li.setAttribute("role", "option");
+			name.className = "name";
+			name.textContent = it.name;
+			hint.className = "hint";
+			hint.textContent = it.hint;
+			li.append(name, hint);
+			li.addEventListener("pointermove", function () { if (at !== i) select(i); });
+			li.addEventListener("click", function () { act(i); });
+			list.appendChild(li);
+		});
+		if (!shown.length) {
+			var none = document.createElement("li");
+			none.className = "empty";
+			none.textContent = "Nothing by that name. Try another word.";
+			list.appendChild(none);
+			input.removeAttribute("aria-activedescendant");
+			return;
+		}
+		select(0);
+	};
+	var act = function (i) {
+		var it = shown[i];
+		if (!it) return;
+		if (it.run(list.children[i]) !== true) close();
+	};
+	var build = function () {
+		menu = document.createElement("dialog");
+		menu.className = "menu";
+		menu.setAttribute("aria-label", "Menu");
+		var column = document.createElement("div");
+		column.className = "menu-column";
+		input = document.createElement("input");
+		input.type = "text";
+		input.placeholder = "Go to a page, or type what you need";
+		input.setAttribute("aria-label", "Menu");
+		input.setAttribute("role", "combobox");
+		input.setAttribute("aria-expanded", "true");
+		input.setAttribute("aria-controls", "menu-list");
+		input.setAttribute("autocomplete", "off");
+		input.setAttribute("spellcheck", "false");
+		list = document.createElement("ul");
+		list.id = "menu-list";
+		list.setAttribute("role", "listbox");
+		column.append(input, list);
+		menu.appendChild(column);
+		document.body.appendChild(menu);
+
+		input.addEventListener("input", render);
+		input.addEventListener("keydown", function (e) {
+			if (e.key === "ArrowDown") { e.preventDefault(); select(at + 1); }
+			else if (e.key === "ArrowUp") { e.preventDefault(); select(at - 1); }
+			else if (e.key === "Enter") { e.preventDefault(); act(at); }
+		});
+		// A click on the empty page around the list puts it away.
+		menu.addEventListener("click", function (e) {
+			if (e.target === menu || e.target === column) close();
+		});
+	};
+	var open = function () {
+		if (!window.HTMLDialogElement) return;
+		if (!menu) build();
+		if (menu.open) return;
+		input.value = "";
+		render();
+		menu.showModal();
+		input.focus();
+	};
+	var close = function () {
+		if (menu && menu.open) menu.close();
+	};
+
+	document.addEventListener("keydown", function (e) {
+		var k = e.key && e.key.toLowerCase();
+		if ((e.metaKey || e.ctrlKey) && !e.altKey && !e.shiftKey && k === "k") {
+			e.preventDefault();
+			if (menu && menu.open) close(); else open();
+			return;
+		}
+		if (k === "/" && !e.metaKey && !e.ctrlKey && !e.altKey && !typing(e.target)) {
+			e.preventDefault();
+			open();
+		}
+	});
+
+	// Pages a pointer settles on are fetched ahead, so the next page is
+	// already here when it is clicked. Chromium only; others ignore it.
+	if (window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports("speculationrules")) {
+		var rules = document.createElement("script");
+		rules.type = "speculationrules";
+		rules.textContent = JSON.stringify({
+			prefetch: [{ where: { href_matches: "/*" }, eagerness: "moderate" }]
+		});
+		document.head.appendChild(rules);
+	}
+
 	console.log(
 		"%cCntxt Labs%c\nA software company, based in New Zealand.\n\n" +
 		"This page is static HTML, one stylesheet and one small script. No framework,\n" +
 		"no trackers, no third party requests. The whole site in one file, for machines:\n" +
-		"https://cntxtlabs.co/llms.txt\n\n" +
+		"https://cntxtlabs.co/llms.txt\n\nPress / for the menu.\n\n" +
 		"Something to build? info@cntxtlabs.co\n",
 		"font-weight:700;font-size:15px", "font-weight:400;font-size:12px"
 	);

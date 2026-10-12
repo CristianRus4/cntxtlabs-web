@@ -47,20 +47,6 @@ Left is used by more than 1.5 million people around the world.
 - Platforms: iPhone, iPad, Apple Watch
 - Privacy policy: https://getleft.app/privacy
 
-### txtpod
-
-txtpod converts articles, links and PDFs into narrated podcast episodes. Save something once, and listen to it wherever you already listen.
-
-Episodes are read by more than thirty natural voices across over twenty languages, with translation available. They are delivered to a private feed that works in Apple Podcasts, Spotify, Overcast, Pocket Casts and any other player that supports RSS.
-
-txtpod also generates episodes on chosen topics and a daily brief on the subjects you follow, with custom artwork, listening streaks, a synchronised web app, and integrations with Instapaper, Matter and Readwise.
-
-- Page: https://cntxtlabs.co/txtpod
-- Website: https://txtpod.app
-- App Store: https://apps.apple.com/us/app/txtpod-articles-to-podcast/id6748379680
-- Platforms: iPhone, iPad, web
-- Privacy policy: https://txtpod.app/privacy
-
 ### SafePlate
 
 SafePlate replaces the paper diary in a New Zealand kitchen. Fridge temperatures, deliveries, cooking and cooling checks, cleaning, training and sickness records are made when the work happens, kept for four years, and ready for a verifier visit.
@@ -72,9 +58,11 @@ It runs on the web, Android and iPhone. One subscription covers the whole team. 
 - Platforms: web, Android, iPhone
 - Enquiries: info@cntxtlabs.co
 
-### Camping apps
+### KiwiCamping & AussieCamps
 
-Camping maps and road-trip planners for New Zealand and Australia, with the directory stored on the device. Find campsites, holiday parks, huts and rest areas, filter them by the facilities you need, and turn a shortlist into a driving itinerary. The listings stay readable after the last bar of reception, which is when they tend to matter.
+Two camping apps built the same way, each for one country. KiwiCamping is for New Zealand: more than 6,500 DOC campsites, huts, freedom camping areas, holiday parks and dump stations. AussieCamps is for Australia: more than 74,000 campsites, caravan parks, national park sites and rest areas.
+
+In both, the whole directory is stored on the device, so a place still opens after the last bar of reception, which is when it tends to matter. Search and filter by facilities, price and access, save places into collections, and turn a shortlist into a trip with routes, distances, dates, notes and to-dos.
 
 - Page: https://cntxtlabs.co/camping
 
@@ -100,9 +88,33 @@ Search and filter by facilities, fees and access, save places into collections, 
 - App Store: https://apps.apple.com/app/id6801098680
 - Platforms: iPhone, iPad
 
+### txtpod
+
+txtpod converts articles, links and PDFs into narrated podcast episodes. Save something once, and listen to it wherever you already listen.
+
+Episodes are read by more than thirty natural voices across over twenty languages, with translation available. They are delivered to a private feed that works in Apple Podcasts, Spotify, Overcast, Pocket Casts and any other player that supports RSS.
+
+txtpod also generates episodes on chosen topics and a daily brief on the subjects you follow, with custom artwork, listening streaks, a synchronised web app, and integrations with Instapaper, Matter and Readwise.
+
+- Page: https://cntxtlabs.co/txtpod
+- Website: https://txtpod.app
+- App Store: https://apps.apple.com/us/app/txtpod-articles-to-podcast/id6748379680
+- Platforms: iPhone, iPad, web
+- Privacy policy: https://txtpod.app/privacy
+
+### NoSnus
+
+NoSnus builds a plan to get you pouch-free, with a date on the calendar rather than a vague intention to cut back. Answer a few questions about your habit, and it sets the path around the way you actually use pouches.
+
+Every pouch is logged. Cravings are handled in the moment they arrive, money not spent is counted as it adds up, and a bad day does not undo the work. It is made for nicotine pouches and snus, and for nothing else.
+
+- Page: https://cntxtlabs.co/nosnus
+- App Store: https://apps.apple.com/us/app/quit-zyn-velo-snus-nosnus/id6791343296
+- Platforms: iPhone, iPad
+
 ### Other iOS apps
 
-A few apps on the App Store, for health, everyday habits and making time. They are small, focused tools rather than a single suite, each built around one job and meant to stay out of the way. All of them run on iPhone, and none of them require an account to start using.
+More apps on the App Store, for health and everyday habits. They are small, focused tools rather than a single suite, each built around one job and meant to stay out of the way. All of them run on iPhone, and none of them require an account to start using.
 
 - Page: https://cntxtlabs.co/ios
 
@@ -128,16 +140,6 @@ It synchronises with Apple Health, tracks a daily calorie goal, and shows the en
 
 - Page: https://cntxtlabs.co/bites
 - App Store: https://apps.apple.com/us/app/meal-tracker-bites/id6755179382
-- Platforms: iPhone, iPad
-
-#### NoSnus
-
-NoSnus builds a plan to get you pouch-free, with a date on the calendar rather than a vague intention to cut back. Answer a few questions about your habit, and it sets the path around the way you actually use pouches.
-
-Every pouch is logged. Cravings are handled in the moment they arrive, money not spent is counted as it adds up, and a bad day does not undo the work. It is made for nicotine pouches and snus, and for nothing else.
-
-- Page: https://cntxtlabs.co/nosnus
-- App Store: https://apps.apple.com/us/app/quit-zyn-velo-snus-nosnus/id6791343296
 - Platforms: iPhone, iPad
 
 #### NotSoBusy

@@ -11,13 +11,13 @@
 ## Products
 
 - [Left](https://cntxtlabs.co/left): Shows the time you have left in the year, month, week, day and a life, with habits, streaks, countdowns and a daily planner. Used by more than 1.5 million people. iPhone, iPad, Apple Watch. Website: https://getleft.app
-- [txtpod](https://cntxtlabs.co/txtpod): Turns articles, links and PDFs into narrated podcast episodes in a private RSS feed, with more than thirty voices across over twenty languages. iPhone, iPad and a web app. Website: https://txtpod.app
 - [SafePlate](https://cntxtlabs.co/safeplate): Food safety records for New Zealand kitchens, kept as the work happens, held for four years and ready for a verifier visit. Web, Android, iPhone. Website: https://safeplate.nz
 - [KiwiCamping](https://cntxtlabs.co/kiwicamping): Camping map and road-trip planner for New Zealand, with more than 6,500 places stored on the device for use without signal. iPhone, iPad. Website: https://campingapp.nz
 - [AussieCamps](https://cntxtlabs.co/aussiecamps): Camping map and road-trip planner for Australia, with more than 74,000 places stored on the device for use without signal. iPhone, iPad. Website: https://aussiecamps.app
+- [txtpod](https://cntxtlabs.co/txtpod): Turns articles, links and PDFs into narrated podcast episodes in a private RSS feed, with more than thirty voices across over twenty languages. iPhone, iPad and a web app. Website: https://txtpod.app
+- [NoSnus](https://cntxtlabs.co/nosnus): A quit plan for nicotine pouches and snus, with a quit date, help with cravings and a count of money saved. iPhone, iPad.
 - [ftnss](https://cntxtlabs.co/ftnss): A private AI coach over Apple Health, for training, nutrition, sleep and recovery. iPhone, iPad, Apple Watch. Website: https://ftnss.app
 - [Bites](https://cntxtlabs.co/bites): Calories and macros from a one-sentence description of a meal, using Apple Intelligence. iPhone, iPad.
-- [NoSnus](https://cntxtlabs.co/nosnus): A quit plan for nicotine pouches and snus, with a quit date, help with cravings and a count of money saved. iPhone, iPad.
 - [NotSoBusy](https://cntxtlabs.co/notsobusy): Shares when you are busy as a picture of blocks of time, without sharing any calendar details. iPhone, iPad.
 
 ## Company
@@ -29,6 +29,6 @@
 ## Optional
 
 - [Full text](https://cntxtlabs.co/llms-full.txt): Every page in full, with privacy and common questions
-- [Camping apps](https://cntxtlabs.co/camping): KiwiCamping and AussieCamps on one page
+- [KiwiCamping & AussieCamps](https://cntxtlabs.co/camping): Both camping apps on one page
 - [Other iOS apps](https://cntxtlabs.co/ios): ftnss, Bites, NoSnus and NotSoBusy on one page
 - [Sitemap](https://cntxtlabs.co/sitemap.xml)

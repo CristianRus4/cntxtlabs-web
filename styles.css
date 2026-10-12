@@ -44,6 +44,27 @@
 	}
 }
 
+/* Chosen by hand from the menu, and remembered. It outranks the system
+   setting, and the flip still turns it over. */
+
+:root[data-theme="light"],
+:root[data-theme="dark"].flip {
+	--bg: #F7F7F7;
+	--text: #222222;
+	--muted: #6B6B74;
+	--rule: #D6D6D6;
+	color-scheme: light;
+}
+
+:root[data-theme="dark"],
+:root[data-theme="light"].flip {
+	--bg: #070707;
+	--text: #F0F0F0;
+	--muted: #7A7A84;
+	--rule: #2A2A2A;
+	color-scheme: dark;
+}
+
 /* Left alone for a while, the mark comes out to keep you company. */
 
 .idle .mark {
@@ -131,8 +152,17 @@ h2 {
 /* Sit the following line against the title, same as cntxt and its subtitle. */
 h1:not(.title) + p,
 h1:not(.title) + ul,
-h2 + p {
+h2 + p,
+h2 + ul {
 	margin-top: 0;
+}
+
+/* A quiet heading: the word that introduces a row, like Next. */
+
+h2.label {
+	margin-top: 1.5em;
+	font-weight: 400;
+	color: var(--muted);
 }
 
 p {
@@ -556,6 +586,37 @@ ul {
 	gap: 0.15em;
 }
 
+.outlinks .copy {
+	appearance: none;
+	background: none;
+	border: 0;
+	margin: 0;
+	padding: 0.45em 0;
+	min-height: 2.75em;
+	display: inline-flex;
+	align-items: center;
+	font: inherit;
+	font-weight: 500;
+	color: var(--text);
+	cursor: pointer;
+	transition: color 170ms ease;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.outlinks .copy[hidden] {
+	display: none;
+}
+
+.outlinks .copy:hover,
+.outlinks .copy:focus-visible {
+	color: var(--blue);
+}
+
+.outlinks .copy:focus-visible {
+	outline: 1px dotted currentColor;
+	outline-offset: 0.18em;
+}
+
 .outlinks a {
 	padding: 0.45em 0;
 	min-height: 2.75em;
@@ -574,6 +635,7 @@ footer {
 	overflow: clip;
 	margin-top: auto;
 	padding-top: 0.75em;
+	font-size: 0.8667rem; /* 13px: the one step down from the page */
 	color: var(--muted);
 	text-align: left;
 }
@@ -601,6 +663,7 @@ footer::before {
 
 footer p {
 	margin: 0;
+	font-size: inherit;
 	overflow-wrap: break-word;
 }
 
@@ -740,5 +803,127 @@ footer p {
 	}
 	to {
 		transform: translate(var(--drift, 0), 116vh) rotate(var(--spin, 0deg));
+	}
+}
+
+/* The menu. Command K, Control K or a slash opens it. It is not a panel
+   over the page but the page itself, turned into a list: same column,
+   same type, the dashed rule from the footer under what you type, and
+   the line you are on marked the way outbound links are, with >. */
+
+.menu {
+	position: fixed;
+	inset: 0;
+	width: 100%;
+	max-width: none;
+	height: 100%;
+	max-height: none;
+	margin: 0;
+	border: 0;
+	padding: 15em max(1.5em, env(safe-area-inset-right)) 2em max(1.5em, env(safe-area-inset-left));
+	background-color: var(--bg);
+	color: var(--text);
+	font: inherit;
+	line-height: 1.6;
+	overflow-y: auto;
+}
+
+.menu::backdrop {
+	background: transparent;
+}
+
+.menu[open] {
+	animation: menuIn 200ms var(--ease-out);
+}
+
+@keyframes menuIn {
+	from { opacity: 0; transform: translateY(0.4em); }
+	to { opacity: 1; transform: none; }
+}
+
+.menu-column {
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.menu input {
+	display: block;
+	width: 100%;
+	margin: 0 0 0.75em;
+	padding: 0 0 0.6em;
+	border: 0;
+	border-radius: 0;
+	background: repeating-linear-gradient(90deg, var(--rule) 0 3px, transparent 3px 9px) bottom left / 12px 1px repeat-x;
+	color: var(--text);
+	font: inherit;
+	font-weight: 500;
+	outline: none;
+	appearance: none;
+}
+
+.menu input::placeholder {
+	color: var(--muted);
+	font-weight: 400;
+}
+
+.menu ul {
+	margin: 0;
+}
+
+.menu li {
+	display: flex;
+	padding: 0.2em 0;
+	cursor: pointer;
+}
+
+.menu li::before {
+	content: ">";
+	width: 0;
+	overflow: hidden;
+	flex: none;
+	transition: width 140ms var(--ease);
+}
+
+.menu li[aria-selected="true"] {
+	color: var(--blue);
+}
+
+.menu li[aria-selected="true"]::before {
+	width: 1.1em;
+}
+
+.menu .name {
+	flex: 1;
+	font-weight: 500;
+}
+
+.menu .hint {
+	padding-left: 1em;
+	color: var(--muted);
+	text-align: right;
+}
+
+.menu li[aria-selected="true"] .hint {
+	color: inherit;
+}
+
+.menu .empty {
+	color: var(--muted);
+	cursor: default;
+}
+
+@media (max-width: 34rem) {
+	.menu {
+		padding-top: 6.5em;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.menu[open] {
+		animation: none;
+	}
+
+	.menu li::before {
+		transition: none;
 	}
 }

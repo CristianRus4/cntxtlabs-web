@@ -16,11 +16,13 @@ styles.css          the whole design system
 site.js             the behaviour every page shares, loaded with defer
 llms.txt            a short index of the site for language models
 llms-full.txt       every page in one file, for language models
+og/                 one social preview image per page, 1200 by 630
 ```
 
-Each page's `<head>` also carries a one-line inline script that marks an
+Each page's `<head>` also carries a one-line inline script. It marks an
 arrival from another page on the site, so the masthead holds still instead
-of animating in again. It runs before the stylesheet on purpose.
+of animating in again, and it restores an appearance chosen in the menu
+before anything is drawn. It runs before the stylesheet on purpose.
 
 When a page's copy changes, change `llms-full.txt` to match, and `llms.txt`
 if the one-line summary moved.
