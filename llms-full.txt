@@ -41,11 +41,13 @@ Press, review copies, promo codes and partnerships go to the same address. Journ
 
 ### Left
 
-Most of us only notice time when it is running out. Left keeps it in view: today, this week, this year and a whole life, drawn as symbols that fade as they pass.
+Left is built on one idea: your time is limited, and seeing it changes how you use it. It shows the year, the month, the week, the day and your whole life as symbols that dim as they pass, on your Home Screen, Lock Screen and StandBy.
 
-Seeing time pass is a good reason to use it well, so Left helps with that too. Build the habits you care about and keep the streaks going, count down to the dates that matter, and share a goal with a friend.
+Then it helps you act on what you see. Build habits on any schedule and protect the streaks that matter. Track any goal you can count with Aim, from money saved to books read, and let Apple Health fill in the progress for you. Share a habit or a streak with a friend and keep each other going.
 
-The planner brings your calendar, reminders, weather, sleep and workouts into one place, so you plan the day where you can see it going. More than 1.5 million people use Left on iPhone, iPad and Apple Watch.
+Ahead holds the dates that pull you forward, like trips, birthdays and deadlines, each with its own to-do list, and you can count down to them together with friends. The Planner brings your habits, dates, calendar, reminders, weather, sleep and workouts into one calm view of the day, and a simple fasting timer follows you on the Lock Screen and in the Dynamic Island.
+
+More than 1.5 million people use Left on iPhone, iPad and Apple Watch.
 
 - Page: https://cntxtlabs.co/left
 - Website: https://getleft.app
@@ -66,17 +68,25 @@ SafePlate replaces the diary. The team records each check on a phone as they do 
 
 ### KiwiCamping & AussieCamps
 
-The best places to camp are often where your phone has no signal. KiwiCamping and AussieCamps keep the whole directory on your device, so you can find somewhere to stay, see what it offers and plan the drive, wherever you are.
+KiwiCamping and AussieCamps help you decide where to stay tonight and where to go next. Each is a camping map and a road-trip planner in one, built the same way: KiwiCamping for New Zealand and AussieCamps for Australia.
 
-KiwiCamping is for New Zealand, with more than 6,500 DOC campsites, huts, freedom camping spots, holiday parks and dump stations. AussieCamps is for Australia, with more than 74,000 campsites, caravan parks, national park sites and rest areas. Both turn a shortlist into a trip, with routes, distances, dates and notes.
+Start with the map. KiwiCamping has more than 6,500 places across New Zealand and AussieCamps more than 74,000 across Australia: campsites, holiday and caravan parks, national park sites and free camping areas, along with rest areas, dump stations, drinking water and toilets. Filter for exactly what you need, like free camping with toilets and water nearby, and every place opens with photos, fees, facilities, alerts, the weather and Street View of the entrance.
+
+Then plan the trip. Add the places you like as stops, put them in the order you will drive, and see the distance and driving time for every leg and for the whole journey. Each stop has its own date, notes and forecast, and you tick it off as you go. Keep a packing list beside the itinerary, share it, and sync it to your calendar.
+
+Both apps come with detailed road-trip routes and practical guides, from how DOC sites and freedom camping work in New Zealand to free camps and national parks in Australia. And because the whole directory is stored on your phone, the details are still there after the last bar of signal.
 
 - Page: https://cntxtlabs.co/camping
 
 #### KiwiCamping
 
-Camping in New Zealand often means finding a site after the signal has gone, and knowing the rules once you get there. KiwiCamping keeps more than 6,500 places on your phone, from DOC campsites and huts to freedom camping spots, holiday parks and dump stations, so they open anywhere.
+KiwiCamping helps you find a place to camp in New Zealand and plan the road trip around it. It has more than 6,500 places, from DOC campsites, huts and freedom camping areas to holiday parks, dump stations and useful stops, and every one is stored on your phone, so it still opens where the signal does not reach.
 
-Filter by what you need, save the places you like, and turn them into a trip with routes, distances, dates and notes. Short guides explain how DOC sites, huts and freedom camping work, so you know what to expect before you arrive.
+Filter for what matters on the night, like free camping with toilets and water near Queenstown, and open any place to see photos, fees, facilities, current alerts, the weather and Street View of the turnoff. Save places into collections for a region or a shortlist, and they sort themselves as you mark them liked, starred or visited.
+
+The trip planner is where it comes together. Order your stops the way you will drive them, see the distance and driving time for every leg, add dates, notes and the forecast for each stop, and tick them off as you travel. Keep a packing list beside it and sync the whole trip to your calendar.
+
+KiwiCamping also includes 21 road-trip routes, from Northland to the East Cape, and more than 50 practical guides on how DOC sites, huts and freedom camping work, planning realistic driving days and comparing costs.
 
 - Page: https://cntxtlabs.co/kiwicamping
 - Website: https://campingapp.nz
@@ -85,9 +95,13 @@ Filter by what you need, save the places you like, and turn them into a trip wit
 
 #### AussieCamps
 
-Australia is big, and the long stretches between towns are often where mobile coverage runs out. AussieCamps keeps more than 74,000 campsites, caravan parks, national park sites and rest areas on your phone, so you can find somewhere to stop with or without a signal.
+AussieCamps helps you find a place to stay in Australia and plan the road trip around it. It has more than 74,000 places, from free camps, national park campgrounds and caravan parks to rest areas, dump points, drinking water and toilets, all stored on your phone, so the details are there in the outback, the bush or on a quiet stretch of coast.
 
-Filter by facilities, fees and access, save the places you like, and plan the trip with routes, distances, dates and notes. It works the same way as KiwiCamping, with a directory built for Australia.
+Filter for what you need, like free camping with toilets and water around the Gold Coast, and open any place to check fees, rules, access notes, photos, alerts, the weather and Street View. Save places into your own collections, and they sort themselves as you mark them liked, starred or visited.
+
+Then plan the trip. Put your stops in the order you will drive, see the distance and time for every leg and the whole journey, add dates, notes and a forecast for each stop, and tick them off as you go. Keep a checklist and a packing list beside it, share the itinerary and sync it to your calendar.
+
+It also includes 21 Australian road trips and more than 50 guides on free camps, national park campgrounds, realistic driving days and costs. It works the same way as KiwiCamping, with a directory built for Australia, for campervans, caravans, 4WDs, cars and tents.
 
 - Page: https://cntxtlabs.co/aussiecamps
 - Website: https://aussiecamps.app
@@ -96,11 +110,11 @@ Filter by facilities, fees and access, save the places you like, and plan the tr
 
 ### txtpod
 
-Most of us save more to read than we ever get through. txtpod turns those articles into podcast episodes, so you can listen to them while you walk, drive or cook.
+txtpod is for people who save more than they have time to read. It turns articles, links and PDFs into episodes in your own private podcast feed, so the reading list becomes something you can listen to on a walk, a drive or while you cook.
 
-Send it an article, a link or a PDF, and a natural voice reads it into a private feed that works in Apple Podcasts, Spotify, Overcast or any other podcast app. There are more than thirty voices across more than twenty languages, and it can translate as it reads.
+It reads the whole piece, word for word, in a natural voice, with the ads and clutter taken out. It is the article itself, not a summary. Save from the share sheet, the web app or a bookmarklet, or bring in what you already saved in Instapaper, Matter and Readwise. New episodes appear in Apple Podcasts, Spotify, Overcast, Pocket Casts or any other player, next to your regular shows.
 
-It can also make episodes about topics you follow and a short daily brief, and it connects to Instapaper, Matter and Readwise. It works on iPhone, iPad and the web.
+There are more than thirty voices across more than twenty languages, and articles in other languages can be translated and read to you in yours. txtpod can also research a topic you are curious about and narrate a full episode on it, or brief you every morning on the subjects you follow. It works on iPhone, iPad and in your browser.
 
 - Page: https://cntxtlabs.co/txtpod
 - Website: https://txtpod.app
@@ -110,9 +124,13 @@ It can also make episodes about topics you follow and a short daily brief, and i
 
 ### NoSnus
 
-Nicotine pouches are easy to start and easy to keep using. They are discreet, they go anywhere, and most quitting tools were made for cigarettes, not for them. NoSnus is made for pouches and snus.
+NoSnus is built for one thing: getting off nicotine pouches. Zyn, Velo and snus, not cigarettes or vapes. You answer a few questions about how many you use, how strong they are and how soon after waking you reach for the first one, and NoSnus builds a step-down plan with a projected pouch-free date.
 
-Answer a few questions about how you use them, and NoSnus sets a quit date and a plan to get there. Log each pouch, get help when a craving hits, and watch the money you are no longer spending add up. A bad day does not undo your progress.
+Each phase of the plan sets two limits, how many pouches a day and how many milligrams, because fewer pouches at a higher strength is the same nicotine. After the first week the plan recalibrates to what you actually logged, and if a phase is too hard the target moves instead of you failing it. A bad day costs that day, not the week.
+
+Logging takes one tap from a Home Screen widget. Tag what set off a slip, like stress, boredom, driving or a meal, and over a few weeks you see which moments cost you most. When a craving peaks, Breathe walks you through it, and the cravings you get past are counted too, along with the money you are no longer spending.
+
+There is no account, no email and no feed. NoSnus supports a behavioural plan and is not a medical device. If you want clinical support to stop using nicotine, talk to a doctor, a pharmacist or your national quitline.
 
 - Page: https://cntxtlabs.co/nosnus
 - App Store: https://apps.apple.com/us/app/quit-zyn-velo-snus-nosnus/id6791343296

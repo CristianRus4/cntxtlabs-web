@@ -13,7 +13,7 @@ index.html          the company, the numbers, and a band for each app
 about/              who, how and why
 contact/            info@cntxtlabs.co
 <app>/              one directory per app: what it is, why, download, privacy
-img/<app>/          App Store icon and screenshots, as webp
+img/<app>/          App Store icon and screenshots as webp, and qr.svg for the App Store link
 styles.css          the whole design system (see DESIGN.md)
 site.js             the behaviour every page shares, loaded with defer
 llms.txt            a short index of the site for language models

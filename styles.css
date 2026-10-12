@@ -478,11 +478,6 @@ a.home-link:visited {
 	align-items: center;
 }
 
-.band .caption,
-.hero .caption {
-	max-width: 10.5rem;
-	text-align: center;
-}
 
 .shots {
 	display: flex;
@@ -662,24 +657,22 @@ a.home-link:visited {
 	background-color: var(--rule);
 }
 
-/* Buttons, after iA. A solid pill in the ink colour with the label in
-   the paper colour, so it turns over with the page in dark mode and on an
-   ink band. The quiet one is a tint of the ink, for the second thing you
-   might want. A short caption sits underneath. Pointed at, a button leans
-   in a little; pressed, it gives. */
+/* Buttons, after iA. A small solid pill in the ink colour with the label
+   in the paper colour, so it turns over with the page in dark mode and on
+   an ink band. The quiet one is a tint of the ink, for the second thing
+   you might want. Pointed at, a button leans in a little; pressed, it
+   gives. On a touch screen each one answers to a slightly larger area
+   than it draws, so it is still easy to hit. */
 
 .actions {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 1em 0.75em;
+	gap: 0.6em;
 	margin: 2rem 0 0;
 }
 
 .action {
 	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 0.4em;
 }
 
 .action[hidden] {
@@ -690,13 +683,12 @@ a.home-link:visited {
 a.button:link,
 a.button:visited {
 	appearance: none;
+	position: relative;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 8em;
-	min-height: 2.9em;
 	margin: 0;
-	padding: 0.7em 1.5em;
+	padding: 0.38em 0.95em;
 	border: 0;
 	border-radius: 999px;
 	background-color: var(--text);
@@ -749,10 +741,105 @@ a.button.quiet:focus-visible {
 	color: var(--text);
 }
 
-.caption {
-	padding-left: 0.1em;
-	font-size: 0.85rem;
-	color: var(--muted);
+@media (pointer: coarse) {
+	.button::after {
+		content: "";
+		position: absolute;
+		inset: -0.45em -0.2em;
+	}
+}
+
+/* Download buttons, after Sundrop. With a pointer, the pill grows upward
+   into a card holding the App Store QR code, so someone on a computer can
+   scan it with their phone. The card is the button's own colour, so the
+   pill seems to open rather than be covered. It springs open, settles back
+   without the spring, and is a link like the pill it came from. On a
+   phone the button simply opens the App Store. */
+
+.button .qr {
+	display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.button.download {
+		isolation: isolate;
+	}
+
+	.button.download:hover,
+	.button.download:focus-visible {
+		z-index: 4;
+		transform: none;
+	}
+
+	.button.download .qr {
+		position: absolute;
+		left: 50%;
+		bottom: 0;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.8rem;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		border-radius: 999px;
+		background-color: inherit;
+		opacity: 0;
+		pointer-events: none;
+		transform: translateX(-50%);
+		transition: width 320ms cubic-bezier(0.32, 0.72, 0, 1), height 320ms cubic-bezier(0.32, 0.72, 0, 1),
+			border-radius 280ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 240ms ease, opacity 0ms linear 320ms;
+	}
+
+	.button.download:hover .qr,
+	.button.download:focus-visible .qr {
+		width: 13.5rem;
+		height: 15.75rem;
+		border-radius: 1.5rem;
+		opacity: 1;
+		pointer-events: auto;
+		box-shadow: 0 2.5rem 5rem -1.5rem rgba(0, 0, 0, 0.35), 0 0.5rem 1.5rem rgba(0, 0, 0, 0.12);
+		transition: width 280ms cubic-bezier(0.34, 1.56, 0.64, 1), height 280ms cubic-bezier(0.34, 1.56, 0.64, 1),
+			border-radius 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 280ms ease, opacity 0ms;
+	}
+
+	.qr-tile,
+	.qr-caption {
+		flex: none;
+		opacity: 0;
+		transform: scale(0.92);
+		transition: opacity 100ms ease, transform 200ms ease;
+	}
+
+	.button.download:hover .qr-tile,
+	.button.download:hover .qr-caption,
+	.button.download:focus-visible .qr-tile,
+	.button.download:focus-visible .qr-caption {
+		opacity: 1;
+		transform: none;
+		transition: opacity 160ms ease 90ms, transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1) 60ms;
+	}
+
+	.qr-tile {
+		display: block;
+		padding: 0.45rem;
+		border-radius: 0.85rem;
+		background-color: #FFFFFF;
+	}
+
+	.qr-tile img {
+		display: block;
+		width: 9.5rem;
+		height: 9.5rem;
+	}
+
+	.qr-caption {
+		font-size: 0.8rem;
+		font-weight: 600;
+		white-space: nowrap;
+	}
 }
 
 /* Reveals: text that unfolds. The subtitle thinks highly of the place,
@@ -1168,5 +1255,14 @@ a.button.quiet:focus-visible {
 
 	.hero-mark {
 		transform: none;
+	}
+
+	.button.download .qr,
+	.button.download:hover .qr,
+	.qr-tile,
+	.qr-caption,
+	.button.download:hover .qr-tile,
+	.button.download:hover .qr-caption {
+		transition: none;
 	}
 }

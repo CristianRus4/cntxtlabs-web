@@ -61,7 +61,8 @@ The system font, no webfont. One reading size for text; names are set large (`.d
 
 ## Components
 
-- **Button:** a pill in the ink colour with the label in the paper colour. `.quiet` is a tint of the ink, for the second action. A `.caption` sits under it, inside `.action`, inside `.actions`. Hover leans in (scale 1.03), press gives (0.97). The only round things are buttons, cards and app icons.
+- **Button:** a small pill (padding 0.38em 0.95em) in the ink colour with the label in the paper colour. `.quiet` is a tint of the ink, for the second action. No captions. Hover leans in (scale 1.03), press gives (0.97). On touch screens the hit area is a little larger than the pill. The only round things are buttons, cards and app icons.
+- **Download button** (`.button.download`), after trysundrop.app: with a fine pointer, hovering or focusing the pill grows it upward into a 13.5 by 15.75rem card of the same colour holding the app's App Store QR code (`img/<app>/qr.svg`) and "Scan with your iPhone". It springs open and settles back without the spring. The card carries the one large soft shadow on the site. On touch screens it is a plain link.
 - **App icon:** the App Store artwork, rounded at 22.5%.
 - **Screenshots:** the App Store screenshots, `img/<app>/1.webp` to `6.webp`, 600px wide, rounded.
 - **Reveal:** inline text that opens on hover or keyboard focus. Without a pointer, a tap opens it and the words wrap like the rest of the sentence; hover styles never apply on touch, because iOS leaves :hover stuck.
@@ -88,5 +89,5 @@ The system font, no webfont. One reading size for text; names are set large (`.d
 
 **Don't**
 - Load a webfont, add gradients, or use the cyan as a fill.
-- Add shadows beyond the hairline under the bar.
+- Add shadows beyond the hairline under the bar and the open QR card.
 - Announce the easter eggs.

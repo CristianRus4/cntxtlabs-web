@@ -8,7 +8,8 @@
   one-line summary moved, and `sitemap.xml` lastmod for that page.
 - A new app page follows the others: bar with the app name, hero (icon,
   name, tagline, buttons), screenshot strip, prose. It needs its icon and
-  screenshots in `img/<slug>/`, its own `og/<slug>.png` (1200 by 630, in the
+  screenshots in `img/<slug>/`, a `qr.svg` of its App Store link
+  (https://apps.apple.com/app/id<ID>, checked to scan), its own `og/<slug>.png` (1200 by 630, in the
   style of the others), and a band on the home page.
 - The layout follows ia.net; see `DESIGN.md` before changing it.
 - Copy is plain, professional NZ English, written about what each app is
