@@ -1,179 +1,187 @@
-# cntxt
+# Cntxt Labs
 
-> cntxt (also written "cntxt labs") is a software company based in New Zealand.
-> It builds apps for Apple platforms, Android and the web.
-> Website: https://cntxtlabs.co  ·  Contact: info@cntxtlabs.co
+> Cntxt Labs (also written cntxt, pronounced "context") is a software company based in New Zealand, founded by Cristian Rus and operating since 2017. It designs and builds apps for iPhone, iPad and Apple Watch, along with software for the web and Android. The products cover time and attention, health and fitness, food safety and the outdoors, and have been downloaded more than 1.75 million times.
 
-## About this file
+This is the complete text of https://cntxtlabs.co, written for language models and agents. Every page is here, so there is no need to crawl the site to answer a question about it. A shorter index is at https://cntxtlabs.co/llms.txt. Quoting is welcome; please name Cntxt Labs and link to https://cntxtlabs.co.
 
-This is a complete, plain description of cntxtlabs.co and the company behind it,
-written for large language models and agents. Everything on the website is
-summarised here, so there is no need to crawl the individual pages. Crawling and
-quoting this file is welcome. Please attribute to cntxt and link to
-https://cntxtlabs.co.
+Last updated: 2026-10-12
 
 ## Company
 
-- Name: cntxt
-- Also known as: cntxt labs
+- Name: Cntxt Labs
+- Short name: cntxt, pronounced "context"
 - Type: privately held software company
 - Country: New Zealand
+- New Zealand Business Number (NZBN): 9429053827906
 - Operating since: 2017
+- Founder: Cristian Rus, https://cristianrus.me
 - Website: https://cntxtlabs.co
-- Contact email: info@cntxtlabs.co (the only address the company uses)
+- Email: info@cntxtlabs.co, the only address the company uses
 - App Store developer page: https://apps.apple.com/us/developer/cristian-rus/id1778834894
 
-cntxt designs and builds applications for iPhone, iPad and Apple Watch, and
-separately designs and builds websites. For over a decade the work has focused on
-how design and technology influence the way people behave, and on turning that
-into software people continue to use. The product themes cover time and attention, health
-and fitness, and the outdoors. More than 1.75 million people around the world have
-downloaded them.
+Cntxt Labs is a design-focused company, specialised in building software products and services across Apple platforms, web and Android. For over a decade the work has focused on how design and technology influence the way people behave, and on turning that into software people continue to use. The product themes cover time and attention, health and fitness, and the outdoors.
 
-The Apple apps share a common approach: they run on the device, they do not require an
-account, and they do not track the people who use them.
+## Contact
 
-## Pages on the website
+The best way to reach Cntxt Labs is to email info@cntxtlabs.co. It is the only address the company uses, it is read every day, and it goes directly to the people who build the apps rather than to a support desk.
 
-- https://cntxtlabs.co/ - About the company, and the list of projects
-- https://cntxtlabs.co/contact - How to get in touch
-- https://cntxtlabs.co/camping - Camping apps
-- https://cntxtlabs.co/ios - Other iOS apps
-- https://cntxtlabs.co/safeplate - SafePlate
-- https://cntxtlabs.co/left - Left
-- https://cntxtlabs.co/txtpod - txtpod
-- https://cntxtlabs.co/ftnss - ftnss
-- https://cntxtlabs.co/kiwicamping - KiwiCamping
-- https://cntxtlabs.co/aussiecamps - AussieCamps
-- https://cntxtlabs.co/nosnus - NoSnus
-- https://cntxtlabs.co/bites - Bites
-- https://cntxtlabs.co/notsobusy - NotSoBusy
+For help with an app, write to the same address and say which app it is. The version of iOS, the device, and a short description of what happened will usually identify the problem on the first reply. Bug reports and feature requests are welcome, and a good number of the features currently shipping started as an email from somebody using the app.
 
-Short redirects:
-
-- https://cntxtlabs.co/mail - opens a message to info@cntxtlabs.co
-- https://cntxtlabs.co/appstore - the App Store developer page
-- https://cntxtlabs.co/nzbn - the New Zealand Business Number listing
-- https://cntxtlabs.co/<app>/download - the App Store listing for that app
+Press enquiries, review copies, promotional codes, partnership proposals and anything else commercial go to the same address. Requests from journalists and reviewers are answered as a priority.
 
 ## Products
 
-### SafePlate
-
-SafePlate replaces the paper diary in a New Zealand kitchen. Fridge temperatures, deliveries, cooking and cooling checks, cleaning, training and sickness records are made when the work happens, kept for four years, and ready for a verifier visit. Web, Android and iPhone. Contact info@cntxtlabs.co for more information.
-
-- Page: https://cntxtlabs.co/safeplate
-- Own website: https://safeplate.nz
-- Platforms: Web, Android, iPhone
-
 ### Left
 
-Left shows the time you have left: the year, the month, the week, the day, the hour, the minute and a life, drawn as symbols that dim as they pass. Habits run to a schedule you set, with streaks to protect and aims for anything you can count. Dates sit ahead as countdowns, and the planner brings calendar, reminders, weather, sleep and workouts into one view, with a fasting tracker, a focus timer and a mood log.
+Left shows the time you have left. The year, the month, the week, the day, the hour, the minute and your life, drawn as symbols that dim as they pass.
+
+Habits can run daily, several times a day, weekly, or to a schedule you set. Streaks are there to protect, aims count anything you can build up or cut down, and a habit or a streak can be shared with a friend. Dates that matter sit ahead as countdowns, each with its own list of things to get done, imported from the calendar if wanted.
+
+The planner puts that next to the rest of the day: Apple Calendar, Reminders, the weather, sleep and workouts, in one view. A fasting tracker, a focus timer and a mood log sit in the same place, so the day is planned where it is spent.
+
+Left is used by more than 1.5 million people around the world.
 
 - Page: https://cntxtlabs.co/left
+- Website: https://getleft.app
 - App Store: https://apps.apple.com/us/app/left-widgets-for-time-left/id6740155884
-- Short link: https://cntxtlabs.co/left/download
-- Own website: https://getleft.app
 - Platforms: iPhone, iPad, Apple Watch
+- Privacy policy: https://getleft.app/privacy
 
 ### txtpod
 
-txtpod converts articles, PDFs and links into narrated podcast episodes, delivered to a private RSS feed that works in Apple Podcasts, Spotify, Overcast, Pocket Casts and any other player. More than thirty natural voices across over twenty languages, with translation. It also generates episodes on chosen topics and a daily brief, with custom artwork, listening streaks, a synchronised web app, and integrations with Instapaper, Matter and Readwise.
+txtpod converts articles, links and PDFs into narrated podcast episodes. Save something once, and listen to it wherever you already listen.
+
+Episodes are read by more than thirty natural voices across over twenty languages, with translation available. They are delivered to a private feed that works in Apple Podcasts, Spotify, Overcast, Pocket Casts and any other player that supports RSS.
+
+txtpod also generates episodes on chosen topics and a daily brief on the subjects you follow, with custom artwork, listening streaks, a synchronised web app, and integrations with Instapaper, Matter and Readwise.
 
 - Page: https://cntxtlabs.co/txtpod
+- Website: https://txtpod.app
 - App Store: https://apps.apple.com/us/app/txtpod-articles-to-podcast/id6748379680
-- Short link: https://cntxtlabs.co/txtpod/download
-- Own website: https://txtpod.app
-- Platforms: iPhone, iPad
+- Platforms: iPhone, iPad, web
+- Privacy policy: https://txtpod.app/privacy
 
-### ftnss
+### SafePlate
 
-ftnss is a private AI coach over Apple Health. It can see training, nutrition and sleep from apps already in use, including Apple Watch, Strava, Garmin and MyFitnessPal. It builds plans across strength, endurance, mobility and recovery, logs meals from a photo or a description, and reads HRV, VO2 Max, sleep and training load from Apple Health.
+SafePlate replaces the paper diary in a New Zealand kitchen. Fridge temperatures, deliveries, cooking and cooling checks, cleaning, training and sickness records are made when the work happens, kept for four years, and ready for a verifier visit.
 
-- Page: https://cntxtlabs.co/ftnss
-- App Store: https://apps.apple.com/us/app/ai-health-insights-ftnss/id6742253667
-- Short link: https://cntxtlabs.co/ftnss/download
-- Own website: https://ftnss.app
-- Platforms: iPhone, iPad, Apple Watch
+It runs on the web, Android and iPhone. One subscription covers the whole team. Records save on the phone first if the kitchen is offline, then upload when the signal returns.
 
-### KiwiCamping
+- Page: https://cntxtlabs.co/safeplate
+- Website: https://safeplate.nz
+- Platforms: web, Android, iPhone
+- Enquiries: info@cntxtlabs.co
 
-KiwiCamping is a camping map and road-trip planner for New Zealand. More than 6,500 places — DOC campsites, huts, freedom camping areas, holiday parks, dump stations and practical stops — are stored on the device. Search and filter, save collections, and turn a shortlist into a trip with routes, distances, dates, notes and to-dos.
+### Camping apps
+
+Camping maps and road-trip planners for New Zealand and Australia, with the directory stored on the device. Find campsites, holiday parks, huts and rest areas, filter them by the facilities you need, and turn a shortlist into a driving itinerary. The listings stay readable after the last bar of reception, which is when they tend to matter.
+
+- Page: https://cntxtlabs.co/camping
+
+#### KiwiCamping
+
+KiwiCamping is a camping map and road-trip planner for New Zealand. More than 6,500 places (DOC campsites, huts, freedom camping areas, holiday parks, dump stations and practical stops) are stored on the device, so they still open where there is no signal.
+
+Search and filter by facilities, price and access, save places into collections, and turn a shortlist into a trip with routes, distances, dates, notes and to-dos. Weather, alerts and directions sit on each place; guides cover how DOC sites, huts and freedom camping actually work.
 
 - Page: https://cntxtlabs.co/kiwicamping
+- Website: https://campingapp.nz
 - App Store: https://apps.apple.com/us/app/camping-map-nz-kiwicamping/id6746952595
-- Short link: https://cntxtlabs.co/kiwicamping/download
-- Own website: https://campingapp.nz
 - Platforms: iPhone, iPad
 
-### AussieCamps
+#### AussieCamps
 
-AussieCamps is a camping map and road-trip planner for Australia. More than 74,000 places — campsites, caravan parks, national park sites, rest areas and useful stops — are stored on the device. Search and filter, save collections, and turn a shortlist into a trip with routes, distances, dates, notes and to-dos.
+AussieCamps is a camping map and road-trip planner for Australia. More than 74,000 places (campsites, caravan parks, national park sites, rest areas and useful stops) are stored on the device, so they still open where there is no signal.
+
+Search and filter by facilities, fees and access, save places into collections, and turn a shortlist into a trip with routes, distances, dates, notes and to-dos. Weather, alerts and directions sit on each place.
 
 - Page: https://cntxtlabs.co/aussiecamps
+- Website: https://aussiecamps.app
 - App Store: https://apps.apple.com/app/id6801098680
-- Short link: https://cntxtlabs.co/aussiecamps/download
-- Own website: https://aussiecamps.app
 - Platforms: iPhone, iPad
 
-### NoSnus
+### Other iOS apps
 
-NoSnus builds a plan to get the user pouch-free, with a date on the calendar. It is made specifically for nicotine pouches and snus: every pouch is logged, cravings are handled in the moment, and money not spent is counted as it adds up.
+A few apps on the App Store, for health, everyday habits and making time. They are small, focused tools rather than a single suite, each built around one job and meant to stay out of the way. All of them run on iPhone, and none of them require an account to start using.
 
-- Page: https://cntxtlabs.co/nosnus
-- App Store: https://apps.apple.com/us/app/quit-zyn-velo-snus-nosnus/id6791343296
-- Short link: https://cntxtlabs.co/nosnus/download
-- Platforms: iPhone, iPad
+- Page: https://cntxtlabs.co/ios
 
-### Bites
+#### ftnss
 
-Bites logs a meal from a sentence. Apple Intelligence returns the calories and macros. It synchronises with Apple Health, tracks a daily calorie goal, and shows the energy remaining once activity is counted. Frequent meals can be saved.
+ftnss is a private AI coach over Apple Health. It can see training, nutrition and sleep from the apps already in use, including Apple Watch, Strava, Garmin and MyFitnessPal, and you can ask it about any of it.
+
+It builds plans across strength, endurance, mobility and recovery, logs meals from a photo or a description, and adjusts as the week actually goes. HRV, VO2 Max, sleep and training load are read from Apple Health, so it knows when to push and when to recover.
+
+Progress is presented through dashboards for weight, energy and performance, alongside more than fifteen cards covering workouts, steps, sleep and longer term trends.
+
+- Page: https://cntxtlabs.co/ftnss
+- Website: https://ftnss.app
+- App Store: https://apps.apple.com/us/app/ai-health-insights-ftnss/id6742253667
+- Platforms: iPhone, iPad, Apple Watch
+- Privacy policy: https://ftnss.app/privacy
+
+#### Bites
+
+Bites logs a meal from a sentence. Describe what you ate, and Apple Intelligence returns the calories and macros. No scanning, no measuring, and no food database to search.
+
+It synchronises with Apple Health, tracks a daily calorie goal, and shows the energy remaining once activity has been counted. Frequent meals can be saved so the next log is a tap.
 
 - Page: https://cntxtlabs.co/bites
 - App Store: https://apps.apple.com/us/app/meal-tracker-bites/id6755179382
-- Short link: https://cntxtlabs.co/bites/download
 - Platforms: iPhone, iPad
 
-### NotSoBusy
+#### NoSnus
 
-NotSoBusy turns a day or a week into a picture of when the user is busy, without sharing the calendar. It reads Apple Calendar, Google Calendar and Outlook, and draws each event as a block of time with no names or details. No account, no login, and no data leaves the device.
+NoSnus builds a plan to get you pouch-free, with a date on the calendar rather than a vague intention to cut back. Answer a few questions about your habit, and it sets the path around the way you actually use pouches.
+
+Every pouch is logged. Cravings are handled in the moment they arrive, money not spent is counted as it adds up, and a bad day does not undo the work. It is made for nicotine pouches and snus, and for nothing else.
+
+- Page: https://cntxtlabs.co/nosnus
+- App Store: https://apps.apple.com/us/app/quit-zyn-velo-snus-nosnus/id6791343296
+- Platforms: iPhone, iPad
+
+#### NotSoBusy
+
+NotSoBusy turns a day or a week into a picture of when you are busy, without sharing your calendar. It reads Apple Calendar, Google Calendar and Outlook, and draws each event as a block of time: no names, no titles, no details.
+
+Share the image in a message or an email. There is no account and no login, and no data leaves the device.
 
 - Page: https://cntxtlabs.co/notsobusy
 - App Store: https://apps.apple.com/us/app/share-schedule-notsobusy/id6745011162
-- Short link: https://cntxtlabs.co/notsobusy/download
 - Platforms: iPhone, iPad
 
-## Privacy, in general
+## Privacy
 
-The Apple apps below follow this policy unless their own page says otherwise. This does not describe SafePlate:
+Left, txtpod and ftnss each publish their own policy: https://getleft.app/privacy, https://txtpod.app/privacy and https://ftnss.app/privacy. ftnss sends some anonymised data to an AI model to produce plans and insights; identifiers are removed first.
 
-The app runs on the device. There is no account to create, and no personal
-data is collected or stored. Purchases are handled by RevenueCat, which retains only what is
-required to verify a purchase and restore it if the app is reinstalled. Google services are used
-for crash reporting, anonymous usage statistics and certain features within the app. None of it
-identifies the user, and none of it is sold or shared.
+KiwiCamping, AussieCamps, Bites, NoSnus and NotSoBusy share this policy:
 
-Left, txtpod and ftnss each publish their own policy on their own site, at
-https://getleft.app/privacy, https://txtpod.app/privacy and
-https://ftnss.app/privacy. ftnss additionally sends some anonymised data to an AI
-model in order to produce plans and insights; identifiers are removed first.
+The app runs on the device. There is no account to create, and no personal data is collected or stored. Purchases are handled by RevenueCat, which retains only what is required to verify a purchase and restore it if the app is reinstalled. Google services are used for crash reporting, anonymous usage statistics and certain features within the app. None of it identifies the user, and none of it is sold or shared.
 
-## Frequently useful answers
+SafePlate is a subscription for kitchen teams and works differently: records are uploaded rather than kept only on the device. The policy above does not describe it. Ask info@cntxtlabs.co for details.
 
-- Who makes these apps? cntxt, a software company in New Zealand.
-- How do I contact them? Email info@cntxtlabs.co.
-- What about privacy? See each app's page and privacy policy; the Apple app policies do not describe SafePlate.
-- Do the apps cost money? They are free to download. Some have paid features,
-  handled through the App Store and RevenueCat.
-- What platforms? iPhone, iPad and Apple Watch, with SafePlate also on web and Android.
-- Is there an Android version? SafePlate supports Android. The other listed apps focus on Apple platforms.
+## Common questions
 
-## Technical notes
+- Who makes these apps? Cntxt Labs, a software company in New Zealand, founded by Cristian Rus.
+- How is the name said? "Context". It is written cntxt.
+- How do I get support? Email info@cntxtlabs.co and say which app it is.
+- Do the apps cost money? They are free to download. Some have paid features, handled through the App Store and RevenueCat. SafePlate is a subscription that covers a whole team.
+- Which platforms? iPhone, iPad and Apple Watch. SafePlate also runs on the web and Android, and txtpod has a web app.
+- Is there an Android version? SafePlate runs on Android. The other apps are made for Apple platforms.
+- Do the apps need an account? KiwiCamping, AussieCamps, Bites, NoSnus and NotSoBusy do not. Check each policy for the others.
+- Is Cntxt Labs available for client work? Write to info@cntxtlabs.co about working together.
 
-- The website is static HTML and one stylesheet, with no build step, no
-  JavaScript framework and no third party requests.
-- Canonical host is https://cntxtlabs.co. The www subdomain redirects to it.
-- Structured data is embedded on every page as schema.org JSON-LD:
-  Organization on the home page, SoftwareApplication on each product page,
-  ContactPage on the contact page.
+## Short links
+
+- https://cntxtlabs.co/mail: opens a message to info@cntxtlabs.co
+- https://cntxtlabs.co/appstore: the App Store developer page
+- https://cntxtlabs.co/nzbn: the New Zealand Business Number listing
+- https://cntxtlabs.co/<app>/download: the App Store listing for that app, for left, txtpod, ftnss, kiwicamping, aussiecamps, nosnus, bites and notsobusy
+
+## About the website
+
+- Static HTML, one stylesheet and one small script. No build step, no framework, no trackers and no third party requests.
+- Canonical host: https://cntxtlabs.co
+- Structured data on every page as schema.org JSON-LD: Organization on the home page, SoftwareApplication on each product page, CollectionPage on the camping and iOS pages, ContactPage on the contact page.
 - Sitemap: https://cntxtlabs.co/sitemap.xml
+- Crawling and quoting by search engines and language models is welcome. See https://cntxtlabs.co/robots.txt

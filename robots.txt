@@ -1,9 +1,12 @@
 # https://cntxtlabs.co
 # Everything here is public. Crawling is welcome, by search engines and by
-# language models alike. For a single file describing the whole site, read
-# https://cntxtlabs.co/llms.txt
+# language models alike. For a short index of the whole site, read
+# https://cntxtlabs.co/llms.txt, and for all of it in one file,
+# https://cntxtlabs.co/llms-full.txt
 
 User-agent: *
+# Search, answers and training are all welcome. https://contentsignals.org
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # Named explicitly so there is no ambiguity about intent.
