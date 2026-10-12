@@ -178,9 +178,9 @@ It reads Apple Calendar, Google Calendar and Outlook, and you share the picture 
 
 ## Privacy
 
-Left, txtpod and ftnss each publish their own policy: https://getleft.app/privacy, https://txtpod.app/privacy and https://ftnss.app/privacy. ftnss sends some anonymised data to an AI model to produce plans and insights; identifiers are removed first.
+Left, txtpod and ftnss each publish their own policy: https://getleft.app/privacy, https://txtpod.app/privacy and https://ftnss.app/privacy. https://cntxtlabs.co/left/privacy, /txtpod/privacy and /ftnss/privacy lead there. ftnss sends some anonymised data to an AI model to produce plans and insights; identifiers are removed first.
 
-KiwiCamping, AussieCamps, Bites, NoSnus and NotSoBusy share this policy:
+KiwiCamping, AussieCamps, Bites, NoSnus and NotSoBusy share this policy, published for each app at https://cntxtlabs.co/<app>/privacy (for example https://cntxtlabs.co/nosnus/privacy):
 
 The app runs on your device. There is no account, and no personal data is collected or stored. Purchases go through RevenueCat, which keeps only what it needs to confirm a purchase and restore it if you reinstall the app. Google services are used for crash reports, anonymous usage statistics and a few features inside the app. None of it identifies you, and none of it is sold or shared.
 
@@ -202,6 +202,7 @@ SafePlate is a subscription for kitchen teams and works differently: records are
 - https://cntxtlabs.co/mail: opens a message to info@cntxtlabs.co
 - https://cntxtlabs.co/appstore: the App Store developer page
 - https://cntxtlabs.co/nzbn: the New Zealand Business Number listing
+- https://cntxtlabs.co/<app>/privacy: the privacy policy for that app
 - https://cntxtlabs.co/<app>/download: the App Store listing for that app, for left, txtpod, ftnss, kiwicamping, aussiecamps, nosnus, bites and notsobusy
 
 ## About the website

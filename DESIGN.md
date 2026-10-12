@@ -117,6 +117,7 @@ None. No shadows, no blur on the page (blur is reserved for unpublished product 
 - **Reveal:** inline text that opens on hover or keyboard focus. Without a pointer, a tap opens it and the words wrap like the rest of the sentence; hover styles never apply on touch, because iOS leaves :hover stuck. The wordmark opens on the first tap and follows its link on the second.
 - **Blurred product:** unpublished only. Name and description as transparent text with a 7px `text-shadow`, not a link, not selectable.
 - **Project row:** the name is the link, and its `::after` covers the row, so the description answers to it too.
+- **Privacy:** an app's policy is not on its page. It lives at `<app>/privacy/` in the same layout, linked by a quiet Privacy button; for Left, txtpod and ftnss that address redirects to the policy on the app's own site.
 - **Copy button:** a `.button.quiet` with `data-copy`, in an `.action` that stays hidden until the browser can copy.
 - **Menu:** Command K, Control K or `/`. A full-page `<dialog>` in the same column: what you type over the dashed rule, then the list, with `>` marking the line you are on. Pages, the email, and the appearance.
 - **Appearance:** follows the system unless chosen in the menu, stored as `data-theme` on `html` and restored in the head before first paint.

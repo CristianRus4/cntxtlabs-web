@@ -32,4 +32,5 @@
 - [Full text](https://cntxtlabs.co/llms-full.txt): Every page in full, with privacy and common questions
 - [KiwiCamping & AussieCamps](https://cntxtlabs.co/camping): Both camping apps on one page
 - [More iOS apps](https://cntxtlabs.co/ios): ftnss, Bites, NoSnus and NotSoBusy on one page
+- [Privacy policies](https://cntxtlabs.co/nosnus/privacy): each app's policy lives at /<app>/privacy
 - [Sitemap](https://cntxtlabs.co/sitemap.xml)
