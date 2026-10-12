@@ -34,60 +34,157 @@
 	<link rel="icon" href="favicon.svg" type="image/svg+xml">
 	<link rel="icon" href="favicon.png" sizes="32x32">
 	<link rel="apple-touch-icon" href="apple-touch-icon.png">
-	<script>(function (r) { if (document.referrer.indexOf(location.origin + "/") === 0) r.classList.add("within"); try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") r.setAttribute("data-theme", t); } catch (e) {} })(document.documentElement);</script>
+	<script>try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
 	<link rel="stylesheet" href="styles.css">
 	<script src="site.js" defer></script>
 	<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Cntxt Labs","alternateName":"cntxt","url":"https://cntxtlabs.co/","logo":"https://cntxtlabs.co/apple-touch-icon.png","image":"https://cntxtlabs.co/og.png","email":"info@cntxtlabs.co","description":"Cntxt Labs is a software company based in New Zealand. The work spans Apple platforms, Android and the web.","foundingDate":"2017","founder":{"@type":"Person","name":"Cristian Rus","url":"https://cristianrus.me"},"identifier":{"@type":"PropertyValue","propertyID":"NZBN","value":"9429053827906"},"sameAs":["https://apps.apple.com/us/developer/cristian-rus/id1778834894","https://www.nzbn.govt.nz/mynzbn/nzbndetails/9429053827906"],"address":{"@type":"PostalAddress","addressCountry":"NZ"},"areaServed":"Worldwide","knowsAbout":["iOS development","Apple Watch development","interaction design","web development"],"contactPoint":{"@type":"ContactPoint","email":"info@cntxtlabs.co","contactType":"customer support","availableLanguage":"English"}}</script>
 </head>
-<body class="reveal">
+<body>
 
-	<h1 class="title"><a class="titlelink reveals" href="./"><svg class="mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg><span class="cap">c</span><span class="grow">o</span>nt<span class="grow">e</span>xt<span class="grow cap">&nbsp;labs</span></a></h1>
-	<p class="sub"><span class="descriptor" id="descriptor" role="button" tabindex="0">A <em>software</em></span> company, based in <span class="reveals"><span class="strike">New Zealand</span><span class="grow grow-wide">&nbsp;the most beautiful place in the world</span></span>.</p>
+	<header class="bar">
+		<div class="bar-inner">
+			<p class="crumbs"><a class="home-link" href="./"><svg class="mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg>Cntxt Labs</a></p>
+			<nav aria-label="Site">
+				<a href="#apps">Apps</a>
+				<a href="about/">About</a>
+				<a href="contact/">Contact</a>
+			</nav>
+		</div>
+	</header>
 
-	<nav hidden>
-		<a href="./" aria-current="page">About</a>
-		<a href="./contact/">Contact</a>
-	</nav>
+	<main>
+		<section class="hero">
+			<svg class="hero-mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg>
+			<h1 class="display">Cntxt Labs</h1>
+			<p class="tagline"><span class="descriptor" id="descriptor" role="button" tabindex="0">A <em>software</em></span> company, based in <span class="reveals"><span class="strike">New Zealand</span><span class="grow grow-wide">&nbsp;the most beautiful place in the world</span></span>.</p>
+			<p class="intro"><span class="reveals">Cntxt Labs<span class="grow grow-long">&nbsp;(pronounced &ldquo;context&rdquo;)</span></span> is a small software <span class="nowrap"><span class="reveals">company<span class="grow grow-long">&nbsp;founded by <a href="https://cristianrus.me" rel="noopener">Cristian Rus</a></span></span>.</span> We design and build apps for iPhone, iPad and Apple Watch, for the web and for Android, and we keep improving them for as long as people rely on them.</p>
+		</section>
 
-	<p class="lead"><span class="reveals">Cntxt Labs<span class="grow grow-long">&nbsp;(pronounced &ldquo;context&rdquo;)</span></span> is a small software <span class="nowrap"><span class="reveals">company<span class="grow grow-long">&nbsp;founded by <a href="https://cristianrus.me" rel="noopener">Cristian Rus</a></span></span>.</span> We design and build apps for iPhone, iPad and Apple Watch, for the web and for Android.</p>
+		<section class="stats" aria-label="Today">
+			<p class="metric"><span class="figure" id="downloads">1,760,542</span><span class="stat-label">people use our apps</span></p>
+			<p class="metric"><span class="figure" id="growth">22%</span><span class="stat-label">revenue growth this month</span></p>
+			<p class="metric"><span class="figure" id="contributions">1,737</span><span class="stat-label">contributions to the codebase</span></p>
+		</section>
 
-	<p>For more than ten years our work has been about how design changes what people do. We pick an everyday problem, build the simplest thing that solves it, and keep improving it for as long as people rely on it.</p>
+		<div id="apps">
+		<section class="band" id="left">
+			<img class="app-icon" src="img/left/icon.webp" alt="" width="256" height="256">
+			<h2 class="display">Left</h2>
+			<p class="tagline">Keep the time you have left in view.</p>
+			<p class="blurb">Time is easy to ignore until it runs out. Left shows it next to your habits and plans, and more than 1.5 million people use it.</p>
+			<div class="actions">
+				<div class="action"><a class="button" href="left/">Learn more</a></div>
+				<div class="action"><a class="button quiet" href="https://apps.apple.com/us/app/left-widgets-for-time-left/id6740155884" rel="noopener">Download</a></div>
+			</div>
+			<div class="shots" aria-hidden="true">
+				<img src="img/left/4.webp" alt="" width="600" height="1298" loading="lazy" decoding="async">
+				<img src="img/left/3.webp" alt="" width="600" height="1298" loading="lazy" decoding="async">
+				<img src="img/left/6.webp" alt="" width="600" height="1298" loading="lazy" decoding="async">
+			</div>
+		</section>
 
-	<p class="metrics">Today, <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="figure" id="downloads">1,760,542</span><span class="metric-label"> people around the world use what we make</span></span>. Revenue is up <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span class="figure" id="growth">22%</span><span class="metric-label"> this month</span></span>, and the codebase has <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="1.5" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22.5" y2="12"/></svg><span class="figure" id="contributions">1,737</span><span class="metric-label"> contributions</span></span> so far.</p>
+		<section class="band ink words" id="safeplate">
+			<h2 class="display">SafePlate</h2>
+			<p class="tagline">Food safety records, kept as the work happens.</p>
+			<p class="blurb">For New Zealand kitchens, in place of the paper diary. On the web, Android and iPhone.</p>
+			<div class="actions">
+				<div class="action"><a class="button" href="safeplate/">Learn more</a></div>
+				<div class="action"><a class="button quiet" href="https://safeplate.nz" rel="noopener">safeplate.nz</a></div>
+			</div>
+		</section>
 
-	<p>If you have a question about one of the apps, or something you would like to build together, <a href="contact/">get in touch</a>.</p>
+		<section class="band" id="camping">
+			<div class="icons"><img class="app-icon" src="img/kiwicamping/icon.webp" alt="" width="256" height="256"><img class="app-icon" src="img/aussiecamps/icon.webp" alt="" width="256" height="256"></div>
+			<h2 class="display">KiwiCamping &amp; AussieCamps</h2>
+			<p class="tagline">Camping maps that work without signal.</p>
+			<p class="blurb">KiwiCamping for New Zealand and AussieCamps for Australia, with the whole directory stored on your phone.</p>
+			<div class="actions">
+				<div class="action"><a class="button" href="camping/">Learn more</a></div>
+			</div>
+			<div class="shots" aria-hidden="true">
+				<img src="img/kiwicamping/4.webp" alt="" width="600" height="1300" loading="lazy" decoding="async">
+				<img src="img/kiwicamping/3.webp" alt="" width="600" height="1300" loading="lazy" decoding="async">
+				<img src="img/aussiecamps/5.webp" alt="" width="600" height="1298" loading="lazy" decoding="async">
+			</div>
+		</section>
 
-	<ul class="projects">
-		<li>
-			<a href="left/">Left</a><span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-			<span class="desc">Time is easy to ignore until it runs out. Left keeps it in view, next to your habits and plans. Used by more than 1.5 million people.</span>
-		</li>
-		<li>
-			<a href="safeplate/">SafePlate</a><span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg></span>
-			<span class="desc">Food safety records for New Zealand kitchens, kept on a phone as the work happens instead of in a paper diary.</span>
-		</li>
-		<li>
-			<a href="camping/">KiwiCamping &amp; AussieCamps</a>
-			<span class="desc">Camping maps that keep working when the signal drops, one for New Zealand and one for Australia.</span>
-		</li>
-		<li>
-			<a href="txtpod/">txtpod</a><span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></span>
-			<span class="desc">For the articles you save and never get around to reading. txtpod reads them aloud, in your podcast app.</span>
-		</li>
-		<li>
-			<a href="nosnus/">NoSnus</a><span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></span>
-			<span class="desc">A way off nicotine pouches, planned around how you actually use them, with a quit date to aim for.</span>
-		</li>
-		<!--
-		<li>
-			<a href="ios/">Other iOS apps</a>
-			<span class="desc">A few more apps on the App Store, for health, everyday habits and making time.</span>
-		</li>
-		-->
-	</ul>
+		<section class="band ink" id="txtpod">
+			<img class="app-icon" src="img/txtpod/icon.webp" alt="" width="256" height="256">
+			<h2 class="display">txtpod</h2>
+			<p class="tagline">The articles you save, read aloud.</p>
+			<p class="blurb">For everything you mean to read and never get to. txtpod turns it into episodes in your podcast app.</p>
+			<div class="actions">
+				<div class="action"><a class="button" href="txtpod/">Learn more</a></div>
+				<div class="action"><a class="button quiet" href="https://apps.apple.com/us/app/txtpod-articles-to-podcast/id6748379680" rel="noopener">Download</a></div>
+			</div>
+			<div class="shots" aria-hidden="true">
+				<img src="img/txtpod/3.webp" alt="" width="600" height="1304" loading="lazy" decoding="async">
+				<img src="img/txtpod/4.webp" alt="" width="600" height="1304" loading="lazy" decoding="async">
+				<img src="img/txtpod/5.webp" alt="" width="600" height="1304" loading="lazy" decoding="async">
+			</div>
+		</section>
 
-	<footer>
-		<p><span class="reveals">Cntxt Labs<span class="grow grow-long">&nbsp;(pronounced &ldquo;context&rdquo;)</span></span> &ndash; Coded in <span class="reveals">N<span class="grow">ew&nbsp;</span>Z<span class="grow">ealand</span><span class="grow grow-time" id="nztime"></span></span> &ndash; &copy; <span class="reveals"><span class="grow">2017 to&nbsp;</span><span class="year"></span></span></p>
+		<section class="band" id="nosnus">
+			<img class="app-icon" src="img/nosnus/icon.webp" alt="" width="256" height="256">
+			<h2 class="display">NoSnus</h2>
+			<p class="tagline">A quit plan made for nicotine pouches.</p>
+			<p class="blurb">Built around how you actually use them, with a quit date to aim for.</p>
+			<div class="actions">
+				<div class="action"><a class="button" href="nosnus/">Learn more</a></div>
+				<div class="action"><a class="button quiet" href="https://apps.apple.com/us/app/quit-zyn-velo-snus-nosnus/id6791343296" rel="noopener">Download</a></div>
+			</div>
+			<div class="shots" aria-hidden="true">
+				<img src="img/nosnus/3.webp" alt="" width="600" height="1298" loading="lazy" decoding="async">
+				<img src="img/nosnus/4.webp" alt="" width="600" height="1298" loading="lazy" decoding="async">
+				<img src="img/nosnus/5.webp" alt="" width="600" height="1298" loading="lazy" decoding="async">
+			</div>
+		</section>
+
+			<!-- Hidden for now. More iOS apps: ios/ -->
+		</div>
+
+		<section class="band plain words">
+			<h2 class="display smaller">Something to build together?</h2>
+			<p class="tagline">Write to us. The address is read every day by the people who make the apps.</p>
+			<div class="actions">
+				<div class="action"><a class="button" href="contact/">Get in touch</a></div>
+				<div class="action"><a class="button quiet" href="about/">About us</a></div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<div class="footer-cols">
+			<div>
+				<h2>Apps</h2>
+				<ul>
+					<li><a href="left/">Left</a></li>
+					<li><a href="safeplate/">SafePlate</a></li>
+					<li><a href="kiwicamping/">KiwiCamping</a></li>
+					<li><a href="aussiecamps/">AussieCamps</a></li>
+					<li><a href="txtpod/">txtpod</a></li>
+					<li><a href="nosnus/">NoSnus</a></li>
+				</ul>
+			</div>
+			<div>
+				<h2>Company</h2>
+				<ul>
+					<li><a href="about/">About</a></li>
+					<li><a href="contact/">Contact</a></li>
+					<li><a href="https://apps.apple.com/us/developer/cristian-rus/id1778834894" rel="noopener">App Store</a></li>
+					<li><a href="https://www.nzbn.govt.nz/mynzbn/nzbndetails/9429053827906" rel="noopener">NZBN</a></li>
+				</ul>
+			</div>
+			<div>
+				<h2>For machines</h2>
+				<ul>
+					<li><a href="llms.txt">llms.txt</a></li>
+					<li><a href="llms-full.txt">Full text</a></li>
+					<li><a href="sitemap.xml">Sitemap</a></li>
+				</ul>
+			</div>
+		</div>
+		<p class="colophon"><span class="reveals">Cntxt Labs<span class="grow grow-long">&nbsp;(pronounced &ldquo;context&rdquo;)</span></span> &ndash; Coded in <span class="reveals">N<span class="grow">ew&nbsp;</span>Z<span class="grow">ealand</span><span class="grow grow-time" id="nztime"></span></span> &ndash; &copy; <span class="reveals"><span class="grow">2017 to&nbsp;</span><span class="year"></span></span></p>
 	</footer>
 
 </body>

@@ -16,80 +16,59 @@
 	<link rel="icon" href="/favicon.png" sizes="32x32">
 	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 	<style>
-		/* Self-contained: GitHub serves this file for any missing path,
-		   so a relative stylesheet link cannot be relied on here. */
-		:root { --bg:#F7F7F7; --text:#222222; --muted:#6B6B74; --rule:#D6D6D6; --blue:#00B2FF; --ease:cubic-bezier(0.22, 0.61, 0.36, 1); }
-		@media (prefers-color-scheme: dark) { :root { --bg:#070707; --text:#F0F0F0; --muted:#7A7A84; --rule:#2A2A2A; --blue:#00B2FF; } }
-		*, *::before, *::after { box-sizing: border-box; }
-		html { background-color:var(--bg); color-scheme:light dark; font-size:15px; font-weight:400;
+		/* Self-contained: GitHub serves this file for any missing path, so a
+		   relative stylesheet cannot be relied on here. A small copy of the
+		   site's bar, hero and button. */
+		:root { --bg:#F7F7F7; --text:#222222; --muted:#6B6B74; --rule:#D6D6D6; --blue:#00B2FF; --ease-out:cubic-bezier(0.16,1,0.3,1); }
+		@media (prefers-color-scheme: dark) { :root { --bg:#070707; --text:#F0F0F0; --muted:#7A7A84; --rule:#2A2A2A; } }
+		*, *::before, *::after { box-sizing:border-box; }
+		html { background-color:var(--bg); color-scheme:light dark; font-size:17px; -webkit-text-size-adjust:100%;
 			font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+		@media (min-width: 60rem) { html { font-size:18px; } }
 		::selection { background-color:rgba(0,178,255,0.22); }
-		body { font-size:1rem; color:var(--text); line-height:1.6; margin:0 auto;
-			padding:15em max(1.5em, env(safe-area-inset-right)) max(2em, env(safe-area-inset-bottom)) max(1.5em, env(safe-area-inset-left));
-			max-width:calc(600px + 3em); min-height:100vh; display:flex; flex-direction:column; }
-		@media (max-width: 34rem) { body { padding-top:6.5em; } }
-		h1 { font-size:1rem; margin-top:3em; margin-bottom:0; font-weight:500; color:var(--text); line-height:1.6; text-wrap:balance; }
-		h1 + p { margin-top:0; }
-		.title { margin:0; font-weight:700; }
-		.sub { margin:0; }
-		p { font-size:1rem; margin-top:0; margin-bottom:1.2em; text-wrap:pretty; }
+		body { margin:0; min-height:100vh; min-height:100svh; display:flex; flex-direction:column; color:var(--text); line-height:1.6; }
 		a:link, a:visited { color:var(--text); font-weight:500; text-decoration:none; transition:color 170ms ease; }
-		a:hover, a:focus-visible { color:var(--blue); }
-		a:focus-visible { outline:1px dotted currentColor; outline-offset:0.18em; }
-		.titlelink { font-weight:700; position:relative; }
-		.mark { position:absolute; left:0; bottom:calc(100% + 0.5em); width:1.7em; height:1.7em; color:currentColor; opacity:1;
-			pointer-events:none; transform:none; animation:bob 2.4s ease-in-out infinite; }
-		@keyframes bob { 0%,100%{translate:0 0} 50%{translate:0 -5px} }
-		.titlelink:hover { color:var(--blue); }
-		.grow { display:inline-block; max-width:0; opacity:0; overflow:hidden; vertical-align:bottom; white-space:nowrap;
-			transition:max-width 340ms var(--ease), opacity 260ms ease; }
-		.reveals:hover .grow, .reveals:focus-visible .grow, .reveals.open .grow { max-width:8ch; opacity:1; }
-		.reveals:hover .cap, .reveals:focus-visible .cap, .reveals.open .cap { text-transform:capitalize; }
-		.reveals:hover .grow-wide, .reveals:focus-visible .grow-wide, .reveals.open .grow-wide { max-width:40ch; }
-		.reveals:hover .grow-long, .reveals:focus-visible .grow-long, .reveals.open .grow-long { max-width:40ch; }
-		.strike { text-decoration:line-through; text-decoration-color:transparent; text-decoration-thickness:1px;
-			transition:text-decoration-color 200ms ease; }
-		.reveals:hover .strike, .reveals.open .strike { text-decoration-color:currentColor; }
-		@media (max-width: 34rem) { .grow-wide { display:none; } }
-		@media (hover: none) { .reveals:not(a) { cursor:pointer; } }
-		footer { font-size:0.8667rem; margin-top:auto; padding-top:0.75em; color:var(--muted);
-			background-image:repeating-linear-gradient(90deg,var(--rule) 0 3px,transparent 3px 9px);
-			background-size:12px 1px; background-repeat:repeat-x; animation:rule-crawl 22s linear infinite; }
-		@keyframes rule-crawl { to { background-position:12px 0; } }
-		footer p { margin:0; font-size:inherit; }
-		@keyframes fadeInFromBottom { from { opacity:0; transform:translateY(0.9em); } to { opacity:1; transform:none; } }
-		body > * { animation:fadeInFromBottom 680ms cubic-bezier(0.16,1,0.3,1) forwards; opacity:0; }
-		body > *:nth-child(2) { animation-delay:60ms; }
-		body > *:nth-child(3) { animation-delay:120ms; }
-		body > *:nth-child(4) { animation-delay:180ms; }
-		@media (prefers-reduced-motion: reduce) { body > * { animation:none; opacity:1; transform:none; } .grow, .strike, a { transition:none; } .mark, footer { animation:none; } }
+		a:focus-visible { color:var(--blue); outline:1px dotted currentColor; outline-offset:0.18em; }
+		@media (hover: hover) { a:hover { color:var(--blue); } }
+		.bar-inner { max-width:67rem; height:3rem; margin:0 auto; padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; }
+		.home-link { display:inline-flex; align-items:center; gap:0.5em; }
+		a.home-link:link, a.home-link:visited { font-weight:700; }
+		.mark { width:1.05em; height:1.18em; }
+		nav { display:flex; gap:1.4em; }
+		nav a:link, nav a:visited { font-weight:400; }
+		main { flex:1; max-width:67rem; width:100%; margin:0 auto; padding:clamp(3.5rem,10vw,7rem) 1.5rem 4rem; text-align:center; }
+		h1 { margin:0; font-size:clamp(2.6rem,1.5rem + 4vw,4.3rem); font-weight:700; line-height:1.04; letter-spacing:-0.03em; }
+		p { margin:0.6em auto 0; max-width:30rem; font-size:clamp(1.15rem,1rem + 0.7vw,1.5rem); line-height:1.35; }
+		.button:link, .button:visited { display:inline-flex; align-items:center; margin-top:2rem; min-height:2.9em; padding:0.7em 1.5em;
+			border-radius:999px; background-color:var(--text); color:var(--bg); font-weight:600; transition:transform 240ms ease; }
+		@media (hover: hover) { .button:hover { color:var(--bg); transform:scale(1.03); } }
+		.button:focus-visible { color:var(--bg); outline:2px solid var(--blue); outline-offset:3px; }
+		@keyframes up { from { opacity:0; transform:translateY(0.9em); } }
+		main > * { animation:up 720ms var(--ease-out) both; }
+		main > :nth-child(2) { animation-delay:80ms; }
+		main > :nth-child(3) { animation-delay:160ms; }
+		@media (prefers-reduced-motion: reduce) { main > * { animation:none; } a, .button { transition:none; } }
 	</style>
-	<title>Not found · cntxt</title>
+	<title>Not found · Cntxt Labs</title>
 </head>
 <body>
 
-	<p class="title"><a class="titlelink reveals" href="/"><svg class="mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg><span class="cap">c</span><span class="grow">o</span>nt<span class="grow">e</span>xt</a></p>
-	<p class="sub">A software company, based in <span class="reveals"><span class="strike">New Zealand</span><span class="grow grow-wide">&nbsp;the most beautiful place in the world</span></span>.</p>
+	<header class="bar">
+		<div class="bar-inner">
+			<a class="home-link" href="/"><svg class="mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg>Cntxt Labs</a>
+			<nav aria-label="Site">
+				<a href="/#apps">Apps</a>
+				<a href="/about/">About</a>
+				<a href="/contact/">Contact</a>
+			</nav>
+		</div>
+	</header>
 
-	<h1 class="reveals"><span class="strike">Not found</span><span class="grow grow-long">&nbsp;Still here. Just not this URL.</span></h1>
+	<main>
+		<h1>Not found</h1>
+		<p>There is nothing at this address. The page may have moved, or it was never here.</p>
+		<a class="button" href="/">Go to the home page</a>
+	</main>
 
-	<p>There is nothing at this address. The page may have moved, or it was never here. <a href="/">Go back to the home page</a>.</p>
-
-	<footer>
-		<p><span class="reveals">Cntxt Labs<span class="grow grow-long">&nbsp;(pronounced &ldquo;context&rdquo;)</span></span> &ndash; Coded in <span class="reveals">N<span class="grow">ew&nbsp;</span>Z<span class="grow">ealand</span></span> &ndash; &copy; <span class="reveals"><span class="grow">2017 to&nbsp;</span><span class="year"></span></span></p>
-	</footer>
-
-	<script>
-	document.querySelectorAll(".year").forEach(function(e){e.textContent=new Date().getFullYear();});
-	if (window.matchMedia("(hover: none)").matches) {
-		document.querySelectorAll(".reveals").forEach(function (el) {
-			if (el.classList.contains("titlelink")) return;
-			el.addEventListener("click", function (e) {
-				if (el.querySelector(".grow-wide") && !el.querySelector(".grow:not(.grow-wide)")) return;
-				el.classList.toggle("open");
-			});
-		});
-	}
-	</script>
 </body>
 </html>

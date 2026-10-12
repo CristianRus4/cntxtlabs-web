@@ -19,9 +19,15 @@ Last updated: 2026-10-12
 - Email: info@cntxtlabs.co, the only address the company uses
 - App Store developer page: https://apps.apple.com/us/developer/cristian-rus/id1778834894
 
-Cntxt Labs is a small software company founded by Cristian Rus. It designs and builds apps for iPhone, iPad and Apple Watch, for the web and for Android.
+The About page (https://cntxtlabs.co/about), in full:
 
-For more than ten years the work has been about how design changes what people do. The company picks an everyday problem, builds the simplest thing that solves it, and keeps improving it for as long as people rely on it. The apps cover time and attention, health and habits, food safety and the outdoors.
+Cntxt Labs is a small software company, founded by Cristian Rus in 2017. It designs and builds apps for iPhone, iPad and Apple Watch, for the web and for Android, and more than 1.75 million people around the world have downloaded them.
+
+For more than ten years the work has been about how design changes what people do. The company picks an everyday problem, builds the simplest thing that solves it, and keeps improving it for as long as people rely on it. Left helps people see their time. txtpod turns reading into listening. SafePlate replaces the paper food safety diary in New Zealand kitchens. KiwiCamping and AussieCamps find a place to camp without signal, and NoSnus helps people stop using nicotine pouches.
+
+Most of the apps run on your phone, need no account and do not track you. When an app needs more than that, its own privacy policy says exactly what it does and why.
+
+Alongside its own apps, Cntxt Labs designs and builds apps and websites with a small number of other teams. Write to info@cntxtlabs.co about working together.
 
 ## Contact
 
@@ -182,8 +188,8 @@ SafePlate is a subscription for kitchen teams and works differently: records are
 
 ## About the website
 
-- Static HTML, one stylesheet and one small script. No build step, no framework, no trackers and no third party requests.
+- Static HTML, one stylesheet and one small script. No build step, no framework, no trackers and no third party requests. App icons and screenshots are served from the site itself.
 - Canonical host: https://cntxtlabs.co
-- Structured data on every page as schema.org JSON-LD: Organization on the home page, SoftwareApplication on each product page, CollectionPage on the camping and iOS pages, ContactPage on the contact page.
+- Structured data on every page as schema.org JSON-LD: Organization on the home page, SoftwareApplication on each product page, CollectionPage on the camping and iOS pages, AboutPage on the about page, ContactPage on the contact page.
 - Sitemap: https://cntxtlabs.co/sitemap.xml
 - Crawling and quoting by search engines and language models is welcome. See https://cntxtlabs.co/robots.txt

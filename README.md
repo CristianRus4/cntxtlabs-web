@@ -9,20 +9,21 @@ Plain static HTML, one stylesheet and one small script. No build step, no
 dependencies.
 
 ```
-index.html          about, and the list of apps
+index.html          the company, the numbers, and a band for each app
+about/              who, how and why
 contact/            info@cntxtlabs.co
-<app>/              one directory per app: description, download, privacy
-styles.css          the whole design system
+<app>/              one directory per app: what it is, why, download, privacy
+img/<app>/          App Store icon and screenshots, as webp
+styles.css          the whole design system (see DESIGN.md)
 site.js             the behaviour every page shares, loaded with defer
 llms.txt            a short index of the site for language models
 llms-full.txt       every page in one file, for language models
 og/                 one social preview image per page, 1200 by 630
 ```
 
-Each page's `<head>` also carries a one-line inline script. It marks an
-arrival from another page on the site, so the masthead holds still instead
-of animating in again, and it restores an appearance chosen in the menu
-before anything is drawn. It runs before the stylesheet on purpose.
+Each page's `<head>` also carries a one-line inline script that restores an
+appearance chosen in the menu before anything is drawn. It runs before the
+stylesheet on purpose.
 
 When a page's copy changes, change `llms-full.txt` to match, and `llms.txt`
 if the one-line summary moved.
@@ -32,12 +33,9 @@ Each app gets an extensionless URL from its directory: `cntxtlabs.co/left`,
 
 ## The design
 
-Lifted from cristianrus.me: grey body text on off-white, near-black for
-headings and links, everything at one font size with weight carrying the
-hierarchy. Links have no underline until you hover. Nothing is dimmed with
-opacity.
-
-Hovering the wordmark puts the vowels back: `cntxt` becomes `context`.
+After [ia.net](https://ia.net): a slim bar, big bold names, short taglines,
+full-width bands that alternate grey and ink, and one pill button per
+section. The details are in `DESIGN.md`.
 
 ## Working on it
 

@@ -22,7 +22,8 @@
 
 ## Company
 
-- [About](https://cntxtlabs.co/): What the company does, and the list of products
+- [Home](https://cntxtlabs.co/): The company in a sentence, the numbers, and every app
+- [About](https://cntxtlabs.co/about): Who started Cntxt Labs, how it works, and working together
 - [Contact](https://cntxtlabs.co/contact): Support, bug reports, press and partnerships, all by email to info@cntxtlabs.co
 - [App Store developer page](https://apps.apple.com/us/developer/cristian-rus/id1778834894): Every Apple app in one place
 
