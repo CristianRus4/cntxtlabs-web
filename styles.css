@@ -230,7 +230,15 @@ a:focus-visible {
 /* What kind of company. Different on every load, and on every click. */
 
 .descriptor {
+	display: inline-block;
 	cursor: pointer;
+}
+
+/* A reveal with punctuation after it. The collapsed text is an inline
+   block, which would otherwise let the comma wrap onto a line of its own. */
+
+.nowrap {
+	white-space: nowrap;
 }
 
 .descriptor:focus-visible {
@@ -290,10 +298,6 @@ a:focus-visible {
 	0%, 100% { translate: 0 0; }
 	50% { translate: 0 -5px; }
 }
-
-/* No hover on a phone, so the mark arrives on its own and stays. Same
-   entrance as the hover on desktop, then it keeps bobbing. Desktop is
-   untouched. */
 
 /* Typed the company name. Everything that hides comes out for a moment. */
 
@@ -356,12 +360,15 @@ a:focus-visible {
 	}
 }
 
+/* No hover on a phone, so the mark arrives on its own, bobs twice to say
+   hello, and then rests. Anything that moves for good is a distraction. */
+
 @media (max-width: 34rem), (hover: none) {
 	.mark {
 		color: var(--text);
 		pointer-events: auto;
 		animation: markIn 560ms var(--ease-out) 700ms forwards,
-			bob 2.4s ease-in-out 1260ms infinite;
+			bob 2.4s ease-in-out 1260ms 2;
 	}
 
 	.titlelink:hover .mark,
@@ -460,20 +467,18 @@ ul {
 	margin-top: 0.75em;
 }
 
-/* Keep the main page focused on the primary products. */
-.projects:not(.collection) {
-	display: flex;
-	flex-direction: column;
+.projects li {
+	position: relative;
+	margin-bottom: 1.5em;
 }
 
-.projects:not(.collection) li:nth-child(1) { order: 1; }
-.projects:not(.collection) li:nth-child(2) { order: 4; }
-.projects:not(.collection) li:nth-child(3) { order: 2; }
-.projects:not(.collection) li:nth-child(4) { order: 3; }
-.projects:not(.collection) li:nth-child(5) { order: 5; }
+/* The name is the link, but the whole row answers to it: point at or tap
+   the description and you are pointing at the name. */
 
-.projects li {
-	margin-bottom: 1.5em;
+.projects li > a::after {
+	content: "";
+	position: absolute;
+	inset: 0;
 }
 
 .projects .desc {
@@ -510,10 +515,6 @@ ul {
 }
 
 @media (hover: hover) and (min-width: 48rem) {
-	.projects li {
-		position: relative;
-	}
-
 	.sym {
 		display: block;
 		position: absolute;
@@ -563,12 +564,27 @@ ul {
 }
 
 /* Footer. Held to the bottom. The dashed rule walks slowly, like a
-   cursor at the end of the page. */
+   cursor at the end of the page. The rule is one tile wider than the
+   footer and slides by that tile, so the walk is a transform the
+   compositor runs, not a repaint on every frame. */
 
 footer {
+	position: relative;
+	overflow: hidden;
+	overflow: clip;
 	margin-top: auto;
 	padding-top: 0.75em;
-	border-top: none;
+	color: var(--muted);
+	text-align: left;
+}
+
+footer::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: -12px;
+	right: 0;
+	height: 1px;
 	background-image: repeating-linear-gradient(
 		90deg,
 		var(--rule) 0 3px,
@@ -576,14 +592,11 @@ footer {
 	);
 	background-size: 12px 1px;
 	background-repeat: repeat-x;
-	background-position: 0 0;
 	animation: rule-crawl 22s linear infinite;
-	color: var(--muted);
-	text-align: left;
 }
 
 @keyframes rule-crawl {
-	to { background-position: 12px 0; }
+	to { transform: translateX(12px); }
 }
 
 footer p {
@@ -605,25 +618,55 @@ footer p {
 }
 
 .reveal > * {
-	animation: fadeInFromBottom 680ms var(--ease-out) forwards;
-	opacity: 0;
+	animation: fadeInFromBottom 680ms var(--ease-out) var(--d, 0ms) both;
 }
 
-.reveal > *:nth-child(1) { animation-delay: calc(0 * var(--step)); }
-.reveal > *:nth-child(2) { animation-delay: calc(1 * var(--step)); }
-.reveal > *:nth-child(3) { animation-delay: calc(2 * var(--step)); }
-.reveal > *:nth-child(4) { animation-delay: calc(3 * var(--step)); }
-.reveal > *:nth-child(5) { animation-delay: calc(4 * var(--step)); }
-.reveal > *:nth-child(6) { animation-delay: calc(5 * var(--step)); }
-.reveal > *:nth-child(7) { animation-delay: calc(6 * var(--step)); }
-.reveal > *:nth-child(8) { animation-delay: calc(7 * var(--step)); }
-.reveal > *:nth-child(n + 9) { animation-delay: calc(8 * var(--step)); }
+.reveal > *:nth-child(2) { --d: calc(1 * var(--step)); }
+.reveal > *:nth-child(3) { --d: calc(2 * var(--step)); }
+.reveal > *:nth-child(4) { --d: calc(3 * var(--step)); }
+.reveal > *:nth-child(5) { --d: calc(4 * var(--step)); }
+.reveal > *:nth-child(6) { --d: calc(5 * var(--step)); }
+.reveal > *:nth-child(7) { --d: calc(6 * var(--step)); }
+.reveal > *:nth-child(8) { --d: calc(7 * var(--step)); }
+.reveal > *:nth-child(n + 9) { --d: calc(8 * var(--step)); }
+
+/* A list does not arrive as one block. Its rows follow each other in. */
+
+.reveal > .projects {
+	animation: none;
+}
+
+.reveal > .projects > li {
+	animation: fadeInFromBottom 680ms var(--ease-out) both;
+	animation-delay: calc(var(--d, 0ms) + var(--i, 0) * 55ms);
+}
+
+.reveal > .projects > li:nth-child(2) { --i: 1; }
+.reveal > .projects > li:nth-child(3) { --i: 2; }
+.reveal > .projects > li:nth-child(4) { --i: 3; }
+.reveal > .projects > li:nth-child(n + 5) { --i: 4; }
+
+/* Coming from another page on the site, the masthead is already where it
+   belongs. It stays put and only the page under it arrives. */
+
+.within .reveal > .title,
+.within .reveal > .sub {
+	animation: none;
+}
+
+/* Between pages, where the browser can, the old page hands over to the
+   new one with a short crossfade instead of a cut. */
+
+@media (prefers-reduced-motion: no-preference) {
+	@view-transition {
+		navigation: auto;
+	}
+}
 
 @media (prefers-reduced-motion: reduce) {
-	.reveal > * {
+	.reveal > *,
+	.reveal > .projects > li {
 		animation: none;
-		opacity: 1;
-		transform: none;
 	}
 
 	.grow,
@@ -655,7 +698,7 @@ footer p {
 		transform: none;
 	}
 
-	footer {
+	footer::before {
 		animation: none;
 	}
 

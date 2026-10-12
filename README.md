@@ -5,14 +5,25 @@ Lives at [cntxtlabs.co](https://cntxtlabs.co).
 
 ## What's here
 
-Plain static HTML and one stylesheet. No build step, no dependencies.
+Plain static HTML, one stylesheet and one small script. No build step, no
+dependencies.
 
 ```
 index.html          about, and the list of apps
 contact/            info@cntxtlabs.co
 <app>/              one directory per app: description, download, privacy
 styles.css          the whole design system
+site.js             the behaviour every page shares, loaded with defer
+llms.txt            a short index of the site for language models
+llms-full.txt       every page in one file, for language models
 ```
+
+Each page's `<head>` also carries a one-line inline script that marks an
+arrival from another page on the site, so the masthead holds still instead
+of animating in again. It runs before the stylesheet on purpose.
+
+When a page's copy changes, change `llms-full.txt` to match, and `llms.txt`
+if the one-line summary moved.
 
 Each app gets an extensionless URL from its directory: `cntxtlabs.co/left`,
 `cntxtlabs.co/txtpod`, and so on.

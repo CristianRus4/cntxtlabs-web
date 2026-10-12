@@ -94,7 +94,7 @@ A paper field and a near-black field, with one accent used sparingly.
 
 ## Layout
 
-A single column, `max-width: calc(600px + 3em)`, padding 15em top (10em on small screens) and 1.5em sides. Flex column so the footer can sit at the bottom of short pages.
+A single column, `max-width: calc(600px + 3em)`, padding 15em top (6.5em on small screens) and 1.5em sides. Flex column so the footer can sit at the bottom of short pages.
 
 Rhythm: 0 between a title and its first line, 1.2em between paragraphs, 0.75em before a product list, 1.5em between products, 3em before the lead. Tight groups, then a real break.
 
@@ -114,8 +114,16 @@ None. No shadows, no blur on the page (blur is reserved for unpublished product 
 - **Link:** 500, no underline, cyan on hover and `:focus-visible` with a 1px dotted outline.
 - **Outlink:** stacked `> Download` / `> Website` lines, padded for a thumb.
 - **Reveal:** inline text that opens on hover, keyboard focus, or a tap when there is no hover.
-- **Blurred product:** name and description `filter: blur(3.5px)`, not a link, not selectable.
+- **Blurred product:** unpublished only. Name and description as transparent text with a 7px `text-shadow`, not a link, not selectable.
+- **Project row:** the name is the link, and its `::after` covers the row, so the description answers to it too.
 - **404:** self-contained. Do not point it at `styles.css`.
+
+## Motion
+
+- **Arrival:** each block rises 0.9em and fades in, 80ms apart. A project list hands its delay to its rows, which follow 55ms apart.
+- **Between pages:** the masthead is already in place and does not animate again. Where the browser supports it, the pages crossfade.
+- **Nothing loops on its own** except the footer rule, which runs on the compositor. The mark bobs while you hover it, or twice when it arrives on a phone.
+- Every animation stops under `prefers-reduced-motion`.
 
 ## Do's and Don'ts
 
