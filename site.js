@@ -209,13 +209,21 @@
 	});
 	wake();
 
-	// On a phone there is no hover, so a tap opens a reveal.
+	// On a phone there is no hover, so a tap opens a reveal and another
+	// closes it. The wordmark is also the link home: the first tap says its
+	// name in full and the second follows it. On the home page, where the
+	// link would only reload the page, it just opens and closes.
 	if (window.matchMedia("(hover: none)").matches) {
 		document.querySelectorAll(".reveals").forEach(function (el) {
-			if (el.classList.contains("titlelink")) return;
 			el.addEventListener("click", function (e) {
-				if (el.querySelector(".grow-wide") && !el.querySelector(".grow:not(.grow-wide)")) return;
-				if (e.target.closest && e.target.closest("a") && !el.matches("a")) return;
+				if (el.matches("a")) {
+					var here = el.href.split("#")[0] === window.location.href.split("#")[0];
+					if (!here && el.classList.contains("open")) return;
+					e.preventDefault();
+					el.classList.toggle("open");
+					return;
+				}
+				if (e.target.closest && e.target.closest("a")) return;
 				el.classList.toggle("open");
 			});
 		});
@@ -327,11 +335,11 @@
 	var canCopy = !!(navigator.clipboard && window.isSecureContext);
 	document.querySelectorAll("[data-copy]").forEach(function (b) {
 		if (!canCopy) return;
-		b.hidden = false;
+		(b.closest(".action") || b).hidden = false;
 		var label = b.textContent;
 		b.addEventListener("click", function () {
 			copy(b.getAttribute("data-copy")).then(function () {
-				b.textContent = "> Copied";
+				b.textContent = "Copied";
 				setTimeout(function () { b.textContent = label; }, 1600);
 			}, function () {});
 		});

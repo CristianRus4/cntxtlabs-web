@@ -72,7 +72,7 @@ A paper field and a near-black field, with one accent used sparingly.
 ### Neutral
 - **Paper** (#F7F7F7) / **Ink** (#222222) in light.
 - **Void** (#070707) / **Paper-on-dark** (#F0F0F0) in dark.
-- **Quiet** (#6B6B74 light, #7A7A84 dark): the footer, quiet labels like Next, and hints in the menu. Meets WCAG AA.
+- **Quiet** (#6B6B74 light, #7A7A84 dark): the footer, button captions, and hints in the menu. Meets WCAG AA.
 - **Hairline** (#D6D6D6 / #2A2A2A): dashed footer rule.
 
 **The One Voice Rule.** The accent is a reaction, never a fill.
@@ -106,18 +106,17 @@ None. No shadows, no blur on the page (blur is reserved for unpublished product 
 
 ## Shapes
 
-**The Square Rule.** Radius is 0. Icons are 24px strokes. The mark is the only custom shape.
+**The Square Rule.** Radius is 0, except buttons, which are pills after iA. Icons are 24px strokes. The mark is the only custom shape.
 
 ## Components
 
 - **Wordmark:** 700, vowels collapse into `.grow` until hover or the `cntxt` easter egg.
 - **Link:** 500, no underline, cyan on hover and `:focus-visible` with a 1px dotted outline.
-- **Outlink:** stacked `> Download` / `> Website` lines, padded for a thumb.
-- **Reveal:** inline text that opens on hover, keyboard focus, or a tap when there is no hover.
+- **Button:** a pill in the ink colour with the label in the paper colour, so it inverts in dark mode. `.quiet` is the secondary, in a tint of the ink. A short `.caption` sits under each, inside `.action`, inside `.actions`. Hover leans in (scale 1.03), press gives (0.97).
+- **Reveal:** inline text that opens on hover or keyboard focus. Without a pointer, a tap opens it and the words wrap like the rest of the sentence; hover styles never apply on touch, because iOS leaves :hover stuck. The wordmark opens on the first tap and follows its link on the second.
 - **Blurred product:** unpublished only. Name and description as transparent text with a 7px `text-shadow`, not a link, not selectable.
 - **Project row:** the name is the link, and its `::after` covers the row, so the description answers to it too.
-- **Next:** a quiet `h2.label` and one project row at the end of each product page, walking the homepage order round in a ring.
-- **Copy button:** a `<button class="copy" data-copy>` inside `.outlinks`, drawn as one of the lines. Hidden until the browser can copy.
+- **Copy button:** a `.button.quiet` with `data-copy`, in an `.action` that stays hidden until the browser can copy.
 - **Menu:** Command K, Control K or `/`. A full-page `<dialog>` in the same column: what you type over the dashed rule, then the list, with `>` marking the line you are on. Pages, the email, and the appearance.
 - **Appearance:** follows the system unless chosen in the menu, stored as `data-theme` on `html` and restored in the head before first paint.
 - **404:** self-contained. Do not point it at `styles.css`.

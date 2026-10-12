@@ -1,6 +1,6 @@
 # Cntxt Labs
 
-> Cntxt Labs (also written cntxt, pronounced "context") is a software company based in New Zealand, founded by Cristian Rus and operating since 2017. It designs and builds apps for iPhone, iPad and Apple Watch, along with software for the web and Android. The products cover time and attention, health and fitness, food safety and the outdoors, and have been downloaded more than 1.75 million times.
+> Cntxt Labs (also written cntxt, pronounced "context") is a small software company in New Zealand, founded by Cristian Rus and operating since 2017. It designs and builds apps for iPhone, iPad and Apple Watch, for the web and for Android. More than 1.75 million people around the world have downloaded its apps.
 
 - Contact: info@cntxtlabs.co. It is the only address the company uses, for support, press and partnerships alike.
 - Based in New Zealand. NZBN 9429053827906.
@@ -10,15 +10,15 @@
 
 ## Products
 
-- [Left](https://cntxtlabs.co/left): Shows the time you have left in the year, month, week, day and a life, with habits, streaks, countdowns and a daily planner. Used by more than 1.5 million people. iPhone, iPad, Apple Watch. Website: https://getleft.app
-- [SafePlate](https://cntxtlabs.co/safeplate): Food safety records for New Zealand kitchens, kept as the work happens, held for four years and ready for a verifier visit. Web, Android, iPhone. Website: https://safeplate.nz
-- [KiwiCamping](https://cntxtlabs.co/kiwicamping): Camping map and road-trip planner for New Zealand, with more than 6,500 places stored on the device for use without signal. iPhone, iPad. Website: https://campingapp.nz
-- [AussieCamps](https://cntxtlabs.co/aussiecamps): Camping map and road-trip planner for Australia, with more than 74,000 places stored on the device for use without signal. iPhone, iPad. Website: https://aussiecamps.app
-- [txtpod](https://cntxtlabs.co/txtpod): Turns articles, links and PDFs into narrated podcast episodes in a private RSS feed, with more than thirty voices across over twenty languages. iPhone, iPad and a web app. Website: https://txtpod.app
-- [NoSnus](https://cntxtlabs.co/nosnus): A quit plan for nicotine pouches and snus, with a quit date, help with cravings and a count of money saved. iPhone, iPad.
-- [ftnss](https://cntxtlabs.co/ftnss): A private AI coach over Apple Health, for training, nutrition, sleep and recovery. iPhone, iPad, Apple Watch. Website: https://ftnss.app
-- [Bites](https://cntxtlabs.co/bites): Calories and macros from a one-sentence description of a meal, using Apple Intelligence. iPhone, iPad.
-- [NotSoBusy](https://cntxtlabs.co/notsobusy): Shares when you are busy as a picture of blocks of time, without sharing any calendar details. iPhone, iPad.
+- [Left](https://cntxtlabs.co/left): Keeps the time you have left in view (today, this week, this year and a whole life) next to your habits and plans. Used by more than 1.5 million people. iPhone, iPad, Apple Watch. Website: https://getleft.app
+- [SafePlate](https://cntxtlabs.co/safeplate): Replaces the paper food safety diary in New Zealand kitchens. Records are made on a phone as the work happens and kept for four years. Web, Android, iPhone. Website: https://safeplate.nz
+- [KiwiCamping](https://cntxtlabs.co/kiwicamping): A camping map for New Zealand that works without signal, with more than 6,500 DOC campsites, huts, freedom camping spots and holiday parks. iPhone, iPad. Website: https://campingapp.nz
+- [AussieCamps](https://cntxtlabs.co/aussiecamps): A camping map for Australia that works without signal, with more than 74,000 campsites, caravan parks, national park sites and rest areas. iPhone, iPad. Website: https://aussiecamps.app
+- [txtpod](https://cntxtlabs.co/txtpod): Turns the articles, links and PDFs you save into podcast episodes in a private feed, read by natural voices in more than twenty languages. iPhone, iPad and the web. Website: https://txtpod.app
+- [NoSnus](https://cntxtlabs.co/nosnus): A quit plan made for nicotine pouches and snus, built around how you use them, with a quit date to aim for. iPhone, iPad.
+- [ftnss](https://cntxtlabs.co/ftnss): A private AI coach that reads your Apple Health data and turns it into training, nutrition and recovery advice. iPhone, iPad, Apple Watch. Website: https://ftnss.app
+- [Bites](https://cntxtlabs.co/bites): Logs a meal from one sentence; Apple Intelligence works out the calories and macros. iPhone, iPad.
+- [NotSoBusy](https://cntxtlabs.co/notsobusy): Shows when you are busy without sharing your calendar: a picture of busy and free time with no event details. iPhone, iPad.
 
 ## Company
 
@@ -30,5 +30,5 @@
 
 - [Full text](https://cntxtlabs.co/llms-full.txt): Every page in full, with privacy and common questions
 - [KiwiCamping & AussieCamps](https://cntxtlabs.co/camping): Both camping apps on one page
-- [Other iOS apps](https://cntxtlabs.co/ios): ftnss, Bites, NoSnus and NotSoBusy on one page
+- [More iOS apps](https://cntxtlabs.co/ios): ftnss, Bites, NoSnus and NotSoBusy on one page
 - [Sitemap](https://cntxtlabs.co/sitemap.xml)

@@ -7,4 +7,6 @@
 - When page copy changes, update `llms-full.txt` to match, `llms.txt` if a
   one-line summary moved, and `sitemap.xml` lastmod for that page.
 - A new product page needs its own `og/<slug>.png` (1200 by 630, in the
-  style of the others) and a Next row.
+  style of the others).
+- Copy is plain, professional NZ English, written about what each app is
+  and why it exists rather than a list of features. No em dashes.

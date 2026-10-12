@@ -152,18 +152,10 @@ h2 {
 /* Sit the following line against the title, same as cntxt and its subtitle. */
 h1:not(.title) + p,
 h1:not(.title) + ul,
-h2 + p,
-h2 + ul {
+h2 + p {
 	margin-top: 0;
 }
 
-/* A quiet heading: the word that introduces a row, like Next. */
-
-h2.label {
-	margin-top: 1.5em;
-	font-weight: 400;
-	color: var(--muted);
-}
 
 p {
 	margin-top: 0;
@@ -202,9 +194,17 @@ a:visited {
 	transition: color 170ms ease;
 }
 
-a:hover,
 a:focus-visible {
 	color: var(--blue);
+}
+
+/* Hover colours only where there is a real pointer. On a phone, :hover
+   sticks to whatever was last touched and leaves it blue. */
+
+@media (hover: hover) {
+	a:hover {
+		color: var(--blue);
+	}
 }
 
 a:focus-visible {
@@ -212,9 +212,10 @@ a:focus-visible {
 	outline-offset: 0.18em;
 }
 
-/* Reveals: text that unfolds on hover. The wordmark puts its vowels
-   back, the subtitle thinks highly of the place, the footer counts
-   from the beginning. */
+/* Reveals: text that unfolds. The wordmark puts its vowels back, the
+   subtitle thinks highly of the place, the footer counts from the
+   beginning. With a pointer they open on hover or keyboard focus; on a
+   phone a tap opens one and another tap closes it. */
 
 .grow {
 	display: inline-block;
@@ -226,35 +227,79 @@ a:focus-visible {
 	transition: max-width var(--duration) var(--ease), opacity 260ms ease;
 }
 
-.reveals:hover .grow,
 .reveals:focus-visible .grow,
 .reveals.open .grow {
 	max-width: 8ch;
 	opacity: 1;
 }
 
-.reveals:hover .grow.grow-wide,
 .reveals:focus-visible .grow.grow-wide,
-.reveals.open .grow.grow-wide {
-	max-width: 40ch;
-}
-
-.reveals:hover .grow.grow-time,
-.reveals:focus-visible .grow.grow-time,
-.reveals.open .grow.grow-time {
-	max-width: 22ch;
-}
-
-.reveals:hover .grow.grow-long,
+.reveals.open .grow.grow-wide,
 .reveals:focus-visible .grow.grow-long,
 .reveals.open .grow.grow-long {
 	max-width: 40ch;
 }
 
-.reveals:hover .cap,
+.reveals:focus-visible .grow.grow-time,
+.reveals.open .grow.grow-time {
+	max-width: 22ch;
+}
+
 .reveals:focus-visible .cap,
 .reveals.open .cap {
 	text-transform: capitalize;
+}
+
+@media (hover: hover) {
+	.reveals:hover .grow {
+		max-width: 8ch;
+		opacity: 1;
+	}
+
+	.reveals:hover .grow.grow-wide,
+	.reveals:hover .grow.grow-long {
+		max-width: 40ch;
+	}
+
+	.reveals:hover .grow.grow-time {
+		max-width: 22ch;
+	}
+
+	.reveals:hover .cap {
+		text-transform: capitalize;
+	}
+
+	.reveals:hover .strike {
+		text-decoration-color: currentColor;
+	}
+}
+
+/* On a phone the hidden words are not squeezed into a line that cannot
+   wrap. Closed, they are not there at all. Open, they sit in the sentence
+   like any other words, wrap where they need to, and fade in. */
+
+@media (hover: none) {
+	.grow {
+		display: none;
+		max-width: none;
+		white-space: normal;
+		transition: none;
+	}
+
+	.reveals.open .grow {
+		display: inline;
+		animation: growIn 320ms var(--ease-out);
+	}
+
+	.reveals {
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+	}
+}
+
+@keyframes growIn {
+	from { opacity: 0; }
 }
 
 /* What kind of company. Different on every load, and on every click. */
@@ -271,6 +316,12 @@ a:focus-visible {
 	white-space: nowrap;
 }
 
+@media (hover: none) {
+	.nowrap {
+		white-space: normal;
+	}
+}
+
 .descriptor:focus-visible {
 	outline: 1px dotted currentColor;
 	outline-offset: 0.18em;
@@ -283,13 +334,15 @@ a:focus-visible {
 	text-decoration-thickness: 1px;
 }
 
-.reveals:hover .strike,
 .reveals:focus-visible .strike,
 .reveals.open .strike {
 	text-decoration-color: currentColor;
 }
 
-@media (max-width: 34rem) {
+/* A narrow window with a pointer has no room for the longest line. A
+   phone has, because there it wraps. */
+
+@media (hover: hover) and (max-width: 34rem) {
 	.grow-wide {
 		display: none;
 	}
@@ -317,8 +370,8 @@ a:focus-visible {
 	transition: opacity 240ms ease, transform 560ms var(--ease-out);
 }
 
-.titlelink:hover .mark,
-.titlelink:focus-visible .mark {
+.titlelink:focus-visible .mark,
+.titlelink:hover .mark {
 	opacity: 1;
 	transform: translate(var(--look-x, 0px), var(--look-y, 0px)) scale(1) rotate(var(--look-r, 0deg));
 	animation: bob 2.4s ease-in-out 560ms infinite;
@@ -370,19 +423,10 @@ a:focus-visible {
 	}
 }
 
-/* Without a pointer there is no hover, only a tap that follows the link,
-   so the wordmark stays as it is and the mark shows itself instead. */
+/* Without a pointer, the first tap on the wordmark says its name in full
+   and the second follows the link. */
 
 @media (hover: none) {
-	.titlelink .grow {
-		display: none;
-	}
-
-	.reveals:not(a) {
-		cursor: pointer;
-		-webkit-tap-highlight-color: transparent;
-	}
-
 	.projects a,
 	.projects .name {
 		display: inline-block;
@@ -412,9 +456,14 @@ a:focus-visible {
 	color: var(--text);
 }
 
-.titlelink:hover,
 .titlelink:focus-visible {
 	color: var(--blue);
+}
+
+@media (hover: hover) {
+	.titlelink:hover {
+		color: var(--blue);
+	}
 }
 
 /* Nav. Home only. */
@@ -434,7 +483,7 @@ nav a:visited {
 	color: var(--muted);
 }
 
-nav a:hover {
+nav a:focus-visible {
 	color: var(--blue);
 }
 
@@ -480,9 +529,11 @@ nav a[aria-current="page"]:hover {
 	transition: color 170ms ease;
 }
 
-.metric:hover svg,
-.metric:hover .figure {
-	color: var(--blue);
+@media (hover: hover) {
+	.metric:hover svg,
+	.metric:hover .figure {
+		color: var(--blue);
+	}
 }
 
 /* Project list. Name, then what it is. */
@@ -577,51 +628,100 @@ ul {
 	margin-top: 0.75em;
 }
 
-/* Outbound links. Stacked, same type as the body, padded for a thumb. */
+/* Buttons, after iA. A solid pill in the ink colour with the label in
+   the paper colour, so it turns over with the page in dark mode. The
+   quiet one is the same shape in a tint of the ink, for the second thing
+   you might want. A short caption sits underneath. Pointed at, a button
+   leans in a little; pressed, it gives. The one round thing on the site. */
 
-.outlinks {
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1em 0.75em;
+	margin: 2em 0 2.25em;
+}
+
+.action {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 0.15em;
+	gap: 0.4em;
 }
 
-.outlinks .copy {
-	appearance: none;
-	background: none;
-	border: 0;
-	margin: 0;
-	padding: 0.45em 0;
-	min-height: 2.75em;
-	display: inline-flex;
-	align-items: center;
-	font: inherit;
-	font-weight: 500;
-	color: var(--text);
-	cursor: pointer;
-	transition: color 170ms ease;
-	-webkit-tap-highlight-color: transparent;
+.caption {
+	padding-left: 0.1em;
 }
 
-.outlinks .copy[hidden] {
+.action[hidden] {
 	display: none;
 }
 
-.outlinks .copy:hover,
-.outlinks .copy:focus-visible {
-	color: var(--blue);
-}
-
-.outlinks .copy:focus-visible {
-	outline: 1px dotted currentColor;
-	outline-offset: 0.18em;
-}
-
-.outlinks a {
-	padding: 0.45em 0;
-	min-height: 2.75em;
+.button,
+a.button:link,
+a.button:visited {
+	appearance: none;
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
+	min-width: 8em;
+	min-height: 2.9em;
+	margin: 0;
+	padding: 0.7em 1.5em;
+	border: 0;
+	border-radius: 999px;
+	background-color: var(--text);
+	color: var(--bg);
+	font: inherit;
+	font-weight: 500;
+	line-height: 1.2;
+	text-decoration: none;
+	cursor: pointer;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+	transition: transform 240ms var(--ease), background-color 420ms ease, color 420ms ease;
+}
+
+.button.quiet,
+a.button.quiet:link,
+a.button.quiet:visited {
+	background-color: var(--rule);
+	background-color: color-mix(in srgb, var(--text) 8%, var(--bg));
+	color: var(--text);
+}
+
+@media (hover: hover) {
+	.button:hover,
+	a.button:hover {
+		color: var(--bg);
+		transform: scale(1.03);
+	}
+
+	.button.quiet:hover,
+	a.button.quiet:hover {
+		color: var(--text);
+	}
+}
+
+.button:active {
+	transform: scale(0.97);
+	transition-duration: 90ms;
+}
+
+.button:focus-visible,
+a.button:focus-visible {
+	color: var(--bg);
+	outline: 2px solid var(--blue);
+	outline-offset: 3px;
+}
+
+.button.quiet:focus-visible,
+a.button.quiet:focus-visible {
+	color: var(--text);
+}
+
+.caption {
+	font-size: 0.8667rem;
+	color: var(--muted);
 }
 
 /* Footer. Held to the bottom. The dashed rule walks slowly, like a
@@ -745,7 +845,8 @@ footer p {
 		animation: none;
 	}
 
-	.sym {
+	.sym,
+	.button {
 		transition: none;
 	}
 
