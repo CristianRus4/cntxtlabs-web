@@ -1,31 +1,18 @@
-/* Cntxt Labs · cntxtlabs.co
-   After ia.net: a slim bar, big bold names with a short line under them,
-   full-width bands that alternate a soft grey and ink, and one pill to
-   press. The system font, the paper and ink colours and the one cyan
-   carry over from the first version of the site. */
+/* cntxt · cntxtlabs.co
+   Type after nelson.co: system stack, one size, weight carries hierarchy,
+   and no font-smoothing override, which is what keeps the weight in it.
+   Colour after ia.net/writer. */
 
 :root {
 	--bg: #F7F7F7;
 	--text: #222222;
 	--muted: #6B6B74;
 	--rule: #D6D6D6;
-	--band: #EDEDED;
 	--blue: #00B2FF;
-
-	/* The ink band keeps its own colours whichever way the page is set. */
-	--ink-bg: #070707;
-	--ink-text: #F0F0F0;
-	--ink-muted: #8C8C96;
-	--ink-rule: #2A2A2A;
-
+	--step: 80ms;
 	--ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 	--duration: 340ms;
-	--step: 80ms;
-
-	--wide: 64rem;
-	--measure: 40rem;
-	--gutter: 1.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,9 +21,7 @@
 		--text: #F0F0F0;
 		--muted: #7A7A84;
 		--rule: #2A2A2A;
-		--band: #121212;
-		--ink-bg: #000000;
-		--ink-rule: #1E1E1E;
+		--blue: #00B2FF;
 	}
 }
 
@@ -48,7 +33,6 @@
 	--text: #F0F0F0;
 	--muted: #7A7A84;
 	--rule: #2A2A2A;
-	--band: #121212;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -57,7 +41,6 @@
 		--text: #222222;
 		--muted: #6B6B74;
 		--rule: #D6D6D6;
-		--band: #EDEDED;
 	}
 }
 
@@ -70,9 +53,6 @@
 	--text: #222222;
 	--muted: #6B6B74;
 	--rule: #D6D6D6;
-	--band: #EDEDED;
-	--ink-bg: #070707;
-	--ink-rule: #2A2A2A;
 	color-scheme: light;
 }
 
@@ -82,10 +62,15 @@
 	--text: #F0F0F0;
 	--muted: #7A7A84;
 	--rule: #2A2A2A;
-	--band: #121212;
-	--ink-bg: #000000;
-	--ink-rule: #1E1E1E;
 	color-scheme: dark;
+}
+
+/* Left alone for a while, the mark comes out to keep you company. */
+
+.idle .mark {
+	opacity: 1;
+	transform: translate(var(--look-x, 0px), var(--look-y, 0px)) rotate(var(--look-r, 0deg));
+	animation: bob 2.4s ease-in-out infinite;
 }
 
 *,
@@ -97,65 +82,109 @@
 html {
 	background-color: var(--bg);
 	color-scheme: light dark;
+	transition: background-color 420ms ease, color 420ms ease;
 	font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-	font-size: 17px;
+	font-size: 15px;
+	font-weight: 400;
 	-webkit-text-size-adjust: 100%;
-	scroll-padding-top: 4rem;
-	transition: background-color 420ms ease;
+	scrollbar-width: none;
 }
 
-@media (min-width: 60rem) {
-	html {
-		font-size: 18px;
-	}
+/* Hide the scrollbar indicator while preserving normal scrolling. */
+html::-webkit-scrollbar {
+	display: none;
 }
 
 ::selection {
 	background-color: rgba(0, 178, 255, 0.22);
 }
 
+/* 600px of text. Footer sits at the bottom of the viewport whenever the
+   page is too short to push it there itself. */
+
 body {
-	margin: 0;
+	font-size: 1rem;
+	color: var(--text);
+	line-height: 1.6;
+	text-align: left;
+	margin: 0 auto;
+	padding: 15em max(1.5em, env(safe-area-inset-right)) max(2em, env(safe-area-inset-bottom)) max(1.5em, env(safe-area-inset-left));
+	max-width: calc(600px + 3em);
 	min-height: 100vh;
 	min-height: 100svh;
 	display: flex;
 	flex-direction: column;
-	color: var(--text);
-	line-height: 1.6;
-	letter-spacing: 0.003em;
 }
 
-main {
-	flex: 1;
+@media (max-width: 34rem) {
+	body {
+		padding-top: 6.5em;
+	}
 }
+
+/* Type. Two weights for the page, a third for the wordmark. */
 
 h1,
 h2,
 h3,
-p {
-	margin: 0;
+p,
+footer {
+	font-size: 1rem;
 }
 
+h1 {
+	margin-top: 3em;
+	margin-bottom: 0;
+	font-weight: 500;
+	color: var(--text);
+	line-height: 1.6;
+	text-wrap: balance;
+}
+
+h2 {
+	margin-top: 1em;
+	margin-bottom: 0;
+	font-weight: 500;
+	color: var(--text);
+	line-height: 1.6;
+}
+
+/* Sit the following line against the title, same as cntxt and its subtitle. */
+h1:not(.title) + p,
+h1:not(.title) + ul,
+h2 + p {
+	margin-top: 0;
+}
+
+
 p {
+	margin-top: 0;
+	margin-bottom: 1.2em;
 	text-wrap: pretty;
 }
 
-ul {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-img {
-	max-width: 100%;
+.lead {
+	margin-top: 3em;
 }
 
 strong {
-	font-weight: 600;
+	font-weight: 500;
 }
 
-/* Links. Heavier than the text, blue under a pointer. Inside running text
-   they are underlined, as on iA, so they read as links on a phone too. */
+/* Masthead. Identical on every page, heaviest thing on it. */
+
+.title {
+	margin-top: 0;
+	margin-bottom: 0;
+	font-weight: 700;
+}
+
+.sub {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+/* Links. Heavier than the text, blue on hover. No underline. */
 
 a:link,
 a:visited {
@@ -167,9 +196,10 @@ a:visited {
 
 a:focus-visible {
 	color: var(--blue);
-	outline: 1px dotted currentColor;
-	outline-offset: 0.18em;
 }
+
+/* Hover colours only where there is a real pointer. On a phone, :hover
+   sticks to whatever was last touched and leaves it blue. */
 
 @media (hover: hover) {
 	a:hover {
@@ -177,484 +207,425 @@ a:focus-visible {
 	}
 }
 
-.prose p a,
-.intro a {
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-underline-offset: 0.2em;
+a:focus-visible {
+	outline: 1px dotted currentColor;
+	outline-offset: 0.18em;
 }
 
-/* The bar. Stays at the top, the mark and the name on the left, three
-   places on the right. On an inner page the name is followed by where
-   you are, iA style: Cntxt Labs / Left. */
+/* Reveals: text that unfolds. The wordmark puts its vowels back, the
+   subtitle thinks highly of the place, the footer counts from the
+   beginning. With a pointer they open on hover or keyboard focus; on a
+   phone a tap opens one and another tap closes it. */
 
-.bar {
-	position: sticky;
-	top: 0;
-	z-index: 5;
-	background-color: var(--bg);
-	transition: box-shadow 200ms ease, background-color 420ms ease;
+.grow {
+	display: inline-block;
+	max-width: 0;
+	opacity: 0;
+	overflow: hidden;
+	vertical-align: bottom;
+	white-space: nowrap;
+	transition: max-width var(--duration) var(--ease), opacity 260ms ease;
 }
 
-.bar.scrolled {
-	box-shadow: 0 1px 0 var(--rule);
+.reveals:focus-visible .grow,
+.reveals.open .grow {
+	max-width: 8ch;
+	opacity: 1;
 }
 
-.bar-inner {
-	max-width: calc(var(--wide) + 2 * var(--gutter));
-	height: 3rem;
-	margin: 0 auto;
-	padding: 0 max(var(--gutter), env(safe-area-inset-right)) 0 max(var(--gutter), env(safe-area-inset-left));
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 1rem;
+.reveals:focus-visible .grow.grow-wide,
+.reveals.open .grow.grow-wide,
+.reveals:focus-visible .grow.grow-long,
+.reveals.open .grow.grow-long {
+	max-width: 40ch;
 }
 
-.crumbs {
-	display: flex;
-	align-items: center;
-	gap: 0.45em;
-	min-width: 0;
+.reveals:focus-visible .grow.grow-time,
+.reveals.open .grow.grow-time {
+	max-width: 22ch;
+}
+
+.reveals:focus-visible .cap,
+.reveals.open .cap {
+	text-transform: capitalize;
+}
+
+@media (hover: hover) {
+	.reveals:hover .grow {
+		max-width: 8ch;
+		opacity: 1;
+	}
+
+	.reveals:hover .grow.grow-wide,
+	.reveals:hover .grow.grow-long {
+		max-width: 40ch;
+	}
+
+	.reveals:hover .grow.grow-time {
+		max-width: 22ch;
+	}
+
+	.reveals:hover .cap {
+		text-transform: capitalize;
+	}
+
+	.reveals:hover .strike {
+		text-decoration-color: currentColor;
+	}
+}
+
+/* On a phone the hidden words are not squeezed into a line that cannot
+   wrap. Closed, they are not there at all. Open, they sit in the sentence
+   like any other words, wrap where they need to, and fade in. */
+
+@media (hover: none) {
+	.grow {
+		display: none;
+		max-width: none;
+		white-space: normal;
+		transition: none;
+	}
+
+	.reveals.open .grow {
+		display: inline;
+		animation: growIn 320ms var(--ease-out);
+	}
+
+	.reveals {
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+	}
+}
+
+@keyframes growIn {
+	from { opacity: 0; }
+}
+
+/* What kind of company. Different on every load, and on every click. */
+
+.descriptor {
+	display: inline-block;
+	cursor: pointer;
+}
+
+/* A reveal with punctuation after it. The collapsed text is an inline
+   block, which would otherwise let the comma wrap onto a line of its own. */
+
+.nowrap {
 	white-space: nowrap;
 }
 
-.home-link {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5em;
+@media (hover: none) {
+	.nowrap {
+		white-space: normal;
+	}
 }
 
-a.home-link:link,
-a.home-link:visited {
-	font-weight: 700;
+.descriptor:focus-visible {
+	outline: 1px dotted currentColor;
+	outline-offset: 0.18em;
 }
 
-.crumb-sep {
-	color: var(--muted);
+.strike {
+	transition: text-decoration-color 200ms ease;
+	text-decoration: line-through;
+	text-decoration-color: transparent;
+	text-decoration-thickness: 1px;
 }
 
-.crumb {
-	overflow: hidden;
-	text-overflow: ellipsis;
+.reveals:focus-visible .strike,
+.reveals.open .strike {
+	text-decoration-color: currentColor;
 }
 
-.bar nav {
-	display: flex;
-	gap: 1.4em;
-}
+/* A narrow window with a pointer has no room for the longest line. A
+   phone has, because there it wraps. */
 
-.bar nav a:link,
-.bar nav a:visited {
-	font-weight: 400;
-}
-
-.bar nav a[aria-current="page"] {
-	font-weight: 500;
-}
-
-@media (max-width: 34rem) {
-	.crumb-sep,
-	.crumb {
+@media (hover: hover) and (max-width: 34rem) {
+	.grow-wide {
 		display: none;
 	}
 }
 
-/* The mark. It sits beside the name, turns once when you point at it,
-   and bobs if you leave the page alone long enough. */
+.titlelink {
+	font-weight: 700;
+	position: relative;
+}
+
+/* The mark sits above the wordmark, out of the flow so nothing below it
+   moves. It drops in, turns itself the right way up, then keeps bobbing
+   for as long as you stay. */
 
 .mark {
-	flex: none;
-	width: 1.05em;
-	height: 1.18em;
+	position: absolute;
+	left: 0;
+	bottom: calc(100% + 0.5em);
+	width: 1.7em;
+	height: 1.7em;
 	color: currentColor;
+	opacity: 0;
+	pointer-events: none;
+	transform: translateY(10px) scale(0.72) rotate(-150deg);
+	transition: opacity 240ms ease, transform 560ms var(--ease-out);
 }
 
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-	.home-link:hover .mark {
-		animation: turn 640ms var(--ease-out);
-	}
-}
-
-@keyframes turn {
-	from { transform: rotate(-120deg) scale(0.8); }
-	to { transform: none; }
+.titlelink:focus-visible .mark,
+.titlelink:hover .mark {
+	opacity: 1;
+	transform: translate(var(--look-x, 0px), var(--look-y, 0px)) scale(1) rotate(var(--look-r, 0deg));
+	animation: bob 2.4s ease-in-out 560ms infinite;
 }
 
 @keyframes bob {
 	0%, 100% { translate: 0 0; }
-	50% { translate: 0 -3px; }
+	50% { translate: 0 -5px; }
 }
 
-.idle .mark,
+/* Typed the company name. Everything that hides comes out for a moment. */
+
 .egg .mark {
+	display: block;
+	opacity: 1;
+	transform: none;
 	animation: bob 2.4s ease-in-out infinite;
 }
 
-/* Type. The page reads at one size; names are set large and bold, the
-   line under them a step up from the text. */
-
-.display {
-	font-size: clamp(2.6rem, 1.5rem + 4vw, 4.3rem);
-	font-weight: 700;
-	line-height: 1.04;
-	letter-spacing: -0.03em;
-	text-wrap: balance;
+.project-symbols-enabled.egg .sym {
+	display: block;
+	opacity: 1;
+	transform: none;
 }
 
-.display.smaller {
-	font-size: clamp(2rem, 1.3rem + 2.6vw, 3rem);
+.egg .titlelink .grow,
+.egg .reveals .grow {
+	max-width: 40ch;
+	opacity: 1;
 }
 
-.tagline {
-	margin-top: 0.6em;
-	font-size: clamp(1.15rem, 1rem + 0.7vw, 1.5rem);
-	line-height: 1.35;
-	text-wrap: balance;
+.egg .titlelink .cap,
+.egg .reveals .cap {
+	text-transform: capitalize;
 }
 
-.blurb {
-	max-width: 34rem;
-	margin: 1rem auto 0;
+.egg .reveals .strike {
+	text-decoration-color: currentColor;
+}
+
+@keyframes markIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px) scale(0.72) rotate(-150deg);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1) rotate(0deg);
+	}
+}
+
+/* Without a pointer, the first tap on the wordmark says its name in full
+   and the second follows the link. */
+
+@media (hover: none) {
+	.projects a,
+	.projects .name {
+		display: inline-block;
+		padding: 0.4em 0;
+	}
+}
+
+/* No hover on a phone, so the mark arrives on its own, bobs twice to say
+   hello, and then rests. Anything that moves for good is a distraction. */
+
+@media (max-width: 34rem), (hover: none) {
+	.mark {
+		color: var(--text);
+		pointer-events: auto;
+		animation: markIn 560ms var(--ease-out) 700ms forwards,
+			bob 2.4s ease-in-out 1260ms 2;
+	}
+
+	.titlelink:hover .mark,
+	.titlelink:focus-visible .mark {
+		color: var(--text);
+	}
+}
+
+.titlelink:link,
+.titlelink:visited {
+	color: var(--text);
+}
+
+.titlelink:focus-visible {
+	color: var(--blue);
+}
+
+@media (hover: hover) {
+	.titlelink:hover {
+		color: var(--blue);
+	}
+}
+
+/* Nav. Home only. */
+
+nav {
+	margin-top: 2em;
+	margin-bottom: 2em;
+}
+
+nav a {
+	margin-right: 1.5em;
+	font-weight: 400;
+}
+
+nav a:link,
+nav a:visited {
 	color: var(--muted);
 }
 
-.label {
-	margin-bottom: 0.3rem;
-	font-weight: 700;
+nav a:focus-visible {
+	color: var(--blue);
 }
 
-/* The hero. Centred, with plenty of room above and below. */
-
-.hero {
-	max-width: calc(var(--wide) + 2 * var(--gutter));
-	margin: 0 auto;
-	padding: clamp(3.5rem, 8vw, 6.5rem) var(--gutter) clamp(3rem, 6vw, 4.5rem);
-	text-align: center;
+nav a[aria-current="page"]:link,
+nav a[aria-current="page"]:visited {
+	color: var(--text);
+	font-weight: 500;
 }
 
-.hero-mark {
-	display: block;
-	width: 4.2rem;
-	height: 4.7rem;
-	margin: 0 auto 1.75rem;
-	transform: translate(var(--look-x, 0px), var(--look-y, 0px)) rotate(var(--look-r, 0deg));
-	transition: transform 700ms var(--ease-out);
+nav a[aria-current="page"]:hover {
+	color: var(--text);
 }
 
-.intro {
-	max-width: 36rem;
-	margin: 1.75rem auto 0;
-}
-
-/* An inner page that is mostly words starts on the left, as iA's About
-   does: a small label, the name large, then the text. */
-
-.page-head {
-	max-width: calc(var(--measure) + 2 * var(--gutter));
-	margin: 0 auto;
-	padding: clamp(3rem, 7vw, 5.5rem) var(--gutter) 0;
-}
-
-/* App icons, rounded the way the phone rounds them. */
-
-.app-icon {
-	display: block;
-	width: 6.5rem;
-	height: 6.5rem;
-	margin: 0 auto 1.5rem;
-	border-radius: 22.5%;
-	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
-}
-
-.icons {
-	display: flex;
-	justify-content: center;
-	gap: 1rem;
-	margin-bottom: 1.5rem;
-}
-
-.icons .app-icon {
-	margin: 0;
-}
-
-.band .app-icon {
-	width: 4.75rem;
-	height: 4.75rem;
-}
-
-.band .icons .app-icon {
-	margin: 0;
-}
-
-/* The numbers, set large. Each counts up on arrival and again when you
-   point at it or tap it. */
-
-.stats {
-	max-width: calc(var(--wide) + 2 * var(--gutter));
-	margin: 0 auto;
-	padding: 0 var(--gutter) clamp(3.5rem, 7vw, 5.5rem);
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 1.5rem;
-	text-align: center;
-}
+/* Live metrics, inline in the sentence. Tabular figures hold each number's
+   width steady while it counts, so the words after it do not shuffle. The
+   mark and the number take the accent only when you point at them. */
 
 .metric {
+	white-space: nowrap;
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent;
 }
 
-.figure {
-	display: block;
-	font-size: clamp(2rem, 1.4rem + 2vw, 2.9rem);
-	font-weight: 700;
-	line-height: 1.15;
-	letter-spacing: -0.02em;
-	font-variant-numeric: tabular-nums;
+.metric .metric-label {
+	white-space: normal;
+}
+
+.metrics svg {
+	width: 1.05em;
+	height: 1.05em;
+	margin-right: 0.35em;
+	vertical-align: -0.16em;
+	color: var(--text);
 	transition: color 170ms ease;
 }
 
-.stat-label {
-	display: block;
-	margin-top: 0.3rem;
-	color: var(--muted);
+.figure {
+	display: inline-block;
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: "tnum" 1;
+	text-align: left;
+	transition: color 170ms ease;
 }
 
 @media (hover: hover) {
+	.metric:hover svg,
 	.metric:hover .figure {
 		color: var(--blue);
 	}
 }
 
-@media (max-width: 40rem) {
-	.stats {
-		grid-template-columns: 1fr 1fr;
-		gap: 1.75rem 1rem;
-	}
+/* Project list. Name, then what it is. */
 
-	.stats > :first-child {
-		grid-column: 1 / -1;
-	}
+ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
-/* Bands. One per app on the home page, full width, alternating a soft
-   grey and ink. The screenshots run off the bottom edge, the way iA lets
-   its devices run off theirs. */
-
-.band {
-	padding: clamp(4rem, 9vw, 6.5rem) var(--gutter) 0;
-	background-color: var(--band);
-	text-align: center;
-	overflow: hidden;
-	transition: background-color 420ms ease;
+.projects {
+	margin-top: 0.75em;
 }
 
-.band.ink {
-	--bg: var(--ink-bg);
-	--text: var(--ink-text);
-	--muted: var(--ink-muted);
-	--rule: var(--ink-rule);
-	background-color: var(--ink-bg);
-	color: var(--text);
-}
-
-.band.plain {
-	background-color: var(--bg);
-}
-
-.band.words {
-	padding-bottom: clamp(4rem, 9vw, 6.5rem);
-}
-
-.band .actions,
-.hero .actions {
-	justify-content: center;
-	margin: 1.9rem 0 0;
-}
-
-.band .action,
-.hero .action {
-	align-items: center;
-}
-
-
-.shots {
-	display: flex;
-	justify-content: center;
-	align-items: flex-start;
-	gap: 1.5rem;
-	height: clamp(19rem, 30vw, 27rem);
-	margin-top: 3.5rem;
-}
-
-.shots img {
-	flex: none;
-	width: clamp(9.5rem, 16vw, 14rem);
-	height: auto;
-	margin-top: 3rem;
-	border-radius: 1.4rem;
-}
-
-.shots img:nth-child(2) {
-	width: clamp(11rem, 19vw, 16.5rem);
-	margin-top: 0;
-}
-
-@media (max-width: 40rem) {
-	.shots {
-		gap: 0.75rem;
-		height: 23rem;
-	}
-
-	.shots img {
-		width: 38vw;
-		border-radius: 1rem;
-	}
-
-	.shots img:nth-child(2) {
-		width: 46vw;
-	}
-}
-
-/* An app's own screenshots, in a strip you can scroll sideways. Centred
-   when they fit, scrolled when they do not. */
-
-.strip-band {
-	padding: clamp(2.5rem, 5vw, 3.5rem) 0;
-	background-color: var(--band);
-	transition: background-color 420ms ease;
-}
-
-.strip {
-	display: flex;
-	gap: 1.25rem;
-	padding: 0 var(--gutter);
-	overflow-x: auto;
-	scroll-snap-type: x mandatory;
-	scrollbar-width: none;
-	-webkit-overflow-scrolling: touch;
-}
-
-.strip::-webkit-scrollbar {
-	display: none;
-}
-
-.strip img {
-	flex: none;
-	width: clamp(11rem, 13.5vw, 14.5rem);
-	height: auto;
-	border-radius: 1.4rem;
-	scroll-snap-align: center;
-}
-
-.strip > :first-child {
-	margin-left: auto;
-}
-
-.strip > :last-child {
-	margin-right: auto;
-}
-
-@media (max-width: 40rem) {
-	.strip img {
-		width: 62vw;
-		border-radius: 1.1rem;
-	}
-}
-
-/* Words. One column, a little wider than a phone's, the opening paragraph
-   a step larger, headings bold. */
-
-.prose {
-	max-width: calc(var(--measure) + 2 * var(--gutter));
-	margin: 0 auto;
-	padding: clamp(3rem, 6vw, 4.5rem) var(--gutter) 1rem;
-}
-
-.page-head + .prose {
-	padding-top: 1.75rem;
-}
-
-.prose p {
-	margin-bottom: 1.1em;
-}
-
-.prose .lead {
-	font-size: 1.28rem;
-	line-height: 1.5;
-}
-
-.prose h2 {
-	margin: 2.2em 0 0.45em;
-	font-size: 1.4rem;
-	font-weight: 700;
-	line-height: 1.3;
-	letter-spacing: -0.01em;
-}
-
-/* Cards, for a collection of apps. */
-
-.cards {
-	max-width: calc(var(--wide) + 2 * var(--gutter));
-	margin: 0 auto;
-	padding: 0 var(--gutter) 2rem;
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(14.5rem, 1fr));
-	gap: 1.25rem;
-}
-
-.card {
+.projects li {
 	position: relative;
-	padding: 1.5rem;
-	border-radius: 1rem;
-	background-color: var(--band);
-	transition: background-color 420ms ease, transform 240ms var(--ease);
+	margin-bottom: 1.5em;
 }
 
-.card .app-icon {
-	width: 3.5rem;
-	height: 3.5rem;
-	margin: 0 0 1.1rem;
-}
+/* The name is the link, but the whole row answers to it: point at or tap
+   the description and you are pointing at the name. */
 
-.card h2 {
-	font-size: 1.15rem;
-	font-weight: 700;
-}
-
-.card p {
-	margin-top: 0.3rem;
-	color: var(--muted);
-}
-
-.card h2 a::after {
+.projects li > a::after {
 	content: "";
 	position: absolute;
 	inset: 0;
-	border-radius: inherit;
 }
 
-@media (hover: hover) {
-	.card:hover {
-		transform: scale(1.015);
-	}
+.projects .desc {
+	display: block;
+	margin-top: 0.1em;
 }
 
-/* Unpublished. The name and the description stay in place, just out of
-   focus, and they are not links. The blur is a shadow of transparent text
-   rather than filter: blur(), whose layer tinted some names pink. */
+.projects .name {
+	font-weight: 500;
+}
 
-.blurred h2,
-.blurred p {
+/* Unpublished. The name and the description stay in place, just
+   out of focus, and they are no longer links. The blur is a shadow of
+   transparent text rather than filter: blur(), whose compositing layer
+   tinted the heavier names pink on some displays. */
+
+.projects .blurred .name,
+.projects .blurred .desc {
 	color: transparent;
 	text-shadow: 0 0 7px var(--text);
 	user-select: none;
 	-webkit-user-select: none;
+	pointer-events: none;
 }
 
-.blurred .app-icon {
-	background-color: var(--rule);
+/* Symbols are dormant. Add project-symbols-enabled to html to restore them. */
+
+/* Each project keeps a symbol in the left margin. It stays out of the text
+   flow, so nothing moves when it arrives. Pointer devices with room for it
+   only: a phone never sees these. */
+
+.sym {
+	display: none;
+}
+
+@media (hover: hover) and (min-width: 48rem) {
+	.sym {
+		display: block;
+		position: absolute;
+		right: 100%;
+		margin-right: 0.42em;
+		top: 0.12em;
+		width: 1.15em;
+		height: 1.15em;
+		color: var(--blue);
+		opacity: 0;
+		pointer-events: none;
+		transform: translateY(5px) scale(0.7) rotate(-90deg);
+		transition: opacity 130ms ease, transform 260ms var(--ease);
+	}
+
+	.sym svg {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	.project-symbols-enabled .projects a:hover + .sym,
+	.project-symbols-enabled .projects a:focus-visible + .sym {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.projects.collection {
+	margin-top: 0.75em;
 }
 
 /* Buttons, after iA. A small solid pill in the ink colour with the label
@@ -668,7 +639,7 @@ a.home-link:visited {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.6em;
-	margin: 2rem 0 0;
+	margin: 2em 0 2.25em;
 }
 
 .action {
@@ -750,6 +721,7 @@ a.button.quiet:focus-visible {
 }
 
 /* Download buttons, after Sundrop. With a pointer, the pill grows upward
+   and to the right, from its own left edge so it keeps to the column,
    into a card holding the App Store QR code, so someone on a computer can
    scan it with their phone. The card is the button's own colour, so the
    pill seems to open rather than be covered. It springs open, settles back
@@ -773,7 +745,7 @@ a.button.quiet:focus-visible {
 
 	.button.download .qr {
 		position: absolute;
-		left: 50%;
+		left: 0;
 		bottom: 0;
 		z-index: 1;
 		display: flex;
@@ -788,15 +760,14 @@ a.button.quiet:focus-visible {
 		background-color: inherit;
 		opacity: 0;
 		pointer-events: none;
-		transform: translateX(-50%);
 		transition: width 320ms cubic-bezier(0.32, 0.72, 0, 1), height 320ms cubic-bezier(0.32, 0.72, 0, 1),
 			border-radius 280ms cubic-bezier(0.32, 0.72, 0, 1), box-shadow 240ms ease, opacity 0ms linear 320ms;
 	}
 
 	.button.download:hover .qr,
 	.button.download:focus-visible .qr {
-		width: 13.5rem;
-		height: 15.75rem;
+		width: 15rem;
+		height: 17.5rem;
 		border-radius: 1.5rem;
 		opacity: 1;
 		pointer-events: auto;
@@ -831,8 +802,8 @@ a.button.quiet:focus-visible {
 
 	.qr-tile img {
 		display: block;
-		width: 9.5rem;
-		height: 9.5rem;
+		width: 11rem;
+		height: 11rem;
 	}
 
 	.qr-caption {
@@ -842,196 +813,34 @@ a.button.quiet:focus-visible {
 	}
 }
 
-/* Reveals: text that unfolds. The subtitle thinks highly of the place,
-   the name says how it is pronounced, the footer counts from the
-   beginning. With a pointer they open on hover or keyboard focus; on a
-   phone a tap opens one and another tap closes it. */
+/* Footer. Held to the bottom. The dashed rule walks slowly, like a
+   cursor at the end of the page. The rule is one tile wider than the
+   footer and slides by that tile, so the walk is a transform the
+   compositor runs, not a repaint on every frame. */
 
-.grow {
-	display: inline-block;
-	max-width: 0;
-	opacity: 0;
-	overflow: hidden;
-	vertical-align: bottom;
-	white-space: nowrap;
-	transition: max-width var(--duration) var(--ease), opacity 260ms ease;
-}
-
-.reveals:focus-visible .grow,
-.reveals.open .grow {
-	max-width: 8ch;
-	opacity: 1;
-}
-
-.reveals:focus-visible .grow.grow-wide,
-.reveals.open .grow.grow-wide,
-.reveals:focus-visible .grow.grow-long,
-.reveals.open .grow.grow-long {
-	max-width: 40ch;
-}
-
-.reveals:focus-visible .grow.grow-time,
-.reveals.open .grow.grow-time {
-	max-width: 22ch;
-}
-
-@media (hover: hover) {
-	.reveals:hover .grow {
-		max-width: 8ch;
-		opacity: 1;
-	}
-
-	.reveals:hover .grow.grow-wide,
-	.reveals:hover .grow.grow-long {
-		max-width: 40ch;
-	}
-
-	.reveals:hover .grow.grow-time {
-		max-width: 22ch;
-	}
-
-	.reveals:hover .strike {
-		text-decoration-color: currentColor;
-	}
-}
-
-/* On a phone the hidden words are not squeezed into a line that cannot
-   wrap. Closed, they are not there at all. Open, they sit in the sentence
-   like any other words, wrap where they need to, and fade in. */
-
-@media (hover: none) {
-	.grow {
-		display: none;
-		max-width: none;
-		white-space: normal;
-		transition: none;
-	}
-
-	.reveals.open .grow {
-		display: inline;
-		animation: growIn 320ms var(--ease-out);
-	}
-
-	.reveals {
-		cursor: pointer;
-		-webkit-tap-highlight-color: transparent;
-		touch-action: manipulation;
-	}
-}
-
-@keyframes growIn {
-	from { opacity: 0; }
-}
-
-.strike {
-	text-decoration: line-through;
-	text-decoration-color: transparent;
-	text-decoration-thickness: 1px;
-	transition: text-decoration-color 200ms ease;
-}
-
-.reveals:focus-visible .strike,
-.reveals.open .strike {
-	text-decoration-color: currentColor;
-}
-
-/* A narrow window with a pointer has no room for the longest line. A
-   phone has, because there it wraps. */
-
-@media (hover: hover) and (max-width: 34rem) {
-	.grow-wide {
-		display: none;
-	}
-}
-
-/* A reveal with punctuation after it. The collapsed text is an inline
-   block, which would otherwise let the full stop wrap onto its own line. */
-
-.nowrap {
-	white-space: nowrap;
-}
-
-@media (hover: none) {
-	.nowrap {
-		white-space: normal;
-	}
-}
-
-/* What kind of company. Different on every load, and on every click. */
-
-.descriptor {
-	display: inline-block;
-	cursor: pointer;
-}
-
-.descriptor:focus-visible {
-	outline: 1px dotted currentColor;
-	outline-offset: 0.18em;
-}
-
-/* Typed the company name. Everything that hides comes out for a moment. */
-
-.egg .reveals .grow {
-	max-width: 40ch;
-	opacity: 1;
-}
-
-.egg .reveals .strike {
-	text-decoration-color: currentColor;
-}
-
-/* Footer. Columns of links, as on iA, then one line held under a dashed
-   rule that walks slowly, like a cursor at the end of the page. The rule
-   is one tile wider than the line and slides by that tile, so the walk
-   is a transform the compositor runs, not a repaint on every frame. */
-
-.site-footer {
-	max-width: calc(var(--wide) + 2 * var(--gutter));
-	width: 100%;
-	margin: 0 auto;
-	padding: clamp(2.5rem, 5vw, 3.5rem) max(var(--gutter), env(safe-area-inset-right)) max(2rem, env(safe-area-inset-bottom)) max(var(--gutter), env(safe-area-inset-left));
-	font-size: 0.9rem;
-}
-
-.footer-cols {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-	gap: 2rem 1.5rem;
-}
-
-.footer-cols h2 {
-	margin-bottom: 0.5em;
-	font-size: 1em;
-	font-weight: 700;
-}
-
-.footer-cols li {
-	margin: 0.3em 0;
-}
-
-.footer-cols a:link,
-.footer-cols a:visited {
-	font-weight: 400;
-}
-
-.colophon {
+footer {
 	position: relative;
 	overflow: hidden;
 	overflow: clip;
-	margin-top: 3rem;
-	padding-top: 0.9rem;
+	margin-top: auto;
+	padding-top: 0.75em;
+	font-size: 0.8667rem; /* 13px: the one step down from the page */
 	color: var(--muted);
-	overflow-wrap: break-word;
+	text-align: left;
 }
 
-.colophon::before {
+footer::before {
 	content: "";
 	position: absolute;
 	top: 0;
 	left: -12px;
 	right: 0;
 	height: 1px;
-	background-image: repeating-linear-gradient(90deg, var(--rule) 0 3px, transparent 3px 9px);
+	background-image: repeating-linear-gradient(
+		90deg,
+		var(--rule) 0 3px,
+		transparent 3px 9px
+	);
 	background-size: 12px 1px;
 	background-repeat: repeat-x;
 	animation: rule-crawl 22s linear infinite;
@@ -1041,64 +850,128 @@ a.button.quiet:focus-visible {
 	to { transform: translateX(12px); }
 }
 
-/* Arrival. The hero eases up in steps. Further down, each band's
-   contents rise into place as they scroll into view, where the browser
-   can tie an animation to scrolling; elsewhere they are simply there. */
+footer p {
+	margin: 0;
+	font-size: inherit;
+	overflow-wrap: break-word;
+}
+
+/* Everything eases up on arrival. */
 
 @keyframes fadeInFromBottom {
 	from {
 		opacity: 0;
 		transform: translateY(0.9em);
 	}
-}
-
-.hero > *,
-.page-head > * {
-	animation: fadeInFromBottom 720ms var(--ease-out) both;
-}
-
-.hero > :nth-child(2), .page-head > :nth-child(2) { animation-delay: calc(1 * var(--step)); }
-.hero > :nth-child(3), .page-head > :nth-child(3) { animation-delay: calc(2 * var(--step)); }
-.hero > :nth-child(4), .page-head > :nth-child(4) { animation-delay: calc(3 * var(--step)); }
-.hero > :nth-child(5), .page-head > :nth-child(5) { animation-delay: calc(4 * var(--step)); }
-.hero > :nth-child(n + 6), .page-head > :nth-child(n + 6) { animation-delay: calc(5 * var(--step)); }
-
-@keyframes rise {
-	from {
-		opacity: 0;
-		transform: translateY(1.5rem);
+	to {
+		opacity: 1;
+		transform: none;
 	}
 }
 
-@supports (animation-timeline: view()) {
-	@media (prefers-reduced-motion: no-preference) {
-		.band > *,
-		.stats > *,
-		.card,
-		.strip img {
-			animation: rise linear both;
-			animation-timeline: view();
-			animation-range: entry 0% entry 40%;
-		}
-	}
+.reveal > * {
+	animation: fadeInFromBottom 680ms var(--ease-out) var(--d, 0ms) both;
+}
+
+.reveal > *:nth-child(2) { --d: calc(1 * var(--step)); }
+.reveal > *:nth-child(3) { --d: calc(2 * var(--step)); }
+.reveal > *:nth-child(4) { --d: calc(3 * var(--step)); }
+.reveal > *:nth-child(5) { --d: calc(4 * var(--step)); }
+.reveal > *:nth-child(6) { --d: calc(5 * var(--step)); }
+.reveal > *:nth-child(7) { --d: calc(6 * var(--step)); }
+.reveal > *:nth-child(8) { --d: calc(7 * var(--step)); }
+.reveal > *:nth-child(n + 9) { --d: calc(8 * var(--step)); }
+
+/* A list does not arrive as one block. Its rows follow each other in. */
+
+.reveal > .projects {
+	animation: none;
+}
+
+.reveal > .projects > li {
+	animation: fadeInFromBottom 680ms var(--ease-out) both;
+	animation-delay: calc(var(--d, 0ms) + var(--i, 0) * 55ms);
+}
+
+.reveal > .projects > li:nth-child(2) { --i: 1; }
+.reveal > .projects > li:nth-child(3) { --i: 2; }
+.reveal > .projects > li:nth-child(4) { --i: 3; }
+.reveal > .projects > li:nth-child(n + 5) { --i: 4; }
+
+/* Coming from another page on the site, the masthead is already where it
+   belongs. It stays put and only the page under it arrives. */
+
+.within .reveal > .title,
+.within .reveal > .sub {
+	animation: none;
 }
 
 /* Between pages, where the browser can, the old page hands over to the
-   new one with a short crossfade instead of a cut. The bar is the same on
-   both, so it stays still. */
+   new one with a short crossfade instead of a cut. */
 
 @media (prefers-reduced-motion: no-preference) {
 	@view-transition {
 		navigation: auto;
 	}
+}
 
-	.bar {
-		view-transition-name: bar;
+@media (prefers-reduced-motion: reduce) {
+	.reveal > *,
+	.reveal > .projects > li {
+		animation: none;
+	}
+
+	.grow,
+	.strike,
+	a,
+	.mark {
+		transition: none;
+	}
+
+	.titlelink:hover .mark,
+	.egg .mark,
+	.project-symbols-enabled.egg .sym {
+		animation: none;
+	}
+
+	.sym,
+	.button,
+	.button.download .qr,
+	.button.download:hover .qr,
+	.qr-tile,
+	.qr-caption,
+	.button.download:hover .qr-tile,
+	.button.download:hover .qr-caption {
+		transition: none;
+	}
+
+	html {
+		transition: none;
+	}
+
+	.idle .mark {
+		animation: none;
+	}
+
+	.mark {
+		transform: none;
+	}
+
+	footer::before {
+		animation: none;
+	}
+
+	@media (max-width: 34rem) {
+		.mark {
+			animation: none;
+			opacity: 1;
+		}
 	}
 }
 
-/* A press of the space bar at the end of a page. Fixed layer, no pointer
-   events, gone in a few seconds. */
+/* A press of the space bar. Fixed layer, no pointer events, gone in a few
+   seconds. It is a child of body, so it has to opt out of the arrival
+   animation that every other child gets. */
 
 .confetti {
 	position: fixed;
@@ -1106,6 +979,8 @@ a.button.quiet:focus-visible {
 	z-index: 9;
 	overflow: hidden;
 	pointer-events: none;
+	opacity: 1;
+	animation: none;
 }
 
 .confetti i {
@@ -1128,9 +1003,9 @@ a.button.quiet:focus-visible {
 }
 
 /* The menu. Command K, Control K or a slash opens it. It is not a panel
-   over the page but the page itself, turned into a list: one column, the
-   dashed rule from the footer under what you type, and the line you are
-   on marked with >. */
+   over the page but the page itself, turned into a list: same column,
+   same type, the dashed rule from the footer under what you type, and
+   the line you are on marked the way outbound links are, with >. */
 
 .menu {
 	position: fixed;
@@ -1141,7 +1016,7 @@ a.button.quiet:focus-visible {
 	max-height: none;
 	margin: 0;
 	border: 0;
-	padding: 6rem max(var(--gutter), env(safe-area-inset-right)) 2rem max(var(--gutter), env(safe-area-inset-left));
+	padding: 15em max(1.5em, env(safe-area-inset-right)) 2em max(1.5em, env(safe-area-inset-left));
 	background-color: var(--bg);
 	color: var(--text);
 	font: inherit;
@@ -1163,7 +1038,7 @@ a.button.quiet:focus-visible {
 }
 
 .menu-column {
-	max-width: var(--measure);
+	max-width: 600px;
 	margin: 0 auto;
 }
 
@@ -1177,7 +1052,6 @@ a.button.quiet:focus-visible {
 	background: repeating-linear-gradient(90deg, var(--rule) 0 3px, transparent 3px 9px) bottom left / 12px 1px repeat-x;
 	color: var(--text);
 	font: inherit;
-	font-size: 1.28rem;
 	font-weight: 500;
 	outline: none;
 	appearance: none;
@@ -1186,6 +1060,10 @@ a.button.quiet:focus-visible {
 .menu input::placeholder {
 	color: var(--muted);
 	font-weight: 400;
+}
+
+.menu ul {
+	margin: 0;
 }
 
 .menu li {
@@ -1230,39 +1108,18 @@ a.button.quiet:focus-visible {
 	cursor: default;
 }
 
-/* Less motion, asked for. Everything arrives in place and stays still. */
+@media (max-width: 34rem) {
+	.menu {
+		padding-top: 6.5em;
+	}
+}
 
 @media (prefers-reduced-motion: reduce) {
-	.hero > *,
-	.page-head > *,
-	.menu[open],
-	.idle .mark,
-	.egg .mark,
-	.colophon::before {
+	.menu[open] {
 		animation: none;
 	}
 
-	.grow,
-	.strike,
-	a,
-	.button,
-	.card,
-	.hero-mark,
-	.menu li::before,
-	html {
-		transition: none;
-	}
-
-	.hero-mark {
-		transform: none;
-	}
-
-	.button.download .qr,
-	.button.download:hover .qr,
-	.qr-tile,
-	.qr-caption,
-	.button.download:hover .qr-tile,
-	.button.download:hover .qr-caption {
+	.menu li::before {
 		transition: none;
 	}
 }

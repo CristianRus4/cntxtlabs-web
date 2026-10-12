@@ -83,18 +83,9 @@
 		setInterval(tick, 20000);
 	}
 
-	// The bar draws a hairline under itself once the page has scrolled.
-	var bar = document.querySelector(".bar");
-	if (bar) {
-		var edge = function () { bar.classList.toggle("scrolled", window.scrollY > 4); };
-		edge();
-		window.addEventListener("scroll", edge, { passive: true });
-	}
-
-	// The big mark on the home page follows the pointer. Only the mark is
-	// told, and at most once a frame, so the rest of the page is never
-	// restyled by a moving mouse.
-	var mark = document.querySelector(".hero-mark");
+	// The mark follows the pointer. Only the mark is told, and at most once
+	// a frame, so the rest of the page is never restyled by a moving mouse.
+	var mark = document.querySelector(".mark");
 	if (mark && !reduce && window.matchMedia("(hover: hover)").matches) {
 		var px = 0, py = 0, queued = false;
 		var look = function () {
@@ -219,10 +210,19 @@
 	wake();
 
 	// On a phone there is no hover, so a tap opens a reveal and another
-	// closes it. A link inside an open reveal still works as a link.
+	// closes it. The wordmark is also the link home: the first tap says its
+	// name in full and the second follows it. On the home page, where the
+	// link would only reload the page, it just opens and closes.
 	if (window.matchMedia("(hover: none)").matches) {
 		document.querySelectorAll(".reveals").forEach(function (el) {
 			el.addEventListener("click", function (e) {
+				if (el.matches("a")) {
+					var here = el.href.split("#")[0] === window.location.href.split("#")[0];
+					if (!here && el.classList.contains("open")) return;
+					e.preventDefault();
+					el.classList.toggle("open");
+					return;
+				}
 				if (e.target.closest && e.target.closest("a")) return;
 				el.classList.toggle("open");
 			});
@@ -351,7 +351,7 @@
 	var items = function () {
 		var go = function (path) { return function () { window.location.href = HOME + path; }; };
 		var out = [
-			{ name: "Home", hint: "Apps and numbers", find: "index start", run: go("") },
+			{ name: "Home", hint: "Apps", find: "index start", run: go("") },
 			{ name: "About", hint: "Page", find: "company founder story", run: go("about/") },
 			{ name: "Left", hint: "iPhone, iPad, Watch", find: "time habits", run: go("left/") },
 			{ name: "SafePlate", hint: "Web, Android, iPhone", find: "food kitchen", run: go("safeplate/") },

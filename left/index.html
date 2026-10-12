@@ -34,86 +34,33 @@
 	<link rel="icon" href="../favicon.svg" type="image/svg+xml">
 	<link rel="icon" href="../favicon.png" sizes="32x32">
 	<link rel="apple-touch-icon" href="../apple-touch-icon.png">
-	<script>try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+	<script>(function (r) { if (document.referrer.indexOf(location.origin + "/") === 0) r.classList.add("within"); try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") r.setAttribute("data-theme", t); } catch (e) {} })(document.documentElement);</script>
 	<link rel="stylesheet" href="../styles.css">
 	<script src="../site.js" defer></script>
 	<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Left","description":"Left shows the time you have left, then helps you act on it with habits, goals, countdowns and a planner for the day.","url":"https://cntxtlabs.co/left","applicationCategory":"ProductivityApplication","operatingSystem":"iOS","publisher":{"@type":"Organization","name":"Cntxt Labs","url":"https://cntxtlabs.co/"},"installUrl":"https://apps.apple.com/us/app/left-widgets-for-time-left/id6740155884","offers":{"@type":"Offer","price":"0","priceCurrency":"NZD"}}</script>
 </head>
-<body>
+<body class="reveal">
 
-	<header class="bar">
-		<div class="bar-inner">
-			<p class="crumbs"><a class="home-link" href="../"><svg class="mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg>Cntxt Labs</a><span class="crumb-sep" aria-hidden="true">/</span><span class="crumb">Left</span></p>
-			<nav aria-label="Site">
-				<a href="../#apps">Apps</a>
-				<a href="../about/">About</a>
-				<a href="../contact/">Contact</a>
-			</nav>
-		</div>
-	</header>
+	<p class="title"><a class="titlelink reveals" href="../"><svg class="mark" viewBox="0 0 2069 2314" fill="currentColor" aria-hidden="true"><path transform="translate(-255 1879) scale(1 -1)" d="M384 50 1160 -399C1242 -447 1337 -447 1419 -399L2195 50C2276 97 2324 180 2324 274V1170C2324 1265 2276 1348 2195 1394L1419 1843C1337 1891 1242 1891 1160 1843L384 1394C303 1348 255 1265 255 1170V274C255 180 303 97 384 50ZM1288 820 557 1238C562 1242 564 1244 572 1249L1235 1632C1269 1653 1310 1653 1344 1632L2007 1249C2015 1244 2017 1243 2021 1239ZM1399 -156V629L2105 1032V315C2105 275 2085 241 2050 220L1427 -141C1415 -147 1410 -150 1399 -156ZM1180 -156C1172 -152 1171 -151 1162 -146L529 220C494 241 474 275 474 315V1030L1180 627Z"/></svg><span class="cap">c</span><span class="grow">o</span>nt<span class="grow">e</span>xt<span class="grow cap">&nbsp;labs</span></a></p>
+	<p class="sub"><span class="descriptor" id="descriptor" role="button" tabindex="0">A <em>software</em></span> company, based in <span class="reveals"><span class="strike">New Zealand</span><span class="grow grow-wide">&nbsp;the most beautiful place in the world</span></span>.</p>
 
-	<main>
-		<section class="hero">
-			<img class="app-icon" src="../img/left/icon.webp" alt="" width="256" height="256">
-			<h1 class="display">Left</h1>
-			<p class="tagline">Keep the time you have left in view.</p>
-			<div class="actions">
-				<div class="action"><a class="button download" href="https://apps.apple.com/us/app/left-widgets-for-time-left/id6740155884" rel="noopener"><span class="button-label">Download</span><span class="qr" aria-hidden="true"><span class="qr-tile"><img src="../img/left/qr.svg" alt="" width="37" height="37" loading="lazy" decoding="async"></span><span class="qr-caption">Scan with your iPhone</span></span></a></div>
-				<div class="action"><a class="button quiet" href="https://getleft.app" rel="noopener">Website</a></div>
-			</div>
-		</section>
+	<h1>Left</h1>
 
-		<section class="strip-band" aria-label="Screenshots">
-			<div class="strip">
-				<img src="../img/left/1.webp" alt="Left screenshot 1 of 6" width="600" height="1298" loading="lazy" decoding="async">
-				<img src="../img/left/2.webp" alt="Left screenshot 2 of 6" width="600" height="1298" loading="lazy" decoding="async">
-				<img src="../img/left/3.webp" alt="Left screenshot 3 of 6" width="600" height="1298" loading="lazy" decoding="async">
-				<img src="../img/left/4.webp" alt="Left screenshot 4 of 6" width="600" height="1298" loading="lazy" decoding="async">
-				<img src="../img/left/5.webp" alt="Left screenshot 5 of 6" width="600" height="1298" loading="lazy" decoding="async">
-				<img src="../img/left/6.webp" alt="Left screenshot 6 of 6" width="600" height="1298" loading="lazy" decoding="async">
-			</div>
-		</section>
+	<p>Left is built on one idea: your time is limited, and seeing it changes how you use it. It shows the year, the month, the week, the day and your whole life as symbols that dim as they pass, on your Home Screen, Lock Screen and StandBy.</p>
 
-		<article class="prose">
-			<p class="lead">Left is built on one idea: your time is limited, and seeing it changes how you use it. It shows the year, the month, the week, the day and your whole life as symbols that dim as they pass, on your Home Screen, Lock Screen and StandBy.</p>
-			<p>Then it helps you act on what you see. Build habits on any schedule and protect the streaks that matter. Track any goal you can count with Aim, from money saved to books read, and let Apple Health fill in the progress for you. Share a habit or a streak with a friend and keep each other going.</p>
-			<p>Ahead holds the dates that pull you forward, like trips, birthdays and deadlines, each with its own to-do list, and you can count down to them together with friends. The Planner brings your habits, dates, calendar, reminders, weather, sleep and workouts into one calm view of the day, and a simple fasting timer follows you on the Lock Screen and in the Dynamic Island.</p>
-			<p>More than 1.5 million people use Left on iPhone, iPad and Apple Watch.</p>
-		</article>
-	</main>
+	<p>Then it helps you act on what you see. Build habits on any schedule and protect the streaks that matter. Track any goal you can count with Aim, from money saved to books read, and let Apple Health fill in the progress for you. Share a habit or a streak with a friend and keep each other going.</p>
 
-	<footer class="site-footer">
-		<div class="footer-cols">
-			<div>
-				<h2>Apps</h2>
-				<ul>
-					<li><a href="../left/">Left</a></li>
-					<li><a href="../safeplate/">SafePlate</a></li>
-					<li><a href="../kiwicamping/">KiwiCamping</a></li>
-					<li><a href="../aussiecamps/">AussieCamps</a></li>
-					<li><a href="../txtpod/">txtpod</a></li>
-					<li><a href="../nosnus/">NoSnus</a></li>
-				</ul>
-			</div>
-			<div>
-				<h2>Company</h2>
-				<ul>
-					<li><a href="../about/">About</a></li>
-					<li><a href="../contact/">Contact</a></li>
-					<li><a href="https://apps.apple.com/us/developer/cristian-rus/id1778834894" rel="noopener">App Store</a></li>
-					<li><a href="https://www.nzbn.govt.nz/mynzbn/nzbndetails/9429053827906" rel="noopener">NZBN</a></li>
-				</ul>
-			</div>
-			<div>
-				<h2>For machines</h2>
-				<ul>
-					<li><a href="../llms.txt">llms.txt</a></li>
-					<li><a href="../llms-full.txt">Full text</a></li>
-					<li><a href="../sitemap.xml">Sitemap</a></li>
-				</ul>
-			</div>
-		</div>
-		<p class="colophon"><span class="reveals">Cntxt Labs<span class="grow grow-long">&nbsp;(pronounced &ldquo;context&rdquo;)</span></span> &ndash; Coded in <span class="reveals">N<span class="grow">ew&nbsp;</span>Z<span class="grow">ealand</span><span class="grow grow-time" id="nztime"></span></span> &ndash; &copy; <span class="reveals"><span class="grow">2017 to&nbsp;</span><span class="year"></span></span></p>
+	<p>Ahead holds the dates that pull you forward, like trips, birthdays and deadlines, each with its own to-do list, and you can count down to them together with friends. The Planner brings your habits, dates, calendar, reminders, weather, sleep and workouts into one calm view of the day, and a simple fasting timer follows you on the Lock Screen and in the Dynamic Island.</p>
+
+	<p>More than 1.5 million people use Left on iPhone, iPad and Apple Watch.</p>
+
+	<div class="actions">
+		<div class="action"><a class="button download" href="https://apps.apple.com/us/app/left-widgets-for-time-left/id6740155884" rel="noopener"><span class="button-label">Download</span><span class="qr" aria-hidden="true"><span class="qr-tile"><img src="../img/left/qr.svg" alt="" width="37" height="37" loading="lazy" decoding="async"></span><span class="qr-caption">Scan with your iPhone</span></span></a></div>
+		<div class="action"><a class="button quiet" href="https://getleft.app" rel="noopener">Website</a></div>
+	</div>
+
+	<footer>
+		<p><span class="reveals">Cntxt Labs<span class="grow grow-long">&nbsp;(pronounced &ldquo;context&rdquo;)</span></span> &ndash; Coded in <span class="reveals">N<span class="grow">ew&nbsp;</span>Z<span class="grow">ealand</span><span class="grow grow-time" id="nztime"></span></span> &ndash; &copy; <span class="reveals"><span class="grow">2017 to&nbsp;</span><span class="year"></span></span></p>
 	</footer>
 
 </body>

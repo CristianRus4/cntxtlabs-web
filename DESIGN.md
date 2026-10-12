@@ -1,93 +1,145 @@
 ---
 name: Cntxt Labs
-description: After ia.net. A slim bar, big bold names, short taglines, full-width bands, one pill to press.
+description: A quiet studio site. System type, one size, weight for hierarchy.
 colors:
   bg-light: "#F7F7F7"
   text-light: "#222222"
   muted-light: "#6B6B74"
   rule-light: "#D6D6D6"
-  band-light: "#EDEDED"
   bg-dark: "#070707"
   text-dark: "#F0F0F0"
   muted-dark: "#7A7A84"
   rule-dark: "#2A2A2A"
-  band-dark: "#121212"
-  ink-band: "#070707 (light) / #000000 (dark)"
   accent: "#00B2FF"
 typography:
-  family: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
-  body: "17px, 18px from 60rem wide; line-height 1.6"
-  display: "clamp(2.6rem, 1.5rem + 4vw, 4.3rem), 700, -0.03em, line-height 1.04"
-  tagline: "clamp(1.15rem, 1rem + 0.7vw, 1.5rem), 400"
-  lead: "1.28rem"
-  heading: "1.4rem, 700"
-  small: "0.85 to 0.9rem: captions and the footer"
-layout:
-  wide: "64rem: bar, hero, bands, cards, footer"
-  measure: "40rem: running text"
-  gutter: "1.5rem"
+  body:
+    fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 400
+    lineHeight: 1.6
+  title:
+    fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 700
+    lineHeight: 1.6
+  heading:
+    fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 500
+    lineHeight: 1.6
+rounded:
+  none: "0px"
+spacing:
+  line: "1.2em"
+  group: "0.75em"
+  section: "3em"
+  page-x: "1.5em"
+  page-y: "15em"
+components:
+  link:
+    textColor: "{colors.text-light}"
+    typography: "{typography.heading}"
+  link-hover:
+    textColor: "{colors.accent}"
+  outlink:
+    textColor: "{colors.text-light}"
+    padding: "0.45em 0"
 ---
 
 # Design System: Cntxt Labs
 
 ## Overview
 
-**Inspiration: ia.net.** A slim bar, then each thing said once, large and plainly: a name in bold, a short line under it, one button, and the product itself. The palette and the cyan come from iA too, so the move from the first version of the site was one of structure, not colour.
+**Creative North Star: "The writer's desk"**
 
-Personality is still discovered, not displayed. The company describes itself with a different word on every load, New Zealand thinks highly of itself on hover, the footer counts back to 2017, and a few things happen if you type. None of that is announced.
+Type after nelson.co: the system stack, one size, weight carries hierarchy, no font-smoothing override. Colour after iA Writer. The page is a column of sentences, not a marketing layout.
 
-## Colours
+Personality is discovered, not displayed. Vowels hide in the wordmark, New Zealand unfolds, the year counts back to 2017. None of that is announced.
 
-- **Paper** `#F7F7F7` and **Ink** `#222222` in light; **Void** `#070707` and `#F0F0F0` in dark.
-- **Band** `#EDEDED` / `#121212`: the soft grey behind alternate sections and screenshot strips.
-- **Ink band** `#070707` (pure black in dark mode): the dark sections. It redefines the colour tokens locally, so anything inside, buttons included, turns over by itself.
-- **Quiet** `#6B6B74` / `#7A7A84`: captions, stat labels, blurbs, the footer line.
-- **Signal cyan** `#00B2FF`: hover, focus and selection only. Never a fill.
+**Key Characteristics:**
+- One type size. Weight 400 / 500 / 700 is the hierarchy. The footer is the one step down, at 13px.
+- A 600px measure, left aligned, no cards, no rounded corners, no pill buttons.
+- Cyan `#00B2FF` only on hover, focus, and selection.
+- Flat. Depth is a dashed rule above the footer, nothing else.
+
+## Colors
+
+A paper field and a near-black field, with one accent used sparingly.
+
+### Primary
+- **Signal cyan** (#00B2FF): hover, focus, text selection. Rare on purpose.
+
+### Neutral
+- **Paper** (#F7F7F7) / **Ink** (#222222) in light.
+- **Void** (#070707) / **Paper-on-dark** (#F0F0F0) in dark.
+- **Quiet** (#6B6B74 light, #7A7A84 dark): the footer and hints in the menu. Meets WCAG AA.
+- **Hairline** (#D6D6D6 / #2A2A2A): dashed footer rule.
+
+**The One Voice Rule.** The accent is a reaction, never a fill.
 
 ## Typography
 
-The system font, no webfont. One reading size for text; names are set large (`.display`), the line under a name is a step up (`.tagline`), the opening paragraph of a page is a step up (`.lead`), and section headings are bold at 1.4rem. Captions and the footer step down.
+**Display Font:** system-ui stack (same as body)
+**Body Font:** system-ui stack
+
+**Character:** Nelson's one-size setting. The wordmark is 700, titles 500, running text 400. Nothing else.
+
+### Hierarchy
+- **Display / wordmark** (700, 15px, 1.6): the cntxt lockup.
+- **Title** (500, 15px, 1.6): page names. Sit the next line against them (`margin-bottom: 0`).
+- **Body** (400, 15px, 1.6): everything else. Measure ~600px, ~65–75ch.
+- **Label** (500, 15px): links and product names.
+
+**The One Size Rule.** Do not introduce a type scale. The footer at 13px is the only exception. Do not load a webfont.
 
 ## Layout
 
-- **Bar** (`.bar`): sticky, 3rem tall, the mark and Cntxt Labs on the left, Apps / About / Contact on the right. Inner pages add the page name after a slash, as iA does. A hairline appears under it once the page scrolls.
-- **Hero** (`.hero`): centred. On an app page: icon, name, tagline, buttons.
-- **Page head** (`.page-head`): left aligned, for pages that are mostly words (About, Contact): a small bold label, then the name large.
-- **Band** (`.band`): full width, centred. One per app on the home page, alternating grey and ink, with three screenshots running off the bottom edge. `.words` for a band without pictures, `.plain` for one on the page colour.
-- **Strip** (`.strip-band`): an app's screenshots in a row that scrolls sideways when it has to.
-- **Prose** (`.prose`): a 40rem column. Inline links are underlined.
-- **Cards** (`.cards`): a grid for a collection of apps.
-- **Footer** (`.site-footer`): link columns, then the colophon under a dashed rule that walks.
+A single column, `max-width: calc(600px + 3em)`, padding 15em top (6.5em on small screens) and 1.5em sides. Flex column so the footer can sit at the bottom of short pages.
+
+Rhythm: 0 between a title and its first line, 1.2em between paragraphs, 0.75em before a product list, 1.5em between products, 3em before the lead. Tight groups, then a real break.
+
+No grid. No cards. Lists are unstyled.
+
+## Elevation & Depth
+
+None. No shadows, no blur on the page (blur is reserved for unpublished product names). The footer is separated by a dashed hairline.
+
+## Shapes
+
+**The Square Rule.** Radius is 0, except buttons, which are pills after iA, and the QR card a download button opens into. Icons are 24px strokes. The mark is the only custom shape.
 
 ## Components
 
-- **Button:** a small pill (padding 0.38em 0.95em) in the ink colour with the label in the paper colour. `.quiet` is a tint of the ink, for the second action. No captions. Hover leans in (scale 1.03), press gives (0.97). On touch screens the hit area is a little larger than the pill. The only round things are buttons, cards and app icons.
-- **Download button** (`.button.download`), after trysundrop.app: with a fine pointer, hovering or focusing the pill grows it upward into a 13.5 by 15.75rem card of the same colour holding the app's App Store QR code (`img/<app>/qr.svg`) and "Scan with your iPhone". It springs open and settles back without the spring. The card carries the one large soft shadow on the site. On touch screens it is a plain link.
-- **App icon:** the App Store artwork, rounded at 22.5%.
-- **Screenshots:** the App Store screenshots, `img/<app>/1.webp` to `6.webp`, 600px wide, rounded.
-- **Reveal:** inline text that opens on hover or keyboard focus. Without a pointer, a tap opens it and the words wrap like the rest of the sentence; hover styles never apply on touch, because iOS leaves :hover stuck.
-- **Numbers:** three large figures on the home page that count up on arrival, and again when pointed at or tapped.
-- **Menu:** Command K, Control K or `/`. A full-page `<dialog>`: what you type over the dashed rule, then the list, with `>` marking the line you are on.
+- **Wordmark:** 700, vowels collapse into `.grow` until hover or the `cntxt` easter egg.
+- **Link:** 500, no underline, cyan on hover and `:focus-visible` with a 1px dotted outline.
+- **Button:** a small pill (padding 0.38em 0.95em) in the ink colour with the label in the paper colour, so it inverts in dark mode. `.quiet` is the secondary, in a tint of the ink. No captions. Each sits in `.action`, inside `.actions`. Hover leans in (scale 1.03), press gives (0.97). On touch screens the hit area is a little larger than the pill.
+- **Download button** (`.button.download`), after trysundrop.app: with a fine pointer, hovering or focusing the pill grows it upward into a card of the same colour holding the app's App Store QR code (`img/<app>/qr.svg`) and "Scan with your iPhone". It springs open and settles back without the spring, and carries the one soft shadow on the site. On touch screens it is a plain link.
+- **Reveal:** inline text that opens on hover or keyboard focus. Without a pointer, a tap opens it and the words wrap like the rest of the sentence; hover styles never apply on touch, because iOS leaves :hover stuck. The wordmark opens on the first tap and follows its link on the second.
+- **Blurred product:** unpublished only. Name and description as transparent text with a 7px `text-shadow`, not a link, not selectable.
+- **Project row:** the name is the link, and its `::after` covers the row, so the description answers to it too.
+- **Copy button:** a `.button.quiet` with `data-copy`, in an `.action` that stays hidden until the browser can copy.
+- **Menu:** Command K, Control K or `/`. A full-page `<dialog>` in the same column: what you type over the dashed rule, then the list, with `>` marking the line you are on. Pages, the email, and the appearance.
 - **Appearance:** follows the system unless chosen in the menu, stored as `data-theme` on `html` and restored in the head before first paint.
-- **404:** self-contained, with a small copy of the bar, hero and button. Do not point it at `styles.css`.
+- **404:** self-contained. Do not point it at `styles.css`.
 
 ## Motion
 
-- The hero and page head rise in, 80ms apart.
-- Further down, a band's contents rise into place as they scroll into view, where the browser supports scroll-driven animation.
-- Between pages the bar stays still and the rest crossfades, where the browser supports view transitions.
-- Nothing loops on its own except the footer rule, which runs on the compositor.
-- Everything stops under `prefers-reduced-motion`.
+- **Arrival:** each block rises 0.9em and fades in, 80ms apart. A project list hands its delay to its rows, which follow 55ms apart.
+- **Between pages:** the masthead is already in place and does not animate again. Where the browser supports it, the pages crossfade.
+- **Nothing loops on its own** except the footer rule, which runs on the compositor. The mark bobs while you hover it, or twice when it arrives on a phone.
+- Every animation stops under `prefers-reduced-motion`.
 
 ## Do's and Don'ts
 
 **Do**
-- Say what an app is and why it exists, in a name, a line and a paragraph or two.
-- Keep one primary button per section.
-- Use real screenshots and icons from the App Store listing.
+- Keep the system stack and the 15px body.
+- Let weight, not size, mark a title.
+- Put new product rows in `.projects` with a `.desc`.
 - Respect `prefers-reduced-motion`.
 
 **Don't**
-- Load a webfont, add gradients, or use the cyan as a fill.
-- Add shadows beyond the hairline under the bar and the open QR card.
+- Add Inter, Geist, cards, rounded buttons, gradients, or a second type size.
+- Fill the compass, globe, or any icon button back in.
 - Announce the easter eggs.
+- Animate layout with bounce or elastic easing.
+- Use the accent as a background.

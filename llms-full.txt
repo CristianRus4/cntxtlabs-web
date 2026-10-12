@@ -206,7 +206,7 @@ SafePlate is a subscription for kitchen teams and works differently: records are
 
 ## About the website
 
-- Static HTML, one stylesheet and one small script. No build step, no framework, no trackers and no third party requests. App icons and screenshots are served from the site itself.
+- Static HTML, one stylesheet and one small script. No build step, no framework, no trackers and no third party requests.
 - Canonical host: https://cntxtlabs.co
 - Structured data on every page as schema.org JSON-LD: Organization on the home page, SoftwareApplication on each product page, CollectionPage on the camping and iOS pages, AboutPage on the about page, ContactPage on the contact page.
 - Sitemap: https://cntxtlabs.co/sitemap.xml
