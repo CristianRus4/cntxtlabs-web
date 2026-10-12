@@ -242,7 +242,12 @@ a:focus-visible {
 
 .reveals:focus-visible .grow.grow-time,
 .reveals.open .grow.grow-time {
-	max-width: 22ch;
+	max-width: 44ch;
+}
+
+.reveals:focus-visible .grow.grow-live,
+.reveals.open .grow.grow-live {
+	max-width: 46ch;
 }
 
 .reveals:focus-visible .cap,
@@ -262,7 +267,11 @@ a:focus-visible {
 	}
 
 	.reveals:hover .grow.grow-time {
-		max-width: 22ch;
+		max-width: 44ch;
+	}
+
+	.reveals:hover .grow.grow-live {
+		max-width: 46ch;
 	}
 
 	.reveals:hover .cap {
@@ -302,7 +311,33 @@ a:focus-visible {
 	from { opacity: 0; }
 }
 
-/* What kind of company. Different on every load, and on every click. */
+/* Live lines. A heading keeps its weight; what it reveals is plain text. */
+
+h1 .grow {
+	font-weight: 400;
+}
+
+/* The years. Point at them and they count up from 2017. */
+
+.years {
+	font-variant-numeric: tabular-nums;
+	cursor: default;
+	-webkit-tap-highlight-color: transparent;
+}
+
+/* What kind of company. Different on every load, and on every click,
+   when the word is backspaced away and the next one typed in behind a
+   cyan caret. */
+
+.descriptor.typing em::after {
+	content: "";
+	display: inline-block;
+	width: 1px;
+	height: 1.05em;
+	margin-left: 1px;
+	vertical-align: -0.15em;
+	background-color: var(--blue);
+}
 
 .descriptor {
 	display: inline-block;
@@ -720,13 +755,13 @@ a.button.quiet:focus-visible {
 	}
 }
 
-/* Download buttons, after Sundrop. With a pointer, the pill keeps its
-   width and grows upward into a taller box of the same colour, with the
-   App Store QR code above the label, drawn in the label's colour: light
-   on the dark pill, dark on the light one. The label never moves. The
-   box is one layer under the label, uncovered from the bottom up with a
-   clip, so nothing around the button shifts. On a phone the button
-   simply opens the App Store. */
+/* Download buttons, after getleft.app. With a pointer, the label fades
+   and the pill keeps its width but grows upward into a square of the
+   same colour, filled by the App Store QR code in the label's colour:
+   light on the dark pill, dark on the light one. The square is one layer
+   under the label, uncovered from the bottom up with a clip, so nothing
+   around the button shifts. On a phone the button simply opens the App
+   Store. */
 
 .button .qr {
 	display: none;
@@ -741,10 +776,21 @@ a.button.quiet:focus-visible {
 	.button.download:focus-visible {
 		z-index: 4;
 		transform: none;
+		filter: drop-shadow(0 0.6em 1.1em rgba(0, 0, 0, 0.2));
+	}
+
+	.button.download .button-label {
+		transition: opacity 140ms ease 80ms;
+	}
+
+	.button.download:hover .button-label,
+	.button.download:focus-visible .button-label {
+		opacity: 0;
+		transition: opacity 90ms linear;
 	}
 
 	/* The pill is 1.96em tall (a 1.2 line and 0.38em above and below), so
-	   its corners are 0.98em; the box keeps those corners as it grows. */
+	   its corners are 0.98em; the square keeps those corners as it grows. */
 	.button.download .qr {
 		position: absolute;
 		left: 0;
@@ -752,19 +798,19 @@ a.button.quiet:focus-visible {
 		bottom: 0;
 		z-index: -1;
 		display: block;
-		padding: 0.5em 0.5em 1.96em;
+		padding: 0.5em;
 		border-radius: 0.98em;
 		background-color: inherit;
 		pointer-events: none;
 		clip-path: inset(calc(100% - 1.96em) 0 0 0 round 0.98em);
-		transition: clip-path 260ms cubic-bezier(0.32, 0.72, 0, 1);
+		transition: clip-path 300ms cubic-bezier(0.32, 0.72, 0, 1);
 	}
 
 	.button.download:hover .qr,
 	.button.download:focus-visible .qr {
 		pointer-events: auto;
 		clip-path: inset(0 0 0 0 round 0.98em);
-		transition: clip-path 360ms cubic-bezier(0.22, 1, 0.36, 1);
+		transition: clip-path 480ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	.qr-code {
@@ -777,15 +823,15 @@ a.button.quiet:focus-visible {
 		-webkit-mask-repeat: no-repeat;
 		mask-repeat: no-repeat;
 		opacity: 0;
-		transform: translateY(0.5em);
-		transition: opacity 120ms ease, transform 200ms ease;
+		transform: scale(0.9);
+		transition: opacity 100ms ease, transform 200ms ease;
 	}
 
 	.button.download:hover .qr-code,
 	.button.download:focus-visible .qr-code {
 		opacity: 1;
 		transform: none;
-		transition: opacity 200ms ease 90ms, transform 320ms var(--ease-out) 60ms;
+		transition: opacity 200ms ease 110ms, transform 380ms var(--ease-out) 80ms;
 	}
 }
 
@@ -915,7 +961,9 @@ footer p {
 	.button.download .qr,
 	.button.download:hover .qr,
 	.qr-code,
-	.button.download:hover .qr-code {
+	.button.download:hover .qr-code,
+	.button.download .button-label,
+	.button.download:hover .button-label {
 		transition: none;
 	}
 

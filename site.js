@@ -13,9 +13,51 @@
 		return t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
 	};
 
-	// Copyright year.
+	// Copyright year. Point at it, or tap it, and it counts up from the year
+	// it all started, like an odometer turning over.
 	var y = new Date().getFullYear();
 	document.querySelectorAll(".year").forEach(function (e) { e.textContent = y; });
+	document.querySelectorAll(".years").forEach(function (box) {
+		var yr = box.querySelector(".year");
+		var rolling = false;
+		var roll = function () {
+			if (rolling || reduce || !yr) return;
+			rolling = true;
+			var from = 2017, t0 = null, ms = 900;
+			requestAnimationFrame(function step(t) {
+				if (t0 === null) t0 = t;
+				var q = Math.min(1, (t - t0) / ms);
+				yr.textContent = from + Math.round((y - from) * (1 - Math.pow(1 - q, 3)));
+				if (q < 1) requestAnimationFrame(step);
+				else rolling = false;
+			});
+		};
+		box.addEventListener("mouseenter", roll);
+		box.addEventListener("click", roll);
+	});
+
+	// Live lines, hidden in reveals. How much of this year is already gone,
+	// for Left; how long this page would run as an episode, for txtpod.
+	var live = function (attr, fill) {
+		document.querySelectorAll('[data-live="' + attr + '"]').forEach(function (n) {
+			var put = function () { n.textContent = fill(n.getAttribute("data-format")); };
+			put();
+			if (attr === "year") setInterval(put, 60000);
+		});
+	};
+	live("year", function (f) {
+		var now = new Date(), yr = now.getFullYear();
+		var from = new Date(yr, 0, 1), to = new Date(yr + 1, 0, 1);
+		return f.replace("{year}", yr).replace("{pct}", ((now - from) / (to - from) * 100).toFixed(1));
+	});
+	live("listen", function (f) {
+		// Narration runs at about 150 words a minute.
+		var words = (document.body.innerText || "").split(/\s+/).filter(Boolean).length;
+		var secs = words / 150 * 60;
+		var n = secs < 60 ? Math.max(10, Math.round(secs / 10) * 10) : Math.round(secs / 60);
+		var len = n + (secs < 60 ? " second" : " minute");
+		return f.replace("{a}", /^(8|11|18)/.test(String(n)) ? "an" : "a").replace("{length}", len);
+	});
 
 	// What kind of company, decided fresh on every load. Click for another.
 	var words = [
@@ -46,38 +88,76 @@
 		};
 		set(pick());
 
-		// The old word lifts away and the new one rises into its place.
+		// The old word is backspaced away and the new one typed in, a letter
+		// at a time, with a caret while it writes.
 		var cycle = function (ev) {
 			if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
 			ev.preventDefault();
-			if (reduce || !el.animate) { set(pick()); return; }
+			if (reduce) { set(pick()); return; }
 			if (busy) return;
 			busy = true;
-			el.animate([
-				{ opacity: 1, transform: "none" },
-				{ opacity: 0, transform: "translateY(-0.3em)" }
-			], { duration: 110, easing: "ease-in" }).onfinish = function () {
-				set(pick());
-				el.animate([
-					{ opacity: 0, transform: "translateY(0.35em)" },
-					{ opacity: 1, transform: "none" }
-				], { duration: 260, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }).onfinish = function () {
-					busy = false;
-				};
+			var w = pick();
+			var em = el.querySelector("em");
+			var from = em.textContent, i = from.length, j = 0;
+			el.classList.add("typing");
+			var type = function () {
+				if (j < w.length) {
+					em.textContent = w.slice(0, ++j);
+					setTimeout(type, 45 + Math.random() * 55);
+					return;
+				}
+				el.classList.remove("typing");
+				busy = false;
 			};
+			var erase = function () {
+				if (i > 0) {
+					em.textContent = from.slice(0, --i);
+					setTimeout(erase, 26);
+					return;
+				}
+				el.firstChild.textContent = article(w) + " ";
+				setTimeout(type, 140);
+			};
+			erase();
 		};
 		el.addEventListener("click", cycle);
 		el.addEventListener("keydown", cycle);
 	}
 
-	// The time where it is made, revealed with the rest of the footer line.
+	// Where the sun is over Auckland right now: its height in degrees, and
+	// whether it is still climbing. Worked out here, from the date alone.
+	var sun = function (date) {
+		var rad = Math.PI / 180, lat = -36.85 * rad, lon = 174.76;
+		var d = date.getTime() / 86400000 - 10957.5;
+		var g = (357.529 + 0.98560028 * d) * rad;
+		var q = 280.459 + 0.98564736 * d;
+		var L = (q + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g)) * rad;
+		var e = (23.439 - 0.00000036 * d) * rad;
+		var ra = Math.atan2(Math.cos(e) * Math.sin(L), Math.cos(L));
+		var dec = Math.asin(Math.sin(e) * Math.sin(L));
+		var gmst = ((18.697374558 + 24.06570982441908 * d) % 24 + 24) % 24;
+		var ha = (gmst * 15 + lon) * rad - ra;
+		ha = Math.atan2(Math.sin(ha), Math.cos(ha));
+		var alt = Math.asin(Math.sin(lat) * Math.sin(dec) + Math.cos(lat) * Math.cos(dec) * Math.cos(ha)) / rad;
+		return { alt: alt, rising: ha < 0 };
+	};
+	var sky = function () {
+		var s = sun(new Date());
+		if (s.alt < -12) return "dark";
+		if (s.alt < -0.8) return s.rising ? "nearly light" : "the sun has just set";
+		if (s.alt < 8) return s.rising ? "the sun is just up" : "the sun is going down";
+		return s.alt > 55 ? "the sun is high" : "the sun is up";
+	};
+
+	// The time where it is made, and what the sky is doing there, revealed
+	// with the rest of the footer line.
 	var t = document.getElementById("nztime");
 	if (t) {
 		var tick = function () {
 			var now = new Date().toLocaleTimeString("en-NZ", {
 				timeZone: "Pacific/Auckland", hour: "numeric", minute: "2-digit"
 			});
-			t.textContent = ", where it is " + now.toLowerCase().replace(/\s/g, "");
+			t.textContent = ", where it is " + now.toLowerCase().replace(/\s/g, "") + " and " + sky();
 		};
 		tick();
 		setInterval(tick, 20000);
@@ -116,6 +196,11 @@
 		"ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 	var kAt = 0;
 	var goTo = null;
+	var names = {
+		left: "left/", txtpod: "txtpod/", safeplate: "safeplate/", camping: "camping/",
+		aussie: "aussiecamps/", nosnus: "nosnus/", ftnss: "ftnss/", bites: "bites/",
+		notsobusy: "notsobusy/", about: "about/", contact: "contact/", home: ""
+	};
 
 	document.addEventListener("keydown", function (e) {
 		if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -136,12 +221,13 @@
 		if (goTo) {
 			clearTimeout(goTo);
 			goTo = null;
-			var dest = { h: "", c: "contact/", a: "appstore/" };
+			var dest = { h: "", c: "contact/", a: "appstore/", b: "about/", l: "left/",
+				t: "txtpod/", s: "safeplate/", k: "camping/", n: "nosnus/" };
 			if (ch in dest) { window.location.href = HOME + dest[ch]; return; }
 		}
 		if (ch === "g") { goTo = setTimeout(function () { goTo = null; }, 900); return; }
 
-		typed = (typed + ch).slice(-8);
+		typed = (typed + ch).slice(-12);
 
 		// The name of the company. Everything hiding shows itself.
 		if (typed.slice(-5) === "cntxt") { typed = ""; flash("egg", 5200); return; }
@@ -150,6 +236,16 @@
 		if (typed.slice(-4) === "kiwi") {
 			typed = "";
 			document.querySelectorAll(".strike").forEach(function (n) { n.textContent = "Aotearoa"; });
+			return;
+		}
+
+		// Type the name of an app, or of a page, and go there.
+		for (var name in names) {
+			if (typed.slice(-name.length) !== name) continue;
+			typed = "";
+			var to = new URL(HOME + names[name]);
+			if (to.pathname !== window.location.pathname) window.location.href = to.href;
+			return;
 		}
 	});
 

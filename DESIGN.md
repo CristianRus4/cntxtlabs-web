@@ -106,14 +106,14 @@ None. No shadows, no blur on the page (blur is reserved for unpublished product 
 
 ## Shapes
 
-**The Square Rule.** Radius is 0, except buttons, which are pills after iA, and the box a download button grows into. Icons are 24px strokes. The mark is the only custom shape.
+**The Square Rule.** Radius is 0, except buttons, which are pills after iA, and the square a download button grows into. Icons are 24px strokes. The mark is the only custom shape.
 
 ## Components
 
 - **Wordmark:** 700, vowels collapse into `.grow` until hover or the `cntxt` easter egg.
 - **Link:** 500, no underline, cyan on hover and `:focus-visible` with a 1px dotted outline.
 - **Button:** a small pill (padding 0.38em 0.95em) in the ink colour with the label in the paper colour, so it inverts in dark mode. `.quiet` is the secondary, in a tint of the ink. No captions. Each sits in `.action`, inside `.actions`. Hover leans in (scale 1.03), press gives (0.97). On touch screens the hit area is a little larger than the pill.
-- **Download button** (`.button.download`), after trysundrop.app: with a fine pointer, hovering or focusing the pill keeps its width and grows upward into a box of the same colour. The App Store QR code (`img/<app>/qr.svg`, used as a mask) sits above the label in the label's colour, light on the dark pill and dark on the light one. The label does not move and nothing around the button shifts. On touch screens it is a plain link.
+- **Download button** (`.button.download`), after getleft.app: with a fine pointer, hovering or focusing the pill fades its label and grows it upward into a square of its own width and colour, filled by the App Store QR code (`img/<app>/qr.svg`, used as a mask) in the label's colour: light on the dark pill, dark on the light one. Nothing around the button shifts. On touch screens it is a plain link.
 - **Reveal:** inline text that opens on hover or keyboard focus. Without a pointer, a tap opens it and the words wrap like the rest of the sentence; hover styles never apply on touch, because iOS leaves :hover stuck. The wordmark opens on the first tap and follows its link on the second.
 - **Blurred product:** unpublished only. Name and description as transparent text with a 7px `text-shadow`, not a link, not selectable.
 - **Project row:** the name is the link, and its `::after` covers the row, so the description answers to it too.
@@ -128,6 +128,16 @@ None. No shadows, no blur on the page (blur is reserved for unpublished product 
 - **Between pages:** the masthead is already in place and does not animate again. Where the browser supports it, the pages crossfade.
 - **Nothing loops on its own** except the footer rule, which runs on the compositor. The mark bobs while you hover it, or twice when it arrives on a phone.
 - Every animation stops under `prefers-reduced-motion`.
+
+## Hidden details
+
+All text, all discovered rather than announced:
+
+- **Descriptor:** clicking "A ___ company" backspaces the word and types the next one in behind a cyan caret.
+- **Live lines** (`data-live`, `.grow-live`): Left's line and heading reveal how much of the year is already gone; txtpod's reveal how long the page would run as an episode, at 150 words a minute.
+- **Sky:** the footer's New Zealand reveal says the time in Auckland and what the sun is doing there (dark, nearly light, just up, up, high, going down, just set), worked out from the date in the page.
+- **Years:** pointing at or tapping the year in the footer counts it up from 2017.
+- **Keys:** typing an app's or a page's name (left, txtpod, safeplate, camping, aussie, nosnus, ftnss, bites, notsobusy, about, contact, home) goes there. g then a letter: h home, l Left, t txtpod, s SafePlate, k camping, n NoSnus, b about, c contact, a App Store. Typing cntxt shows everything hidden; kiwi renames New Zealand; the Konami code turns the page over; space at the end of a page rains squares; / or Command K opens the menu.
 
 ## Do's and Don'ts
 
