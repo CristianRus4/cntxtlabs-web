@@ -68,13 +68,13 @@ SafePlate replaces the diary. The team records each check on a phone as they do 
 
 ### KiwiCamping & AussieCamps
 
-KiwiCamping and AussieCamps help you decide where to stay tonight and where to go next. Each is a camping map and a road-trip planner in one, built the same way: KiwiCamping for New Zealand and AussieCamps for Australia.
+KiwiCamping and AussieCamps help you decide where to stay tonight and where to go next. Each is a camping map and a road-trip planner in one, built the same way, one for New Zealand and one for Australia.
 
-Start with the map. KiwiCamping has more than 6,500 places across New Zealand and AussieCamps more than 74,000 across Australia: campsites, holiday and caravan parks, national park sites and free camping areas, along with rest areas, dump stations, drinking water and toilets. Filter for exactly what you need, like free camping with toilets and water nearby, and every place opens with photos, fees, facilities, alerts, the weather and Street View of the entrance.
+Search and filter the map for exactly what you need, like free camping with toilets and water nearby, and open any place to see photos, fees, facilities, alerts, the weather and Street View of the entrance. Then turn the places you like into a trip: put the stops in the order you will drive, see the distance and driving time for every leg, and give each stop its own date, notes and forecast. The whole directory is stored on your phone, so it still works after the last bar of signal.
 
-Then plan the trip. Add the places you like as stops, put them in the order you will drive, and see the distance and driving time for every leg and for the whole journey. Each stop has its own date, notes and forecast, and you tick it off as you go. Keep a packing list beside the itinerary, share it, and sync it to your calendar.
+KiwiCamping is for New Zealand, with more than 6,500 places, from DOC campsites, huts and freedom camping areas to holiday parks and dump stations. It comes with 21 road-trip routes and more than 50 guides on how DOC sites, huts and freedom camping work.
 
-Both apps come with detailed road-trip routes and practical guides, from how DOC sites and freedom camping work in New Zealand to free camps and national parks in Australia. And because the whole directory is stored on your phone, the details are still there after the last bar of signal.
+AussieCamps is for Australia, with more than 74,000 places, from free camps, national park campgrounds and caravan parks to rest areas, dump points, drinking water and toilets. It comes with 21 Australian road trips and more than 50 guides on free camps, national parks and planning realistic driving days.
 
 - Page: https://cntxtlabs.co/camping
 

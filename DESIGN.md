@@ -110,7 +110,7 @@ None. No shadows, no blur on the page (blur is reserved for unpublished product 
 
 ## Components
 
-- **Wordmark:** 700, vowels collapse into `.grow` until hover or the `cntxt` easter egg.
+- **Wordmark:** "Cntxt Labs" at 700. On hover, focus or the `cntxt` easter egg, `(pronounced “context”)` slides open after it in 400. It is the one reveal that slides rather than types.
 - **Link:** 500, no underline, cyan on hover and `:focus-visible` with a 1px dotted outline.
 - **Button:** a small pill (padding 0.38em 0.95em) in the ink colour with the label in the paper colour, so it inverts in dark mode. `.quiet` is the secondary, in a tint of the ink. No captions. Each sits in `.action`, inside `.actions`. Hover leans in (scale 1.03), press gives (0.97). On touch screens the hit area is a little larger than the pill.
 - **Download button** (`.button.download`), after getleft.app: with a fine pointer, hovering or focusing the pill fades its label and grows it upward into a card of its own width and colour: the App Store QR code (`img/<app>/qr.svg`, used as a mask, with our rounded corner squares) in the label's colour, light on the dark pill and dark on the light one, and under it three set lines, "Scan or search / “App” / on the App Store." Nothing around the button shifts. On touch screens it is a plain link.
@@ -135,7 +135,7 @@ None. No shadows, no blur on the page (blur is reserved for unpublished product 
 All text, all discovered rather than announced:
 
 - **Descriptor:** arriving on the site, "A ___ company" types its word in behind a cyan caret (not when moving between pages); clicking it backspaces the word and types the next one.
-- **Typed reveals:** every reveal (the wordmark, New Zealand, company, the footer, the live lines) types its hidden words in a letter at a time behind the same caret on hover, focus or a tap, and backspaces them away after. The real text stays in the page, out of sight, for screen readers; what shows is a typed copy (`.typed`). With less motion asked for, reveals slide open as before. The figures are not reveals and keep their count.
+- **Typed reveals:** every reveal but the wordmark (New Zealand, company, the footer, the live lines) types its hidden words in a letter at a time behind the same caret on hover, focus or a tap, and backspaces them away after. The real text stays in the page, out of sight, for screen readers; what shows is a typed copy (`.typed`). With less motion asked for, reveals slide open as before. The figures are not reveals and keep their count.
 - **Live lines** (`data-live`, `.grow-live`): Left's line and heading reveal how much of the year is already gone; txtpod's reveal how long the page would run as an episode, at 150 words a minute.
 - **Sky:** the footer's New Zealand reveal says the time in Auckland and what the sun is doing there (dark, nearly light, just up, up, high, going down, just set), worked out from the date in the page.
 - **Keys:** typing an app's or a page's name (left, txtpod, safeplate, camping, aussie, nosnus, ftnss, bites, notsobusy, about, contact, home) goes there. g then a letter: h home, l Left, t txtpod, s SafePlate, k camping, n NoSnus, b about, c contact, a App Store. Typing cntxt shows everything hidden; kiwi renames New Zealand; the Konami code turns the page over; space at the end of a page rains squares; / or Command K opens the menu.

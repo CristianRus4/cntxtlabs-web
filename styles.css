@@ -212,7 +212,7 @@ a:focus-visible {
 	outline-offset: 0.18em;
 }
 
-/* Reveals: text that unfolds. The wordmark puts its vowels back, the
+/* Reveals: text that unfolds. The wordmark says how it is said, the
    subtitle thinks highly of the place, the footer counts from the
    beginning. With a pointer they open on hover or keyboard focus; on a
    phone a tap opens one and another tap closes it. */
@@ -250,11 +250,6 @@ a:focus-visible {
 	max-width: 46ch;
 }
 
-.reveals:focus-visible .cap,
-.reveals.open .cap {
-	text-transform: capitalize;
-}
-
 @media (hover: hover) {
 	.reveals:hover .grow {
 		max-width: 8ch;
@@ -272,10 +267,6 @@ a:focus-visible {
 
 	.reveals:hover .grow.grow-live {
 		max-width: 46ch;
-	}
-
-	.reveals:hover .cap {
-		text-transform: capitalize;
 	}
 
 	.reveals:hover .strike {
@@ -311,9 +302,12 @@ a:focus-visible {
 	from { opacity: 0; }
 }
 
-/* Live lines. A heading keeps its weight; what it reveals is plain text. */
+/* Live lines and the wordmark's pronunciation. A heading keeps its weight;
+   what it reveals is plain text. The wordmark is the one reveal that
+   slides open rather than typing. */
 
-h1 .grow {
+h1 .grow,
+.titlelink .grow {
 	font-weight: 400;
 }
 
@@ -323,7 +317,7 @@ h1 .grow {
    purpose: every way a reveal opens (hover, focus, a tap, the company's
    name typed) now goes through the typing. */
 
-.typing-reveals .grow {
+.typing-reveals .reveals:not(.titlelink) .grow {
 	position: absolute !important;
 	display: inline-block !important;
 	width: 1px !important;
@@ -464,11 +458,6 @@ h1 .grow {
 .egg .reveals .grow {
 	max-width: 40ch;
 	opacity: 1;
-}
-
-.egg .titlelink .cap,
-.egg .reveals .cap {
-	text-transform: capitalize;
 }
 
 .egg .reveals .strike {

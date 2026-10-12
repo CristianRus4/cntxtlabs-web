@@ -39,7 +39,7 @@ headings and links, everything at one font size with weight carrying the
 hierarchy. Links have no underline until you hover. Nothing is dimmed with
 opacity.
 
-Hovering the wordmark puts the vowels back: `cntxt` becomes `context`.
+Hovering the wordmark, Cntxt Labs, says how to pronounce it: "context".
 
 ## Working on it
 

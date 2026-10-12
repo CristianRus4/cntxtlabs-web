@@ -327,7 +327,8 @@
 		});
 	}
 
-	// Reveals type themselves, like the word in the subtitle. Under a
+	// Reveals type themselves, like the word in the subtitle (all but the
+	// wordmark, which slides). Under a
 	// pointer, on keyboard focus or after a tap, the hidden words are typed
 	// in a letter at a time behind the caret, and backspaced away again when
 	// the pointer leaves or the tap is undone. Each hidden part keeps its
@@ -339,6 +340,8 @@
 		root.classList.add("typing-reveals");
 		var pointer = window.matchMedia("(hover: hover)").matches;
 		document.querySelectorAll(".reveals").forEach(function (box) {
+			// The wordmark slides its pronunciation open instead.
+			if (box.classList.contains("titlelink")) return;
 			var grows = [].slice.call(box.querySelectorAll(".grow"));
 			if (!grows.length) return;
 			var twins = grows.map(function (g) {
