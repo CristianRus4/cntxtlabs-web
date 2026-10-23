@@ -133,6 +133,7 @@ Logging takes one tap from a Home Screen widget. Tag what set off a slip, like s
 There is no account, no email and no feed. NoSnus supports a behavioural plan and is not a medical device. If you want clinical support to stop using nicotine, talk to a doctor, a pharmacist or your national quitline.
 
 - Page: https://cntxtlabs.co/nosnus
+- Privacy policy: https://cntxtlabs.co/nosnus/privacy
 - App Store: https://apps.apple.com/us/app/quit-zyn-velo-snus-nosnus/id6791343296
 - Platforms: iPhone, iPad
 
@@ -180,9 +181,11 @@ It reads Apple Calendar, Google Calendar and Outlook, and you share the picture 
 
 Left, txtpod and ftnss each publish their own policy: https://getleft.app/privacy, https://txtpod.app/privacy and https://ftnss.app/privacy. https://cntxtlabs.co/left/privacy, /txtpod/privacy and /ftnss/privacy lead there. ftnss sends some anonymised data to an AI model to produce plans and insights; identifiers are removed first.
 
-KiwiCamping, AussieCamps, Bites, NoSnus and NotSoBusy share this policy, published for each app at https://cntxtlabs.co/<app>/privacy (for example https://cntxtlabs.co/nosnus/privacy):
+KiwiCamping, AussieCamps, Bites and NotSoBusy share this policy, published for each app at https://cntxtlabs.co/<app>/privacy (for example https://cntxtlabs.co/bites/privacy):
 
 The app runs on your device. There is no account, and no personal data is collected or stored. Purchases go through RevenueCat, which keeps only what it needs to confirm a purchase and restore it if you reinstall the app. Google services are used for crash reports, anonymous usage statistics and a few features inside the app. None of it identifies you, and none of it is sold or shared.
+
+NoSnus has its own policy at https://cntxtlabs.co/nosnus/privacy. Your plan, logs and settings stay on your phone, with no account, ads, analytics or tracking. Only purchases go through Apple and RevenueCat, which receives a random identifier and your purchase history. Delete everything in the app under Settings, then Your data, or by deleting the app.
 
 SafePlate is a subscription for kitchen teams and works differently: records are uploaded rather than kept only on the device. The policy above does not describe it. Ask info@cntxtlabs.co for details.
 
