@@ -17,7 +17,7 @@ styles.css          the whole design system
 site.js             the behaviour every page shares, loaded with defer
 llms.txt            a short index of the site for language models
 llms-full.txt       every page in one file, for language models
-og/                 one social preview image per page, 1200 by 630
+og.png              the one social preview image every page shares, 1200 by 630
 img/<app>/qr.svg    the QR code a download button opens into
 ```
 

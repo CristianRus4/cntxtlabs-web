@@ -10,8 +10,10 @@
   a 600px column. Keep it. An ia.net-style layout was tried and lives on
   the `neue-layout` branch for reference; do not bring it to `main`.
 - A new app page needs a `qr.svg` of its App Store link in `img/<slug>/`
-  (https://apps.apple.com/app/id<ID>, checked to scan) and its own
-  `og/<slug>.png` (1200 by 630, in the style of the others).
+  (https://apps.apple.com/app/id<ID>, checked to scan).
+- Every page, redirects included, shares one social preview image,
+  `/og.png` (1200 by 630): `og:image` and `twitter:image` point at it,
+  with the same size, type and alt tags as the home page. No per-page images.
 - Copy is plain, professional NZ English, written about what each app is
   and why it exists rather than a list of features. No em dashes.
 
