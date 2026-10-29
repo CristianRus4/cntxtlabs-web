@@ -14,7 +14,8 @@ demo.css                 the full-screen desk, the Levo window, dock, lock scree
 demo.js                  the menubar demo, and the one data object it plays from
 menus.css, menus.js      the menubar menus, Control Centre, and the desktop windows (Finder, TextEdit, System Settings), resizable
 settings.css, settings.js the app's Settings window, at the app's own sizes, as LevoSettings.mount(el, opts)
-mobile.css, mobile.js     the phone page (760 px and narrower): no simulator, still images, the agents' chips
+bento.css, bento.js       the tiles below the Mac: close-ups of the app (disk bar, gauges, Summary, holds, Trash, levels, the confirm sheet) and big-number facts, animated as they scroll in
+mobile.css, mobile.js     the phone page (760 px and narrower): .m-top (the hero, a menubar slice with the popover) and .m-end (agents, price); #bento sits between
 img/shots/               the popover and Settings as still images for phones, rendered from the demo, light and dark
 agents.md                for an agent: what Levo is, why it's safe, and how to install it
 llms.txt                 a short index for language models
@@ -56,10 +57,17 @@ they never land on the widgets, the windows, the popover or each other, and
 reset on reload. The popover uses the app's own sizes (360 pt wide, text scale 1),
 taken from its code.
 
-Below 760px wide the page is a phone page instead: no simulator, the popover
-and Settings as still images (img/shots/, re-render them from the demo when it
-changes), and the same agent chips and toast (mobile.js moves #levo-agents
-into the phone page).
+Below 760px wide the page is a phone page instead, nothing to operate: the
+name, price and buttons, then a slice of a Mac (the wallpaper, the menubar
+drawn live with Levo's mark and the visitor's time, and the popover as a still
+from img/shots/ that opens under Levo's item when it comes into view; re-render
+it from the demo when the popover changes), then #bento, then the same agent
+chips and toast (mobile.js moves #levo-agents in), then the price again. On
+scroll, as on getleft.app: the hero text drifts up at 0.45 speed and fades over
+220px, the Mac slice grows from 94% to full width, blocks rise 24px as they
+arrive, the chips one by one, the last icon turns upright; the bar with
+Download comes in once the hero's buttons fade and steps aside for the last
+ones. Less motion: fades only.
 
 The desktop works: Old Installers opens in Finder, the notes in TextEdit, and
 the zip unzips into a folder. Control Centre's Dark Mode, or System Settings ›
@@ -107,6 +115,10 @@ recording), then re-created, not copied:
   over 200ms, a click bounces the icon twice.
 - **Less motion** (`prefers-reduced-motion`): fades only, no rises, tilts, springs,
   bounces or nudges. Neither reference site does this; this page does.
+
+## Settings section
+
+Switched off for now: `SHOW_SETTINGS` in `levo.js`. Set it to `true` to bring it back; settings.js and settings.css are kept.
 
 ## Price and links
 

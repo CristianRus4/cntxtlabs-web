@@ -1,8 +1,10 @@
 /*
- * The phone page (760px and narrower). The desktop Mac, the Settings window and
- * the desktop sections are hidden; .m takes their place. Wider, .m is hidden and
- * nothing else changes. The agent chips and the toast are the desktop ones,
- * moved in here by mobile.js.
+ * The phone page (760px and narrower), in two blocks: .m-top (the hero: the
+ * name, the price and a slice of a Mac with Levo's popover open) and .m-end
+ * (the agents, then the price again). #bento sits between them and keeps its
+ * own design. The desktop Mac, the desktop sections and Settings are hidden.
+ * Wider, both blocks are hidden and nothing else changes. The agent chips and
+ * the toast are the desktop ones, moved in here by mobile.js.
  */
 
 .m { display: none; }
@@ -13,9 +15,13 @@
 	.m {
 		--gutter: 20px;
 		--rise: cubic-bezier(.22, 1, .36, 1);
+		--open: cubic-bezier(.2, .85, .25, 1);
 		--accent: #8A63FF;
 		--plate: #FFFFFF;
-		--shot-shadow: drop-shadow(0 22px 34px rgba(0, 0, 0, .16)) drop-shadow(0 2px 6px rgba(0, 0, 0, .08));
+		--mb-ink: #000;
+		--mb-bg: rgba(255, 255, 255, .32);
+		--mb-on: rgba(0, 0, 0, .12);
+		--shot-shadow: drop-shadow(0 24px 36px rgba(40, 30, 80, .2)) drop-shadow(0 2px 6px rgba(0, 0, 0, .08));
 		display: block;
 		padding: 0 var(--gutter);
 		overflow-x: clip;
@@ -23,10 +29,14 @@
 	html.dark .m {
 		--accent: #A485FF;
 		--plate: #1C1C1E;
+		--mb-ink: #FFF;
+		--mb-bg: rgba(0, 0, 0, .22);
+		--mb-on: rgba(255, 255, 255, .2);
 		--shot-shadow: drop-shadow(0 0 .5px rgba(255, 255, 255, .45)) drop-shadow(0 24px 40px rgba(0, 0, 0, .7));
 	}
 
-	/* The bar: slides in once the hero's buttons have scrolled away. */
+	/* The bar: slides in once the hero's buttons have scrolled away, and out
+	   again when the last ones arrive. */
 	.m-bar {
 		position: fixed;
 		top: 0; left: 0; right: 0;
@@ -47,11 +57,12 @@
 	.m-bar-name img { width: 28px; height: 28px; }
 	.m-bar .btn-sm { height: 32px; padding: 0 12px; font-size: 14px; }
 
-	/* Hero: icon, name, price, buttons, then the popover rising under them. */
-	.m-hero { position: relative; padding-top: calc(env(safe-area-inset-top) + 64px); text-align: center; }
+	/* ---------------------------------------------------------- Hero */
+
+	.m-hero { position: relative; padding-top: calc(env(safe-area-inset-top) + 56px); text-align: center; }
 	.m-hero-text { position: relative; will-change: opacity, transform; }
-	.m-icon { display: block; width: 112px; height: 112px; margin: 0 auto 18px; filter: drop-shadow(0 16px 24px rgba(0, 0, 0, .22)); }
-	.m h1 { font-size: 52px; letter-spacing: -0.03em; line-height: 1.05; }
+	.m-icon { display: block; width: 96px; height: 96px; margin: 0 auto 16px; filter: drop-shadow(0 14px 22px rgba(0, 0, 0, .22)); }
+	.m h1 { font-size: 56px; letter-spacing: -0.035em; line-height: 1.02; }
 	.m-price { margin-top: 22px; display: inline-flex; align-items: baseline; gap: 30px; }
 	.m-price b { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
 	.m-price > span:last-child { font-size: 17px; font-weight: 600; color: var(--muted); }
@@ -59,34 +70,119 @@
 	.m-ctas .btn { flex: 1; min-width: 0; height: 52px; border-radius: 14px; font-size: 17px; }
 	.m-reqs { margin-top: 16px; display: inline-flex; align-items: center; gap: 7px; font-size: 14px; color: var(--muted); }
 
-	.m-pop { position: relative; z-index: 1; margin: 44px auto 0; max-width: 360px; transform-origin: 50% 0; will-change: transform; }
-	.m-pop::before {
-		content: "";
+	/* A slice of a Mac: the wallpaper, the right of the menubar, and the
+	   popover hanging under Levo's item. The wallpaper fades into the page. */
+	.m-mac { position: relative; z-index: 1; margin: 52px -10px 0; transform-origin: 50% 0; will-change: transform; }
+	.m-mac-in { position: relative; padding-bottom: 72px; }
+	.m-wall {
 		position: absolute;
-		inset: 8% -30% 20%;
-		z-index: -1;
-		background: radial-gradient(closest-side at 32% 40%, var(--glow-a), transparent), radial-gradient(closest-side at 70% 62%, var(--glow-b), transparent);
-		opacity: .55;
-		pointer-events: none;
+		inset: 0;
+		z-index: 0;
+		border-radius: 22px 22px 0 0;
+		background:
+			radial-gradient(80% 30% at 88% 4%, rgba(255, 186, 146, .95) 0%, rgba(255, 186, 146, 0) 70%),
+			radial-gradient(70% 45% at 0% 46%, rgba(132, 176, 255, 1) 0%, rgba(132, 176, 255, 0) 70%),
+			radial-gradient(70% 30% at 40% 90%, rgba(196, 170, 255, .95) 0%, rgba(196, 170, 255, 0) 70%),
+			radial-gradient(60% 34% at 100% 66%, rgba(140, 222, 212, .9) 0%, rgba(140, 222, 212, 0) 70%),
+			linear-gradient(160deg, #E9EDF8, #F6ECE6);
+		-webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent);
+		mask-image: linear-gradient(to bottom, #000 62%, transparent);
 	}
+	html.dark .m-wall {
+		background:
+			radial-gradient(80% 30% at 88% 4%, rgba(98, 74, 190, .8) 0%, rgba(98, 74, 190, 0) 70%),
+			radial-gradient(70% 45% at 0% 46%, rgba(28, 98, 160, .85) 0%, rgba(28, 98, 160, 0) 70%),
+			radial-gradient(70% 30% at 40% 90%, rgba(150, 52, 120, .6) 0%, rgba(150, 52, 120, 0) 70%),
+			radial-gradient(60% 34% at 100% 66%, rgba(20, 120, 120, .6) 0%, rgba(20, 120, 120, 0) 70%),
+			linear-gradient(160deg, #0B0D1C, #120B16);
+	}
+
+	.m-mb {
+		position: relative;
+		z-index: 2;
+		height: 30px;
+		padding: 0 10px 0 16px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		border-radius: 22px 22px 0 0;
+		color: var(--mb-ink);
+		background: var(--mb-bg);
+		-webkit-backdrop-filter: blur(30px) saturate(1.6);
+		backdrop-filter: blur(30px) saturate(1.6);
+		font-family: var(--sans);
+		font-size: 13.5px;
+		line-height: 1;
+		white-space: nowrap;
+		text-align: left;
+	}
+	.m-mb-l, .m-mb-r { display: flex; align-items: center; }
+	.m-mb-l { gap: 18px; padding-left: 2px; }
+	.m-mb-l .lv-sym { margin-top: -2px; }
+	.m-mb-l b { font-weight: 700; }
+	.m-mb-levo {
+		height: 22px;
+		padding: 0 8px;
+		margin-right: 2px;
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		border-radius: 6px;
+		font-family: var(--round);
+		font-size: 13px;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		transition: background-color .2s;
+	}
+	.m-mb-levo.is-open { background: var(--mb-on); }
+	.m-mb-mark { display: block; width: 19px; height: 12.2px; overflow: visible; }
+	.m-mb-mark path { fill: currentColor; stroke: none; }
+	.m-mb-i { padding: 0 7px; display: flex; }
+	.m-mb-t { padding-left: 8px; font-variant-numeric: tabular-nums; }
+
+	.m-pop {
+		position: relative;
+		z-index: 1;
+		width: min(320px, calc(100% - 44px));
+		margin: 6px 14px 0 auto;
+		opacity: 0;
+		transform: translateY(-6px) scale(.985);
+		transform-origin: 50% 0;
+		transition: opacity .2s, transform .3s var(--open);
+	}
+	.m-pop.is-open { opacity: 1; transform: none; }
+	html:not(.js) .m-pop, .m-pop.is-static { opacity: 1; transform: none; transition: none; }
 
 	/* Screenshots: the app's own renders, with their macOS corners and a soft shadow. */
 	.m-shot { display: block; }
 	.m-shot img { display: block; width: 100%; height: auto; filter: var(--shot-shadow); }
 
-	/* Sections: a heading with a short accent bar, then the thing itself. */
+	/* ---------------------------------------------------------- Agents */
+
 	.m-sect { max-width: 600px; margin: 0 auto; padding-top: 96px; }
 	.m-head { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; font-size: 32px; letter-spacing: -0.025em; }
 	.m-head::before { content: ""; width: 24px; height: 3px; border-radius: 3px; background: var(--accent); }
 
-	/* The desktop chips, as a two-column grid of buttons. */
+	/* The desktop chips, as a two-column grid of buttons that arrive one by one. */
 	.m #levo-agents.rv { opacity: 1; transform: none; transition: none; }
 	.m .chips { margin: 0; max-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 	.m .chips li { min-width: 0; }
-	.m .chip { width: 100%; height: 50px; padding: 0 16px; border-radius: 14px; font-size: 15px; -webkit-tap-highlight-color: transparent; }
+	.m .chip { width: 100%; height: 52px; padding: 0 16px; border-radius: 14px; font-size: 15px; -webkit-tap-highlight-color: transparent; }
 	.m .chip:hover { background: var(--card); box-shadow: inset 0 0 0 1px var(--rim); }
 	.m .chip:active { transform: scale(.96); background: rgb(var(--ink) / .07); }
 	.m .chip-any { background: transparent; box-shadow: none; }
+	.m .chip-any:hover { background: transparent; box-shadow: none; }
+	.js .m-agents li { opacity: 0; transform: translateY(18px); transition: opacity .4s ease-out, transform .6s var(--rise); }
+	.js .m-agents.is-in li { opacity: 1; transform: none; }
+	.m-agents li:nth-child(2) { transition-delay: .04s; }
+	.m-agents li:nth-child(3) { transition-delay: .08s; }
+	.m-agents li:nth-child(4) { transition-delay: .12s; }
+	.m-agents li:nth-child(5) { transition-delay: .16s; }
+	.m-agents li:nth-child(6) { transition-delay: .2s; }
+	.m-agents li:nth-child(7) { transition-delay: .24s; }
+	.m-agents li:nth-child(8) { transition-delay: .28s; }
+	.m-agents li:nth-child(9) { transition-delay: .32s; }
+	.m-agents li:nth-child(10) { transition-delay: .36s; }
 
 	/* The toast sits at the bottom of the screen, above everything. */
 	.m .toast {
@@ -110,30 +206,52 @@
 	.m .toast[hidden] { display: none; }
 	.m .toast.in { transform: none; pointer-events: auto; }
 
-	.m-shot-wide { margin: 0 -6px; }
+	/* ---------------------------------------------------------- The price, again */
 
-	.foot { margin-top: 88px; padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+	.m-get { padding-top: 120px; text-align: center; }
+	.m-get-art { position: relative; width: 128px; height: 128px; margin: 0 auto 22px; }
+	.m-get-art::before {
+		content: "";
+		position: absolute;
+		inset: -70px -110px;
+		z-index: -1;
+		background: radial-gradient(closest-side at 36% 44%, var(--glow-a), transparent), radial-gradient(closest-side at 66% 58%, var(--glow-b), transparent);
+		pointer-events: none;
+	}
+	.m-get-art img { display: block; width: 128px; height: 128px; filter: drop-shadow(0 18px 30px rgba(0, 0, 0, .25)); will-change: transform; }
+	.m-get h2 { font-size: 48px; letter-spacing: -0.03em; }
+	.m-get .m-price { margin-top: 24px; }
 
-	/* Motion: the hero arrives on load; everything else rises as it comes into view. */
+	.foot { margin-top: 96px; padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+
+	/* ---------------------------------------------------------- Motion */
+
+	/* The hero arrives on load (as getleft.app's: 20px, a touch of scale, 600ms);
+	   everything else rises as it comes into view. */
 	.js .m-in { animation: m-arrive .6s ease-out both; }
 	.js .m-hero-text > .m-in:nth-child(2) { animation-delay: .05s; }
 	.js .m-hero-text > .m-in:nth-child(3) { animation-delay: .1s; }
 	.js .m-hero-text > .m-in:nth-child(4) { animation-delay: .15s; }
 	.js .m-hero-text > .m-in:nth-child(5) { animation-delay: .2s; }
-	.js .m-pop .m-in { animation: m-arrive .8s var(--rise) .25s both; }
+	.js .m-mac-in.m-in { animation: m-arrive .9s var(--rise) .2s both; }
 	@keyframes m-arrive {
 		from { opacity: 0; transform: translateY(20px) scale(1.02); }
 		to { opacity: 1; transform: none; }
 	}
 	.js .m-rv { opacity: 0; transform: translateY(24px); transition: opacity .4s ease-out, transform .6s var(--rise); }
-	.js .m-shot.m-rv { transform: translateY(40px) scale(.97); transition-duration: .5s, .8s; }
+	.js .m-get-art.m-rv { transform: translateY(32px) scale(.92); transition-duration: .5s, .9s; }
 	.js .m-rv.is-in { opacity: 1; transform: none; }
+}
+
+@media (max-width: 359px) {
+	.m-mb-l b { display: none; }
 }
 
 @media (max-width: 760px) and (prefers-reduced-motion: reduce) {
 	.m-bar, .m .toast { transform: none; transition: opacity .2s ease; }
 	.m .chip:active { transform: none; }
-	.js .m-in, .js .m-pop .m-in { animation: m-fade .3s ease-out both; }
+	.js .m-in, .js .m-mac-in.m-in { animation: m-fade .3s ease-out both; }
 	@keyframes m-fade { from { opacity: 0; } }
-	.js .m-rv, .js .m-shot.m-rv { transform: none; transition: opacity .3s ease-out; }
+	.m-pop { transform: none; transition: opacity .3s ease-out; }
+	.js .m-rv, .js .m-get-art.m-rv, .js .m-agents li { transform: none; transition: opacity .3s ease-out; transition-delay: 0s; }
 }

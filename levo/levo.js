@@ -144,7 +144,11 @@
 
 	// The app's Settings window, round 5 (settings.js). Choosing an agent or the
 	// disk alert there changes the demo above.
-	if (window.LevoSettings) LevoSettings.mount(document.getElementById("levo-settings"), {
+	// Switched off for now; set to true to bring the Settings section back.
+	var SHOW_SETTINGS = false;
+	var settingsSection = document.getElementById("settings");
+	if (settingsSection) settingsSection.hidden = !SHOW_SETTINGS;
+	if (SHOW_SETTINGS && window.LevoSettings) LevoSettings.mount(document.getElementById("levo-settings"), {
 		sym: sym, tile: tile, iconUrl: "img/icon-96.png", pane: "agent",
 		alert: D.data.disk.alert,
 		setAgent: function (name) { D.setAgent(name); },

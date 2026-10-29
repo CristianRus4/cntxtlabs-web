@@ -561,6 +561,9 @@
 			$("[data-devsym]").innerHTML = sym(laptop ? "laptopcomputer" : power === "desktop" ? "macmini.fill" : "desktopcomputer", 14);
 			$("[data-devname]").textContent = laptop ? "MacBook Pro" : power === "desktop" ? "Mac mini" : "Mac";
 			$("[data-dev]").textContent = laptop ? "MacBook Pro" : "Mac";
+			// The page's other renders of the popover name the same Mac.
+			Array.prototype.forEach.call(document.querySelectorAll("[data-devname-copy]"), function (el) { el.textContent = $("[data-devname]").textContent; });
+			Array.prototype.forEach.call(document.querySelectorAll("[data-devsym-copy]"), function (el) { el.innerHTML = $("[data-devsym]").innerHTML; });
 			item.hidden = !laptop;
 			wb.hidden = !laptop;
 			wc.hidden = laptop;
