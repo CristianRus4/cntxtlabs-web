@@ -117,3 +117,10 @@ puzzlepiece.extension.fill
 cube.fill
 brain
 film.fill
+cursorarrow
+doc.on.doc
+square.grid.2x2
+battery.75percent
+arrow.up.left
+powerplug.fill
+bolt.horizontal.circle.fill

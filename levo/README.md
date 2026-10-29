@@ -7,16 +7,19 @@ product page rather than the classic 600px text column. It does not load
 `styles.css` or `site.js`. Everything it needs lives here.
 
 ```
-index.html               the page
+index.html               the page: the Mac, then Agents, Settings, and the price
 levo.css                 the page's design
-levo.js                  price, appearance, load and arrival, feature symbols, the Settings preview
-demo.css                 the fake Mac desktop, dock, lock screen and popover
+levo.js                  LEVO (price, links), appearance, arrivals, the agents' chips and install prompt
+demo.css                 the full-screen desk, the Levo window, dock, lock screen and popover
 demo.js                  the menubar demo, and the one data object it plays from
-menus.css, menus.js      the menubar menus (Apple, Finder, File to Help, Wi-Fi, battery, clock)
+menus.css, menus.js      the menubar menus, Control Centre, and the desktop windows (Finder, TextEdit, System Settings), resizable
+settings.css, settings.js the app's Settings window, round 5, as LevoSettings.mount(el, opts)
+agents.md                for an agent: what Levo is, why it's safe, and how to install it
+llms.txt                 a short index for language models
 img/icon-*.png           the app icon at 256 and 96 px
-img/dock/                the company's own app icons, for the dock
+img/dock/                the dock's app icons, rendered on a Mac; swap the folder to change the set
 img/symbols/             SF Symbols as SVG, and symbols.js, the bundle the page uses
-tools/                   export-symbols.swift and the list of symbols it exports
+tools/                   export-symbols.swift, export-dock-icons.swift (swift tools/export-dock-icons.swift, from levo/), and the symbol list
 ```
 
 ## Symbols
@@ -43,51 +46,75 @@ city from the time zone, the language, the battery where the browser allows it,
 the appearance and the device family. It asks for nothing, and nothing leaves the
 browser.
 
-Below 760px wide the scene switches to a compact layout: the menubar and the
-popover, without the widgets, desktop icons or dock.
+The first screen is the Mac: the desk fills the viewport, its menubar runs
+across the top of the page, and the Levo window (the app, Applications, the
+price and Download) sits on the desktop. Below 760px wide it becomes two
+cards: the Levo window and the popover.
+
+The desktop works: Old Installers opens in Finder, the notes in TextEdit, and
+the zip unzips into a folder. Control Centre's Dark Mode, or System Settings ›
+Appearance, switches the whole page, and is never saved: a reload follows the
+device again.
+
+A laptop shows its real battery level and state; a Mac the browser reports as
+having no battery (100 % and charging, with no charge time) shows no battery
+item and a calendar widget instead. Browsers that don't report a battery show
+neither.
+
+The popover follows the app's round 5 design (Levo/design/renders/R5): the
+disk bar in 60 ticks with 2 pt gaps, the gauges whose word frees them, rows
+with ⓘ bubbles on hover, processes Levo won't quit dimmed with the reason on
+hover, Clean up ⌘⌫, the first-time "You're in Charge" step, then the confirm
+list.
 
 It plays forever: Clean up, then Analyse now (in the empty list or the ⌘K panel)
 and every item grows back. Levo can't be removed: Quit, dragging the menubar icon
 out or the dock icon to the Trash all bring it back, with one quiet line the
 second time. Desktop icons that belong to a cleanup item fly to the Trash when it
-is cleaned and return with it. The lock screen shows the visitor's own time and
-unlocks on a click, a key or after a moment.
+is cleaned and return with it. Apple menu › Lock Screen shows the visitor's own
+time and unlocks on a click or a key.
 
 ## Motion
 
 Studied from tryklack.com and tryalcove.com (their CSS and JS, and a screen
 recording), then re-created, not copied:
 
-- **Load:** a 150ms step between groups (they use 200ms): nav fades over 700ms,
-  then the headline rises 32px with a 2° tilt, then the words, the buttons and the
-  hero rise 20px. Each takes 500ms with `ease`. No blur on load.
 - **Arrivals:** blocks below rise 16px and fade in as they scroll into view.
-- **Hovers:** 300ms is the default; small distances (2 to 6px). Each feature
-  symbol acts out its meaning: the gauge needle sweeps through three states, the
-  terminal draws on, the bell rings and gains its badge, the square ticks with a
-  spring (`cubic-bezier(.34,1.56,.64,1)`), the trash hops and fills, the shield
-  locks, the person shakes, the cloud floats.
-- **Hand-drawn circle:** one SVG path, `stroke-dasharray` 500, drawn to 0 over
+- **Hovers:** 300ms is the default; small distances (2 to 6px). Symbols act out
+  their meaning: agents' terminals draw on, and each Settings pane's tile moves
+  its own way (the gear turns, the shield and chip pop, the wand wiggles, the
+  lock and display hop, the drive slides), springs on
+  `cubic-bezier(.34,1.56,.64,1)`.
+- **Hand-drawn circle** (around the price): `stroke-dasharray` 500, drawn to 0 over
   800ms `ease-in` after 500ms, each time it scrolls into view.
-- **Hint:** "Psst…" in 14px bold at 40% ink under the demo; its arrow nudges 4px
+- **Hint:** "Psst…" in 13px bold at 45% ink under the Levo window; its arrow nudges 4px
   every 4 seconds.
-- **Lock screen:** fades over 400 to 450ms while the dock rises from below
-  (400ms ease-out) and the menubar settles 100ms later.
+- **First screen:** the wallpaper fades in, the menubar drops in at 150ms, the
+  widgets and icons rise at 350 to 450ms, the dock rises at 550ms (400ms
+  ease-out, as Alcove's unlock), the Levo window springs in at 750ms; the alert
+  arrives at 1.5s and the popover opens on its own at 2.7s.
 - **Dock:** macOS magnification by distance to the pointer, labels scale from 90%
   over 200ms, a click bounces the icon twice.
-- **Footer:** the name in huge type, filled with a gradient from 10% ink to
-  nothing and cut off by its box. Hidden on phones.
 - **Less motion** (`prefers-reduced-motion`): fades only, no rises, tilts, springs,
   bounces or nudges. Neither reference site does this; this page does.
 
-## Price
+## Price and links
 
-Levo is a lifetime licence. Its price lives in one place, `PRICE` at the top of
-`levo.js`; the Buy buttons and the price line read from it. When the price
-rises, change `amount` there and nothing else. The page never says when or by
-how much the price rises, or how many licences are left at a price.
+`LEVO` at the top of `levo.js` holds the price, the term, the download link and
+the checkout link. The Levo window, the Buy and Download buttons and the agents'
+install prompt all read from it. When the price rises, change `price` and
+nothing else. The page never says when or by how much the price rises, or how
+many licences are left at a price.
 
-## Placeholders
+`[DOWNLOAD LINK]` and `[BUY LINK]` are placeholders until the real download and
+the Lemon Squeezy checkout exist; until then the buttons do nothing.
+`agents.md` is a static file for agents, so it carries `[DOWNLOAD LINK]` too:
+replace it in both places (`grep -rn "DOWNLOAD LINK" levo/`).
 
-`[DOWNLOAD LINK]` and `[BUY LINK]` in `index.html` wait for the real download and
-the Lemon Squeezy checkout. Until then the buttons do nothing.
+## Agents
+
+Clicking an agent's chip copies a short prompt that has that agent read
+`agents.md`, download Levo, check it is signed and notarised by Cntxt Labs (team
+ID `5X94H5ZCD4`), move it to /Applications, open it, and leave the welcome window
+to the person. `agents.md` holds the full plain explanation; the page itself
+carries names, labels, numbers and the price only.

@@ -139,15 +139,16 @@ There is no account, no email and no feed. NoSnus supports a behavioural plan an
 
 ### Levo
 
-Levo watches disk, memory, CPU and GPU from the menubar. When one runs high, your own agent has already worked out what's safe to clean.
+Levo is a Mac menubar app that watches disk, memory, CPU and GPU against limits you set. When one runs high, your own agent has already looked at what is filling your Mac. Levo shows what is safe to clean or quit, with sizes and reasons, and cleans only what you tick. Anything that can't be rebuilt goes to the Trash, and anything trashed can be undone.
 
-How it works. Levo watches disk, memory, CPU and GPU, against limits you set. Your agent looks first: before the alert, it reads what's filling your Mac, read-only and in a sandbox. You tick what's safe to clean or quit, with sizes and reasons. Levo cleans only what you ticked, and anything that can't be rebuilt goes to the Trash.
+Levo works with the agent CLI you already use: Claude Code, Codex, Gemini CLI, Cursor, Copilot, opencode, Qwen Code, Kimi CLI, Grok CLI, or a custom command. It starts the CLI in the background, on your own plan or key, with caps on time, turns and runs per day. Every run is wrapped in the macOS sandbox: the agent can't write outside Levo's run folder, can't read your protected folders, and talks to Levo only through read-only tools plus one that submits findings. No tool can delete, quit, or change settings or the licence, and what the agent writes is treated as data, never as instructions. Every number in Settings is yours: thresholds, check interval, agent limits and protected folders.
 
-Levo works with any agent. It starts the CLI you already use, in the background, on your own plan or key: claude, codex, gemini, cursor-agent, copilot, opencode, qwen, kimi, grok, or any other CLI. Every number in Settings is yours: thresholds, check interval, agent limits and protected folders.
+Before anything is cleaned, Levo checks every finding again. Photos, Mail, Messages, iCloud Drive, Keychains, SSH keys and credentials are never touched, and neither are files in use, git worktrees with unfinished work, or anything changed recently. Auto-clean is off by default.
 
-There is no Levo account and no Levo server. Only the licence check leaves your Mac. The agent runs in a sandbox and can't delete anything, and protected folders stay hidden from it. Levo is free to watch and suggest; a lifetime licence unlocks cleaning.
+There is no Levo account and no Levo server. Only the licence check leaves the Mac, and your agent's provider sees what your agent reads. Levo is free to watch and suggest. A lifetime licence, currently US$5, unlocks cleaning. The price rises over time. Levo is signed and notarised by Cntxt Labs.
 
 - Page: https://cntxtlabs.co/levo
+- For agents: https://cntxtlabs.co/levo/agents.md
 - Platforms: Mac, macOS 26 or later
 - Needs: an agent CLI for suggestions; Full Disk Access is recommended
 

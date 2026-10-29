@@ -39,63 +39,71 @@
 				{ id: "other", label: "Other", gb: 29, color: ["#9A6A43", "#C99A72"] }
 			]
 		},
-		memory: { total: 24, other: 6.7 },
+		memory: { total: 24, other: 5.5 },
 		cpu: { cores: 8, other: 42 },
 		gpu: { other: 0 },
-		levels: ["Careful", "Balanced", "Thorough"],
+		levels: ["Careful", "Balanced", "Aggressive"],
 		level: "Balanced",
 		groups: [
-			{ id: "xcode", title: "Xcode build data", symbol: "hammer.fill", tile: "blue", changed: "12 days ago",
+			{ id: "xcode", about: ["Compiled code, indexes and previews Xcode keeps for your projects.", "Xcode makes it from your source code, which stays untouched.", "Xcode rebuilds it on the next build; that build takes longer."], title: "Xcode build data", symbol: "hammer.fill", tile: "blue", changed: "12 days ago",
 				location: "~/Library/Developer/Xcode", verdict: "Rebuilds on next build", good: true,
 				items: [{ name: "DerivedData/Levo", gb: 6.8, level: 1 }, { name: "DerivedData/Elevate", gb: 4.9, level: 1 }, { name: "DerivedData/Context", gb: 2.5, level: 1 }] },
-			{ id: "sims", title: "Simulators and emulators", symbol: "iphone", tile: "grey", changed: "3 weeks ago",
+			{ id: "sims", about: ["Simulator devices you haven\u2019t opened in weeks.", "Their apps and data are test copies; the runtimes stay.", "Xcode makes a fresh device when you need one."], title: "Simulators and emulators", symbol: "iphone", tile: "grey", changed: "3 weeks ago",
 				location: "~/Library/Developer/CoreSimulator", verdict: "Unused devices, runtimes kept", good: true,
 				items: [{ name: "iPhone 17 Pro", gb: 2.1, level: 2 }, { name: "iPad Air", gb: 1.9, level: 2 }, { name: "iPhone 16e", gb: 1.7, level: 2 }, { name: "iPhone SE", gb: 1.5, level: 2 }, { name: "Apple Watch Series 11", gb: 1.4, level: 2 }, { name: "Apple TV 4K", gb: 1.2, level: 2 }] },
-			{ id: "worktrees", title: "Agent worktrees", symbol: "arrow.triangle.branch", tile: "purple", tag: "Review", changed: "2 days ago",
+			{ id: "worktrees", about: ["Copies of your repos that coding agents made to work in.", "Two still have unmerged work, so they stay unticked.", "Merged ones go with git worktree remove."], title: "Agent worktrees", symbol: "arrow.triangle.branch", tile: "purple", tag: "Review", changed: "2 days ago",
 				location: "~/Developer/.worktrees", verdict: "Two have unmerged work", good: false,
 				items: [{ name: "fix-login", gb: 2.3, level: 0 }, { name: "settings-pass", gb: 1.9, level: 0 }, { name: "ui-cleanup", gb: 1.2, level: 3 }, { name: "tmp-copy", gb: 0.7, level: 3 }] },
-			{ id: "downloads", title: "Downloads and installers", symbol: "arrow.down.circle.fill", tile: "green", changed: "5 months ago",
+			{ id: "downloads", about: ["Installers and archives you already used.", "The apps they installed stay installed.", "They go to the Trash, so you can get them back."], title: "Downloads and installers", symbol: "arrow.down.circle.fill", tile: "green", changed: "5 months ago",
 				location: "~/Desktop, ~/Downloads", verdict: "Installed long ago", good: true,
-				items: [{ name: "Old Installers", gb: 2.4, level: 2, desk: "installers" }, { name: "project-final-v2.zip", gb: 1.1, level: 2, desk: "zip" }, { name: "Downloads/Setup.dmg", gb: 0.8, level: 2 }] },
-			{ id: "packages", title: "Package caches", symbol: "shippingbox.fill", tile: "orange", changed: "today",
+				trash: true, items: [{ name: "Old Installers", gb: 2.4, level: 2, desk: "installers" }, { name: "project-final-v2.zip", gb: 1.1, level: 2, desk: "zip" }, { name: "Downloads/Setup.dmg", gb: 0.8, level: 2 }] },
+			{ id: "packages", about: ["Packages that npm, pnpm, Homebrew, SwiftPM and pip keep.", "Your projects keep their own copies.", "They download again the next time you install."], title: "Package caches", symbol: "shippingbox.fill", tile: "orange", changed: "today",
 				location: "~/Library/Caches", verdict: "Downloads again when needed", good: true,
 				items: [{ name: "npm", gb: 1.2, level: 1 }, { name: "pnpm store", gb: 0.9, level: 1 }, { name: "Homebrew", gb: 0.6, level: 1 }, { name: "SwiftPM", gb: 0.4, level: 1 }, { name: "pip", gb: 0.3, level: 1 }] },
-			{ id: "browsers", title: "Browser caches", symbol: "globe", tile: "cyan", changed: "today",
+			{ id: "browsers", about: ["Pages and images your browsers saved to load faster.", "Bookmarks, history and passwords aren\u2019t in it.", "It fills again as you browse."], title: "Browser caches", symbol: "globe", tile: "cyan", changed: "today",
 				location: "~/Library/Caches", verdict: "Rebuilds as you browse", good: true,
 				items: [{ name: "Chrome", gb: 0.7, level: 1 }, { name: "Safari", gb: 0.4, level: 1 }] },
-			{ id: "logs", title: "Logs and crash reports", symbol: "doc.text.fill", tile: "grey", changed: "yesterday",
+			{ id: "logs", about: ["Crash reports and logs from apps and the simulator.", "Nothing reads them unless something breaks.", "New ones are written as things happen."], title: "Logs and crash reports", symbol: "doc.text.fill", tile: "grey", changed: "yesterday",
 				location: "~/Library/Logs", verdict: "Old reports nobody reads", good: true,
 				items: [{ name: "DiagnosticReports", gb: 0.6, level: 2 }, { name: "CoreSimulator logs", gb: 0.3, level: 2 }] }
 		],
 		processes: [
-			{ id: "node", name: "node", symbol: "terminal.fill", tile: "green", note: "Idle build server · 3 h", verdict: "Quit", safe: true, cpu: 84, gpu: 0, mem: 1.9 },
-			{ id: "xcode", name: "Xcode", symbol: "hammer.fill", tile: "blue", verdict: "Keep", cpu: 31, gpu: 1, mem: 3.2 },
-			{ id: "windowserver", name: "WindowServer", symbol: "macwindow", tile: "dark", verdict: "System", system: true, cpu: 12, gpu: 4, mem: 0.8 },
-			{ id: "slack", name: "Slack", symbol: "number", tile: "magenta", cpu: 6, gpu: 1, mem: 0.9 },
-			{ id: "chrome", name: "Google Chrome", symbol: "globe", tile: "yellow", cpu: 5, gpu: 2, mem: 2.6 },
-			{ id: "simulator", name: "Simulator", symbol: "iphone", tile: "grey", verdict: "Keep", cpu: 4, gpu: 0, mem: 2.1 }
+			// Rows Levo won't quit are dimmed; why sits behind the ⓘ on hover.
+			{ id: "node", name: "node", symbol: "terminal.fill", tile: "green", why: "An idle build server, running for 3 hours. Safe to quit.", safe: true, cpu: 84, gpu: 0, mem: 1.9 },
+			{ id: "xcode", name: "Xcode", symbol: "hammer.fill", tile: "blue", why: "Open with your projects. Quitting closes them.", cpu: 31, gpu: 1, mem: 3.2 },
+			{ id: "vm", name: "VirtualMachine", symbol: "cube.fill", tile: "grey", why: "macOS needs it, so Levo won\u2019t quit it.", system: true, cpu: 3, gpu: 0, mem: 1.2 },
+			{ id: "windowserver", name: "WindowServer", symbol: "macwindow", tile: "dark", why: "macOS needs it, so Levo won\u2019t quit it.", system: true, cpu: 12, gpu: 4, mem: 0.8 },
+			{ id: "slack", name: "Slack", symbol: "number", tile: "magenta", why: "A chat app with no windows open.", cpu: 6, gpu: 1, mem: 0.9 },
+			{ id: "safari", name: "Safari", img: "img/dock/safari.png", why: "Open with four tabs.", cpu: 5, gpu: 2, mem: 2.6 },
+			{ id: "simulator", name: "Simulator", symbol: "iphone", tile: "grey", why: "Running a test device.", cpu: 4, gpu: 0, mem: 2.1 }
 		],
+		// Desktop icons, in a column from the top left (below the widgets when they show).
 		desktop: [
-			{ id: "shot", kind: "shot", name: "Screenshot 2026-10-12 at 9.41.22 am.png", x: 44, y: 252 },
-			{ id: "installers", kind: "folder", name: "Old Installers", x: 150, y: 300 },
-			{ id: "zip", kind: "zip", name: "project-final-v2.zip", x: 58, y: 392 },
-			{ id: "notes", kind: "doc", name: "notes (3).txt", x: 172, y: 430 }
+			{ id: "shot", kind: "shot", name: "Screenshot 2026-10-12 at 9.41.22 am.png", col: 0, row: 0 },
+			{ id: "installers", kind: "folder", name: "Old Installers", col: 1, row: 0 },
+			{ id: "zip", kind: "zip", name: "project-final-v2.zip", col: 0, row: 1 },
+			{ id: "notes", kind: "doc", name: "notes (3).txt", col: 1, row: 1 },
+			{ id: "unzipped", kind: "folder", name: "project-final-v2", col: 0, row: 2, later: true }
 		],
+		// The dock, from img/dock/ (one folder, so the set can be swapped).
 		dock: [
-			{ id: "finder", name: "Finder", kind: "finder" },
+			{ id: "finder", name: "Finder", img: "img/dock/finder.png" },
+			{ id: "safari", name: "Safari", img: "img/dock/safari.png" },
+			{ id: "mail", name: "Mail", img: "img/dock/mail.png" },
+			{ id: "messages", name: "Messages", img: "img/dock/messages.png" },
+			{ id: "notes", name: "Notes", img: "img/dock/notes.png" },
+			{ id: "music", name: "Music", img: "img/dock/music.png" },
+			{ id: "photos", name: "Photos", img: "img/dock/photos.png" },
+			{ id: "calendar", name: "Calendar", img: "img/dock/calendar.png" },
+			{ id: "settings", name: "System Settings", img: "img/dock/settings.png" },
+			{ id: "terminal", name: "Terminal", img: "img/dock/terminal.png" },
 			{ id: "levo", name: "Levo", img: "img/icon-96.png" },
-			{ id: "left", name: "Left", img: "img/dock/left.png" },
-			{ id: "txtpod", name: "txtpod", img: "img/dock/txtpod.png" },
-			{ id: "kiwicamping", name: "KiwiCamping", img: "img/dock/kiwicamping.png" },
-			{ id: "aussiecamps", name: "AussieCamps", img: "img/dock/aussiecamps.png" },
-			{ id: "nosnus", name: "NoSnus", img: "img/dock/nosnus.png" },
-			{ id: "safeplate", name: "SafePlate", img: "img/dock/safeplate.png" },
-			{ id: "trash", name: "Trash", kind: "trash" }
+			{ id: "trash", name: "Trash", img: "img/dock/trash-empty.png", full: "img/dock/trash-full.png" }
 		],
 		notification: { title: "Disk below {alert}", body: "{ready} ready to clean up" },
 		cleaned: { title: "Freed {freed}", body: "{free} free on {disk}" },
 		quip: "Still here.",
-		timing: { unlock: 900, notify: 1500, teaser: 4200 }
+		timing: { notify: 1500, open: 2700 }
 	};
 
 	var TILES = {
@@ -113,7 +121,7 @@
 	var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 	var num1 = numFormat({ maximumFractionDigits: 1 });
 	var num0 = numFormat({ maximumFractionDigits: 0 });
-	var TICKS = 92;
+	var TICKS = 60;
 
 	function numFormat(opts) {
 		try { return new Intl.NumberFormat(LANG, opts); } catch (e) { return new Intl.NumberFormat("en-NZ", opts); }
@@ -137,7 +145,7 @@
 	}
 	function tile(color, name, size) {
 		var c = TILES[color] || TILES.grey;
-		return '<span class="lv-tile' + (size ? " lv-tile-" + size : "") + '" style="--t1:' + c[0] + ";--t2:" + c[1] + '">' + sym(name, size === "lg" ? 15 : 11) + "</span>";
+		return '<span class="lv-tile' + (size ? " lv-tile-" + size : "") + '" style="--t1:' + c[0] + ";--t2:" + c[1] + '">' + sym(name, size === "lg" ? 15 : size === "sm" ? 9 : 13) + "</span>";
 	}
 	function mark(cls) {
 		return '<svg class="lv-mark' + (cls ? " " + cls : "") + '" viewBox="0 0 882 564" aria-hidden="true"><path transform="translate(0.98 0)" d="' + MARK + '" vector-effect="non-scaling-stroke"/></svg>';
@@ -173,6 +181,7 @@
 	var fDay = dtf({ weekday: "short", day: "numeric", month: "short" });
 	var fTime = dtf({ hour: "numeric", minute: "2-digit" });
 	var fLong = dtf({ weekday: "long", day: "numeric", month: "long" });
+	var fWidget = dtf({ weekday: "long", day: "numeric", month: "short" });
 
 	// ---------------------------------------------------------------- State
 
@@ -185,7 +194,7 @@
 			groups: d.groups, procs: d.processes, level: d.level,
 			sort: "cpu", sel: { type: "group", id: d.groups[0].id },
 			open: {}, info: {}, more: false,
-			freeShown: d.disk.free, alerted: false, popOpen: false, locked: true,
+			freeShown: d.disk.free, alerted: false, popOpen: false, locked: false, unzipped: false,
 			panel: null, sheet: false, menu: false, undo: null, agent: S ? S.agent : d.agent,
 			cleanedNote: null, freed: null, analysing: false, trashFull: false, attempts: 0, quipped: false
 		};
@@ -193,6 +202,7 @@
 		return st;
 	}
 	function applyLevel(groups, level) {
+		if (level === "Selected") return;
 		var n = LEVO_DEMO.levels.indexOf(level) + 1;
 		groups.forEach(function (g) { g.items.forEach(function (it) {
 			it.on = level === "All" ? it.level > 0 : level === "None" ? false : it.level > 0 && it.level <= n;
@@ -220,14 +230,16 @@
 
 	function sceneHTML() {
 		return '' +
-		'<div class="lv-scene is-locked" data-mode="desk" role="region" aria-label="Levo, running on a Mac">' +
+		'<div class="lv-scene is-intro" data-mode="desk" role="region" aria-label="Levo, running on a Mac">' +
 			'<div class="lv-wall" data-act="desk"></div>' +
 			'<div class="lv-icons" data-icons></div>' +
 			'<div class="lv-widgets" aria-hidden="true">' +
-				'<div class="lv-widget lv-w-clock"><span class="lv-w-city" data-city></span><span class="lv-w-time" data-wtime></span><span class="lv-w-date" data-wdate></span></div>' +
-				'<div class="lv-widget lv-w-batt"><span class="lv-w-ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" class="lv-ring-bg"/><circle cx="32" cy="32" r="27" class="lv-ring-fg" data-ringfg/></svg><span class="lv-w-ringglyph" data-ringglyph></span></span><span class="lv-w-dev" data-dev></span><span class="lv-w-level" data-level></span></div>' +
+				'<div class="lv-widget lv-w-clock"><span class="lv-w-date" data-wdate></span><span class="lv-w-time" data-wtime></span><span class="lv-w-city" data-city></span></div>' +
+				'<div class="lv-widget lv-w-batt" data-wbatt hidden><span class="lv-w-ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" class="lv-ring-bg"/><circle cx="32" cy="32" r="27" class="lv-ring-fg" data-ringfg/></svg><span class="lv-w-ringglyph" data-ringglyph></span></span><span class="lv-w-dev" data-dev></span><span class="lv-w-level" data-level></span></div>' +
+				'<div class="lv-widget lv-w-cal" data-wcal></div>' +
 			'</div>' +
 			'<div class="lv-dock" data-dock></div>' +
+			lwinHTML() +
 			'<div class="lv-menubar">' +
 				'<div class="lv-mb-left">' +
 					'<button type="button" class="lv-mb-btn lv-mb-apple" data-menu="apple" aria-label="Apple menu">' + sym("applelogo", 15) + '</button>' +
@@ -237,7 +249,8 @@
 				'<div class="lv-mb-right">' +
 					'<button type="button" class="lv-mb-levo" data-act="toggle" aria-label="Levo" aria-expanded="false">' + mark("lv-mb-mark") + '<span class="lv-mb-num" data-mbnum></span></button>' +
 					'<button type="button" class="lv-mb-btn lv-mb-item" data-menu="wifi" aria-label="Wi-Fi"><span data-wifi>' + sym("wifi", 15) + '</span></button>' +
-					'<button type="button" class="lv-mb-btn lv-mb-item lv-mb-batt" data-menu="battery" aria-label="Battery"><span class="lv-mb-pct" data-battpct></span><span class="lv-batt">' + sym("battery.0percent", 17) + '<i data-battfill></i><span class="lv-batt-bolt" data-battbolt hidden>' + sym("bolt.fill", 8) + '</span></span></button>' +
+					'<button type="button" class="lv-mb-btn lv-mb-item lv-mb-batt" data-menu="battery" aria-label="Battery" hidden><span class="lv-mb-pct" data-battpct></span><span class="lv-batt">' + sym("battery.0percent", 17) + '<i data-battfill></i><span class="lv-batt-bolt" data-battbolt hidden>' + sym("bolt.fill", 8) + '</span></span></button>' +
+					'<button type="button" class="lv-mb-btn lv-mb-item" data-menu="control" aria-label="Control Centre">' + sym("switch.2", 14) + '</button>' +
 					'<button type="button" class="lv-mb-btn lv-mb-item lv-mb-clock" data-menu="clock"><span class="lv-mb-day" data-day></span><span data-time></span></button>' +
 				'</div>' +
 			'</div>' +
@@ -258,10 +271,10 @@
 		var lines = "";
 		for (var i = 0; i < 26; i++) {
 			var a = (135 + i * 10.8) * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
-			lines += '<line x1="' + (29 + 21 * c).toFixed(2) + '" y1="' + (29 + 21 * s).toFixed(2) + '" x2="' + (29 + 28 * c).toFixed(2) + '" y2="' + (29 + 28 * s).toFixed(2) + '" style="--on:' + arcColor(i / 25) + '"/>';
+			lines += '<line x1="' + (32 + 23 * c).toFixed(2) + '" y1="' + (32 + 23 * s).toFixed(2) + '" x2="' + (32 + 30.5 * c).toFixed(2) + '" y2="' + (32 + 30.5 * s).toFixed(2) + '" style="--on:' + arcColor(i / 25) + '"/>';
 		}
 		return '<div class="lv-gauge" data-gauge="' + id + '">' +
-			'<div class="lv-dial"><svg viewBox="0 0 58 58" aria-hidden="true">' + lines + '</svg><span class="lv-dial-num"><span data-gnum></span><small>%</small></span><i class="lv-spin lv-dial-spin" hidden></i></div>' +
+			'<div class="lv-dial"><svg viewBox="0 0 64 64" aria-hidden="true">' + lines + '</svg><span class="lv-dial-num"><span data-gnum></span><small>%</small></span><i class="lv-spin lv-dial-spin" hidden></i></div>' +
 			'<button type="button" class="lv-g-label" data-act="free" data-metric="' + id + '" data-label="' + label + '" data-hover="' + (id === "memory" ? "Free memory" : "Free " + label) + '"></button></div>';
 	}
 	function arcColor(p) {
@@ -277,7 +290,7 @@
 		return '' +
 		'<div class="lv-pop" role="dialog" aria-label="Levo" tabindex="-1">' +
 			'<section class="lv-disk">' +
-				'<div class="lv-dhead"><span class="lv-sec" data-devsym>' + sym("laptopcomputer", 13) + '</span><b data-devname>' + esc(LEVO_DEMO.computer) + '</b></div>' +
+				'<div class="lv-dhead"><span class="lv-sec" data-devsym>' + sym("desktopcomputer", 14) + '</span><b data-devname>Mac</b></div>' +
 				'<div class="lv-hero"><span class="lv-free lv-num" data-free></span><span class="lv-sec">free</span><span class="lv-flex"></span><span class="lv-can lv-num" data-can></span></div>' +
 				'<div class="lv-dbar" data-dbar><div class="lv-ticks">' + ticks + '</div><span class="lv-tip" data-tip hidden></span></div>' +
 			'</section>' +
@@ -303,6 +316,7 @@
 			'<div class="lv-panel" data-panel hidden></div>' +
 			'<div class="lv-menu" data-levels hidden></div>' +
 			'<div class="lv-sheet" data-sheet hidden></div>' +
+			'<div class="lv-bubble" data-bubbletip hidden></div>' +
 		'</div>';
 	}
 
@@ -312,13 +326,26 @@
 		else if (ic.kind === "zip") art = '<span class="lv-ic-page lv-ic-zip"><i></i><b>ZIP</b></span>';
 		else if (ic.kind === "doc") art = '<span class="lv-ic-page lv-ic-txt"><i></i><em></em><em></em><em></em><b>TXT</b></span>';
 		else art = '<span class="lv-ic-shot"><i></i></span>';
-		return '<button type="button" class="lv-ic" data-icon="' + ic.id + '" style="left:' + ic.x + "px;top:" + ic.y + 'px">' + art + '<span class="lv-ic-name">' + esc(ic.name) + "</span></button>";
+		return '<button type="button" class="lv-ic' + (ic.later ? " is-hidden" : "") + '" data-icon="' + ic.id + '" style="--col:' + ic.col + ";--row:" + ic.row + '">' + art + '<span class="lv-ic-name">' + esc(ic.name) + "</span></button>";
+	}
+	// The Levo window on the desktop: the app, Applications, the price and Download.
+	// A disk image window, as a Mac app arrives. On a phone it is a plain card.
+	function lwinHTML() {
+		return '<div class="lv-lwin" data-lwin role="dialog" aria-label="Levo">' +
+			'<div class="lv-lwin-bar"><span class="lv-lights"><button type="button" data-act="lwinclose" aria-label="Close"></button><button type="button" data-act="lwinmin" aria-label="Minimise"></button><button type="button" tabindex="-1" aria-hidden="true"></button></span><b>Levo</b></div>' +
+			'<div class="lv-lwin-body">' +
+				'<button type="button" class="lv-lwin-app" data-act="lwinapp" aria-label="Levo"><img src="img/icon-256.png" width="104" height="104" alt="" draggable="false"><span>Levo</span></button>' +
+				'<svg class="lv-lwin-arrow" viewBox="0 0 120 24" aria-hidden="true"><path d="M4 12h98"/><path d="M98 4l10 8-10 8"/></svg>' +
+				'<span class="lv-lwin-apps" data-lwinapps><span class="lv-lwin-folder">' + sym("folder.fill", 84) + '<span class="lv-lwin-a">' + sym("app.badge", 26) + '</span></span><span>Applications</span></span>' +
+			'</div>' +
+			'<div class="lv-lwin-foot"><span class="lv-lwin-price"><b data-lprice></b><span data-lterm></span></span><span class="lv-flex"></span>' +
+				'<a class="lv-lbtn" data-lbuy href="#">Buy</a><a class="lv-lbtn lv-lbtn-primary" data-ldownload href="#">Download</a></div>' +
+		'</div>' +
+		'<p class="lv-hint" aria-hidden="true">' + sym("cursorarrow", 12, "lv-hint-arrow") + '<span data-hint></span></p>';
 	}
 	function dockHTML() {
 		return '<div class="lv-dock-shelf"></div>' + LEVO_DEMO.dock.map(function (d) {
-			var art = d.img ? '<img src="' + d.img + '" alt="" draggable="false">' :
-				d.kind === "finder" ? '<span class="lv-dk-finder"><i></i><i></i><b></b></span>' :
-				'<span class="lv-dk-trash"><span class="lv-dk-bin"></span><span class="lv-dk-paper"></span></span>';
+			var art = '<img src="' + d.img + '" alt="" draggable="false">';
 			return (d.id === "trash" ? '<span class="lv-dock-sep"></span>' : "") +
 				'<button type="button" class="lv-dk" data-dock="' + d.id + '" aria-label="' + esc(d.name) + '"><span class="lv-dk-lift"><span class="lv-dk-art">' + art + '</span></span><span class="lv-dk-label">' + esc(d.name) + '</span><i class="lv-dk-dot"></i></button>';
 		}).join("");
@@ -343,9 +370,9 @@
 	function renderDisk(free) {
 		$("[data-free]").textContent = gb(free);
 		var t = tickedGB();
-		$("[data-can]").textContent = t > 0 ? gb(t) + " to clean up" : "";
-		$("[data-ready]").innerHTML = S.analysing ? '<i class="lv-spin"></i>Analysing' : "";
-		$("[data-levellabel]").textContent = S.level;
+		$("[data-can]").innerHTML = t > 0 ? "<b>" + gb(t) + "</b> to clean up" : "";
+		$("[data-ready]").innerHTML = S.analysing ? '<i class="lv-spin"></i>Analysing' : readyGB() > 0 ? gb(readyGB()) : "";
+		$("[data-levellabel]").textContent = LEVO_DEMO.levels.indexOf(S.level) >= 0 ? "Smartly" : S.level;
 	}
 
 	// The disk in ticks. Each tick is wholly one category's colour, shared out by
@@ -379,7 +406,7 @@
 		$$(".lv-tick").forEach(function (el, i) {
 			var s = owners[i];
 			el.dataset.seg = s.id;
-			el.style.transitionDelay = sweep ? Math.max(0, (i - 40) * 16) + "ms" : "0ms";
+			el.style.transitionDelay = sweep ? Math.max(0, (i - 26) * 24) + "ms" : "0ms";
 			el.style.backgroundColor = s.color;
 		});
 	}
@@ -398,7 +425,7 @@
 
 	function checkbox(state, act, id, item) {
 		return '<button type="button" class="lv-cb" role="checkbox" aria-checked="' + (state === "on" ? "true" : state === "mixed" ? "mixed" : "false") + '" data-act="' + act + '" data-id="' + id + '"' + (item != null ? ' data-item="' + item + '"' : "") + ' aria-label="Tick">' +
-			(state === "on" ? sym("checkmark", 9) : state === "mixed" ? sym("minus", 9) : "") + "</button>";
+			(state === "on" ? sym("checkmark", 10) : state === "mixed" ? sym("minus", 10) : "") + "</button>";
 	}
 
 	function renderGroups() {
@@ -415,23 +442,15 @@
 				checkbox(gState(g), "tick", g.id) + tile(g.tile, g.symbol) +
 				'<span class="lv-gtext"><span class="lv-title">' + esc(g.title) + '</span><span class="lv-subt">' + g.items.length + (g.items.length === 1 ? " item" : " items") + " · changed " + esc(g.changed) + "</span></span>" +
 				'<span class="lv-flex"></span>' +
-				(g.tag ? '<span class="lv-tag lv-tag-yellow">' + g.tag + "</span>" : "") +
-				'<button type="button" class="lv-info' + (S.info[g.id] ? " is-on" : "") + '" data-act="info" data-id="' + g.id + '" aria-label="Info">' + sym("info.circle", 12) + "</button>" +
+				'<button type="button" class="lv-info" data-act="info" data-bubble="g:' + g.id + '" aria-label="Info">' + sym("info.circle", 13) + "</button>" +
 				'<span class="lv-size lv-num" data-size="' + g.id + '">' + gb(g.shown != null ? g.shown : gSize(g)) + "</span>" +
-				'<span class="lv-chev">' + sym("chevron.right", 9) + "</span>" +
+				'<span class="lv-chev">' + sym("chevron.right", 10) + "</span>" +
 			"</div>";
 			if (S.open[g.id]) {
 				h += '<div class="lv-items">' + g.items.map(function (it, i) {
 					return '<div class="lv-row lv-irow" data-act="titem" data-id="' + g.id + '" data-item="' + i + '">' + checkbox(it.on ? "on" : "off", "titem", g.id, i) +
 						'<span class="lv-iname">' + esc(it.name) + '</span><span class="lv-flex"></span><span class="lv-size lv-num">' + gb(it.gb) + '</span><span class="lv-chev-gap"></span></div>';
 				}).join("") + "</div>";
-			}
-			if (S.info[g.id]) {
-				h += '<div class="lv-detail">' +
-					detailRow("Location", esc(g.location)) +
-					detailRow("Checked by", esc(S.agent)) +
-					detailRow("Verdict", '<span class="' + (g.good ? "lv-good" : "lv-warn") + '">' + esc(g.verdict) + "</span>") +
-				"</div>";
 			}
 			return h;
 		}).join("") + (S.groups.length > 5 ? '<div class="lv-row lv-more" data-act="more"><span>' + (S.more ? "Show less" : "Show more") + "</span></div>" : "");
@@ -445,12 +464,11 @@
 		$("[data-procs]").innerHTML = list.map(function (p) {
 			var sel = S.sel && S.sel.type === "proc" && S.sel.id === p.id;
 			var v = key === "mem" ? gb(p.mem) : pct(p[key]);
-			var tag = "";
-			if (p.verdict === "Quit") tag = '<button type="button" class="lv-tag lv-tag-red" data-act="quit" data-id="' + p.id + '">Quit</button>';
-			else if (p.verdict) tag = '<span class="lv-tag">' + p.verdict + "</span>";
-			return '<div class="lv-row lv-prow' + (sel ? " is-sel" : "") + (p.isNew ? " is-new" : "") + '" data-act="prow" data-id="' + p.id + '">' + tile(p.tile, p.symbol) +
-				'<span class="lv-title">' + esc(p.name) + "</span>" + (p.note ? '<span class="lv-note-red">' + esc(p.note) + "</span>" : "") +
-				'<span class="lv-flex"></span>' + tag + '<span class="lv-size lv-num lv-pval">' + v + "</span></div>";
+			var art = p.img ? '<img class="lv-picon" src="' + p.img + '" width="22" height="22" alt="">' : tile(p.tile, p.symbol);
+			return '<div class="lv-row lv-prow' + (sel ? " is-sel" : "") + (p.system ? " is-dim" : "") + (p.isNew ? " is-new" : "") + '" data-act="prow" data-id="' + p.id + '">' + art +
+				'<span class="lv-title">' + esc(p.name) + '</span><span class="lv-flex"></span>' +
+				'<button type="button" class="lv-info" data-act="info" data-bubble="p:' + p.id + '" aria-label="Info">' + sym("info.circle", 13) + "</button>" +
+				'<span class="lv-size lv-num lv-pval">' + v + "</span></div>";
 		}).join("");
 	}
 
@@ -458,6 +476,7 @@
 		if (S.sel && S.sel.type === "proc") {
 			var p = proc(S.sel.id);
 			if (p && !p.system) return { label: "Quit " + p.name, keys: ["↵"], act: "quitSel" };
+			if (p) return { label: "Clean up", keys: ["⌘", "⌫"], act: null };
 		}
 		var t = tickedGB();
 		return { label: "Clean up", keys: ["⌘", "⌫"], act: t > 0 ? "clean" : null };
@@ -504,50 +523,92 @@
 		$("[data-day]").textContent = fDay.format(now).replace(/,/g, "");
 		$("[data-time]").textContent = time;
 		$("[data-wtime]").textContent = time;
-		$("[data-wdate]").textContent = fLong.format(now);
+		$("[data-wdate]").textContent = fWidget.format(now).replace(/,/g, "");
 		$("[data-ltime]").textContent = time.replace(/\s?[AaPp]\.?[Mm]\.?$/, "");
 		$("[data-ldate]").textContent = fLong.format(now);
 	}
+	// The battery, as macOS shows it: a laptop shows its level and state; a Mac
+	// with no battery shows no battery item, and the widget becomes a calendar.
+	// Browsers report a desktop Mac as 100 % and charging with no charge time.
+	var power = "unknown";
 	function battery() {
-		$("[data-dev]").textContent = deviceFamily();
-		var show = function (level, charging) {
-			var pc = Math.round(level * 100);
-			batt = { level: level, charging: charging };
-			$("[data-battfill]").style.setProperty("--l", level.toFixed(2));
-			$("[data-battpct]").textContent = pc + " %";
-			$("[data-battbolt]").hidden = !charging;
-			$("[data-level]").textContent = pc + " %";
-			$("[data-ringfg]").style.strokeDashoffset = (169.6 * (1 - level)).toFixed(1);
-			$("[data-ringglyph]").innerHTML = charging ? sym("bolt.fill", 16) : sym("laptopcomputer", 18);
+		var item = $(".lv-mb-batt"), wb = $("[data-wbatt]"), wc = $("[data-wcal]");
+		var device = function () {
+			var laptop = power === "laptop";
+			$("[data-devsym]").innerHTML = sym(laptop ? "laptopcomputer" : power === "desktop" ? "macmini.fill" : "desktopcomputer", 14);
+			$("[data-devname]").textContent = laptop ? "MacBook Pro" : power === "desktop" ? "Mac mini" : "Mac";
+			$("[data-dev]").textContent = laptop ? "MacBook Pro" : "Mac";
+			item.hidden = !laptop;
+			wb.hidden = !laptop;
+			wc.hidden = laptop;
+			layout();
 		};
-		$("[data-ringfg]").style.strokeDashoffset = "0";
-		$("[data-ringglyph]").innerHTML = sym("laptopcomputer", 18);
-		if (navigator.getBattery) {
-			navigator.getBattery().then(function (b) {
-				var up = function () { show(b.level, b.charging); };
-				up();
-				b.addEventListener("levelchange", up);
-				b.addEventListener("chargingchange", up);
-			}, function () {});
-		}
+		var show = function (b) {
+			var desk = b.charging && b.level === 1 && b.chargingTime === 0 && b.dischargingTime === Infinity;
+			power = desk ? "desktop" : "laptop";
+			batt = desk ? null : { level: b.level, charging: b.charging };
+			if (!desk) {
+				var pc = Math.round(b.level * 100);
+				$("[data-battfill]").style.setProperty("--l", b.level.toFixed(2));
+				$("[data-battpct]").textContent = pc + " %";
+				$("[data-battbolt]").hidden = !b.charging;
+				$("[data-level]").textContent = pc + " %";
+				$("[data-ringfg]").style.strokeDashoffset = (169.6 * (1 - b.level)).toFixed(1);
+				$("[data-ringglyph]").innerHTML = b.charging ? sym("bolt.fill", 16) : sym("laptopcomputer", 18);
+				$("[data-ringfg]").classList.toggle("is-low", b.level <= 0.2 && !b.charging);
+			}
+			device();
+		};
+		device();
+		if (navigator.getBattery) navigator.getBattery().then(function (b) {
+			var up = function () { show(b); };
+			up();
+			b.addEventListener("levelchange", up);
+			b.addEventListener("chargingchange", up);
+		}, function () {});
+	}
+	function calendar() {
+		var now = new Date(), y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
+		var first = new Date(y, m, 1).getDay(), days = new Date(y, m + 1, 0).getDate();
+		var start = (first + 6) % 7, cells = "";
+		var wd = dtf({ weekday: "narrow" });
+		for (var k = 0; k < 7; k++) cells += '<i class="lv-cal-wd">' + wd.format(new Date(2024, 0, 1 + k)) + "</i>";
+		for (var e = 0; e < start; e++) cells += "<i></i>";
+		for (var d = 1; d <= days; d++) cells += '<i' + (d === today ? ' class="is-today"' : "") + ">" + d + "</i>";
+		$("[data-wcal]").innerHTML = '<span class="lv-cal-m">' + esc(dtf({ month: "long" }).format(now)) + '</span><span class="lv-cal-g">' + cells + "</span>";
 	}
 
 	// ---------------------------------------------------------------- Layout
 
-	var DESK_W = 1200, COMPACT_W = 400;
+	// The desk fills the first screen at its own size; a phone gets the compact cards.
 	function layout() {
 		var w = root.clientWidth;
 		if (!w) return;
 		var compact = w < 760;
 		scene.dataset.mode = compact ? "compact" : "desk";
-		scene.style.zoom = compact ? Math.min(1.15, w / COMPACT_W) : Math.min(1, w / DESK_W);
-		var wrap = $(".lv-popwrap");
-		if (!compact) {
-			var b = $(".lv-mb-levo");
-			var cx = b.offsetLeft + b.parentNode.offsetLeft + b.offsetWidth / 2;
-			if (b.offsetParent === $(".lv-menubar")) cx = b.offsetLeft + b.offsetWidth / 2;
-			wrap.style.left = Math.max(12, Math.min(DESK_W - 372, cx - 180)) + "px";
-		} else wrap.style.left = "";
+		scene.style.zoom = "";
+		var wrap = $(".lv-popwrap"), W = scene.offsetWidth, H = scene.offsetHeight;
+		if (compact) { wrap.style.left = ""; return; }
+		var b = $(".lv-mb-levo");
+		var cx = b.offsetLeft + b.offsetWidth / 2;
+		var popLeft = Math.max(12, Math.min(W - 372, cx - 180));
+		wrap.style.left = popLeft + "px";
+		var widgets = W >= 1180;
+		scene.classList.toggle("no-widgets", !widgets);
+		// The Levo window sits in the open space between the icons and the popover.
+		var win = $("[data-lwin]"), left = widgets ? 380 : 236, right = popLeft - 28;
+		var ww = win.offsetWidth, wh = win.offsetHeight;
+		var x = Math.round(Math.max(left, left + (right - left - ww) / 2));
+		var y = Math.round(Math.max(64, Math.min(H - wh - 190, (H - wh) / 2 - 40)));
+		if (!S.lwinMoved) { win.style.left = x + "px"; win.style.top = y + "px"; }
+		var hint = $(".lv-hint");
+		hint.style.left = (parseFloat(win.style.left) + ww / 2) + "px";
+		hint.style.top = (parseFloat(win.style.top) + wh + 18) + "px";
+		$$(".lv-ic").forEach(function (el) {
+			el.style.left = (24 + el.style.getPropertyValue("--col") * 104) + "px";
+			el.style.top = ((widgets ? 248 : 48) + el.style.getPropertyValue("--row") * 116) + "px";
+		});
+		renderIcons();
 	}
 
 	// ---------------------------------------------------------------- Timeline
@@ -568,11 +629,13 @@
 		layout();
 		if (!S.popOpen) showNote(fill(LEVO_DEMO.notification.title, { alert: gb(S.disk.alert) }), fill(LEVO_DEMO.notification.body, { ready: gb(tickedGB()) }));
 	}
+	// Load: the desk comes in (CSS, while .is-intro), the alert arrives, then the popover opens on its own.
 	function start() {
 		if (played) return;
 		played = true;
-		later(unlock, LEVO_DEMO.timing.unlock);
-		later(function () { if (!S.touched) openPop(); }, LEVO_DEMO.timing.unlock + LEVO_DEMO.timing.notify + LEVO_DEMO.timing.teaser);
+		later(function () { scene.classList.remove("is-intro"); }, 1600);
+		later(alertNow, LEVO_DEMO.timing.notify);
+		later(function () { if (!S.popOpen && !scene.dataset.menu) openPop(); }, LEVO_DEMO.timing.open);
 	}
 
 	function showNote(title, body, ms) {
@@ -586,6 +649,7 @@
 	function openPop() {
 		if (S.popOpen || S.gone) return;
 		if (S.locked) unlock();
+		if (scene.dataset.mode === "compact") { S.popOpen = true; scene.classList.add("is-open"); renderMenubar(); return; }
 		if (window.LevoMenus && LevoMenus.close) LevoMenus.close();
 		S.popOpen = true;
 		S.alerted = true;
@@ -608,6 +672,7 @@
 		$("[data-panel]").hidden = true;
 		$("[data-levels]").hidden = true;
 		$("[data-sheet]").hidden = true;
+		hideBubble();
 	}
 
 	function toast(kind, title, action, ms) {
@@ -624,7 +689,7 @@
 		if (!g) return;
 		if (item != null) g.items[item].on = !g.items[item].on;
 		else { var on = gState(g) !== "on"; g.items.forEach(function (it) { it.on = on; }); }
-		S.level = "Custom";
+		S.level = "Selected";
 		renderGroups(); renderDisk(S.freeShown); renderBar(); renderActions();
 	}
 	function chooseLevel(level) {
@@ -633,21 +698,72 @@
 		renderGroups(); renderDisk(S.freeShown); renderBar(); renderActions();
 	}
 
+	// Clean up: the app's confirm, inside the popover. The first time, the
+	// acceptance step; then what goes, what is removed and what goes to the Trash.
+	var accepted = false;
 	function askClean() {
 		if (tickedGB() <= 0) return;
 		closeOverlays();
-		var groups = S.groups.filter(function (g) { return gState(g) !== "off"; }).length, n = tickedCount();
 		var sh = $("[data-sheet]");
-		sh.innerHTML = '<div class="lv-sheet-card" role="alertdialog" aria-label="Clean up">' +
-			'<img src="img/icon-96.png" width="44" height="44" alt="">' +
-			"<b>Clean up " + gb(tickedGB()) + "?</b>" +
-			"<p>" + n + (n === 1 ? " item" : " items") + " in " + groups + (groups === 1 ? " group" : " groups") + ". Anything that can’t be rebuilt goes to the Trash.</p>" +
-			'<div class="lv-sheet-btns"><button type="button" class="lv-btn" data-act="cancel">Cancel</button><button type="button" class="lv-btn lv-btn-primary" data-act="confirm">Clean Up</button></div>' +
-		"</div>";
+		sh.className = "lv-sheet lv-confirm";
+		if (!accepted) {
+			sh.innerHTML = '<div class="lv-gate">' +
+				'<img src="img/dock/trash-full.png" width="64" height="64" alt="">' +
+				"<b>You\u2019re in Charge</b>" +
+				"<p>Levo never deletes anything without your permission. Take care, and check what\u2019s ticked before you clean. Your own files go to the Trash.</p>" +
+				'<label class="lv-gate-box"><button type="button" class="lv-cb" role="checkbox" aria-checked="false" data-act="accept-tick"></button><span>I understand, and accept that Levo isn\u2019t responsible for what I choose to delete.</span></label>' +
+			"</div>" + confirmBar("Accept", false);
+		} else {
+			var rows = [], removed = 0, trashed = 0;
+			S.groups.forEach(function (g) { g.items.forEach(function (it) {
+				if (!it.on) return;
+				if (g.trash) trashed += it.gb; else removed += it.gb;
+				rows.push('<div class="lv-crow">' + tile(g.tile, g.symbol, "sm") + '<span class="lv-cname">' + esc(it.name) + '</span><span class="lv-flex"></span>' + (g.trash ? sym("trash", 11, "lv-sec") : "") + '<span class="lv-size lv-num">' + gb(it.gb) + "</span></div>");
+			}); });
+			sh.innerHTML = '<div class="lv-chead"><b>Clean up ' + gb(tickedGB()) + "</b><span>" +
+				(removed > 0 ? '<span class="lv-sec">Removed</span> <b>' + gb(removed) + "</b>" : "") +
+				(trashed > 0 ? '<span class="lv-sec">To the Trash</span> <b>' + gb(trashed) + "</b>" : "") + "</span></div>" +
+				'<div class="lv-sep"></div><div class="lv-clist">' + rows.join("") + "</div>" + confirmBar("Clean", true);
+		}
 		sh.hidden = false;
 		S.sheet = true;
-		setTimeout(function () { var c = $('[data-act="confirm"]', sh); if (c && inView) c.focus({ preventScroll: true }); }, 30);
 	}
+	function confirmBar(label, on) {
+		return '<div class="lv-actions lv-cbar"><span class="lv-flex"></span>' +
+			'<button type="button" class="lv-primary lv-cancel" data-act="cancel">Cancel' + caps(["esc"], "lv-cap-sm lv-cap-ring") + "</button>" +
+			'<button type="button" class="lv-primary" data-act="confirm"' + (on ? "" : " disabled") + ">" + label + caps(["\u21b5"], "lv-cap-sm") + "</button></div>";
+	}
+	function confirmNow() {
+		if (!S.sheet) return;
+		if (!accepted) {
+			var box = $('[data-act="accept-tick"]');
+			if (!box || box.getAttribute("aria-checked") !== "true") return;
+			accepted = true;
+			askClean();
+			return;
+		}
+		clean();
+	}
+
+	// The ⓘ bubble: a group's what, why and how it comes back; a process's reason.
+	function bubble(btn, toggle) {
+		var tip = $("[data-bubbletip]"), key = btn.dataset.bubble;
+		if (toggle && !tip.hidden && tip.dataset.key === key) { tip.hidden = true; return; }
+		var kind = key.slice(0, 1), id = key.slice(2), title, body;
+		if (kind === "g") { var g = group(id); if (!g) return; title = g.title; body = (g.about || []).map(function (t) { return "<p>" + esc(t) + "</p>"; }).join(""); }
+		else { var p = proc(id); if (!p) return; title = p.name; body = "<p>" + esc(p.why || "") + "</p>"; }
+		tip.innerHTML = "<b>" + esc(title) + "</b>" + body;
+		tip.dataset.key = key;
+		tip.hidden = false;
+		var scroll = $(".lv-scroll"), row = btn.closest(".lv-row");
+		var top = row.offsetTop - scroll.scrollTop + row.offsetHeight + 4;
+		var x = Math.min(pop.offsetWidth - tip.offsetWidth - 8, Math.max(8, btn.offsetLeft + row.offsetLeft + btn.offsetWidth / 2 - 40));
+		if (top + tip.offsetHeight > pop.offsetHeight - 8) top = row.offsetTop - scroll.scrollTop - tip.offsetHeight - 4;
+		tip.style.top = top + "px";
+		tip.style.left = x + "px";
+		tip.style.setProperty("--ax", (btn.offsetLeft + row.offsetLeft + btn.offsetWidth / 2 - x) + "px");
+	}
+	function hideBubble() { var tip = $("[data-bubbletip]"); if (tip) tip.hidden = true; }
 
 	function snapshot() { return JSON.stringify({ disk: S.disk, groups: S.groups, procs: S.procs, freeShown: S.freeShown, level: S.level, trashFull: S.trashFull }); }
 	function restore(snap) {
@@ -675,6 +791,7 @@
 			S.disk.free = Math.round((from + freed) * 10) / 10;
 			S.sel = S.groups[0] ? { type: "group", id: S.groups[0].id } : null;
 			if (trashed) { S.trashFull = true; renderTrash(true); }
+			if (!S.groups.some(function (g) { return g.items.some(function (it) { return it.desk === "installers"; }); }) && window.LevoMenus && LevoMenus.closeWindow) LevoMenus.closeWindow("installers");
 			renderGroups();
 			renderBar(true);
 			countFree(from, S.disk.free);
@@ -855,15 +972,20 @@
 		items.push({ symbol: "power", label: "Quit Levo", keys: ["⌘", "Q"], run: quitLevo });
 		return { title: title, items: items };
 	}
+	// Select: Smartly (Careful, Balanced, Aggressive), All, None, Selected. As in the app.
 	function selectItems() {
-		return { title: "Select", back: true, items: LEVO_DEMO.levels.concat([null, "All", "None"]).map(function (m) {
-			return m === null ? null : { symbol: S.level === m ? "checkmark" : null, label: m, run: function () { chooseLevel(m); } };
+		var smart = S.panel === "smartly";
+		var list = smart ? LEVO_DEMO.levels : ["Smartly", null, "All", "None", "Selected"];
+		return { title: smart ? "Smartly" : "Select", back: true, items: list.map(function (m) {
+			if (m === null) return null;
+			if (m === "Smartly") return { symbol: LEVO_DEMO.levels.indexOf(S.level) >= 0 ? "checkmark" : null, label: "Smartly", sub: true, run: function () { S.panel = "smartly"; panelAt = 0; drawPanel(); } };
+			return { symbol: S.level === m ? "checkmark" : null, label: m, disabled: m === "Selected" && S.level !== "Selected", run: function () { if (m !== "Selected") chooseLevel(m); } };
 		}) };
 	}
 	var panelAt = 0, panelList = [];
 	function drawPanel(filter) {
 		var el = $("[data-panel]");
-		var data = S.panel === "select" ? selectItems() : panelItems();
+		var data = S.panel === "select" || S.panel === "smartly" ? selectItems() : panelItems();
 		var q = (filter || "").toLowerCase();
 		var list = data.items.filter(function (it) { return !q ? true : it && it.label.toLowerCase().indexOf(q) >= 0; });
 		while (list.length && list[0] === null) list.shift();
@@ -874,7 +996,7 @@
 			'<div class="lv-pitems" role="menu">' + list.map(function (it) {
 				if (!it) return '<div class="lv-psep"></div>';
 				n++;
-				return '<button type="button" role="menuitem" class="lv-pitem' + (n === panelAt ? " is-sel" : "") + (it.red ? " is-red" : "") + '" data-act="pitem" data-n="' + n + '">' +
+				return '<button type="button" role="menuitem" class="lv-pitem' + (n === panelAt ? " is-sel" : "") + (it.red ? " is-red" : "") + '"' + (it.disabled ? " disabled" : "") + ' data-act="pitem" data-n="' + n + '">' +
 					'<span class="lv-pi-icon">' + (it.symbol ? sym(it.symbol, 13) : "") + "</span><span>" + esc(it.label) + '</span><span class="lv-flex"></span>' +
 					(it.sub ? sym("chevron.right", 9, "lv-sec") : it.keys ? caps(it.keys, "lv-cap-sm") : "") + "</button>";
 			}).join("") + (panelList.length ? "" : '<div class="lv-pnone">No actions</div>') + "</div>" +
@@ -893,7 +1015,7 @@
 	}
 	function runPanel(i) {
 		var it = panelList[i];
-		if (!it) return;
+		if (!it || it.disabled) return;
 		if (it.sub) { it.run(); return; }
 		S.panel = null; $("[data-panel]").hidden = true;
 		it.run();
@@ -915,10 +1037,13 @@
 		S.menu = true;
 		var btn = $('[data-act="levelmenu"]');
 		el.style.top = (btn.offsetTop + btn.offsetHeight + 4 - $(".lv-scroll").scrollTop) + "px";
-		el.innerHTML = LEVO_DEMO.levels.concat([null, "All", "None"]).map(function (m) {
-			if (m === null) return '<div class="lv-msep"></div>';
-			return '<button type="button" class="lv-mitem" data-act="levelpick" data-level="' + m + '"><span class="lv-mcheck">' + (S.level === m ? sym("checkmark", 10) : "") + "</span>" + m + "</button>";
-		}).join("");
+		var item = function (m, dis) {
+			return '<button type="button" class="lv-mitem"' + (dis ? " disabled" : "") + ' data-act="levelpick" data-level="' + m + '"><span class="lv-mcheck">' + (S.level === m ? sym("checkmark", 10) : "") + "</span>" + m + "</button>";
+		};
+		var smart = LEVO_DEMO.levels.indexOf(S.level) >= 0;
+		el.innerHTML = '<div class="lv-msub"><button type="button" class="lv-mitem" data-act="smartly" aria-haspopup="menu"><span class="lv-mcheck">' + (smart ? sym("checkmark", 10) : "") + '</span>Smartly<span class="lv-flex"></span>' + sym("chevron.right", 8, "lv-sec") + "</button>" +
+			'<div class="lv-menu lv-menu-side">' + LEVO_DEMO.levels.map(function (m) { return item(m); }).join("") + "</div></div>" +
+			'<div class="lv-msep"></div>' + item("All") + item("None") + item("Selected", S.level !== "Selected");
 		el.hidden = false;
 	}
 
@@ -927,6 +1052,8 @@
 	function renderTrash(bump) {
 		var t = $('[data-dock="trash"]');
 		t.classList.toggle("is-full", !!S.trashFull);
+		var d = LEVO_DEMO.dock.filter(function (x) { return x.id === "trash"; })[0];
+		$("img", t).src = S.trashFull ? d.full : d.img;
 		if (bump) { t.classList.remove("is-bounce"); void t.offsetWidth; t.classList.add("is-bump"); later(function () { t.classList.remove("is-bump"); }, 500); }
 	}
 	function bounce(el) {
@@ -1000,24 +1127,30 @@
 		S.touched = true;
 		if (S.dragged) return;
 		if (t.dataset.dock) { dockClick(t); return; }
-		if (t.dataset.icon) { $$(".lv-ic").forEach(function (x) { x.classList.toggle("is-sel", x === t); }); return; }
+		if (t.dataset.icon) {
+			$$(".lv-ic").forEach(function (x) { x.classList.toggle("is-sel", x === t); });
+			if (e.detail >= 2) openFile(t.dataset.icon);
+			return;
+		}
 		var act = t.dataset.act, id = t.dataset.id;
 		if (act !== "panel" && act !== "pitem" && act !== "pback" && S.panel && !t.closest("[data-panel]")) { S.panel = null; $("[data-panel]").hidden = true; if (act === "grow" || act === "prow") return; }
-		if (act !== "levelmenu" && act !== "levelpick" && S.menu) { S.menu = false; $("[data-levels]").hidden = true; }
+		if (act !== "levelmenu" && act !== "levelpick" && act !== "smartly" && S.menu) { S.menu = false; $("[data-levels]").hidden = true; }
 		switch (act) {
 			case "toggle": S.popOpen ? closePop() : openPop(); break;
+			case "lwinclose": lwin(false, "close"); break;
+			case "lwinmin": lwin(false, "min"); break;
 			case "note": openPop(); break;
 			case "unlock": unlock(); break;
 			case "desk": closePop(); $$(".lv-ic").forEach(function (x) { x.classList.remove("is-sel"); }); break;
 			case "tick": e.stopPropagation(); tick(id); break;
 			case "titem": e.stopPropagation(); tick(id, +t.dataset.item); break;
-			case "info": e.stopPropagation(); S.info[id] = !S.info[id]; S.sel = { type: "group", id: id }; renderGroups(); renderActions(); break;
+			case "info": e.stopPropagation(); bubble(t, true); break;
 			case "grow":
 				S.sel = { type: "group", id: id };
 				S.open[id] = !S.open[id];
 				renderGroups(); renderProcs(); renderActions(); break;
 			case "more": S.more = !S.more; renderGroups(); break;
-			case "prow": S.sel = { type: "proc", id: id }; renderGroups(); renderProcs(); renderActions(); break;
+			case "prow": if (proc(id) && proc(id).system) break; S.sel = { type: "proc", id: id }; renderGroups(); renderProcs(); renderActions(); break;
 			case "quit": e.stopPropagation(); quit(id); break;
 			case "sort": S.sort = t.dataset.sort; renderProcs(); break;
 			case "free": freeMetric(t.dataset.metric); break;
@@ -1025,20 +1158,71 @@
 			case "primary": var p = primary(); if (p.act === "clean") askClean(); else if (p.act === "quitSel") quit(S.sel.id); break;
 			case "panel": togglePanel(); break;
 			case "pitem": runPanel(+t.dataset.n); break;
-			case "pback": S.panel = "main"; panelAt = 0; drawPanel(); break;
+			case "pback": S.panel = S.panel === "smartly" ? "select" : "main"; panelAt = 0; drawPanel(); break;
 			case "levelmenu": levelMenu(); break;
-			case "levelpick": S.menu = false; $("[data-levels]").hidden = true; chooseLevel(t.dataset.level); break;
+			case "smartly": e.stopPropagation(); t.parentNode.classList.toggle("is-open"); return;
+			case "levelpick": if (t.dataset.level === "Selected") { S.menu = false; $("[data-levels]").hidden = true; break; } S.menu = false; $("[data-levels]").hidden = true; chooseLevel(t.dataset.level); break;
 			case "cancel": closeOverlays(); break;
-			case "confirm": clean(); break;
+			case "confirm": confirmNow(); break;
+			case "accept-tick": var on = t.getAttribute("aria-checked") !== "true"; t.setAttribute("aria-checked", on); t.innerHTML = on ? sym("checkmark", 10) : ""; $('[data-act="confirm"]').disabled = !on; break;
 			case "analyse": analyse(); break;
 			case "undo": clearTimeout(toastTimer); toastTimer = null; if (S.undo) { var u = S.undo; S.undo = null; restore(u); toast("info", "Undone"); } break;
 		}
 	}
 	function dockClick(el) {
-		var id = el.dataset.dock;
+		var id = el.dataset.dock, M = window.LevoMenus;
 		if (id === "levo") { bounce(el); openPop(); return; }
 		if (id === "trash") { el.classList.add("is-bump"); later(function () { el.classList.remove("is-bump"); }, 500); return; }
 		bounce(el);
+		if (!M || !M.window) return;
+		if (id === "settings") later(function () { M.window("settings", { id: "settings" }); }, 500);
+		if (id === "finder") later(function () { if (S.lwinClosed) lwin(true); else openFile("installers"); }, 400);
+		if (id === "notes") later(function () { openFile("notes"); }, 500);
+		if (id === "terminal") later(function () { var a = document.getElementById("agents"); if (a) a.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); }, 500);
+	}
+
+	// The Levo window closes or minimises like a Finder window; Finder in the dock brings it back.
+	function lwin(show, how) {
+		var w = $("[data-lwin]"), hint = $(".lv-hint");
+		S.lwinClosed = !show;
+		w.classList.remove("is-closing", "is-minimising", "is-opening");
+		if (show) { w.hidden = false; void w.offsetWidth; w.classList.add("is-opening"); later(function () { w.classList.remove("is-opening"); }, 500); return; }
+		w.classList.add(how === "min" ? "is-minimising" : "is-closing");
+		hint.style.opacity = "0";
+		later(function () { w.hidden = true; w.classList.remove("is-closing", "is-minimising"); }, how === "min" ? 420 : 200);
+	}
+
+	// Desktop files open in Finder or TextEdit windows (menus.js), and the zip unzips.
+	function openFile(id) {
+		var M = window.LevoMenus, C = (M && M.content) || {};
+		if (!M || !M.window) return;
+		var at = function (dx, dy) { var w = $("[data-lwin]"); return { x: (parseFloat(w.style.left) || 300) + dx, y: (parseFloat(w.style.top) || 120) + dy }; };
+		if (id === "installers") {
+			var el = $('[data-icon="installers"]');
+			if (el && el.classList.contains("is-gone")) return;
+			var p = at(-60, 40);
+			M.window("finder", { id: "installers", title: "Old Installers", x: p.x, y: p.y, w: 560, h: 340, items: C.installers || [] });
+		} else if (id === "notes") {
+			var q = at(40, 70);
+			M.window("textedit", { id: "notes", title: "notes (3).txt", x: q.x, y: q.y, w: 420, h: 300, text: C.notes || "" });
+		} else if (id === "unzipped") {
+			var u = at(0, 90);
+			M.window("finder", { id: "unzipped", title: "project-final-v2", x: u.x, y: u.y, w: 560, h: 340, items: C.unzipped || [] });
+		} else if (id === "zip") unzip();
+	}
+	function unzip() {
+		var zip = $('[data-icon="zip"]'), out = $('[data-icon="unzipped"]');
+		if (!zip || zip.classList.contains("is-gone")) return;
+		if (S.unzipped) { openFile("unzipped"); return; }
+		zip.classList.add("is-unzipping");
+		later(function () {
+			zip.classList.remove("is-unzipping");
+			S.unzipped = true;
+			out.classList.remove("is-hidden");
+			out.classList.add("is-born");
+			$$(".lv-ic").forEach(function (x) { x.classList.toggle("is-sel", x === out); });
+			later(function () { out.classList.remove("is-born"); }, 700);
+		}, 900);
 	}
 
 	function onKey(e) {
@@ -1061,7 +1245,7 @@
 		}
 		if (S.panel && k === "Enter") { e.preventDefault(); runPanel(panelAt); return; }
 		if (inPanel) return;
-		if (S.sheet && k === "Enter") { e.preventDefault(); clean(); return; }
+		if (S.sheet && k === "Enter") { e.preventDefault(); confirmNow(); return; }
 		if (mod && k === "Backspace" && !S.sheet) { e.preventDefault(); askClean(); return; }
 		var focusIn = root.contains(document.activeElement) || document.activeElement === document.body;
 		if (k === "Enter" && focusIn && !S.sheet && !mod) {
@@ -1086,7 +1270,10 @@
 
 	// ---------------------------------------------------------------- Public
 
-	function mount(el) {
+	// Opts from the page: price, term, download, buy, hint, setTheme(mode), theme().
+	var OPTS = {};
+	function mount(el, opts) {
+		OPTS = opts || {};
 		root = el;
 		S = fresh();
 		root.innerHTML = sceneHTML();
@@ -1096,18 +1283,26 @@
 		$("[data-icons]").innerHTML = LEVO_DEMO.desktop.map(iconHTML).join("");
 		$("[data-dock]").innerHTML = dockHTML();
 		$("[data-city]").textContent = city() || "Local time";
-		var dev = deviceFamily();
-		if (dev === "Mac" && navigator.getBattery) navigator.getBattery().then(function (b) {
-			if (b.charging && b.level === 1 && b.chargingTime === 0 && b.dischargingTime === Infinity) { $("[data-devsym]").innerHTML = sym("desktopcomputer", 13); $("[data-devname]").textContent = "iMac"; }
-		}, function () {});
 		tickClock();
 		setInterval(tickClock, 1000);
+		calendar();
 		battery();
 		render();
 		layout();
+		if (scene.dataset.mode === "compact") openPop();
 		if (REDUCED) scene.classList.add("is-reduced");
 		root.addEventListener("click", onClick);
 		document.addEventListener("keydown", onKey);
+		var bubbleTimer = null;
+		pop.addEventListener("pointerover", function (ev) {
+			var b = ev.target.closest && ev.target.closest("[data-bubble]");
+			if (b && ev.pointerType === "mouse") { clearTimeout(bubbleTimer); bubble(b); }
+		});
+		pop.addEventListener("pointerout", function (ev) {
+			var b = ev.target.closest && ev.target.closest("[data-bubble]");
+			if (b && ev.pointerType === "mouse") bubbleTimer = setTimeout(hideBubble, 160);
+		});
+		$(".lv-scroll").addEventListener("scroll", hideBubble, { passive: true });
 		var bar = $("[data-dbar]");
 		bar.addEventListener("mousemove", onHoverBar);
 		bar.addEventListener("mouseleave", function () { onHoverBar({ target: bar }); });
@@ -1127,11 +1322,6 @@
 				es.forEach(function (en) { inView = en.isIntersecting; if (inView) start(); });
 			}, { threshold: 0.25 }).observe(root);
 		} else { inView = true; start(); }
-		// Scrolling is waiting too: the popover opens as a teaser.
-		var onScroll = function () {
-			if (window.scrollY > 40 && played && !S.popOpen && !S.touched) { openPop(); window.removeEventListener("scroll", onScroll); }
-		};
-		window.addEventListener("scroll", onScroll, { passive: true });
 		if (window.LevoMenus) LevoMenus.attach({ scene: scene, hooks: {
 			battery: function () { return batt; },
 			device: deviceFamily,
@@ -1144,6 +1334,8 @@
 				if (group(id)) { S.sel = { type: "group", id: id }; S.open[id] = true; if (S.groups.map(function (g) { return g.id; }).indexOf(id) >= 5) S.more = true; renderGroups(); renderActions(); }
 			},
 			symbol: sym,
+			setTheme: function (m) { if (OPTS.setTheme) OPTS.setTheme(m); },
+			theme: function () { return OPTS.theme ? OPTS.theme() : "auto"; },
 			lock: function () {
 				closePop();
 				S.locked = true;
@@ -1151,7 +1343,65 @@
 			}
 		} });
 		scene.addEventListener("lvm:open", hideNote);
+		setupLevoWindow();
 		scene.addEventListener("lvm:wifi", function (ev) { $("[data-wifi]").innerHTML = sym(ev.detail && ev.detail.on === false ? "wifi.slash" : "wifi", 15); });
+	}
+
+	// The Levo window: price and links from the page; double-click the app to open
+	// Levo; drag it onto Applications to download; drag the window by its title bar.
+	function setupLevoWindow() {
+		var win = $("[data-lwin]");
+		$("[data-lprice]").textContent = OPTS.price || "";
+		$("[data-lterm]").textContent = OPTS.term || "";
+		var dl = $("[data-ldownload]"), buy = $("[data-lbuy]");
+		dl.href = OPTS.download || "#";
+		buy.href = OPTS.buy || "#";
+		buy.textContent = OPTS.price ? "Buy for " + OPTS.price : "Buy";
+		[dl, buy].forEach(function (a) { if (/^\[|^#$/.test(a.getAttribute("href"))) a.setAttribute("data-placeholder", ""); });
+		$("[data-hint]").innerHTML = OPTS.hint || "";
+		var app = $('[data-act="lwinapp"]'), apps = $("[data-lwinapps]");
+		app.addEventListener("dblclick", function () { S.touched = true; openPop(); });
+		app.addEventListener("pointerdown", function (e) {
+			if (e.button !== 0) return;
+			var x0 = e.clientX, y0 = e.clientY, moved = false, over = false;
+			var mv = function (ev) {
+				var dx = ev.clientX - x0, dy = ev.clientY - y0;
+				if (!moved && Math.abs(dx) + Math.abs(dy) < 6) return;
+				moved = true; S.dragged = true;
+				app.classList.add("is-dragging");
+				app.style.transform = "translate(" + dx + "px," + dy + "px)";
+				var r = apps.getBoundingClientRect();
+				over = ev.clientX > r.left && ev.clientX < r.right && ev.clientY > r.top && ev.clientY < r.bottom;
+				apps.classList.toggle("is-target", over);
+			};
+			var up = function () {
+				document.removeEventListener("pointermove", mv);
+				document.removeEventListener("pointerup", up);
+				app.classList.remove("is-dragging");
+				app.classList.add("is-snap");
+				app.style.transform = "";
+				later(function () { app.classList.remove("is-snap"); }, 500);
+				apps.classList.remove("is-target");
+				if (over) dl.click();
+				setTimeout(function () { S.dragged = false; }, 0);
+			};
+			document.addEventListener("pointermove", mv);
+			document.addEventListener("pointerup", up);
+		});
+		var bar = $(".lv-lwin-bar");
+		bar.addEventListener("pointerdown", function (e) {
+			if (e.button !== 0 || scene.dataset.mode === "compact") return;
+			var x0 = e.clientX, y0 = e.clientY, l0 = parseFloat(win.style.left) || 0, t0 = parseFloat(win.style.top) || 0;
+			var mv = function (ev) {
+				S.lwinMoved = true;
+				win.style.left = Math.max(-200, Math.min(scene.offsetWidth - 120, l0 + ev.clientX - x0)) + "px";
+				win.style.top = Math.max(30, Math.min(scene.offsetHeight - 60, t0 + ev.clientY - y0)) + "px";
+				$(".lv-hint").style.opacity = "0";
+			};
+			var up = function () { document.removeEventListener("pointermove", mv); document.removeEventListener("pointerup", up); };
+			document.addEventListener("pointermove", mv);
+			document.addEventListener("pointerup", up);
+		});
 	}
 
 	window.LevoDemo = {

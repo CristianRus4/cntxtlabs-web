@@ -15,8 +15,15 @@
  *   lock()         -> shows the demo's lock screen (else the screen dims)
  *   levoIcon       -> URL of Levo's app icon (default img/icon-96.png)
  *
+ *   theme()        -> "auto" | "light" | "dark";  setTheme(mode) switches it
+ *
+ * Desktop windows: LevoMenus.window(kind, opts) with kind "finder", "textedit",
+ * "custom" or "settings" returns the window element; closeWindow(id); windows()
+ * lists open ids, frontmost first. LevoMenus.content holds the desktop files' text.
+ *
  * While a menu is open the scene has data-menu="open". Events on the scene:
- * lvm:open and lvm:close ({ menu }), lvm:wifi ({ on }).
+ * lvm:open and lvm:close ({ menu }), lvm:wifi ({ on }),
+ * lvm:window ({ id, kind, action: "open" | "focus" | "close", reason }).
  * Everything is positioned in design px (offsetLeft/offsetTop), so CSS zoom is fine.
  */
 (function () {
@@ -24,6 +31,7 @@
 
 	var LANG = (navigator.languages && navigator.languages[0]) || navigator.language || "en-NZ";
 	var SUB_DELAY = 150;
+	function REDUCED() { return !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); }
 	var ORDER = "⌃⌥⇧⌘";
 
 	// Placeholders on a 16 grid, used only until demo.js passes hooks.symbol.
@@ -49,7 +57,27 @@
 		"trash": '<path d="M2.8 4.5h10.4M6.4 4.5V2.8h3.2v1.7M4.3 4.5l.7 9h6l.7-9"/>',
 		"doc.text.fill": '<path d="M4 1.75h5l3 3v9.5H4z"/><path d="M9 1.75v3h3M6 8.5h4M6 11h4"/>',
 		"xmark": '<path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke-width="2"/>',
-		"minus": '<path d="M4 8h8" stroke-width="2"/>'
+		"minus": '<path d="M4 8h8" stroke-width="2"/>',
+		"plus": '<path d="M8 3.5v9M3.5 8h9" stroke-width="2"/>',
+		"bluetooth": '<path d="M4.6 5.2l6.4 5.6L8 13.4V2.6l3 2.6-6.4 5.6"/>',
+		"moon.fill": '<path d="M13 9.6A5.6 5.6 0 0 1 6.4 3a5.6 5.6 0 1 0 6.6 6.6z" fill="currentColor"/>',
+		"circle.lefthalf.filled": '<circle cx="8" cy="8" r="5.8"/><path d="M8 2.2a5.8 5.8 0 0 0 0 11.6z" fill="currentColor"/>',
+		"sun.max.fill": '<circle cx="8" cy="8" r="2.8" fill="currentColor"/><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1"/>',
+		"speaker.wave.2.fill": '<path d="M2.5 6h2.2L8 3.2v9.6L4.7 10H2.5z" fill="currentColor"/><path d="M10.4 5.8a3 3 0 0 1 0 4.4M12.2 4a5.6 5.6 0 0 1 0 8"/>',
+		"dot.radiowaves.left.and.right": '<circle cx="8" cy="8" r="1.4" fill="currentColor"/><path d="M5.4 5.4a3.7 3.7 0 0 0 0 5.2M10.6 5.4a3.7 3.7 0 0 1 0 5.2M3.4 3.4a6.5 6.5 0 0 0 0 9.2M12.6 3.4a6.5 6.5 0 0 1 0 9.2"/>',
+		"internaldrive": '<rect x="1.75" y="4.25" width="12.5" height="7.5" rx="2"/><path d="M4 8h4.5"/><circle cx="11.5" cy="8" r=".6" fill="currentColor"/>',
+		"gearshape.fill": '<circle cx="8" cy="8" r="4.1"/><circle cx="8" cy="8" r="1.6"/>',
+		"clock.arrow.circlepath": '<circle cx="8" cy="8" r="5.8"/><path d="M8 4.8V8l2.2 1.4"/>',
+		"arrow.down.circle.fill": '<circle cx="8" cy="8" r="5.8"/><path d="M8 4.8v6M5.6 8.6L8 11l2.4-2.4"/>',
+		"dock.rectangle": '<rect x="1.75" y="2.75" width="12.5" height="10.5" rx="2"/><path d="M4.5 10.5h7"/>',
+		"bell.fill": '<path d="M4 11V7.4a4 4 0 0 1 8 0V11l1.2 1.2H2.8z" fill="currentColor"/><path d="M6.6 13.6a1.5 1.5 0 0 0 2.8 0"/>',
+		"hand.raised": '<path d="M5 8.5V4a1 1 0 0 1 2 0v3.5V3a1 1 0 0 1 2 0v4.5V4a1 1 0 0 1 2 0v6a4 4 0 0 1-8 0V8a1 1 0 0 1 2 0z"/>',
+		"person.crop.circle": '<circle cx="8" cy="8" r="6"/><circle cx="8" cy="6.6" r="2"/><path d="M4.4 12.2c.8-1.5 2-2.2 3.6-2.2s2.8.7 3.6 2.2"/>',
+		"photo.fill": '<rect x="1.75" y="3" width="12.5" height="10" rx="2"/><path d="M2.5 12l3.5-4 3 3 2-2 2.5 3"/>',
+		"switch.2": '<path d="M7.2 5H14M2 11h6.8"/><circle cx="4.6" cy="5" r="2.3"/><circle cx="11.4" cy="11" r="2.3"/>',
+		"chevron.up.chevron.down": '<path d="M5 6.2L8 3.5l3 2.7M5 9.8l3 2.7 3-2.7"/>',
+		"airplayaudio": '<path d="M4.3 12.2a5.8 5.8 0 1 1 7.4 0"/><path d="M8 9.8l3 3.7H5z" fill="currentColor"/>',
+		"square.grid.2x2": '<rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="1"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="1"/><rect x="9" y="9" width="4.5" height="4.5" rx="1"/>'
 	};
 
 	var DEVICES = {
@@ -107,6 +135,7 @@
 		return {
 			view: "icons", sort: "none", snap: false, stacks: false, sidebar: true, preview: false,
 			toolbar: true, pathbar: false, statusbar: false, wifi: true, cal: 0, reopen: true,
+			bt: true, airdrop: true, focus: false, bright: 1, vol: 0.55, accent: "multi", tint: true, scroll: 0,
 			running: APPS.map(function (a) { return a.id; })
 		};
 	}
@@ -120,12 +149,16 @@
 		if (!f) return undefined;
 		try { return f(arg); } catch (e) { if (window.console) console.warn("LevoMenus hook " + name, e); return undefined; }
 	}
+	// One name or a list of names, tried in order through hooks.symbol, then the placeholders.
 	function sym(name, size, cls) {
-		var svg = "";
-		var f = hook("symbol");
-		if (f) { try { svg = String(f(name, size) || ""); } catch (e) { svg = ""; } }
+		var names = Array.isArray(name) ? name : [name], svg = "", f = hook("symbol");
+		for (var i = 0; f && i < names.length && svg.indexOf("<svg") < 0; i++) {
+			try { svg = String(f(names[i], size) || ""); } catch (e) { svg = ""; }
+		}
 		if (svg.indexOf("<svg") < 0) {
-			svg = FALLBACK[name] ? '<svg viewBox="0 0 16 16" width="' + size + '" height="' + size + '" fill="none" stroke="currentColor" stroke-width="' + (size > 40 ? 0.7 : 1.5) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + FALLBACK[name] + "</svg>" : "";
+			var fb = "";
+			for (var j = 0; j < names.length && !fb; j++) fb = FALLBACK[names[j]] || "";
+			svg = fb ? '<svg viewBox="0 0 16 16" width="' + size + '" height="' + size + '" fill="none" stroke="currentColor" stroke-width="' + (size > 40 ? 0.7 : 1.5) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + fb + "</svg>" : "";
 		}
 		return '<span class="lvm-sym' + (cls ? " " + cls : "") + '" aria-hidden="true">' + svg + "</span>";
 	}
@@ -210,7 +243,7 @@
 			return [
 				D("About This Mac", "", { act: openAbout }),
 				SEP,
-				D("System Settings…"),
+				D("System Settings…", "", { act: function () { openWindow("settings", { id: "settings" }); } }),
 				D("App Store…"),
 				SEP,
 				D("Recent Items", "", { sub: recentItems }),
@@ -343,10 +376,11 @@
 		help: helpMenu,
 		wifi: wifiMenu,
 		battery: batteryMenu,
-		clock: clockMenu
+		clock: clockMenu,
+		control: controlMenu
 	};
 	var NAMES = { apple: "Apple", app: "Finder", file: "File", edit: "Edit", view: "View", go: "Go", window: "Window", help: "Help" };
-	var SOFT = { wifi: 1, battery: 1, clock: 1 };
+	var SOFT = { wifi: 1, battery: 1, clock: 1, control: 1 };
 
 	function recentItems() {
 		return [
@@ -532,7 +566,7 @@
 		m.appendChild(body);
 		var L = { el: m, body: body, items: [], hi: -1, soft: !!opts.soft, id: opts.id, after: s.after };
 		fillLevel(L, s.defs);
-		if (!L.items.length && !s.head) m.appendChild(el("div", "lvm-none lvm-empty", ""));
+		if (!L.items.length && !s.head && !s.defs.some(function (d) { return d.block; })) m.appendChild(el("div", "lvm-none lvm-empty", ""));
 		layer.appendChild(m);
 		m.addEventListener("pointerleave", function () {
 			var idx = levels.indexOf(L);
@@ -929,6 +963,450 @@
 		goTo(goList[goSel] || w.querySelector("input").value);
 	}
 
+	// ---------------------------------------------------------------- Appearance (hooks.theme / hooks.setTheme)
+
+	function isDark() { return document.documentElement.classList.contains("dark"); }
+	function curTheme() {
+		var t = call("theme");
+		return t === "auto" || t === "light" || t === "dark" ? t : isDark() ? "dark" : "light";
+	}
+	function setTheme(mode) {
+		if (hook("setTheme")) call("setTheme", mode);
+		else {
+			var dark = mode === "dark" || (mode === "auto" && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+			document.documentElement.classList.toggle("dark", dark);
+		}
+		refreshTheme();
+	}
+	function refreshTheme() {
+		var t = curTheme();
+		if (wlayer) Array.prototype.forEach.call(wlayer.querySelectorAll("[data-lvm-theme]"), function (c) {
+			var on = c.dataset.lvmTheme === t;
+			c.classList.toggle("is-on", on);
+			c.setAttribute("aria-checked", on);
+		});
+		if (openId === "control") drawCC();
+	}
+
+	// ---------------------------------------------------------------- Control Centre
+
+	function controlMenu() {
+		return { defs: [{ block: '<div class="lvm-cc" data-lvm-ccbox></div>' }], after: drawCC };
+	}
+	function ccRow(key, on, label, sub, symName) {
+		return '<div class="lvm-cc-row"><button type="button" class="lvm-cc-btn' + (on ? " is-on" : "") + '" data-lvm-cc="' + key + '" aria-pressed="' + on + '" aria-label="' + esc(label) + '">' + sym(symName, 14) + "</button>" +
+			'<span class="lvm-cc-txt"><b>' + esc(label) + "</b><small>" + esc(sub) + "</small></span></div>";
+	}
+	function slider(key, symName, label) {
+		var v = st[key];
+		return '<div class="lvm-slider" data-lvm-slider="' + key + '" role="slider" tabindex="0" aria-label="' + label + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + Math.round(v * 100) + '">' +
+			'<i style="width:' + (v * 100).toFixed(1) + '%"></i>' + sym(symName, 12, "lvm-slider-ic") + "</div>";
+	}
+	function drawCC() {
+		var box = layer && layer.querySelector("[data-lvm-ccbox]");
+		if (!box) return;
+		var dark = isDark(), spin = st.spin;
+		st.spin = false;
+		box.innerHTML =
+			'<div class="lvm-cc-grid">' +
+				'<div class="lvm-cc-mod lvm-cc-conn">' +
+					ccRow("wifi", st.wifi, "Wi-Fi", st.wifi ? WIFI_HOME : "Off", "wifi") +
+					ccRow("bt", st.bt, "Bluetooth", st.bt ? "On" : "Off", "bluetooth") +
+					ccRow("airdrop", st.airdrop, "AirDrop", st.airdrop ? "Contacts Only" : "Off", "dot.radiowaves.left.and.right") +
+				"</div>" +
+				'<div class="lvm-cc-col">' +
+					'<button type="button" class="lvm-cc-mod lvm-cc-tile' + (st.focus ? " is-focus" : "") + '" data-lvm-cc="focus" aria-pressed="' + st.focus + '">' +
+						'<span class="lvm-cc-btn' + (st.focus ? " is-on" : "") + '">' + sym("moon.fill", 14) + '</span><span class="lvm-cc-txt"><b>' + (st.focus ? "Do Not Disturb" : "Focus") + "</b>" + (st.focus ? "<small>On</small>" : "") + "</span></button>" +
+					'<button type="button" class="lvm-cc-mod lvm-cc-tile" data-lvm-cc="dark" aria-pressed="' + dark + '">' +
+						'<span class="lvm-cc-btn lvm-cc-dark' + (dark ? " is-on" : "") + (spin ? " is-spin" : "") + '">' + sym("circle.lefthalf.filled", 15) + '</span><span class="lvm-cc-txt"><b>Dark Mode</b><small>' + (dark ? "On" : "Off") + "</small></span></button>" +
+				"</div>" +
+				'<div class="lvm-cc-mod lvm-cc-wide"><b>Display</b>' + slider("bright", "sun.max.fill", "Display brightness") + "</div>" +
+				'<div class="lvm-cc-mod lvm-cc-wide"><b>Sound</b><div class="lvm-cc-sound">' + slider("vol", "speaker.wave.2.fill", "Volume") +
+					'<span class="lvm-cc-air">' + sym("airplayaudio", 14) + "</span></div></div>" +
+			"</div>";
+	}
+	function ccToggle(key) {
+		if (key === "wifi") { toggleWifi(); drawCC(); return; }
+		if (key === "dark") {
+			st.spin = true;
+			setTheme(isDark() ? "light" : "dark");
+			return;
+		}
+		st[key] = !st[key];
+		drawCC();
+	}
+	function setSlider(key, v) {
+		st[key] = clamp(v, 0, 1);
+		var s = layer && layer.querySelector('[data-lvm-slider="' + key + '"]');
+		if (s) { s.firstChild.style.width = (st[key] * 100).toFixed(1) + "%"; s.setAttribute("aria-valuenow", Math.round(st[key] * 100)); }
+		if (key === "bright") drawBright();
+	}
+	// The display slider really dims the screen, down to a dim glow.
+	function drawBright() {
+		ensureLayer();
+		var b = layer.querySelector(".lvm-bright");
+		if (!b) { b = el("div", "lvm-bright"); layer.appendChild(b); }
+		b.style.opacity = ((1 - st.bright) * 0.72).toFixed(3);
+	}
+	function slideFrom(e, s) {
+		var r = s.getBoundingClientRect();
+		setSlider(s.dataset.lvmSlider, r.width ? (e.clientX - r.left) / r.width : 0);
+	}
+	function startSlide(e, s) {
+		e.preventDefault();
+		slideFrom(e, s);
+		function mv(ev) { slideFrom(ev, s); }
+		function up() { document.removeEventListener("pointermove", mv); document.removeEventListener("pointerup", up); }
+		document.addEventListener("pointermove", mv);
+		document.addEventListener("pointerup", up);
+	}
+
+	// ---------------------------------------------------------------- Desktop windows (LevoMenus.window)
+
+	var wlayer = null, gwins = {}, gOrder = [], gCount = 0, gTimer = 0, gFocus = false, ptrType = "mouse";
+
+	function ensureWLayer() {
+		if (wlayer && wlayer.parentNode === scene) return;
+		wlayer = el("div", "lvm-wlayer");
+		scene.appendChild(wlayer);
+	}
+	function wLights() {
+		return '<span class="lvm-lights lvm-wlights">' +
+			'<button type="button" class="lvm-light lvm-close" data-lvm-w="close" aria-label="Close">' + sym("xmark", 8) + "</button>" +
+			'<button type="button" class="lvm-light lvm-min" data-lvm-w="min" aria-label="Minimise">' + sym("minus", 8) + "</button>" +
+			'<button type="button" class="lvm-light lvm-zoom" data-lvm-w="zoom" aria-label="Zoom">' + sym("plus", 8) + "</button></span>";
+	}
+	function size(v) {
+		if (typeof v === "string") return v;
+		if (typeof v !== "number" || !(v >= 0)) return "";
+		if (v >= 1) return gb(v);
+		if (v >= 0.001) return numFmt(0).format(v * 1000) + " MB";
+		return numFmt(0).format(Math.max(1, v * 1e6)) + " KB";
+	}
+	function ext(name) {
+		var m = /\.([a-z0-9]{1,5})$/i.exec(name || "");
+		return m ? m[1].toUpperCase() : "";
+	}
+
+	// File icons, drawn: never an app's own icon.
+	function fileIcon(it) {
+		var k = it.kind || "doc", x = ext(it.name);
+		if (k === "folder") return '<span class="lvm-ic-folder">' + sym("folder.fill", 54) + "</span>";
+		if (k === "dmg") return '<span class="lvm-ic-dmg"><i>' + sym(["internaldrive.fill", "internaldrive"], 20) + "</i></span>";
+		if (k === "pkg") return '<span class="lvm-ic-pkg"><svg viewBox="0 0 56 56" width="56" height="56" aria-hidden="true">' +
+			'<path d="M7 19.5L28 11l21 8.5v23L28 51 7 42.5z" fill="#C8955A"/><path d="M7 19.5L28 28l21-8.5L28 11z" fill="#E3BC84"/>' +
+			'<path d="M28 28v23L49 42.5v-23z" fill="#B27D45"/><path d="M16.5 15.2l21 8.6v7.4l4.6-1.9v-7.4l-21-8.6z" fill="#F5E1B8"/>' +
+			'<path d="M7 19.5L28 28l21-8.5" fill="none" stroke="rgba(0,0,0,.12)" stroke-width=".8"/></svg></span>';
+		if (k === "app") return '<span class="lvm-ic-app">' + sym("app.dashed", 26) + "</span>";
+		if (k === "image") return '<span class="lvm-ic-shot"><i></i></span>';
+		if (k === "zip") return '<span class="lvm-ic-page lvm-ic-zip"><i></i><b>ZIP</b></span>';
+		return '<span class="lvm-ic-page lvm-ic-txt"><em></em><em></em><em></em>' + (x && x.length <= 4 ? "<b>" + esc(x) + "</b>" : "") + "</span>";
+	}
+
+	var BUILD = {
+		finder: function (o) {
+			var side = [
+				["Recents", ["clock", "clock.arrow.circlepath"]],
+				["Applications", ["square.grid.2x2", "app.dashed"]],
+				["Desktop", ["menubar.dock.rectangle", "dock.rectangle"]],
+				["Documents", ["doc", "doc.text.fill"]],
+				["Downloads", ["arrow.down.circle", "arrow.down.circle.fill"]]
+			];
+			return {
+				w: 640, h: 400, toolbar: true,
+				html:
+					'<aside class="lvm-side" data-lvm-drag><div class="lvm-side-top"></div><div class="lvm-side-head">Favourites</div>' +
+						side.map(function (s) {
+							return '<div class="lvm-side-row' + (o.sidebar === s[0] ? " is-sel" : "") + '">' + sym(s[1], 14, "lvm-side-ic") + "<span>" + s[0] + "</span></div>";
+						}).join("") + "</aside>" +
+					'<div class="lvm-wmain">' +
+						'<div class="lvm-wtb" data-lvm-drag><span class="lvm-cap"><button type="button" class="is-dim" aria-label="Back">' + sym("chevron.left", 12) + '</button><button type="button" class="is-dim" aria-label="Forward">' + sym("chevron.right", 12) + "</button></span>" +
+							'<b class="lvm-wtitle">' + esc(o.title || "Untitled") + '</b><span class="lvm-flex"></span>' +
+							'<span class="lvm-cap"><button type="button" aria-label="View">' + sym("square.grid.2x2", 13) + '</button></span><span class="lvm-cap"><button type="button" aria-label="Search">' + sym("magnifyingglass", 13) + "</button></span></div>" +
+						'<div class="lvm-fw-grid" role="listbox" aria-label="' + esc(o.title || "") + '">' +
+							(o.items || []).map(function (it, i) {
+								var hid = it.kind === "hidden" || it.hidden;
+								return '<div class="lvm-fi' + (hid ? " is-hidden" : "") + '" role="option" data-lvm-fi="' + i + '">' +
+									'<span class="lvm-fi-art">' + fileIcon(hid && it.kind === "hidden" ? { name: it.name, kind: "doc" } : it) + "</span>" +
+									'<span class="lvm-fi-name">' + esc(it.name) + "</span>" +
+									(size(it.size) ? '<span class="lvm-fi-size">' + esc(size(it.size)) + "</span>" : "") + "</div>";
+							}).join("") +
+						"</div>" +
+						'<div class="lvm-fw-status" data-lvm-status></div>' +
+					"</div>",
+				after: function (w) { drawStatus(w, o); }
+			};
+		},
+		textedit: function (o) {
+			return {
+				w: 460, h: 340,
+				html:
+					'<div class="lvm-wbar" data-lvm-drag><span class="lvm-wbar-title">' + esc(o.title || "Untitled") + '<span class="lvm-te-edited" hidden>Edited</span></span></div>' +
+					'<div class="lvm-te-doc" spellcheck="false"></div>',
+				after: function (w) {
+					var d = w.querySelector(".lvm-te-doc");
+					d.textContent = o.text || "";
+					try { d.contentEditable = "plaintext-only"; } catch (e) { d.contentEditable = "true"; }
+					if (d.contentEditable !== "plaintext-only") d.contentEditable = "true";
+					d.addEventListener("input", function () { w.querySelector(".lvm-te-edited").hidden = false; });
+				}
+			};
+		},
+		custom: function (o) {
+			var clear = o.titlebar === "transparent";
+			return {
+				w: 480, h: 320, toolbar: !!o.toolbar, cls: clear ? "is-clear" : "",
+				html:
+					(clear ? '<div class="lvm-wdrag" data-lvm-drag></div>'
+						: o.toolbar ? '<div class="lvm-wtb lvm-wtb-solo" data-lvm-drag><b class="lvm-wtitle">' + esc(o.title || "") + "</b></div>"
+						: '<div class="lvm-wbar" data-lvm-drag><span class="lvm-wbar-title">' + esc(o.title || "") + "</span></div>") +
+					'<div class="lvm-wbody" data-lvm-body>' + (o.html || "") + "</div>"
+			};
+		},
+		settings: function (o) {
+			var panes = [
+				["Wi-Fi", "blue", "wifi"], ["Bluetooth", "blue", "bluetooth"], ["Network", "blue", "globe"], ["Battery", "green", "battery.100percent"], 0,
+				["General", "grey", "gearshape.fill"], ["Appearance", "black", "circle.lefthalf.filled"], ["Control Centre", "grey", "switch.2"],
+				["Desktop & Dock", "black", "dock.rectangle"], ["Displays", "blue", "sun.max.fill"], ["Wallpaper", "cyan", "photo.fill"], 0,
+				["Notifications", "red", "bell.fill"], ["Sound", "pink", "speaker.wave.2.fill"], ["Focus", "indigo", "moon.fill"], 0,
+				["Lock Screen", "black", "lock.fill"], ["Privacy & Security", "blue", "hand.raised"]
+			];
+			var cards = [["auto", "Auto"], ["light", "Light"], ["dark", "Dark"]];
+			var accents = ["multi", "blue", "purple", "pink", "red", "orange", "yellow", "green", "graphite"];
+			return {
+				w: 690, h: 500, toolbar: true,
+				html:
+					'<aside class="lvm-side" data-lvm-drag><div class="lvm-side-top"></div>' +
+						'<div class="lvm-ss-search">' + sym("magnifyingglass", 11) + "<span>Search</span></div>" +
+						'<div class="lvm-ss-user"><span class="lvm-ss-avatar">' + sym("person.crop.circle", 22) + '</span><span><b>Sign In</b><small>with your Apple Account</small></span></div>' +
+						'<div class="lvm-ss-list">' + panes.map(function (p) {
+							if (!p) return '<div class="lvm-ss-gap"></div>';
+							return '<div class="lvm-side-row' + (p[0] === "Appearance" ? " is-sel" : "") + '"><span class="lvm-ss-tile lvm-t-' + p[1] + '">' + sym(p[2], 11) + "</span><span>" + esc(p[0]) + "</span></div>";
+						}).join("") + "</div></aside>" +
+					'<div class="lvm-wmain">' +
+						'<div class="lvm-wtb" data-lvm-drag><span class="lvm-cap"><button type="button" class="is-dim" aria-label="Back">' + sym("chevron.left", 12) + '</button><button type="button" class="is-dim" aria-label="Forward">' + sym("chevron.right", 12) + '</button></span><b class="lvm-wtitle">Appearance</b></div>' +
+						'<div class="lvm-ss-body">' +
+							'<div class="lvm-ss-group">' +
+								'<div class="lvm-ss-row lvm-ss-ap"><span>Appearance</span><div class="lvm-ap" role="radiogroup" aria-label="Appearance">' +
+									cards.map(function (c) {
+										return '<button type="button" class="lvm-ap-card" role="radio" data-lvm-theme="' + c[0] + '"><span class="lvm-ap-pic lvm-ap-' + c[0] + '"><i></i></span><span class="lvm-ap-cap">' + c[1] + "</span></button>";
+									}).join("") + "</div></div>" +
+								'<div class="lvm-ss-row"><span>Accent colour</span><div class="lvm-dots">' +
+									accents.map(function (a) { return '<button type="button" class="lvm-dot lvm-a-' + a + (st.accent === a ? " is-on" : "") + '" data-lvm-accent="' + a + '" aria-label="' + a + '"></button>'; }).join("") + "</div></div>" +
+								'<div class="lvm-ss-row"><span>Highlight colour</span><span class="lvm-pop">Accent colour' + sym("chevron.up.chevron.down", 10) + "</span></div>" +
+								'<div class="lvm-ss-row"><span>Sidebar icon size</span><span class="lvm-pop">Medium' + sym("chevron.up.chevron.down", 10) + "</span></div>" +
+								'<div class="lvm-ss-row"><span>Allow wallpaper tinting in windows</span><button type="button" class="lvm-switch lvm-switch-lg' + (st.tint ? " is-on" : "") + '" data-lvm-tint role="switch" aria-checked="' + st.tint + '"><i></i></button></div>' +
+							"</div>" +
+							'<div class="lvm-ss-group"><div class="lvm-ss-row lvm-ss-radios"><span>Show scroll bars</span><div>' +
+								["Automatically based on mouse or trackpad", "When scrolling", "Always"].map(function (r, i) {
+									return '<button type="button" class="lvm-radio' + (st.scroll === i ? " is-on" : "") + '" data-lvm-scroll="' + i + '"><i></i>' + esc(r) + "</button>";
+								}).join("") + "</div></div></div>" +
+						"</div>" +
+					"</div>",
+				after: function () { refreshTheme(); }
+			};
+		}
+	};
+
+	function drawStatus(w, o) {
+		var s = w.querySelector("[data-lvm-status]");
+		if (!s) return;
+		var n = (o.items || []).length;
+		s.textContent = n + (n === 1 ? " item, " : " items, ") + gb(disk().free) + " available";
+	}
+	function tickWindows() {
+		Object.keys(gwins).forEach(function (id) { if (gwins[id].kind === "finder") drawStatus(gwins[id].el, gwins[id].o); });
+	}
+
+	function openWindow(kind, o) {
+		o = o || {};
+		if (!scene || !BUILD[kind]) return null;
+		ensureWLayer();
+		var id = String(o.id || kind + "-" + (++gCount));
+		if (gwins[id]) { focusWin(id); gFocus = true; return gwins[id].el; }
+		var spec = BUILD[kind](o, id);
+		var w = el("div", "lvm-win lvm-w lvm-w-" + kind + (spec.toolbar ? " has-toolbar" : "") + (spec.cls ? " " + spec.cls : ""), wLights() + spec.html);
+		w.dataset.lvmGw = id;
+		w.setAttribute("role", "dialog");
+		w.setAttribute("aria-label", o.title || (kind === "settings" ? "System Settings" : kind));
+		var ww = Math.round(Math.min(o.w || spec.w, W() - 16)), hh = Math.round(Math.min(o.h || spec.h, Hh() - 46));
+		w.style.width = ww + "px";
+		w.style.height = hh + "px";
+		if (ww < 520) w.classList.add("is-narrow");
+		var n = gOrder.length;
+		var x = o.x != null ? o.x : (W() - ww) / 2 + n * 24;
+		var y = o.y != null ? o.y : Math.max(44, (Hh() - hh) / 2 - 40) + n * 24;
+		w.style.left = Math.round(clamp(x, 8, Math.max(8, W() - ww - 8))) + "px";
+		w.style.top = Math.round(clamp(y, 38, Math.max(38, Hh() - hh - 8))) + "px";
+		w.insertAdjacentHTML("beforeend", ["n", "s", "e", "w", "nw", "ne", "sw", "se"].map(function (d) {
+			return '<i class="lvm-rz lvm-rz-' + d + '" data-lvm-rz="' + d + '" aria-hidden="true"></i>';
+		}).join(""));
+		wlayer.appendChild(w);
+		var mins = MIN_SIZE[kind] || MIN_SIZE.custom;
+		gwins[id] = {
+			el: w, kind: kind, o: o, esc: o.esc != null ? !!o.esc : kind !== "custom",
+			minW: kind === "custom" && o.minW ? o.minW : mins[0], minH: kind === "custom" && o.minH ? o.minH : mins[1]
+		};
+		if (spec.after) spec.after(w, id);
+		gOrder.unshift(id);
+		gFocus = true;
+		lastWin = null;
+		stack();
+		if (!gTimer) gTimer = setInterval(tickWindows, 1000);
+		fire("lvm:window", { id: id, kind: kind, action: "open" });
+		return w;
+	}
+	function stack() {
+		var n = gOrder.length;
+		gOrder.forEach(function (id, i) {
+			var g = gwins[id];
+			g.el.style.zIndex = n - i;
+			g.el.classList.toggle("is-key", i === 0);
+		});
+	}
+	function focusWin(id) {
+		var i = gOrder.indexOf(id);
+		if (i < 0) return;
+		if (i > 0) { gOrder.splice(i, 1); gOrder.unshift(id); fire("lvm:window", { id: id, kind: gwins[id].kind, action: "focus" }); }
+		stack();
+	}
+	function closeWindow(id, reason) {
+		var g = gwins[id];
+		if (!g) return false;
+		delete gwins[id];
+		gOrder.splice(gOrder.indexOf(id), 1);
+		var w = g.el;
+		w.removeAttribute("data-lvm-gw");
+		w.style.pointerEvents = "none";
+		if (reason === "minimise") {
+			var dock = scene.querySelector(".lv-dock"), tx = W() / 2, ty = Hh() - 30;
+			if (dock && dock.offsetWidth) { var p = offsetIn(dock); tx = p.x + dock.offsetWidth / 2; ty = p.y + dock.offsetHeight / 2; }
+			var cx = w.offsetLeft + w.offsetWidth / 2, cy = w.offsetTop + w.offsetHeight / 2;
+			w.classList.add("is-minimising");
+			if (!REDUCED()) w.style.transform = "translate(" + Math.round(tx - cx) + "px," + Math.round(ty - cy) + "px) scale(.06)";
+			w.style.opacity = "0";
+			setTimeout(function () { w.remove(); }, 460);
+		} else w.remove();
+		if (!gOrder.length) { clearInterval(gTimer); gTimer = 0; gFocus = false; }
+		stack();
+		fire("lvm:window", { id: id, kind: g.kind, action: "close", reason: reason || "api" });
+		if (typeof g.o.onClose === "function") { try { g.o.onClose(reason || "api"); } catch (e) {} }
+		return true;
+	}
+	// Resizing from any edge or corner, clamped to the scene and the kind's minimum size.
+	var MIN_SIZE = { finder: [420, 260], textedit: [300, 200], settings: [560, 360], custom: [300, 200] };
+	function startResize(e, w, dir, g) {
+		e.preventDefault();
+		e.stopPropagation();
+		var h = e.target, s = scale(), x0 = e.clientX, y0 = e.clientY;
+		var l0 = w.offsetLeft, t0 = w.offsetTop, w0 = w.offsetWidth, h0 = w.offsetHeight;
+		var minW = Math.min(g.minW, W() - 16), minH = Math.min(g.minH, Hh() - 46);
+		var pid = e.pointerId;
+		try { h.setPointerCapture(pid); } catch (err) {}
+		wlayer.classList.add("is-resizing");
+		wlayer.dataset.rz = dir;
+		g.zoomed = null;
+		function mv(ev) {
+			if (ev.pointerId !== pid) return;
+			if (ev.pointerType === "mouse" && !(ev.buttons & 1)) { up(ev); return; }
+			var dx = (ev.clientX - x0) / s, dy = (ev.clientY - y0) / s;
+			var l = l0, t = t0, ww = w0, hh = h0;
+			if (dir.indexOf("e") >= 0) ww = clamp(w0 + dx, minW, W() - l0);
+			if (dir.indexOf("s") >= 0) hh = clamp(h0 + dy, minH, Hh() - t0);
+			if (dir.indexOf("w") >= 0) { l = clamp(l0 + dx, 0, l0 + w0 - minW); ww = l0 + w0 - l; }
+			if (dir.indexOf("n") >= 0) { t = clamp(t0 + dy, 30, t0 + h0 - minH); hh = t0 + h0 - t; }
+			w.style.left = Math.round(l) + "px";
+			w.style.top = Math.round(t) + "px";
+			w.style.width = Math.round(ww) + "px";
+			w.style.height = Math.round(hh) + "px";
+			w.classList.toggle("is-narrow", ww < 520);
+		}
+		function up(ev) {
+			if (ev.pointerId !== pid) return;
+			try { h.releasePointerCapture(pid); } catch (err) {}
+			h.removeEventListener("pointermove", mv);
+			h.removeEventListener("pointerup", up);
+			h.removeEventListener("pointercancel", up);
+			wlayer.classList.remove("is-resizing");
+			delete wlayer.dataset.rz;
+		}
+		h.addEventListener("pointermove", mv);
+		h.addEventListener("pointerup", up);
+		h.addEventListener("pointercancel", up);
+	}
+
+	function zoomWin(id) {
+		var g = gwins[id];
+		if (!g) return;
+		var w = g.el;
+		w.classList.add("is-zooming");
+		setTimeout(function () { w.classList.remove("is-zooming"); }, 300);
+		if (g.zoomed) {
+			var r = g.zoomed;
+			g.zoomed = null;
+			w.style.left = r[0] + "px"; w.style.top = r[1] + "px"; w.style.width = r[2] + "px"; w.style.height = r[3] + "px";
+		} else {
+			g.zoomed = [w.offsetLeft, w.offsetTop, w.offsetWidth, w.offsetHeight];
+			var bottom = Hh() - 8, dock = scene.querySelector(".lv-dock");
+			if (dock && dock.offsetWidth) bottom = Math.min(bottom, offsetIn(dock).y - 8);
+			w.style.left = "8px"; w.style.top = "38px";
+			w.style.width = (W() - 16) + "px"; w.style.height = Math.max(200, bottom - 38) + "px";
+		}
+		w.classList.toggle("is-narrow", parseInt(w.style.width, 10) < 520);
+	}
+	function frontEsc() {
+		for (var i = 0; i < gOrder.length; i++) if (gwins[gOrder[i]].esc) return gOrder[i];
+		return null;
+	}
+	function levoOpen() { return scene.classList.contains("is-open") || call("levoOpen") === true; }
+	function onDbl(e) {
+		var fi = e.target.closest && e.target.closest(".lvm-fi");
+		if (!fi || !wlayer || !wlayer.contains(fi)) return;
+		openItem(fi);
+	}
+	function openItem(fi) {
+		var w = fi.closest(".lvm-w"), g = w && gwins[w.dataset.lvmGw];
+		if (!g) return;
+		var it = (g.o.items || [])[+fi.dataset.lvmFi];
+		if (it && typeof g.o.onOpen === "function") { try { g.o.onOpen(it); } catch (err) { if (window.console) console.warn("LevoMenus onOpen", err); } }
+	}
+
+	// ---------------------------------------------------------------- Desktop content
+
+	var CONTENT = {
+		installers: [
+			{ name: "Setup-3.2.1.dmg", kind: "dmg", size: 0.612 },
+			{ name: "Setup-3.2.1 (1).dmg", kind: "dmg", size: 0.612 },
+			{ name: "Install (2).pkg", kind: "pkg", size: 0.418 },
+			{ name: "FontPack-2019.pkg", kind: "pkg", size: 0.34 },
+			{ name: "DisplayDriver-v11.4.pkg", kind: "pkg", size: 0.236 },
+			{ name: "PrinterUtility_5.0.8.dmg", kind: "dmg", size: 0.182 }
+		],
+		notes: [
+			"things to do",
+			"",
+			"- reply to the landlord about the tap",
+			"- rename project-final-v2 to something actually final",
+			"- oat milk. not the other one",
+			"- work out why the disk is full",
+			"- clean the disk next week",
+			"- clean the disk next week (for real this time)",
+			"- stop saving screenshots to the desktop",
+			"- put this list somewhere I'll see it"
+		].join("\n"),
+		unzipped: [
+			{ name: "__MACOSX", kind: "folder" },
+			{ name: "old", kind: "folder" },
+			{ name: "final.psd", kind: "image", size: 0.482 },
+			{ name: "final-FINAL.psd", kind: "image", size: 0.507 },
+			{ name: "final-FINAL-use-this-one.psd", kind: "image", size: 0.519 },
+			{ name: "final-FINAL-use-this-one (1).psd", kind: "image", size: 0.519 },
+			{ name: "feedback round 4.pdf", kind: "doc", size: 0.0012 },
+			{ name: "notes.txt", kind: "txt", size: 0.000004 },
+			{ name: ".DS_Store", kind: "hidden", size: 0.000006 }
+		]
+	};
+
 	// ---------------------------------------------------------------- Events
 
 	function itemFrom(t) {
@@ -964,7 +1442,10 @@
 			if (openId === b.dataset.menu) closeMenu(); else openMenu(b.dataset.menu);
 			return;
 		}
+		if (wlayer && wlayer.contains(t)) { onWinClick(e, t); return; }
 		if (!layer || !layer.contains(t)) return;
+		var cc = t.closest("[data-lvm-cc]");
+		if (cc) { ccToggle(cc.dataset.lvmCc); return; }
 		var h = itemFrom(t);
 		if (h) { activate(h.L, h.i); return; }
 		var cal = t.closest("[data-lvm-cal]");
@@ -982,10 +1463,38 @@
 		}
 	}
 
+	function onWinClick(e, t) {
+		var w = t.closest(".lvm-w");
+		var id = w && w.dataset.lvmGw;
+		if (!id || !gwins[id]) return;
+		var b = t.closest("[data-lvm-w]");
+		if (b) { var a = b.dataset.lvmW; if (a === "close") closeWindow(id, "close"); else if (a === "min") closeWindow(id, "minimise"); else zoomWin(id); return; }
+		var fi = t.closest(".lvm-fi");
+		var grid = t.closest(".lvm-fw-grid");
+		if (grid) {
+			var was = fi && fi.classList.contains("is-sel");
+			Array.prototype.forEach.call(grid.querySelectorAll(".lvm-fi"), function (x) { x.classList.toggle("is-sel", x === fi); });
+			if (fi && was && ptrType !== "mouse") openItem(fi);
+			return;
+		}
+		var th = t.closest("[data-lvm-theme]");
+		if (th) { setTheme(th.dataset.lvmTheme); return; }
+		var ac = t.closest("[data-lvm-accent]");
+		if (ac) { st.accent = ac.dataset.lvmAccent; Array.prototype.forEach.call(w.querySelectorAll("[data-lvm-accent]"), function (x) { x.classList.toggle("is-on", x === ac); }); return; }
+		var sw = t.closest("[data-lvm-tint]");
+		if (sw) { st.tint = !st.tint; sw.classList.toggle("is-on", st.tint); sw.setAttribute("aria-checked", st.tint); return; }
+		var rd = t.closest("[data-lvm-scroll]");
+		if (rd) { st.scroll = +rd.dataset.lvmScroll; Array.prototype.forEach.call(w.querySelectorAll("[data-lvm-scroll]"), function (x) { x.classList.toggle("is-on", x === rd); }); }
+	}
+
 	// A press outside an open menu closes it; inside the scene, macOS eats that click.
 	function onDown(e) {
 		var t = e.target;
 		swallow = false;
+		ptrType = e.pointerType || "mouse";
+		var sl = t.closest && t.closest("[data-lvm-slider]");
+		if (sl && layer && layer.contains(sl)) { startSlide(e, sl); return; }
+		var gw = wlayer && wlayer.contains(t) && t.closest(".lvm-w");
 		var inLayer = layer && layer.contains(t);
 		if (openId) {
 			var inMenu = t.closest && t.closest(".lvm-menu");
@@ -1001,6 +1510,20 @@
 		if (w && w.dataset.lvmWin) { lastWin = w.dataset.lvmWin; if (w.dataset.lvmWin !== "alert") raise(w); }
 		else if (!(t.closest && t.closest(".lvm-menu"))) lastWin = wins.alert ? "alert" : null;
 		if (w && (t.closest("[data-lvm-drag]")) && !t.closest("button")) startDrag(e, w);
+		var rz = gw && t.closest("[data-lvm-rz]");
+		if (rz && gwins[gw.dataset.lvmGw] && (e.button === 0 || e.pointerType !== "mouse")) {
+			gFocus = true;
+			lastWin = null;
+			focusWin(gw.dataset.lvmGw);
+			startResize(e, gw, rz.dataset.lvmRz, gwins[gw.dataset.lvmGw]);
+			return;
+		}
+		if (gw && gw.dataset.lvmGw) {
+			gFocus = true;
+			lastWin = null;
+			focusWin(gw.dataset.lvmGw);
+			if (t.closest("[data-lvm-drag]") && !t.closest("button, input, textarea, select, a, [contenteditable], .lvm-fi, [data-lvm-nodrag]") && e.button === 0) startDrag(e, gw);
+		} else if (!inLayer) gFocus = false;
 	}
 	function onClickCapture(e) {
 		if (!swallow) return;
@@ -1011,17 +1534,27 @@
 
 	function startDrag(e, w) {
 		var s = scale(), x0 = e.clientX, y0 = e.clientY, l0 = w.offsetLeft, t0 = w.offsetTop;
-		var ws = +w.dataset.scale || 1;
-		var ww = w.offsetWidth * ws, wh = w.offsetHeight * ws;
+		var ww = w.offsetWidth * (+w.dataset.scale || 1), h = e.target, pid = e.pointerId;
 		e.preventDefault();
+		try { h.setPointerCapture(pid); } catch (err) {}
+		if (wlayer) wlayer.classList.add("is-dragging");
 		function mv(ev) {
+			if (ev.pointerId !== pid) return;
+			if (ev.pointerType === "mouse" && !(ev.buttons & 1)) { up(ev); return; }
 			w.style.left = clamp(l0 + (ev.clientX - x0) / s, 40 - ww, W() - 40) + "px";
 			w.style.top = clamp(t0 + (ev.clientY - y0) / s, 30, Hh() - 30) + "px";
 		}
-		function up() { document.removeEventListener("pointermove", mv); document.removeEventListener("pointerup", up); }
-		document.addEventListener("pointermove", mv);
-		document.addEventListener("pointerup", up);
-		void wh;
+		function up(ev) {
+			if (ev.pointerId !== pid) return;
+			try { h.releasePointerCapture(pid); } catch (err) {}
+			h.removeEventListener("pointermove", mv);
+			h.removeEventListener("pointerup", up);
+			h.removeEventListener("pointercancel", up);
+			if (wlayer) wlayer.classList.remove("is-dragging");
+		}
+		h.addEventListener("pointermove", mv);
+		h.addEventListener("pointerup", up);
+		h.addEventListener("pointercancel", up);
 	}
 
 	function stop(e) { e.stopPropagation(); e.preventDefault(); }
@@ -1034,6 +1567,8 @@
 			var top = levels[levels.length - 1], first = levels[0];
 			var inInput = e.target && e.target.matches && e.target.matches("[data-lvm-help]");
 			if (k === "Escape") { e.preventDefault(); closeMenu(); return; }
+			var sld = e.target && e.target.closest && e.target.closest("[data-lvm-slider]");
+			if (sld && (k === "ArrowLeft" || k === "ArrowRight")) { e.preventDefault(); setSlider(sld.dataset.lvmSlider, st[sld.dataset.lvmSlider] + (k === "ArrowRight" ? 0.0625 : -0.0625)); return; }
 			if (k === "ArrowDown" || k === "ArrowUp") { e.preventDefault(); moveHi(top, k === "ArrowDown" ? 1 : -1); return; }
 			if (k === "ArrowRight") {
 				if (inInput && e.target.value) return;
@@ -1088,12 +1623,23 @@
 			}
 			return;
 		}
+		var tg = e.target;
+		var editable = tg && tg.nodeType === 1 && (tg.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName));
+		if (editable && wlayer && wlayer.contains(tg)) {
+			e.stopPropagation();
+			if (k !== "Escape") return;
+		}
 		if (lastWin && wins[lastWin]) {
 			if (k === "Escape") { stop(e); closeWin(lastWin); return; }
 			if (lastWin === "fq") {
 				if (k === "ArrowDown" || k === "ArrowUp") { stop(e); fqMove(k === "ArrowDown" ? 1 : -1); }
 				else if (k === "Enter") { stop(e); fqGo(); }
 			}
+			return;
+		}
+		if (gFocus && k === "Escape" && !levoOpen()) {
+			var f = frontEsc();
+			if (f) { stop(e); if (editable) tg.blur(); closeWindow(f, "esc"); }
 		}
 	}
 	function step(dir, first) {
@@ -1108,7 +1654,15 @@
 		target.addEventListener(type, fn, opts);
 		listeners.push([target, type, fn, opts]);
 	}
-	function onResize() { if (openId) closeMenu(); }
+	function onResize() {
+		if (openId) closeMenu();
+		gOrder.forEach(function (id) {
+			var w = gwins[id].el;
+			w.style.left = clamp(w.offsetLeft, 40 - w.offsetWidth, Math.max(8, W() - 60)) + "px";
+			w.style.top = clamp(w.offsetTop, 30, Math.max(30, Hh() - 40)) + "px";
+		});
+	}
+	var themeObs = null;
 
 	// ---------------------------------------------------------------- Public
 
@@ -1118,8 +1672,14 @@
 		wins = {};
 		listeners.forEach(function (l) { l[0].removeEventListener(l[1], l[2], l[3]); });
 		listeners = [];
+		Object.keys(gwins).forEach(function (id) { closeWindow(id, "api"); });
+		clearInterval(gTimer); gTimer = 0;
+		if (themeObs) themeObs.disconnect();
+		themeObs = null;
 		if (layer) layer.remove();
+		if (wlayer) wlayer.remove();
 		layer = null;
+		wlayer = null;
 		scene = null;
 	}
 
@@ -1138,6 +1698,11 @@
 		on(document, "click", onClickCapture, true);
 		on(window, "keydown", onKey, true);
 		on(window, "resize", onResize);
+		on(scene, "dblclick", onDbl);
+		if (window.MutationObserver) {
+			themeObs = new MutationObserver(refreshTheme);
+			themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] });
+		}
 		return api;
 	}
 
@@ -1146,7 +1711,11 @@
 		detach: detach,
 		open: function (id) { if (scene) openMenu(id); },
 		close: function () { closeMenu(); },
-		isOpen: function () { return !!openId; }
+		isOpen: function () { return !!openId; },
+		window: function (kind, opts) { return openWindow(kind, opts); },
+		closeWindow: function (id) { return closeWindow(String(id), "api"); },
+		windows: function () { return gOrder.slice(); },
+		content: CONTENT
 	};
 	window.LevoMenus = api;
 })();
