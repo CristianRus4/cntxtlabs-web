@@ -147,8 +147,8 @@ carries names, labels, numbers and the price only.
 
 The demo shows the app's Summary layout in round 12's order (PopoverView.swift):
 the Mac's name, the gauges, then free space, "to clean up" and the five-part
-disk bar (System Data brown, Your Data orange, Apps blue, Ready to free green,
-Free grey, as the app; only the green fills), then "A balanced clean up frees 33 GB: Xcode build data, Simulators and
+disk bar (macOS's storage palette as the app: System Data yellow, Your Data
+red, Apps orange, Ready to free green, Free faint; only the green fills), then "A balanced clean up frees 33 GB: Xcode build data, Simulators and
 4 more." The level word is a menu (Careful, Balanced, Aggressive, Everything);
 the amount, "4 more" and the empty space open the full breakdown, and the
 sentence holds still while ticking there. The Command K panel and every confirm

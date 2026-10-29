@@ -107,7 +107,7 @@
 		el.classList.toggle("is-freed", x >= DROP);
 		el.classList.toggle("is-low", x < DROP && v < AUTO.limit + 2);
 		var n = Math.round((v / AUTO.total) * AUTO.ticks * 2.4), ticks = el.querySelectorAll("[data-autoticks] i");
-		for (var i = 0; i < ticks.length; i++) ticks[i].className = i >= ticks.length - n ? "is-free" : i < 12 ? "is-sys" : i < 40 ? "is-data" : "is-apps";
+		for (var i = 0; i < ticks.length; i++) ticks[i].className = i >= ticks.length - n ? "is-free" : i < 8 ? "is-sys" : i < 30 ? "is-data" : "is-apps";
 	}
 	function autoPlay(t) {
 		var el = t.el, gen = t.gen, LOOP = 7600, HOLD = 1600;

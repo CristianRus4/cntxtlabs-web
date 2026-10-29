@@ -189,12 +189,12 @@ html.dark .bt-auto-pop { background: linear-gradient(180deg, #232323 0%, #1B1B1B
 .bt-auto-sec { color: rgb(var(--fg) / 0.5); }
 .bt-auto-ticks { display: flex; gap: 2px; margin: 12px 0 16px; }
 .bt-auto-ticks i { flex: 1; height: 18px; border-radius: 1.5px; background: var(--lv-free); transition: background-color .3s; }
-.bt-auto-ticks i.is-sys { background: #B89874; }
-.bt-auto-ticks i.is-data { background: #FF9F0A; }
-.bt-auto-ticks i.is-apps { background: #4FA3F8; }
-html:not(.dark) .bt-auto-ticks i.is-sys { background: #A2845E; }
-html:not(.dark) .bt-auto-ticks i.is-data { background: #E8780C; }
-html:not(.dark) .bt-auto-ticks i.is-apps { background: #1F7AE0; }
+.bt-auto-ticks i.is-sys { background: #FFD60A; }
+.bt-auto-ticks i.is-data { background: #FF453A; }
+.bt-auto-ticks i.is-apps { background: #FF9F0A; }
+html:not(.dark) .bt-auto-ticks i.is-sys { background: #F2B800; }
+html:not(.dark) .bt-auto-ticks i.is-data { background: #FF3B30; }
+html:not(.dark) .bt-auto-ticks i.is-apps { background: #FF9500; }
 .bt-auto-ticks i.is-free { background: rgb(var(--fg) / 0.14); }
 
 .bt-auto-chart { position: relative; flex: 1; min-width: 0; margin: 18px 40px 14px 0; }
