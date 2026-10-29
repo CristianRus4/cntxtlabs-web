@@ -13,11 +13,13 @@ levo.js                  LEVO (price, links), appearance, arrivals, the agents' 
 demo.css                 the full-screen desk, the Levo window, dock, lock screen and popover
 demo.js                  the menubar demo, and the one data object it plays from
 menus.css, menus.js      the menubar menus, Control Centre, and the desktop windows (Finder, TextEdit, System Settings), resizable
-settings.css, settings.js the app's Settings window, round 5, as LevoSettings.mount(el, opts)
+settings.css, settings.js the app's Settings window, at the app's own sizes, as LevoSettings.mount(el, opts)
+mobile.css, mobile.js     the phone page (760 px and narrower): no simulator, still images, the agents' chips
+img/shots/               the popover and Settings as still images for phones, rendered from the demo, light and dark
 agents.md                for an agent: what Levo is, why it's safe, and how to install it
 llms.txt                 a short index for language models
 img/icon-*.png           the app icon at 256 and 96 px
-img/dock/                the dock's app icons, rendered on a Mac; swap the folder to change the set
+img/dock/                the dock's app icons in light and dark (and Levo's, from the app), rendered on a Mac; swap the folder to change the set
 img/symbols/             SF Symbols as SVG, and symbols.js, the bundle the page uses
 tools/                   export-symbols.swift, export-dock-icons.swift (swift tools/export-dock-icons.swift, from levo/), and the symbol list
 ```
@@ -48,8 +50,16 @@ browser.
 
 The first screen is the Mac: the desk fills the viewport, its menubar runs
 across the top of the page, and the Levo window (the app, Applications, the
-price and Download) sits on the desktop. Below 760px wide it becomes two
-cards: the Levo window and the popover.
+price and Download) sits on the desktop. Closed, it comes back from the mounted
+"Levo" disk image on the desktop. Desktop icons sit loosely and can be dragged;
+they never land on the widgets, the windows, the popover or each other, and
+reset on reload. The popover uses the app's own sizes (360 pt wide, text scale 1),
+taken from its code.
+
+Below 760px wide the page is a phone page instead: no simulator, the popover
+and Settings as still images (img/shots/, re-render them from the demo when it
+changes), and the same agent chips and toast (mobile.js moves #levo-agents
+into the phone page).
 
 The desktop works: Old Installers opens in Finder, the notes in TextEdit, and
 the zip unzips into a folder. Control Centre's Dark Mode, or System Settings ›

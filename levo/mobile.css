@@ -1,0 +1,139 @@
+/*
+ * The phone page (760px and narrower). The desktop Mac, the Settings window and
+ * the desktop sections are hidden; .m takes their place. Wider, .m is hidden and
+ * nothing else changes. The agent chips and the toast are the desktop ones,
+ * moved in here by mobile.js.
+ */
+
+.m { display: none; }
+
+@media (max-width: 760px) {
+	.first, #agents, #settings, #get { display: none; }
+
+	.m {
+		--gutter: 20px;
+		--rise: cubic-bezier(.22, 1, .36, 1);
+		--accent: #8A63FF;
+		--plate: #FFFFFF;
+		--shot-shadow: drop-shadow(0 22px 34px rgba(0, 0, 0, .16)) drop-shadow(0 2px 6px rgba(0, 0, 0, .08));
+		display: block;
+		padding: 0 var(--gutter);
+		overflow-x: clip;
+	}
+	html.dark .m {
+		--accent: #A485FF;
+		--plate: #1C1C1E;
+		--shot-shadow: drop-shadow(0 0 .5px rgba(255, 255, 255, .45)) drop-shadow(0 24px 40px rgba(0, 0, 0, .7));
+	}
+
+	/* The bar: slides in once the hero's buttons have scrolled away. */
+	.m-bar {
+		position: fixed;
+		top: 0; left: 0; right: 0;
+		z-index: 40;
+		height: calc(56px + env(safe-area-inset-top));
+		padding: env(safe-area-inset-top) var(--gutter) 0;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		background: var(--bg);
+		box-shadow: 0 1px 0 var(--rim);
+		opacity: 0;
+		transform: translateY(-100%);
+		transition: opacity .2s ease, transform .2s ease;
+	}
+	.m-bar.is-on { opacity: 1; transform: none; }
+	.m-bar-name { margin-right: auto; display: inline-flex; align-items: center; gap: 9px; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+	.m-bar-name img { width: 28px; height: 28px; }
+	.m-bar .btn-sm { height: 32px; padding: 0 12px; font-size: 14px; }
+
+	/* Hero: icon, name, price, buttons, then the popover rising under them. */
+	.m-hero { position: relative; padding-top: calc(env(safe-area-inset-top) + 64px); text-align: center; }
+	.m-hero-text { position: relative; will-change: opacity, transform; }
+	.m-icon { display: block; width: 112px; height: 112px; margin: 0 auto 18px; filter: drop-shadow(0 16px 24px rgba(0, 0, 0, .22)); }
+	.m h1 { font-size: 52px; letter-spacing: -0.03em; line-height: 1.05; }
+	.m-price { margin-top: 22px; display: inline-flex; align-items: baseline; gap: 30px; }
+	.m-price b { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+	.m-price > span:last-child { font-size: 17px; font-weight: 600; color: var(--muted); }
+	.m-ctas { margin: 30px auto 0; max-width: 360px; display: flex; gap: 10px; }
+	.m-ctas .btn { flex: 1; min-width: 0; height: 52px; border-radius: 14px; font-size: 17px; }
+	.m-reqs { margin-top: 16px; display: inline-flex; align-items: center; gap: 7px; font-size: 14px; color: var(--muted); }
+
+	.m-pop { position: relative; z-index: 1; margin: 44px auto 0; max-width: 360px; transform-origin: 50% 0; will-change: transform; }
+	.m-pop::before {
+		content: "";
+		position: absolute;
+		inset: 8% -30% 20%;
+		z-index: -1;
+		background: radial-gradient(closest-side at 32% 40%, var(--glow-a), transparent), radial-gradient(closest-side at 70% 62%, var(--glow-b), transparent);
+		opacity: .55;
+		pointer-events: none;
+	}
+
+	/* Screenshots: the app's own renders, with their macOS corners and a soft shadow. */
+	.m-shot { display: block; }
+	.m-shot img { display: block; width: 100%; height: auto; filter: var(--shot-shadow); }
+
+	/* Sections: a heading with a short accent bar, then the thing itself. */
+	.m-sect { max-width: 600px; margin: 0 auto; padding-top: 96px; }
+	.m-head { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; font-size: 32px; letter-spacing: -0.025em; }
+	.m-head::before { content: ""; width: 24px; height: 3px; border-radius: 3px; background: var(--accent); }
+
+	/* The desktop chips, as a two-column grid of buttons. */
+	.m #levo-agents.rv { opacity: 1; transform: none; transition: none; }
+	.m .chips { margin: 0; max-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+	.m .chips li { min-width: 0; }
+	.m .chip { width: 100%; height: 50px; padding: 0 16px; border-radius: 14px; font-size: 15px; -webkit-tap-highlight-color: transparent; }
+	.m .chip:hover { background: var(--card); box-shadow: inset 0 0 0 1px var(--rim); }
+	.m .chip:active { transform: scale(.96); background: rgb(var(--ink) / .07); }
+	.m .chip-any { background: transparent; box-shadow: none; }
+
+	/* The toast sits at the bottom of the screen, above everything. */
+	.m .toast {
+		position: fixed;
+		left: 16px; right: 16px;
+		bottom: calc(env(safe-area-inset-bottom) + 16px);
+		z-index: 50;
+		width: auto;
+		max-width: 420px;
+		margin: 0 auto;
+		padding: 14px 16px;
+		border-radius: 18px;
+		font-size: 15px;
+		line-height: 1.35;
+		background: var(--plate);
+		box-shadow: inset 0 0 0 1px var(--rim), 0 18px 40px -12px rgba(0, 0, 0, .35);
+		transform: translateY(24px) scale(.96);
+		transition: opacity .25s ease, transform .45s var(--rise);
+		pointer-events: none;
+	}
+	.m .toast[hidden] { display: none; }
+	.m .toast.in { transform: none; pointer-events: auto; }
+
+	.m-shot-wide { margin: 0 -6px; }
+
+	.foot { margin-top: 88px; padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+
+	/* Motion: the hero arrives on load; everything else rises as it comes into view. */
+	.js .m-in { animation: m-arrive .6s ease-out both; }
+	.js .m-hero-text > .m-in:nth-child(2) { animation-delay: .05s; }
+	.js .m-hero-text > .m-in:nth-child(3) { animation-delay: .1s; }
+	.js .m-hero-text > .m-in:nth-child(4) { animation-delay: .15s; }
+	.js .m-hero-text > .m-in:nth-child(5) { animation-delay: .2s; }
+	.js .m-pop .m-in { animation: m-arrive .8s var(--rise) .25s both; }
+	@keyframes m-arrive {
+		from { opacity: 0; transform: translateY(20px) scale(1.02); }
+		to { opacity: 1; transform: none; }
+	}
+	.js .m-rv { opacity: 0; transform: translateY(24px); transition: opacity .4s ease-out, transform .6s var(--rise); }
+	.js .m-shot.m-rv { transform: translateY(40px) scale(.97); transition-duration: .5s, .8s; }
+	.js .m-rv.is-in { opacity: 1; transform: none; }
+}
+
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+	.m-bar, .m .toast { transform: none; transition: opacity .2s ease; }
+	.m .chip:active { transform: none; }
+	.js .m-in, .js .m-pop .m-in { animation: m-fade .3s ease-out both; }
+	@keyframes m-fade { from { opacity: 0; } }
+	.js .m-rv, .js .m-shot.m-rv { transform: none; transition: opacity .3s ease-out; }
+}

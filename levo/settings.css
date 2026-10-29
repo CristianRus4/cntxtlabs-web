@@ -1,6 +1,8 @@
 /*
  * Levo's Settings window, round 5 (settings.js). Every class starts with ls-.
- * Colours are sampled from the R5 renders; the window follows data-theme,
+ * Sizes come from the app's code (SettingsKit.swift, Raycast.swift, SettingsWindow.swift,
+ * CntxtUI's Radius and InteractionFill), 1 pt = 1 px; system chrome and colours come from
+ * the R5 renders; the window follows data-theme,
  * which settings.js sets from html.dark (or the Appearance pop-up).
  */
 
@@ -13,9 +15,12 @@
 	--win-top: #F7F7F7; --win-bot: #F0F0F0;
 	--side-top: #EFEFEF; --side-bot: #ECECEC;
 	--divider: rgba(0, 0, 0, 0.1);
-	--card: rgba(0, 0, 0, 0.025); --rim: rgba(0, 0, 0, 0.05); --sep: rgba(0, 0, 0, 0.055);
-	--input: rgba(0, 0, 0, 0.03); --ring: rgba(0, 0, 0, 0.2); --search-ring: rgba(0, 0, 0, 0.12);
-	--sel: rgba(0, 0, 0, 0.1); --hover: rgba(0, 0, 0, 0.05); --press: rgba(0, 0, 0, 0.07);
+	--card: rgba(0, 0, 0, 0.025); --rim: rgba(0, 0, 0, 0.05); --sep: rgba(0, 0, 0, 0.05);
+	--input: rgba(0, 0, 0, 0.03); --ring: rgba(0, 0, 0, 0.2); --search-ring: rgba(0, 0, 0, 0.1);
+	--sel: rgba(0, 0, 0, 0.1); --hover: rgba(0, 0, 0, 0.04); --chover: rgba(0, 0, 0, 0.065); --press: rgba(0, 0, 0, 0.12);
+	--check-off: rgba(0, 0, 0, 0.09);
+	/* CntxtUI Radius.control: card 22 less inset 8. Every hover, press and selection shape. */
+	--r-control: 14px;
 	--accent: #138AF2; --green: #006B4F; --orange: #9E4700; --red: #B12424;
 	--tick-g: #006B4F; --tick-o: #C75D07;
 	--sw-off: rgba(0, 0, 0, 0.11); --sw-idle: rgba(0, 0, 0, 0.155);
@@ -25,7 +30,7 @@
 	--sheet: #FFFFFF; --sheet-rim: rgba(0, 0, 0, 0.08); --form: rgba(0, 0, 0, 0.03); --form-sep: rgba(0, 0, 0, 0.07); --btn: rgba(0, 0, 0, 0.075); --dim: rgba(170, 170, 170, 0.6);
 	--pic-top: #ECECEF; --pic-bot: #D3D3D8; --mini: #FFFFFF; --ink: 0 0 0;
 	--agent-base: #E6E6EA; --custom-base: #EDEDF0;
-	--seg-on: #FFFFFF; --seg-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.05), 0 0.5px 1.5px rgba(0, 0, 0, 0.16);
+	--seg-on: #FFFFFF; --seg-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.15);
 	--font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", "Helvetica Neue", system-ui, sans-serif;
 	/* The app sets its Settings text in SF Pro Rounded; Safari has it as ui-rounded. */
 	--round: ui-rounded, -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
@@ -33,10 +38,10 @@
 	position: relative;
 	display: flex;
 	box-sizing: border-box;
-	width: 100%;
-	max-width: 900px;
-	height: 592px;
+	width: 900px;
+	height: 640px;
 	margin: 0 auto;
+	transform-origin: 0 0;
 	border-radius: 16px;
 	overflow: hidden;
 	isolation: isolate;
@@ -56,9 +61,10 @@
 	--win-top: #232323; --win-bot: #1B1B1B;
 	--side-top: #282828; --side-bot: #242424;
 	--divider: rgba(255, 255, 255, 0.115);
-	--card: rgba(255, 255, 255, 0.025); --rim: rgba(255, 255, 255, 0.06); --sep: rgba(255, 255, 255, 0.055);
-	--input: rgba(255, 255, 255, 0.05); --ring: rgba(255, 255, 255, 0.2); --search-ring: rgba(255, 255, 255, 0.12);
-	--sel: rgba(255, 255, 255, 0.1); --hover: rgba(255, 255, 255, 0.05); --press: rgba(255, 255, 255, 0.08);
+	--card: rgba(255, 255, 255, 0.025); --rim: rgba(255, 255, 255, 0.05); --sep: rgba(255, 255, 255, 0.05);
+	--input: rgba(255, 255, 255, 0.05); --ring: rgba(255, 255, 255, 0.2); --search-ring: rgba(255, 255, 255, 0.1);
+	--sel: rgba(255, 255, 255, 0.1); --hover: rgba(255, 255, 255, 0.04); --chover: rgba(255, 255, 255, 0.065); --press: rgba(255, 255, 255, 0.12);
+	--check-off: rgba(255, 255, 255, 0.09);
 	--accent: #4FA3F8; --green: #59D499; --orange: #FF9217; --red: #FF6363;
 	--tick-g: #59D499; --tick-o: #FF9217;
 	--sw-off: rgba(255, 255, 255, 0.09); --sw-idle: rgba(255, 255, 255, 0.135);
@@ -110,7 +116,7 @@
 	gap: 6px;
 	height: 28px;
 	margin-top: 19px;
-	padding: 0 8px 0 9px;
+	padding: 0 8px;
 	flex-shrink: 0;
 	border-radius: 8px;
 	background: var(--input);
@@ -143,10 +149,11 @@
 	margin-top: 12px;
 	padding: 6px 4px;
 	border: 0;
-	border-radius: 8px;
+	border-radius: var(--r-control);
 	background: transparent;
 	text-align: left;
 }
+/* LicenceAvatar 32: the macOS icon grid draws the art 824/1024 of the frame, so 26 inside 3 of margin. */
 .ls-account img { width: 26px; height: 26px; margin: 3px; border-radius: 6px; display: block; flex-shrink: 0; }
 .ls-account > span { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
 .ls-account b { font-weight: 500; font-size: 13px; line-height: 16px; }
@@ -159,12 +166,12 @@
 	height: 32px;
 	padding: 0 8px;
 	border: 0;
-	border-radius: 8px;
+	border-radius: var(--r-control);
 	background: transparent;
 	text-align: left;
 	font-size: 13px;
 }
-.ls-navtitle { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ls-navtitle { flex: 1; margin-right: -6px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ls-nav:hover, .ls-account:hover { background: var(--hover); }
 .ls-nav.is-on, .ls-account.is-on { background: var(--sel); }
 .ls-pro { height: 18px; padding: 0 6px; border-radius: 5px; background: var(--sel); color: rgb(var(--fg) / 0.8); font-size: 11px; font-weight: 500; display: inline-flex; align-items: center; }
@@ -255,9 +262,9 @@ span.ls-lockable { display: inline-flex; flex-direction: row; align-items: cente
 .ls-link .ls-ctl { gap: 8px; }
 
 /* The ⓘ */
-.ls-info { width: 16px; height: 16px; padding: 0; border: 0; border-radius: 5px; background: transparent; color: rgb(var(--fg) / 0.6); display: grid; place-items: center; flex-shrink: 0; }
-.ls-info:hover { background: rgb(var(--fg) / 0.07); }
-.ls-info:active { background: rgb(var(--fg) / 0.12); }
+.ls-info { width: 16px; height: 16px; padding: 0; border: 0; border-radius: var(--r-control); background: transparent; color: rgb(var(--fg) / 0.6); display: grid; place-items: center; flex-shrink: 0; }
+.ls-info:hover { background: var(--chover); }
+.ls-info:active { background: var(--press); }
 
 /* Switch: 44 by 20, on in the accent while the window is key. */
 .ls-switch {
@@ -291,15 +298,17 @@ span.ls-lockable { display: inline-flex; flex-direction: row; align-items: cente
 .ls-switch:disabled { opacity: .45; }
 
 /* Pop-up: value and chevron, no chrome at rest. */
-.ls-pop { display: inline-flex; align-items: center; gap: 6px; height: 26px; margin-right: -8px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; font-weight: 500; white-space: nowrap; }
-.ls-pop:hover, .ls-pop[aria-expanded="true"] { background: rgb(var(--fg) / 0.07); }
+.ls-pop { display: inline-flex; align-items: center; gap: 6px; height: 26px; margin-right: -8px; padding: 0 8px; border: 0; border-radius: var(--r-control); background: transparent; font-weight: 500; white-space: nowrap; }
+.ls-pop:hover { background: var(--chover); }
+.ls-pop[aria-expanded="true"], .ls-pop:active { background: var(--press); }
+.ls-pop .ls-i:first-child { margin-right: 0; }
 .ls-chev { color: rgb(var(--fg) / 0.6); }
 .ls-pop .ls-chev { margin-left: 1px; }
 
 /* Segmented, quiet: only the chosen segment has a fill. */
 .ls-seg { display: inline-flex; gap: 2px; height: 28px; flex-shrink: 0; }
-.ls-seg button { height: 100%; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: rgb(var(--fg) / 0.6); font-size: 12px; font-weight: 500; white-space: nowrap; transition: background-color .15s, color .15s, box-shadow .15s; }
-.ls-seg button:hover { background: var(--hover); }
+.ls-seg button { height: 100%; padding: 0 10px; border: 0; border-radius: var(--r-control); background: transparent; color: rgb(var(--fg) / 0.6); font-size: 12px; font-weight: 500; white-space: nowrap; transition: background-color .15s, color .15s, box-shadow .15s; }
+.ls-seg button:hover { background: var(--chover); }
 .ls-seg button[aria-checked="true"] { background: var(--seg-on); box-shadow: var(--seg-shadow); color: rgb(var(--fg)); }
 .ls-seg-aa button { padding: 0 10px; font-family: var(--font); }
 
@@ -309,21 +318,21 @@ span.ls-lockable { display: inline-flex; flex-direction: row; align-items: cente
 .ls-field:focus-visible { box-shadow: inset 0 0 0 1px var(--ring), 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); }
 .ls-field b { display: block; font-weight: 500; text-align: center; font-variant-numeric: tabular-nums; }
 .ls-arrows { display: flex; flex-direction: column; width: 16px; }
-.ls-arrows button { width: 16px; height: 13px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: rgb(var(--fg) / 0.6); display: grid; place-items: center; }
-.ls-arrows button:hover { background: rgb(var(--fg) / 0.07); color: rgb(var(--fg)); }
-.ls-arrows button:active { background: rgb(var(--fg) / 0.12); }
+.ls-arrows button { width: 16px; height: 13px; padding: 0; border: 0; border-radius: var(--r-control); background: transparent; color: rgb(var(--fg) / 0.6); display: grid; place-items: center; }
+.ls-arrows button:hover { background: var(--chover); }
+.ls-arrows button:active { background: var(--press); }
 .ls-arrows svg { stroke: currentColor; stroke-width: 1.2px; }
 .ls-unit { color: rgb(var(--fg) / 0.6); white-space: nowrap; }
 
 /* Quiet buttons */
-.ls-token { height: 28px; margin-right: -8px; padding: 0 8px; border: 0; border-radius: 8px; background: transparent; font-weight: 500; white-space: nowrap; }
+.ls-token { height: 28px; margin-right: -8px; padding: 0 8px; border: 0; border-radius: var(--r-control); background: transparent; font-weight: 500; white-space: nowrap; }
 .ls-token + .ls-token { margin-left: 8px; }
-.ls-token:hover, .ls-round:hover, .ls-plus:hover, .ls-minus:hover, .ls-textbtn:hover { background: rgb(var(--fg) / 0.07); }
-.ls-token:active, .ls-round:active, .ls-plus:active, .ls-minus:active, .ls-textbtn:active { background: rgb(var(--fg) / 0.12); }
+.ls-token:hover, .ls-round:hover, .ls-plus:hover, .ls-minus:hover, .ls-textbtn:hover { background: var(--chover); }
+.ls-token:active, .ls-round:active, .ls-plus:active, .ls-minus:active, .ls-textbtn:active { background: var(--press); }
 .ls-token:disabled, .ls-round:disabled { opacity: .4; background: transparent; }
 .ls-round { width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: rgb(var(--fg) / 0.8); display: grid; place-items: center; }
 .ls-round svg { stroke: currentColor; stroke-width: 0.4px; }
-.ls-textbtn { height: 26px; margin-right: -6px; padding: 0 6px; border: 0; border-radius: 6px; background: transparent; }
+.ls-textbtn { padding: 3px 6px; border: 0; border-radius: var(--r-control); background: transparent; }
 .ls-red { color: var(--red); }
 
 .ls-status { color: rgb(var(--fg) / 0.6); white-space: nowrap; }
@@ -353,31 +362,34 @@ span.ls-lockable { display: inline-flex; flex-direction: row; align-items: cente
 .ls-model { width: 170px; }
 .ls-key { width: 230px; max-width: 100%; }
 
-/* Checkbox under a row: "Send a Notification". */
+/* Checkboxes: a filled rounded square with a white tick when on, a dash when mixed,
+   a faint fill with no border when off. 14 square, radius 4 (RCCheckbox's frame); tick 8.5 bold. */
 .ls-checkrow { display: inline-flex; align-items: center; gap: 6px; }
-.ls-check { width: 14px; height: 14px; padding: 0; border: 0; border-radius: 4px; background: transparent; box-shadow: inset 0 0 0 1px var(--ring); color: rgb(var(--fg) / 0.8); display: grid; place-items: center; flex-shrink: 0; }
-.ls-check svg { opacity: 0; transform: scale(.6); transition: opacity .15s, transform .25s var(--spring); stroke: currentColor; stroke-width: 1.4px; }
-.ls-check[aria-checked="true"] { background: rgb(var(--fg) / 0.06); }
+.ls-check { position: relative; width: 14px; height: 14px; padding: 0; border: 0; border-radius: 4px; background: var(--check-off); color: #FFFFFF; display: grid; place-items: center; flex-shrink: 0; transition: background-color .15s; }
+.ls-check svg { opacity: 0; transform: scale(.6); transition: opacity .15s, transform .25s var(--spring); stroke: currentColor; stroke-width: 1.6px; }
+.ls-check[aria-checked="true"], .ls-check[aria-checked="mixed"] { background: var(--accent); }
 .ls-check[aria-checked="true"] svg { opacity: 1; transform: none; }
+.ls-check[aria-checked="mixed"]::after { content: ""; position: absolute; left: 50%; top: 50%; width: 8px; height: 2px; margin: -1px 0 0 -4px; border-radius: 1px; background: #FFFFFF; }
+.ls-check:active { filter: brightness(.92); }
 .ls-checklabel { color: rgb(var(--fg) / 0.6); }
 
 /* Folder lists */
 .ls-list-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 46px; padding: 0 12px; }
 .ls-list-head .ls-label { flex: 0 1 auto; }
-.ls-plus { width: 24px; height: 24px; margin-right: -6px; padding: 0; border: 0; border-radius: 6px; background: transparent; display: grid; place-items: center; }
+.ls-plus { width: 24px; height: 24px; margin-right: -6px; padding: 0; border: 0; border-radius: var(--r-control); background: transparent; display: grid; place-items: center; }
 .ls-plus svg, .ls-minus svg { stroke: currentColor; stroke-width: 0.5px; }
 .ls-item { position: relative; display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; animation: ls-fade .2s; }
 .ls-item + .ls-item { margin-top: 1px; }
 .ls-item + .ls-item::before { content: ""; position: absolute; top: -1px; left: 12px; right: 12px; height: 1px; background: var(--sep); }
 .ls-item:last-child { margin-bottom: 6px; }
-.ls-item-ic { margin: 0 2px; color: rgb(var(--fg) / 0.6); }
+.ls-item-ic { width: 18px; flex-shrink: 0; display: flex; justify-content: center; color: rgb(var(--fg) / 0.6); }
 .ls-item-title { flex: 0 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ls-item-detail { flex: 1 1 0; min-width: 0; margin-left: 8px; text-align: right; color: rgb(var(--fg) / 0.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ls-minus { width: 22px; height: 22px; margin-right: -5px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: rgb(var(--fg) / 0.6); display: grid; place-items: center; flex-shrink: 0; }
+.ls-minus { width: 22px; height: 22px; margin-right: -5px; padding: 0; border: 0; border-radius: var(--r-control); background: transparent; color: rgb(var(--fg) / 0.6); display: grid; place-items: center; flex-shrink: 0; }
 
 /* Licence */
 .ls-lic { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 0; }
-.ls-lic img { width: 66px; height: 66px; margin: 7px; border-radius: 15px; display: block; }
+.ls-lic img { width: 64px; height: 64px; margin: 8px; border-radius: 14px; display: block; }
 .ls-lic b { font-size: 15px; font-weight: 600; line-height: 18px; }
 
 /* ---------------------------------------------------------------- picture cards */
@@ -493,14 +505,15 @@ span.ls-lockable { display: inline-flex; flex-direction: row; align-items: cente
 	transform: translate(-50%, -50%);
 	animation: ls-sheet .34s var(--spring);
 }
-.ls-sheet p { margin: 0; font-size: 13px; line-height: 15px; color: rgb(var(--fg) / 0.85); -webkit-user-select: text; user-select: text; }
+/* CntxtSheet's sentence: HumanType.body, .callout, 12 pt. */
+.ls-sheet p { margin: 0; font-size: 12px; line-height: 15px; color: rgb(var(--fg) / 0.85); -webkit-user-select: text; user-select: text; }
 .ls-form { margin: 12px 0; padding: 20px; }
 .ls-form .ls-frow { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 6px; height: 36px; padding: 0 10px; background: var(--form); }
 .ls-frow:first-child { border-radius: 10px 10px 0 0; justify-content: flex-start; }
 .ls-frow:last-child { border-radius: 0 0 10px 10px; }
 .ls-frow + .ls-frow::before { content: ""; position: absolute; top: 0; left: 10px; right: 10px; height: 1px; background: var(--form-sep); }
-.ls-check-lg { width: 16px; height: 16px; border-radius: 4px; background: rgb(var(--fg) / 0.09); box-shadow: none; }
-.ls-check-lg[aria-checked="true"] { background: var(--accent); color: #FFFFFF; }
+/* The sheet's "I accept" is the native checkbox, 16 square (R5 render). */
+.ls-check-lg { width: 16px; height: 16px; }
 .ls-confirm { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; background: transparent; color: rgb(var(--fg)); font: 400 13px var(--font); text-align: right; outline: none; box-shadow: none !important; -webkit-user-select: text; user-select: text; }
 .ls-confirm::placeholder { color: rgb(var(--fg) / 0.5); }
 .ls-sheetbtns { display: flex; justify-content: flex-end; gap: 8px; }
@@ -512,7 +525,7 @@ span.ls-lockable { display: inline-flex; flex-direction: row; align-items: cente
 /* ---------------------------------------------------------------- phone: a list that pushes into the pane */
 
 @container (max-width: 759px) {
-	.ls-win { display: block; height: 600px; border-radius: 14px; }
+	.ls-win { display: block; width: 100%; height: 600px; border-radius: 14px; }
 	.ls-side, .ls-main {
 		position: absolute;
 		inset: 0;

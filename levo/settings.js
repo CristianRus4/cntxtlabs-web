@@ -50,6 +50,7 @@
 		"gpu.about": "When on, Levo alerts you when the graphics stay busy, with what’s keeping them busy already found.",
 
 		launch: "Opens Levo when you log in, so it keeps watching without you starting it.",
+		dock: "Puts Levo’s icon in the Dock as well as the menu bar. Clicking it opens Levo.",
 		checkEvery: "How often Levo reads disk space, memory, CPU and GPU. Shorter catches problems sooner; longer uses a little less energy.",
 		notifications: "Lets Levo alert you when a limit is crossed. Disk, Memory, CPU and GPU each have their own switch too.",
 		welcome: "The short tour Levo shows on its first launch.",
@@ -159,7 +160,7 @@
 			addFolder: 0,
 			addRoot: 0,
 			v: {
-				launch: true, notifications: true, checkEvery: "10 min",
+				launch: true, dock: false, notifications: true, checkEvery: "10 min",
 				appearance: "System", textSize: 1, menubarIcon: "Outline", popover: "expanded",
 				showMemory: true, showCPU: true, showGPU: true,
 				agent: "claude", analyse: true, model: "Default", customModel: "", effort: "default", cleanup: "balanced",
@@ -211,7 +212,7 @@
 
 		function tile(id, big) {
 			var p = PANES[id];
-			return '<span class="ls-tile' + (big ? " ls-tile-lg" : "") + '" data-anim="' + id + '" style="--t:' + p.tint[0] + ";--td:" + p.tint[1] + '">' + sym(p.symbol, big ? 33 : 12) + "</span>";
+			return '<span class="ls-tile' + (big ? " ls-tile-lg" : "") + '" data-anim="' + id + '" style="--t:' + p.tint[0] + ";--td:" + p.tint[1] + '">' + sym(p.symbol, big ? 33.6 : 12) + "</span>";
 		}
 		function info(id, title) {
 			return '<button type="button" class="ls-info" data-info="' + id + '" data-title="' + esc(title) + '" aria-label="About ' + esc(title) + '">' + sym("info.circle", 12) + "</button>";
@@ -243,7 +244,7 @@
 		}
 		function status(text, tone) { return '<span class="ls-status' + (tone ? " ls-" + tone : "") + '">' + esc(text) + "</span>"; }
 		function check(k, title) {
-			return '<span class="ls-checkrow"><button type="button" class="ls-check" role="checkbox" data-k="' + k + '" aria-checked="' + !!V[k] + '" aria-label="' + esc(title) + '">' + sym("checkmark", 9) + '</button><span class="ls-checklabel" data-k="' + k + '">' + esc(title) + "</span></span>";
+			return '<span class="ls-checkrow"><button type="button" class="ls-check" role="checkbox" data-k="' + k + '" aria-checked="' + !!V[k] + '" aria-label="' + esc(title) + '">' + sym("checkmark", 8.5) + '</button><span class="ls-checklabel" data-k="' + k + '">' + esc(title) + "</span></span>";
 		}
 		function row(title, infoId, controls, below, cls) {
 			return '<div class="ls-row' + (cls ? " " + cls : "") + '"><div class="ls-row-main">' + label(title, infoId) + '<span class="ls-ctl">' + (controls || "") + "</span></div>" + (below ? '<div class="ls-below">' + below + "</div>" : "") + "</div>";
@@ -261,7 +262,7 @@
 			return '<div class="ls-card ls-list"><div class="ls-list-head">' + label(title, infoId) +
 				(addAct ? '<button type="button" class="ls-plus" data-act="' + addAct + '" aria-label="Add Folder">' + sym("plus", 13) + "</button>" : "") + "</div>" +
 				items.map(function (it, i) {
-					return '<div class="ls-item">' + sym(icon || "folder", 13, "ls-item-ic") + '<span class="ls-item-title">' + esc(it[0]) + "</span>" +
+					return '<div class="ls-item">' + '<span class="ls-item-ic">' + sym(icon || "folder", 13) + "</span>" + '<span class="ls-item-title">' + esc(it[0]) + "</span>" +
 						(it[1] ? '<span class="ls-item-detail">' + esc(it[1]) + "</span>" : "") +
 						(removeKey ? '<button type="button" class="ls-minus" data-remove="' + removeKey + '" data-i="' + i + '" aria-label="Remove ' + esc(it[0]) + '">' + sym("minus", 12) + "</button>" : "") + "</div>";
 				}).join("") + "</div>";
@@ -301,6 +302,7 @@
 			general: function () {
 				return section(null, null, [
 					row("Launch at Login", "launch", sw("launch", "Launch at Login")),
+					row("Show in Dock", "dock", sw("dock", "Show in Dock")),
 					row("Check Every", "checkEvery", pop("checkEvery")),
 					row("Notifications", "notifications", sw("notifications", "Notifications")),
 					row("Welcome", "welcome", token("Show", "welcome"))
@@ -524,14 +526,19 @@
 			l.className = "ls-layer";
 			layerKind = null; bubbleFor = null; pinned = false; menuFor = null;
 		}
+		// An element's box in the window's own (unscaled) pixels.
+		function rel(el) {
+			var w = win.getBoundingClientRect(), r = el.getBoundingClientRect(), k = w.width / win.offsetWidth || 1;
+			return { left: (r.left - w.left) / k, top: (r.top - w.top) / k, right: (r.right - w.left) / k, bottom: (r.bottom - w.top) / k, width: r.width / k, height: r.height / k };
+		}
 		function place(el, anchor, below) {
-			var w = win.getBoundingClientRect(), a = anchor.getBoundingClientRect();
+			var W = win.offsetWidth, H = win.offsetHeight, a = rel(anchor);
 			var bw = el.offsetWidth, bh = el.offsetHeight, pad = 8;
-			var cx = a.left + a.width / 2 - w.left;
-			var x = Math.max(pad, Math.min(w.width - bw - pad, cx - bw / 2));
-			var y = a.bottom - w.top + 6;
-			var flip = below === false || (y + bh > w.height - pad && a.top - w.top - 6 - bh > pad);
-			if (flip) y = a.top - w.top - 6 - bh;
+			var cx = a.left + a.width / 2;
+			var x = Math.max(pad, Math.min(W - bw - pad, cx - bw / 2));
+			var y = a.bottom + 6;
+			var flip = below === false || (y + bh > H - pad && a.top - 6 - bh > pad);
+			if (flip) y = a.top - 6 - bh;
 			el.style.left = x + "px";
 			el.style.top = y + "px";
 			el.style.setProperty("--ax", (cx - x) + "px");
@@ -558,10 +565,10 @@
 			l.className = "ls-layer is-menu";
 			layerKind = "menu"; menuFor = btn;
 			btn.setAttribute("aria-expanded", "true");
-			var m = l.firstChild, w = win.getBoundingClientRect(), a = btn.getBoundingClientRect();
-			var x = Math.max(8, Math.min(w.width - m.offsetWidth - 8, a.right - w.left - m.offsetWidth + 4));
-			var y = a.bottom - w.top + 4;
-			if (y + m.offsetHeight > w.height - 8) y = Math.max(8, a.top - w.top - 4 - m.offsetHeight);
+			var m = l.firstChild, W = win.offsetWidth, H = win.offsetHeight, a = rel(btn);
+			var x = Math.max(8, Math.min(W - m.offsetWidth - 8, a.right - m.offsetWidth + 4));
+			var y = a.bottom + 4;
+			if (y + m.offsetHeight > H - 8) y = Math.max(8, a.top - 4 - m.offsetHeight);
 			m.style.left = x + "px"; m.style.top = y + "px";
 			var cur = m.querySelector('[aria-checked="true"]') || m.querySelector("button");
 			if (cur) cur.focus({ preventScroll: true });
@@ -894,7 +901,23 @@
 		var mo = new MutationObserver(sync);
 		mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
+		// The app's window is 900 by 640 pt. Where the page is narrower, the whole window scales as one.
+		var WIN_W = 900, WIN_H = 640;
+		function fit() {
+			var hw = host.clientWidth;
+			if (!hw) return;
+			if (hw < 760) { win.style.transform = ""; host.style.height = ""; win.classList.remove("is-scaled"); return; }
+			var k = Math.min(1, hw / WIN_W);
+			win.classList.toggle("is-scaled", k < 1);
+			win.style.transform = k < 1 ? "scale(" + k + ")" : "";
+			host.style.height = k < 1 ? Math.round(WIN_H * k) + "px" : "";
+			if (layerKind === "bubble" || layerKind === "menu") closeLayer();
+		}
+		var ro = window.ResizeObserver ? new ResizeObserver(fit) : null;
+		if (ro) ro.observe(host); else window.addEventListener("resize", fit);
+
 		render();
+		fit();
 		win.querySelector(".ls-scroll").addEventListener("scroll", onScroll, { passive: true });
 		onScroll();
 		if (opts.pane) { S.view = "pane"; win.dataset.view = "pane"; }
@@ -905,6 +928,8 @@
 			setAlert: function (gb) { V.diskFree = Math.round(+gb) || V.diskFree; sync(); },
 			destroy: function () {
 				mo.disconnect();
+				if (ro) ro.disconnect(); else window.removeEventListener("resize", fit);
+				host.style.height = "";
 				document.removeEventListener("pointerdown", onOutside, true);
 				stopHold();
 				host.innerHTML = "";

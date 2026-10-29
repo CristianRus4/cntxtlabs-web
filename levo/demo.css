@@ -766,69 +766,100 @@ html:not(.dark) .lv-hint { color: rgba(0, 0, 0, 0.45); }
 @keyframes lv-dock { from { opacity: 0; transform: translate(-50%, 110px); } to { transform: translate(-50%, 0); } }
 @keyframes lv-win { from { opacity: 0; transform: translateY(24px) scale(.95); } }
 
-/* ------------------------------------------------------------ Round 5, as the app today */
+/* ------------------------------------------------------------ The app's own sizes (Popover/*.swift, Raycast.swift, text scale 1; 1 pt = 1 px) */
 
-.lv-pop { font-size: 15px; }
-.lv-dhead { gap: 9px; font-size: 15px; }
+.lv-pop { font-size: 13px; --ctl: 14px; }
+.lv-disk { padding: 14px 16px; }
+.lv-dhead { gap: 8px; font-size: 13px; }
 .lv-dhead b { font-weight: 500; }
 .lv-dhead .lv-sec { display: flex; }
-.lv-hero { margin-top: 6px; }
-.lv-free { font-size: 28px; font-weight: 600; letter-spacing: -0.4px; }
-.lv-hero > .lv-sec { font-size: 15px; }
-.lv-can { font-size: 15px; font-weight: 400; color: var(--lv-ready); }
-.lv-can b { font-size: 17px; font-weight: 600; }
-.lv-dbar { margin-top: 14px; }
-.lv-tick { height: 18px; border-radius: 2px; }
+.lv-hero { margin-top: 8px; gap: 6px; }
+.lv-free { font-size: 24px; font-weight: 600; letter-spacing: -0.3px; }
+.lv-hero > .lv-sec { font-size: 13px; }
+.lv-can { font-size: 13px; font-weight: 400; color: var(--lv-ready); }
+.lv-can b { font-size: 15px; font-weight: 600; }
+.lv-dbar { margin-top: 12px; }
+.lv-tick { height: 18px; border-radius: 1.5px; }
 .lv-tick[data-seg="free"] { background-color: rgb(var(--fg) / 0.14) !important; }
-.lv-gauges { padding: 14px 8px 12px; }
+.lv-gauges { padding: 10px 8px; }
+.lv-gauge { gap: 2px; padding: 4px 0; }
 .lv-dial, .lv-dial svg { width: 64px; height: 64px; }
-.lv-dial line { stroke-width: 2.2; }
-.lv-dial-num { font-size: 17px; }
-.lv-dial-num small { font-size: 11px; }
-.lv-g-label { margin-top: 4px; font-size: 13px !important; height: 24px; }
-.lv-g-label:hover, .lv-g-label:focus-visible { background: transparent; }
-.lv-sh { height: 26px; margin: 12px 16px 6px; font-size: 13px; }
-.lv-sh-r { font-size: 13px; gap: 12px; }
-.lv-dd { font-size: 13px !important; font-weight: 400 !important; color: rgb(var(--fg) / 0.6) !important; padding: 0 4px; }
-.lv-dd:hover { background: transparent; color: rgb(var(--fg)) !important; }
-.lv-row { height: 38px; gap: 10px; }
-.lv-grow { height: 38px; }
-.lv-title { font-size: 15px; }
-.lv-subt { font-size: 12px; }
-.lv-gtext { gap: 0; line-height: 1.2; }
-.lv-size { font-size: 15px; color: rgb(var(--fg)); min-width: 52px; }
-.lv-irow { height: 28px; padding-left: 40px; }
-.lv-iname { font-size: 15px; color: rgb(var(--fg)); }
-.lv-irow .lv-size { font-size: 15px; color: rgb(var(--fg)); }
-.lv-chev { width: 18px; color: rgb(var(--fg) / 0.6); }
-.lv-chev-gap { width: 20px; }
-.lv-more { height: 30px; padding-left: 60px; font-size: 15px; }
-.lv-cb { width: 16px; height: 16px; border-radius: 4.5px; box-shadow: inset 0 0 0 1.2px rgb(var(--fg) / 0.28); color: rgb(var(--fg) / 0.85) !important; }
-.lv-tile { width: 24px; height: 24px; border-radius: 6.5px; }
-.lv-tile-sm { width: 16px; height: 16px; border-radius: 4.5px; }
-.lv-picon { width: 24px; height: 24px; display: block; flex-shrink: 0; }
-.lv-info { width: 20px; height: 20px; margin: 0 -2px 0 0; color: rgb(var(--fg) / 0.6) !important; }
+.lv-dial line { stroke-width: 2.29; }
+.lv-dial-num { font-size: 17.9px; gap: 1px; }
+.lv-dial-num small { font-size: 12.2px; font-weight: 400; margin-left: 1px; }
+.lv-g-label { margin-top: 0; height: 22px; padding: 0 6px; font-size: 12px !important; font-weight: 500 !important; border-radius: 7px; }
+.lv-g-label:hover, .lv-g-label:focus-visible { background: rgb(var(--fg) / 0.06); }
+.lv-scroll { padding: 0 8px 8px; }
+.lv-sh { height: auto; margin: 0; padding: 12px 8px 6px; font-size: 12px; font-weight: 500; }
+.lv-sh-r { font-size: 12px; gap: 8px; }
+.lv-sh-note { font-size: 12px; }
+.lv-dd { height: 20px; padding: 0 6px; gap: 4px; font-size: 12px !important; font-weight: 400 !important; color: rgb(var(--fg) / 0.6) !important; border-radius: 6px; }
+.lv-dd:hover { background: rgb(var(--fg) / 0.06); color: rgb(var(--fg)) !important; }
+.lv-dd .lv-sym { width: 8px; height: auto; }
+.lv-row { height: auto; min-height: 38px; margin: 0; padding: 0 8px; gap: 8px; border-radius: var(--ctl); }
+.lv-grow { padding-top: 3px; padding-bottom: 3px; }
+.lv-title { font-size: 13px; }
+.lv-subt { font-size: 11px; }
+.lv-gtext { gap: 1px; line-height: 1.2; }
+.lv-size { font-size: 12px; color: rgb(var(--fg) / 0.8); min-width: 44px; }
+.lv-irow { min-height: 28px; padding-left: 33px; }
+.lv-iname { font-size: 13px; color: rgb(var(--fg)); }
+.lv-irow .lv-size { font-size: 12px; color: rgb(var(--fg) / 0.6); }
+.lv-chev { width: 16px; height: 16px; margin: 0 -3px 0 -2px; color: rgb(var(--fg) / 0.6); }
+.lv-chev-gap { width: 16px; }
+.lv-more { min-height: 0; height: auto; padding: 4px 0 4px 52px; font-size: 12px; color: rgb(var(--fg) / 0.6); }
+.lv-more:hover { background: transparent; color: rgb(var(--fg)); }
+.lv-sep-in { margin: 8px 8px 0; }
+
+.lv-row:hover { background: rgb(var(--sel) / 0.04); }
+.lv-row.is-sel { background: rgb(var(--sel) / 0.1); }
+
+/* Checkboxes: a faint fill when empty; a filled rounded square with a white tick, or a dash when mixed. */
+.lv-cb { width: 14px; height: 14px; border-radius: 4px; box-shadow: none; background: rgb(var(--fg) / 0.1); color: #fff !important; }
+.lv-cb:hover { box-shadow: none; background: rgb(var(--fg) / 0.16); }
+.lv-cb[aria-checked="true"], .lv-cb[aria-checked="mixed"] { background: var(--accent); }
+.lv-cb[aria-checked="true"]:hover, .lv-cb[aria-checked="mixed"]:hover { background: var(--accent); filter: brightness(1.06); }
+.lv-cb .lv-sym { width: 8.5px; height: auto; }
+
+.lv-tile { width: 20px; height: 20px; border-radius: 5px; box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.15); }
+.lv-tile .lv-sym { width: 12px; height: auto; max-height: 12px; }
+.lv-tile-sm { width: 16px; height: 16px; border-radius: 4px; }
+.lv-tile-sm .lv-sym { width: 9.6px; max-height: 9.6px; }
+.lv-picon { width: 20px; height: 20px; display: block; flex-shrink: 0; }
+.lv-info { width: 16px; height: 16px; margin: 0 -2px 0 0; color: rgb(var(--fg) / 0.6) !important; }
+.lv-info .lv-sym { width: 12px; height: auto; }
 .lv-grow:hover .lv-info, .lv-prow:hover .lv-info { display: inline-flex; }
 .lv-prow.is-dim { cursor: default; }
-.lv-prow.is-dim > :not(.lv-info) { opacity: .45; }
+.lv-prow.is-dim > :not(.lv-info) { opacity: .5; }
 .lv-prow.is-dim:hover { background: rgb(var(--sel) / 0.05); }
-.lv-seg { height: 28px; border-radius: 9px; }
-.lv-seg button { height: 24px; padding: 0 12px; font-size: 13px !important; }
-.lv-actions { height: 44px; }
-.lv-checked { font-size: 13px; }
-.lv-primary { font-size: 15px !important; }
+.lv-seg { height: 24px; padding: 0; gap: 2px; border-radius: 0; background: transparent; }
+.lv-seg button { height: 24px; padding: 0 10px; border-radius: var(--ctl); font-size: 12px !important; }
+.lv-seg button:not(.is-on):hover { background: rgb(var(--fg) / 0.05); }
+.lv-actions { height: 40px; padding: 0 10px; gap: 8px; }
+.lv-checked { font-size: 12px; }
+.lv-primary { height: 28px; padding: 0 6px; gap: 6px; font-size: 12px !important; font-weight: 600 !important; }
 .lv-primary:disabled { color: rgb(var(--fg) / 0.4) !important; }
-.lv-cap-sm { min-width: 22px; height: 22px; border-radius: 6px; font-size: 12px; background: rgb(var(--fg) / 0.12); color: rgb(var(--fg) / 0.85); }
-.lv-cap-ring { background: transparent; box-shadow: inset 0 0 0 1px rgb(var(--fg) / 0.3); min-width: 30px; }
+.lv-kbtn .lv-sym { width: 14px; height: auto; }
+.lv-cap-sm { min-width: 18px; height: 18px; padding: 0 4px; border-radius: 5px; font-size: 10px; font-weight: 500; background: rgb(var(--fg) / 0.1); color: rgb(var(--fg)); }
+.lv-cap-ring { background: transparent; box-shadow: inset 0 0 0 1px rgb(var(--fg) / 0.2); min-width: 28px; }
 
-.lv-mb-btn[hidden] { display: none; }
+/* The ⌘K panel (ActionPanel.swift): 300 wide, title 12/500, items 13 at 32, search 13 at 40. */
+.lv-panel { width: 300px; border-radius: 12px; padding-top: 0; }
+.lv-ph { height: 28px; padding: 6px 16px 0; font-size: 12px; }
+.lv-pitems { padding: 6px 8px 6px; }
+.lv-pitem { height: 32px; padding: 0 8px; gap: 8px; font-size: 13px; border-radius: 8px; }
+.lv-pi-icon { width: 16px; height: 16px; }
+.lv-pi-icon .lv-sym { width: 14px; height: auto; max-height: 14px; }
+.lv-psep { margin: 4px -8px; }
+.lv-psearch { margin-top: 0; border-top-width: 0.5px; }
+.lv-psearch input { height: 40px; padding: 0 16px; font-size: 13px; }
 
 /* The ⓘ bubble */
-.lv-bubble { position: absolute; z-index: 25; max-width: 260px; padding: 11px 14px 12px; border-radius: 14px; background: var(--panel); box-shadow: var(--shadow); font-size: 13px; line-height: 1.35; pointer-events: none; animation: lv-in .16s var(--ease-out); }
+.lv-bubble { position: absolute; z-index: 25; width: 260px; box-sizing: border-box; padding: 12px; border-radius: 12px; background: var(--panel); box-shadow: var(--shadow); font-size: 12px; line-height: 1.35; pointer-events: none; animation: lv-in .16s var(--ease-out); }
 html.dark .lv-bubble { background: #333335; }
 .lv-bubble[hidden] { display: none; }
-.lv-bubble b { display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-.lv-bubble p { margin: 4px 0 0; color: rgb(var(--fg) / 0.75); }
+.lv-bubble b { display: block; font-size: 13px; font-weight: 600; margin-bottom: 0; }
+.lv-bubble p { margin: 6px 0 0; color: rgb(var(--fg) / 0.8); }
 .lv-bubble::before { content: ""; position: absolute; top: -6px; left: calc(var(--ax, 40px) - 6px); width: 12px; height: 12px; background: inherit; transform: rotate(45deg); border-radius: 2px; }
 
 /* Clean up: the confirm takes over the popover */
@@ -873,6 +904,26 @@ html.dark .lv-bubble { background: #333335; }
 .lv-lwin.is-opening { animation: lv-win .45s var(--spring) both; }
 @keyframes lv-wclose { to { opacity: 0; transform: scale(.96); } }
 @keyframes lv-wmin { to { opacity: 0; transform: translateY(60vh) scale(.1); } }
+
+/* Round 6: the dock in both appearances, the desktop's disk image, dragging, the window's lights. */
+.lv-dk-d { display: none !important; }
+html.dark .lv-dk-l { display: none !important; }
+html.dark .lv-dk-d { display: block !important; }
+.lv-ic { touch-action: none; cursor: default; }
+.lv-ic.is-dragging { transition: none; z-index: 6; }
+.lv-ic.is-dragging > span:first-child { filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.3)); }
+.lv-ic.is-snapping { transition: left .32s var(--spring), top .32s var(--spring); }
+.lv-ic-vol { position: relative; margin: 10px 0 4px; width: 60px; height: 42px; border-radius: 7px; background: linear-gradient(180deg, #FDFDFD, #DADADE); box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.18), 0 3px 6px rgba(0, 0, 0, 0.22); }
+.lv-ic-vol i { position: absolute; left: 7px; right: 7px; bottom: 9px; height: 3px; border-radius: 2px; background: #B9B9BF; }
+.lv-ic-vol b { position: absolute; right: 8px; top: 9px; width: 5px; height: 5px; border-radius: 50%; background: #5BC85B; }
+.lv-ic-vol::after { content: ""; position: absolute; left: 50%; top: 50%; width: 18px; height: 12px; margin: -10px 0 0 -9px; border-radius: 3px; background: url(img/dock/levo.png) center / 26px no-repeat; }
+.lv-lights button { display: inline-flex; align-items: center; justify-content: center; color: rgba(0, 0, 0, 0.55); }
+.lv-lights button .lv-sym { opacity: 0; width: 7px; height: auto; }
+.lv-lights:hover button .lv-sym { opacity: 1; }
+.lv-w-clock { padding: 16px; }
+.lv-w-city { margin-top: 0; font-size: 13px; font-weight: 600; color: rgb(var(--fg) / 0.6); }
+.lv-w-date { margin-top: 2px; font-size: 13px; font-weight: 500; color: rgb(var(--fg) / 0.6); }
+.lv-w-time { margin-top: auto; }
 
 /* ------------------------------------------------------------ Compact (phones) */
 

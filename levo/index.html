@@ -40,16 +40,55 @@
 	<link rel="stylesheet" href="demo.css">
 	<link rel="stylesheet" href="menus.css">
 	<link rel="stylesheet" href="settings.css">
+	<link rel="stylesheet" href="mobile.css">
 	<script src="img/symbols/symbols.js" defer></script>
 	<script src="demo.js" defer></script>
 	<script src="menus.js" defer></script>
 	<script src="settings.js" defer></script>
 	<script src="levo.js" defer></script>
+	<script src="mobile.js" defer></script>
 	<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Levo","description":"Levo is a Mac menubar app that watches disk, memory, CPU and GPU. Your own coding agent works out what is safe to clean or quit, and Levo cleans only what you tick.","url":"https://cntxtlabs.co/levo","applicationCategory":"UtilitiesApplication","operatingSystem":"macOS 26 or later","publisher":{"@type":"Organization","name":"Cntxt Labs","url":"https://cntxtlabs.co/"}}</script>
 </head>
 <body>
 
 	<main>
+
+		<section class="m" aria-label="Levo">
+			<div class="m-bar" data-m-bar inert>
+				<span class="m-bar-name"><img src="img/icon-96.png" width="28" height="28" alt="" loading="lazy">Levo</span>
+				<a class="btn btn-sm" data-download href="#">Download</a>
+				<a class="btn btn-sm btn-quiet" data-buy href="#">Buy</a>
+			</div>
+			<div class="m-hero">
+				<div class="m-hero-text" data-m-lift>
+					<img class="m-icon m-in" src="img/icon-256.png" width="112" height="112" alt="" loading="lazy">
+					<h1 class="m-in">Levo</h1>
+					<p class="m-price m-in"><span class="circled"><b data-price></b><svg viewBox="0 0 176 55" preserveAspectRatio="none" aria-hidden="true"><path d="M131 9.5C104 2.4 50 3 23 12.6 2.6 19.8-4 34 18.6 42.4c27 10 99.4 11.2 133.5-2.7 27.3-11.1 25.8-25.3-6.9-32.4C122.6 2.5 92 1.4 70 3.7"/></svg></span><span data-term></span></p>
+					<div class="m-ctas m-in" data-m-ctas>
+						<a class="btn" data-download href="#">Download</a>
+						<a class="btn btn-quiet" data-buy href="#">Buy</a>
+					</div>
+					<p class="m-reqs m-in"><span data-sym="laptopcomputer" data-size="13"></span>macOS 26 or later</p>
+				</div>
+				<div class="m-pop" data-m-pop>
+					<picture class="m-shot m-in">
+						<source media="(prefers-color-scheme: dark)" srcset="img/shots/popover-dark.webp" data-dark>
+						<img src="img/shots/popover-light.webp" width="1080" height="2223" alt="Levo in the menu bar" loading="lazy" decoding="async">
+					</picture>
+				</div>
+			</div>
+			<div class="m-sect">
+				<h2 class="m-head m-rv">Agents</h2>
+				<div class="m-agents m-rv" data-m-agents></div>
+			</div>
+			<div class="m-sect">
+				<h2 class="m-head m-rv">Settings</h2>
+				<picture class="m-shot m-shot-wide m-rv">
+					<source media="(prefers-color-scheme: dark)" srcset="img/shots/settings-dark.webp" data-dark>
+					<img src="img/shots/settings-light.webp" width="1800" height="1282" alt="Levo Settings" loading="lazy" decoding="async">
+				</picture>
+			</div>
+		</section>
 
 		<section class="first" aria-label="Levo">
 			<div id="levo-demo" class="demo"></div>

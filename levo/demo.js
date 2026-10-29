@@ -83,7 +83,8 @@
 			{ id: "installers", kind: "folder", name: "Old Installers", col: 1, row: 0 },
 			{ id: "zip", kind: "zip", name: "project-final-v2.zip", col: 0, row: 1 },
 			{ id: "notes", kind: "doc", name: "notes (3).txt", col: 1, row: 1 },
-			{ id: "unzipped", kind: "folder", name: "project-final-v2", col: 0, row: 2, later: true }
+			{ id: "unzipped", kind: "folder", name: "project-final-v2", col: 0, row: 2, later: true },
+			{ id: "dmg", kind: "volume", name: "Levo", col: 1, row: 2 }
 		],
 		// The dock, from img/dock/ (one folder, so the set can be swapped).
 		dock: [
@@ -97,7 +98,7 @@
 			{ id: "calendar", name: "Calendar", img: "img/dock/calendar.png" },
 			{ id: "settings", name: "System Settings", img: "img/dock/settings.png" },
 			{ id: "terminal", name: "Terminal", img: "img/dock/terminal.png" },
-			{ id: "levo", name: "Levo", img: "img/icon-96.png" },
+			{ id: "levo", name: "Levo", img: "img/dock/levo.png" },
 			{ id: "trash", name: "Trash", img: "img/dock/trash-empty.png", full: "img/dock/trash-full.png" }
 		],
 		notification: { title: "Disk below {alert}", body: "{ready} ready to clean up" },
@@ -234,7 +235,7 @@
 			'<div class="lv-wall" data-act="desk"></div>' +
 			'<div class="lv-icons" data-icons></div>' +
 			'<div class="lv-widgets" aria-hidden="true">' +
-				'<div class="lv-widget lv-w-clock"><span class="lv-w-date" data-wdate></span><span class="lv-w-time" data-wtime></span><span class="lv-w-city" data-city></span></div>' +
+				'<div class="lv-widget lv-w-clock"><span class="lv-w-city" data-city></span><span class="lv-w-date" data-wdate></span><span class="lv-w-time" data-wtime></span></div>' +
 				'<div class="lv-widget lv-w-batt" data-wbatt hidden><span class="lv-w-ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" class="lv-ring-bg"/><circle cx="32" cy="32" r="27" class="lv-ring-fg" data-ringfg/></svg><span class="lv-w-ringglyph" data-ringglyph></span></span><span class="lv-w-dev" data-dev></span><span class="lv-w-level" data-level></span></div>' +
 				'<div class="lv-widget lv-w-cal" data-wcal></div>' +
 			'</div>' +
@@ -325,6 +326,7 @@
 		if (ic.kind === "folder") art = '<span class="lv-ic-folder">' + sym("folder.fill", 54) + "</span>";
 		else if (ic.kind === "zip") art = '<span class="lv-ic-page lv-ic-zip"><i></i><b>ZIP</b></span>';
 		else if (ic.kind === "doc") art = '<span class="lv-ic-page lv-ic-txt"><i></i><em></em><em></em><em></em><b>TXT</b></span>';
+		else if (ic.kind === "volume") art = '<span class="lv-ic-vol"><i></i><b></b></span>';
 		else art = '<span class="lv-ic-shot"><i></i></span>';
 		return '<button type="button" class="lv-ic' + (ic.later ? " is-hidden" : "") + '" data-icon="' + ic.id + '" style="--col:' + ic.col + ";--row:" + ic.row + '">' + art + '<span class="lv-ic-name">' + esc(ic.name) + "</span></button>";
 	}
@@ -332,7 +334,7 @@
 	// A disk image window, as a Mac app arrives. On a phone it is a plain card.
 	function lwinHTML() {
 		return '<div class="lv-lwin" data-lwin role="dialog" aria-label="Levo">' +
-			'<div class="lv-lwin-bar"><span class="lv-lights"><button type="button" data-act="lwinclose" aria-label="Close"></button><button type="button" data-act="lwinmin" aria-label="Minimise"></button><button type="button" tabindex="-1" aria-hidden="true"></button></span><b>Levo</b></div>' +
+			'<div class="lv-lwin-bar"><span class="lv-lights"><button type="button" data-act="lwinclose" aria-label="Close">' + sym("xmark", 7) + '</button><button type="button" data-act="lwinmin" aria-label="Minimise">' + sym("minus", 7) + '</button><button type="button" tabindex="-1" aria-hidden="true">' + sym("plus", 7) + '</button></span><b>Levo</b></div>' +
 			'<div class="lv-lwin-body">' +
 				'<button type="button" class="lv-lwin-app" data-act="lwinapp" aria-label="Levo"><img src="img/icon-256.png" width="104" height="104" alt="" draggable="false"><span>Levo</span></button>' +
 				'<svg class="lv-lwin-arrow" viewBox="0 0 120 24" aria-hidden="true"><path d="M4 12h98"/><path d="M98 4l10 8-10 8"/></svg>' +
@@ -345,7 +347,9 @@
 	}
 	function dockHTML() {
 		return '<div class="lv-dock-shelf"></div>' + LEVO_DEMO.dock.map(function (d) {
-			var art = '<img src="' + d.img + '" alt="" draggable="false">';
+			var dark = d.img.replace(/\.png$/, "-dark.png");
+			var art = d.full ? '<img src="' + d.img + '" alt="" draggable="false">' :
+				'<img class="lv-dk-l" src="' + d.img + '" alt="" draggable="false"><img class="lv-dk-d" src="' + dark + '" alt="" draggable="false">';
 			return (d.id === "trash" ? '<span class="lv-dock-sep"></span>' : "") +
 				'<button type="button" class="lv-dk" data-dock="' + d.id + '" aria-label="' + esc(d.name) + '"><span class="lv-dk-lift"><span class="lv-dk-art">' + art + '</span></span><span class="lv-dk-label">' + esc(d.name) + '</span><i class="lv-dk-dot"></i></button>';
 		}).join("");
@@ -370,7 +374,7 @@
 	function renderDisk(free) {
 		$("[data-free]").textContent = gb(free);
 		var t = tickedGB();
-		$("[data-can]").innerHTML = t > 0 ? "<b>" + gb(t) + "</b> to clean up" : "";
+		$("[data-can]").innerHTML = t > 0 ? "<b>" + gb(t) + "</b>\u2009to clean up" : "";
 		$("[data-ready]").innerHTML = S.analysing ? '<i class="lv-spin"></i>Analysing' : readyGB() > 0 ? gb(readyGB()) : "";
 		$("[data-levellabel]").textContent = LEVO_DEMO.levels.indexOf(S.level) >= 0 ? "Smartly" : S.level;
 	}
@@ -602,13 +606,81 @@
 		var y = Math.round(Math.max(64, Math.min(H - wh - 190, (H - wh) / 2 - 40)));
 		if (!S.lwinMoved) { win.style.left = x + "px"; win.style.top = y + "px"; }
 		var hint = $(".lv-hint");
-		hint.style.left = (parseFloat(win.style.left) + ww / 2) + "px";
-		hint.style.top = (parseFloat(win.style.top) + wh + 18) + "px";
-		$$(".lv-ic").forEach(function (el) {
-			el.style.left = (24 + el.style.getPropertyValue("--col") * 104) + "px";
-			el.style.top = ((widgets ? 248 : 48) + el.style.getPropertyValue("--row") * 116) + "px";
-		});
+		var dock = $("[data-dock]");
+		hint.style.left = (W / 2) + "px";
+		hint.style.top = (dock.offsetTop - 34) + "px";
+		placeIcons(widgets);
 		renderIcons();
+	}
+
+	// Desktop icons sit loosely, like a real messy desktop: a jittered column from
+	// the top left, never over the widgets, the windows, the popover or each other.
+	// They can be dragged; positions reset on reload.
+	var IC_W = 92, IC_H = 104;
+	function rectOf(el) { return el && !el.hidden && el.offsetWidth ? { x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight } : null; }
+	function hits(a, b, pad) { pad = pad || 0; return a.x < b.x + b.w + pad && a.x + a.w + pad > b.x && a.y < b.y + b.h + pad && a.y + a.h + pad > b.y; }
+	function blockers(except) {
+		var out = [], wg = $(".lv-widgets"), pw = $(".lv-popwrap");
+		if (!scene.classList.contains("no-widgets")) out.push(rectOf(wg));
+		out.push({ x: pw.offsetLeft, y: pw.offsetTop, w: pw.offsetWidth, h: $(".lv-pop").offsetHeight });
+		out.push(rectOf($("[data-lwin]")));
+		out.push({ x: 0, y: $("[data-dock]").offsetTop - 50, w: scene.offsetWidth, h: 200 });
+		$$(".lv-ic").forEach(function (el) { if (el !== except && !el.classList.contains("is-hidden") && el.style.left) out.push({ x: el.offsetLeft, y: el.offsetTop, w: IC_W, h: IC_H }); });
+		return out.filter(Boolean);
+	}
+	function freeSpot(el, x0, y0) {
+		var bl = blockers(el), W = scene.offsetWidth;
+		for (var ring = 0; ring < 40; ring++) {
+			for (var k = 0; k < Math.max(1, ring * 8); k++) {
+				var a = ring ? k / (ring * 8) * Math.PI * 2 : 0, x = Math.round(x0 + Math.cos(a) * ring * 14), y = Math.round(y0 + Math.sin(a) * ring * 14);
+				var me = { x: x, y: y, w: IC_W, h: IC_H };
+				if (x < 8 || y < 38 || x + IC_W > W - 8) continue;
+				if (!bl.some(function (b) { return hits(me, b, 6); })) return { x: x, y: y };
+			}
+		}
+		return { x: x0, y: y0 };
+	}
+	function placeIcons(widgets) {
+		if (S.iconsPlaced) return;
+		S.iconsPlaced = true;
+		$$(".lv-ic").forEach(function (el) { el.style.left = ""; });
+		$$(".lv-ic").forEach(function (el) {
+			var col = +el.style.getPropertyValue("--col"), row = +el.style.getPropertyValue("--row");
+			var jx = Math.round((Math.random() - 0.5) * 40), jy = Math.round((Math.random() - 0.5) * 26);
+			var p = freeSpot(el, 28 + col * 108 + jx, (widgets ? 250 : 50) + row * 122 + jy);
+			el.style.left = p.x + "px";
+			el.style.top = p.y + "px";
+		});
+	}
+	function dragIcon(el, e) {
+		var x0 = e.clientX, y0 = e.clientY, l0 = el.offsetLeft, t0 = el.offsetTop, moved = false;
+		var mv = function (ev) {
+			var dx = ev.clientX - x0, dy = ev.clientY - y0;
+			if (!moved && Math.abs(dx) + Math.abs(dy) < 5) return;
+			if (!moved) { moved = true; S.dragged = true; el.classList.add("is-dragging"); $$(".lv-ic").forEach(function (x) { x.classList.toggle("is-sel", x === el); }); }
+			el.style.left = (l0 + dx) + "px";
+			el.style.top = (t0 + dy) + "px";
+		};
+		var up = function () {
+			document.removeEventListener("pointermove", mv);
+			document.removeEventListener("pointerup", up);
+			if (!moved) return;
+			el.classList.remove("is-dragging");
+			var me = { x: el.offsetLeft, y: el.offsetTop, w: IC_W, h: IC_H };
+			var W = scene.offsetWidth, H = scene.offsetHeight;
+			var bad = me.x < 0 || me.y < 32 || me.x + IC_W > W || me.y + IC_H > H || blockers(el).some(function (b) { return hits(me, b, 2); });
+			if (bad) {
+				var p = freeSpot(el, Math.max(8, Math.min(W - IC_W - 8, me.x)), Math.max(40, me.y));
+				el.classList.add("is-snapping");
+				el.style.left = p.x + "px";
+				el.style.top = p.y + "px";
+				later(function () { el.classList.remove("is-snapping"); }, 360);
+			}
+			renderIcons();
+			setTimeout(function () { S.dragged = false; }, 0);
+		};
+		document.addEventListener("pointermove", mv);
+		document.addEventListener("pointerup", up);
 	}
 
 	// ---------------------------------------------------------------- Timeline
@@ -1186,6 +1258,7 @@
 		var w = $("[data-lwin]"), hint = $(".lv-hint");
 		S.lwinClosed = !show;
 		w.classList.remove("is-closing", "is-minimising", "is-opening");
+		if (show && !w.hidden && !w.classList.contains("is-closing")) { w.classList.remove("is-opening"); void w.offsetWidth; w.classList.add("is-opening"); return; }
 		if (show) { w.hidden = false; void w.offsetWidth; w.classList.add("is-opening"); later(function () { w.classList.remove("is-opening"); }, 500); return; }
 		w.classList.add(how === "min" ? "is-minimising" : "is-closing");
 		hint.style.opacity = "0";
@@ -1209,6 +1282,7 @@
 			var u = at(0, 90);
 			M.window("finder", { id: "unzipped", title: "project-final-v2", x: u.x, y: u.y, w: 560, h: 340, items: C.unzipped || [] });
 		} else if (id === "zip") unzip();
+		else if (id === "dmg") lwin(true);
 	}
 	function unzip() {
 		var zip = $('[data-icon="zip"]'), out = $('[data-icon="unzipped"]');
@@ -1218,6 +1292,8 @@
 		later(function () {
 			zip.classList.remove("is-unzipping");
 			S.unzipped = true;
+			var p = freeSpot(out, zip.offsetLeft + 18, zip.offsetTop + 40);
+			out.style.left = p.x + "px"; out.style.top = p.y + "px";
 			out.classList.remove("is-hidden");
 			out.classList.add("is-born");
 			$$(".lv-ic").forEach(function (x) { x.classList.toggle("is-sel", x === out); });
@@ -1309,6 +1385,7 @@
 		var dock = $("[data-dock]");
 		dock.addEventListener("mousemove", onDockMove);
 		dock.addEventListener("mouseleave", onDockLeave);
+		$$(".lv-ic").forEach(function (ic) { ic.addEventListener("pointerdown", function (ev) { if (ev.button === 0) dragIcon(ic, ev); }); });
 		$('[data-dock="levo"]').addEventListener("pointerdown", function (ev) { if (ev.button === 0) dragBack(ev.currentTarget, ev, true); });
 		$(".lv-mb-levo").addEventListener("pointerdown", function (ev) { if (ev.button === 0) dragBack(ev.currentTarget, ev, false); });
 		$$(".lv-dk img").forEach(function (img) {
