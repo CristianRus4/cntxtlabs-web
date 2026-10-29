@@ -36,22 +36,22 @@
 	<link rel="apple-touch-icon" href="../apple-touch-icon.png">
 	<script>(function (r) { if (document.referrer.indexOf(location.origin + "/") === 0) r.classList.add("within"); try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") r.setAttribute("data-theme", t); } catch (e) {} })(document.documentElement);</script>
 	<script>(function (r) { r.removeAttribute("data-theme"); r.classList.add("js"); if (matchMedia("(prefers-color-scheme: dark)").matches) r.classList.add("dark"); })(document.documentElement);</script>
-	<link rel="stylesheet" href="levo.css?v=12">
-	<link rel="stylesheet" href="demo.css?v=12">
-	<link rel="stylesheet" href="desk.css?v=12">
-	<link rel="stylesheet" href="menus.css?v=12">
-	<link rel="stylesheet" href="settings.css?v=12">
-	<link rel="stylesheet" href="mobile.css?v=12">
-	<link rel="stylesheet" href="bento.css?v=12">
-	<link rel="stylesheet" href="footer.css?v=12">
-	<script src="img/symbols/symbols.js?v=12" defer></script>
-	<script src="demo.js?v=12" defer></script>
-	<script src="menus.js?v=12" defer></script>
-	<script src="settings.js?v=12" defer></script>
-	<script src="levo.js?v=12" defer></script>
-	<script src="mobile.js?v=12" defer></script>
-	<script src="bento.js?v=12" defer></script>
-	<script src="footer.js?v=12" defer></script>
+	<link rel="stylesheet" href="levo.css?v=13">
+	<link rel="stylesheet" href="demo.css?v=13">
+	<link rel="stylesheet" href="desk.css?v=13">
+	<link rel="stylesheet" href="menus.css?v=13">
+	<link rel="stylesheet" href="settings.css?v=13">
+	<link rel="stylesheet" href="mobile.css?v=13">
+	<link rel="stylesheet" href="bento.css?v=13">
+	<link rel="stylesheet" href="footer.css?v=13">
+	<script src="img/symbols/symbols.js?v=13" defer></script>
+	<script src="demo.js?v=13" defer></script>
+	<script src="menus.js?v=13" defer></script>
+	<script src="settings.js?v=13" defer></script>
+	<script src="levo.js?v=13" defer></script>
+	<script src="mobile.js?v=13" defer></script>
+	<script src="bento.js?v=13" defer></script>
+	<script src="footer.js?v=13" defer></script>
 	<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Levo","description":"Levo is a Mac menubar app that watches disk, memory, CPU and GPU. Your own coding agent works out what is safe to clean or quit, and Levo cleans only what you tick.","url":"https://cntxtlabs.co/levo","applicationCategory":"UtilitiesApplication","operatingSystem":"macOS 26 or later","publisher":{"@type":"Organization","name":"Cntxt Labs","url":"https://cntxtlabs.co/"}}</script>
 </head>
 <body>
@@ -85,7 +85,6 @@
 						<a class="btn" data-download href="#">Download</a>
 						<a class="btn btn-quiet" data-buy href="#">Buy</a>
 					</div>
-					<p class="m-reqs m-in"><span data-sym="laptopcomputer" data-size="13"></span>macOS 26 or later</p>
 				</div>
 				<div class="m-mac" data-m-mac>
 					<div class="m-mac-in m-in">
@@ -129,11 +128,16 @@
 				<div class="m-get-art m-rv" data-m-art><img src="img/icon-256.png" width="128" height="128" alt="" loading="lazy"></div>
 				<h2 class="m-rv">Levo</h2>
 				<p class="m-price m-rv"><span class="circled"><b data-price></b><svg viewBox="0 0 176 55" preserveAspectRatio="none" aria-hidden="true"><path d="M131 9.5C104 2.4 50 3 23 12.6 2.6 19.8-4 34 18.6 42.4c27 10 99.4 11.2 133.5-2.7 27.3-11.1 25.8-25.3-6.9-32.4C122.6 2.5 92 1.4 70 3.7"/></svg></span><span data-term></span></p>
+				<div class="tiers m-rv" data-tiers>
+					<p class="tiers-line">Lifetime licence for 2 Macs. No subscription.</p>
+					<div class="tiers-bar" data-tiers-bar role="img"></div>
+					<p class="tiers-next" data-tiers-next><b data-next></b> Up $5 every 10 licences.</p>
+					<p class="tiers-left" data-left hidden></p>
+				</div>
 				<div class="m-ctas m-rv" data-m-end>
 					<a class="btn" data-download href="#">Download</a>
 					<a class="btn btn-quiet" data-buy href="#">Buy</a>
 				</div>
-				<p class="m-reqs m-rv"><span data-sym="laptopcomputer" data-size="13"></span>macOS 26 or later</p>
 			</div>
 		</section>
 
@@ -150,12 +154,17 @@
 			<img class="get-icon rv" src="img/icon-256.png" width="128" height="128" alt="">
 			<h2 class="rv">Levo</h2>
 			<p class="price rv"><span class="circled"><b data-price></b><svg viewBox="0 0 176 55" preserveAspectRatio="none" aria-hidden="true"><path d="M131 9.5C104 2.4 50 3 23 12.6 2.6 19.8-4 34 18.6 42.4c27 10 99.4 11.2 133.5-2.7 27.3-11.1 25.8-25.3-6.9-32.4C122.6 2.5 92 1.4 70 3.7"/></svg></span><span data-term></span></p>
+			<div class="tiers rv" data-tiers>
+				<p class="tiers-line">Lifetime licence for 2 Macs. No subscription.</p>
+				<div class="tiers-bar" data-tiers-bar role="img"></div>
+				<p class="tiers-next" data-tiers-next><b data-next></b> Up $5 every 10 licences.</p>
+				<p class="tiers-left" data-left hidden></p>
+			</div>
 			<div class="ctas rv">
 				<!-- PLACEHOLDER: the links come from LEVO in levo.js ([DOWNLOAD LINK], [BUY LINK]). -->
 				<a class="btn" data-download href="#">Download</a>
 				<a class="btn btn-quiet" data-buy href="#">Buy</a>
 			</div>
-			<p class="reqs rv"><span data-sym="laptopcomputer" data-size="13"></span>macOS 26 or later</p>
 		</section>
 
 	</main>

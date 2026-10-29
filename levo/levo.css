@@ -15,6 +15,7 @@
 	--btn-text: #FFFFFF;
 	--glow-a: rgba(122, 150, 255, 0.35);
 	--glow-b: rgba(255, 170, 120, 0.3);
+	--lit: #8A63FF;
 	--round: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 	--sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
 	color-scheme: light;
@@ -30,6 +31,7 @@ html.dark {
 	--btn-text: #070707;
 	--glow-a: rgba(98, 84, 220, 0.38);
 	--glow-b: rgba(40, 120, 200, 0.3);
+	--lit: #A485FF;
 	color-scheme: dark;
 }
 
@@ -143,7 +145,22 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 .price { margin-top: 26px; display: inline-flex; align-items: baseline; gap: 34px; }
 .price b { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
 .price > span:last-child { font-size: 17px; font-weight: 600; color: var(--muted); }
-.reqs { margin-top: 26px; display: inline-flex; align-items: center; gap: 7px; font-size: 14px; color: var(--muted); }
+
+/* The price rises: ten steps from the first price to the last, the current one lit with its price
+   above it, the ends under the bar. levo.js builds the bars from the live price. */
+.tiers { margin: 26px auto 0; max-width: 320px; text-align: center; }
+.tiers-line { margin: 0; font-size: 15px; color: var(--muted); }
+.tiers-bar { margin: 46px auto 0; width: 100%; }
+.tiers-steps { display: flex; align-items: flex-end; gap: 6px; height: 84px; }
+.tiers-steps i { position: relative; flex: 1; font-style: normal; border-radius: 5px; background: rgb(var(--ink) / 0.08); transform-origin: 50% 100%; transition: transform .6s cubic-bezier(.22, 1, .36, 1) calc(.25s + var(--i) * 45ms); }
+.tiers-steps i.is-past { background: rgb(var(--ink) / 0.22); }
+.tiers-steps i.is-now { background: var(--lit); }
+.tiers-steps b { position: absolute; left: 50%; bottom: calc(100% + 8px); translate: -50% 0; font-size: 13px; font-weight: 700; color: var(--lit); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tiers-ends { margin-top: 8px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tiers-next { margin: 20px 0 0; font-size: 15px; color: var(--muted); }
+.tiers-next b { font-weight: 600; color: var(--text); }
+.tiers-left { margin: 6px 0 0; font-size: 15px; color: var(--muted); }
+.js .tiers:not(.in):not(.is-in) .tiers-steps i { transform: scaleY(0.15); }
 
 .foot { max-width: 1080px; margin: 110px auto 0; padding: 26px 20px 44px; display: flex; gap: 22px; justify-content: center; border-top: 1px solid var(--rim); font-size: 14px; color: var(--muted); }
 .foot a:hover { color: var(--text); }
@@ -170,6 +187,7 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 @media (prefers-reduced-motion: reduce) {
 	html { scroll-behavior: auto; }
 	.circled.drawn path { animation: none; stroke-dashoffset: 0; }
+	.js .tiers .tiers-steps i { transform: none; transition: none; }
 	.js .rv { opacity: 1; transform: none; transition: opacity .3s; }
 	.btn:hover, .btn:active { transform: none; }
 	.lv-sym { animation: none !important; }

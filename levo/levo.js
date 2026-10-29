@@ -7,11 +7,14 @@
 	"use strict";
 
 	// Price and links, in one place. The buttons, the Levo window, the desktop notes and
-	// the agents' install prompt all read from here. The price is the one constant;
-	// payments will later set it from the live price.
+	// the agents' install prompt all read from here. The price is the fallback; the live
+	// price (priceURL) replaces it once it loads. It rises $5 every 10 licences, $4.99 to $49.99.
 	var LEVO = {
 		price: "$4.99",
-		term: "Lifetime",
+		priceURL: "https://levo-price.cristianrus.workers.dev/levo/price.json",
+		tiers: { first: 4.99, step: 5, last: 49.99, every: 10 },
+		left: null, // "N left at $4.99" once the Worker gives the count and the owner wants it shown
+		term: "once",
 		download: "[DOWNLOAD LINK]",
 		buy: "[BUY LINK]",
 		agents: "https://cntxtlabs.co/levo/agents.md",
@@ -30,9 +33,43 @@
 	function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 	function placeholder(url) { return /^\[/.test(url); }
 
-	all("[data-price]").forEach(function (el) { el.textContent = LEVO.price; });
 	all("[data-term]").forEach(function (el) { el.textContent = LEVO.term; });
-	all("[data-buy]").forEach(function (a) { a.textContent = "Buy for " + LEVO.price; a.href = LEVO.buy; if (placeholder(LEVO.buy)) a.setAttribute("data-placeholder", ""); });
+	all("[data-buy]").forEach(function (a) { a.href = LEVO.buy; if (placeholder(LEVO.buy)) a.setAttribute("data-placeholder", ""); });
+
+	// The price and everything that names it: the big price, the Buy buttons, the Levo window in
+	// the demo, and the tiers (ten bars, the current one lit with its price above, the ends under).
+	function money(n) { return "$" + n.toFixed(2); }
+	function showPrice() {
+		var T = LEVO.tiers, now = parseFloat(LEVO.price.replace(/[^0-9.]/g, ""));
+		var steps = Math.round((T.last - T.first) / T.step), at = Math.max(0, Math.min(steps, Math.round((now - T.first) / T.step)));
+		all("[data-price], [data-lprice]").forEach(function (el) { el.textContent = LEVO.price; });
+		all("[data-buy], [data-lbuy]").forEach(function (a) { a.textContent = "Buy for " + LEVO.price; });
+		all("[data-tiers-bar]").forEach(function (bar) {
+			var html = "";
+			for (var i = 0; i <= steps; i++) {
+				html += '<i style="--i:' + i + ";height:" + Math.round(22 + i / steps * 62) + 'px"' + (i < at ? ' class="is-past"' : i === at ? ' class="is-now"' : "") + ">" +
+					(i === at ? "<b>" + LEVO.price + "</b>" : "") + "</i>";
+			}
+			bar.innerHTML = '<span class="tiers-steps">' + html + '</span><span class="tiers-ends"><span>' + money(T.first) + "</span><span>" + money(T.last) + "</span></span>";
+			bar.setAttribute("aria-label", "The price rises from " + money(T.first) + " to " + money(T.last) + ". It is " + LEVO.price + " now.");
+		});
+		var next = at < steps ? money(T.first + (at + 1) * T.step) : null;
+		all("[data-tiers-next]").forEach(function (el) { el.hidden = !next; });
+		all("[data-next]").forEach(function (el) { el.textContent = next ? "Then " + next + "." : ""; });
+		all("[data-left]").forEach(function (el) { el.hidden = !LEVO.left; el.textContent = LEVO.left || ""; });
+		if (window.LevoDemo && demoOpts) demoOpts.price = LEVO.price;
+	}
+	var demoOpts = null;
+	showPrice();
+	// The live price, if it comes in time; otherwise the fallback stays.
+	if (window.fetch) {
+		var ctl = window.AbortController ? new AbortController() : null;
+		if (ctl) setTimeout(function () { ctl.abort(); }, 5000);
+		fetch(LEVO.priceURL, ctl ? { signal: ctl.signal } : {}).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+			var n = d && typeof d.price === "number" ? d.price : NaN;
+			if (n >= LEVO.tiers.first && n <= LEVO.tiers.last) { LEVO.price = money(n); showPrice(); }
+		}).catch(function () {});
+	}
 	all("[data-download]").forEach(function (a) { a.href = LEVO.download; if (placeholder(LEVO.download)) a.setAttribute("data-placeholder", ""); else a.setAttribute("download", ""); });
 	all("[data-privacy]").forEach(function (a) { a.href = LEVO.privacy; if (placeholder(LEVO.privacy)) a.setAttribute("data-placeholder", ""); });
 	all("[data-terms]").forEach(function (a) { a.href = LEVO.terms; if (placeholder(LEVO.terms)) a.setAttribute("data-placeholder", ""); });
@@ -87,10 +124,11 @@
 		}, { threshold: 1 }).observe(c);
 	});
 
-	D.mount(document.getElementById("levo-demo"), {
+	demoOpts = {
 		price: LEVO.price, term: LEVO.term, download: LEVO.download, buy: LEVO.buy,
 		setTheme: setTheme, theme: theme
-	});
+	};
+	D.mount(document.getElementById("levo-demo"), demoOpts);
 
 	// "Click here": the arrow's tip sits just above the frame, over Levo's menubar icon; it fades
 	// once the visitor clicks that icon.

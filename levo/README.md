@@ -126,9 +126,14 @@ Switched off for now: `SHOW_SETTINGS` in `levo.js`. Set it to `true` to bring it
 
 `LEVO` at the top of `levo.js` holds the price, the term, the download link and
 the checkout link. The Levo window, the Buy and Download buttons and the agents'
-install prompt all read from it. When the price rises, change `price` and
-nothing else. The page never says when or by how much the price rises, or how
-many licences are left at a price.
+install prompt all read from it. The live price comes from `priceURL` (the
+price Worker's price.json, CORS open); `price` is the fallback if it fails. The
+price section shows the price with "once", "Lifetime licence for 2 Macs. No
+subscription.", a bar of the ten tiers ($4.99 to $49.99, step $5, from
+`tiers`) with the current one lit, "Then" the next tier, and "Up $5 every 10
+licences." (the owner's call, 2026-10-30). How many licences are left is not
+shown: the Worker doesn't give it. `left` and the hidden `[data-left]` line are
+ready for "N left at $4.99" if the owner wants it.
 
 `[DOWNLOAD LINK]` and `[BUY LINK]` are placeholders until the real download and
 the Lemon Squeezy checkout exist; until then the buttons do nothing.
