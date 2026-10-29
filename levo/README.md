@@ -148,16 +148,20 @@ carries names, labels, numbers and the price only.
 The demo shows the app's Summary layout in round 13's order (PopoverView.swift):
 the Mac's name (with "Auto mode" in plain orange at its end while it's on), a
 divider, the gauges, a divider, free space, "to clean up" and the five-part
-disk bar (macOS's storage palette as the app: System Data yellow, Your Data
-red, Apps orange, Ready to free green, Free faint; only the green fills), a
+disk bar (macOS's order and palette as the app since round 14: Your Data red,
+Apps orange, System Data yellow, Ready to free green, Free faint; only the
+green fills), a
 divider, then "A balanced clean up frees 33 GB: Xcode build data, Simulators and
-4 more.", then the status line and the action bar. The level word is a menu (Careful, Balanced, Aggressive, Everything);
+4 more.", then the status line and the action bar. The status line counts up while it
+works ("Scanning disk… 62%", then "Analysing… 40%"), and "Checked just now"
+analyses on a click. The menubar mark is 17 pt wide, as the app's. The level word is a menu (Careful, Balanced, Aggressive, Everything);
 the amount, "4 more" and the empty space open the full breakdown, and the
 sentence holds still while ticking there. The Command K panel and every confirm
 are bottom sheets that grow the popover if needed. The Expanded lists are still
 in the code (the breakdown). The phone stills in img/shots are element
 screenshots of the popover at 3x, corners masked; re-render them when it changes. The disk, disk-tip and actions-base tiles had
-their bars recoloured in place to the app's new colours (by hue, keeping each
+their bars rebuilt in place in the app's new order and colours (each tick strip
+moved whole, so dimmed ticks stay dimmed, then recoloured by hue keeping each
 pixel's blend with the panel), since they are crops of older renders.
 
 ## Auto mode

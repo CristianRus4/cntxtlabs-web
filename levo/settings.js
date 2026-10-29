@@ -15,7 +15,7 @@
 		general: { title: "General", symbol: "gearshape.fill", tint: ["#8E8E93", "#8E8E93"] },
 		agent: { title: "Agent", symbol: "apple.terminal.fill", tint: ["#6A3DEC", "#A485FF"], header: true, sw: "analyse" },
 		protected: { title: "Protected", symbol: "checkmark.shield.fill", tint: ["#138AF2", "#56C2FF"], header: true },
-		autoClean: { title: "Auto mode", symbol: "wand.and.stars", tint: ["#C75D07", "#FF9217"], header: true, sw: "autoClean" },
+		autoClean: { title: "Auto mode", symbol: "arrow.triangle.2.circlepath", tint: ["#C75D07", "#FF9217"], header: true, sw: "autoClean" },
 		access: { title: "Access", symbol: "lock.fill", tint: ["#5E6AD2", "#5E6AD2"] },
 		disk: { title: "Disk", symbol: "internaldrive.fill", tint: ["#1F7AE0", "#1F7AE0"], header: true, sw: "diskWatch" },
 		memory: { title: "Memory", symbol: "memorychip.fill", tint: ["#F8A300", "#FFC531"], header: true, sw: "memWatch" },

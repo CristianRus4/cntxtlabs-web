@@ -132,3 +132,4 @@ square.grid.3x2
 square.and.arrow.up
 ellipsis
 squares.below.rectangle
+arrow.triangle.2.circlepath

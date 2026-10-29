@@ -155,7 +155,8 @@ html.dark .lv-mb-levo:hover, html.dark .lv-mb-levo.is-open { background: rgba(25
 .lv-mb-levo.is-out { opacity: .45; }
 .lv-mb-levo.is-snap { transition: transform .5s cubic-bezier(.2, 1.5, .4, 1); }
 .lv-mark { display: block; flex-shrink: 0; }
-.lv-mb-mark { width: 19px; height: 12.2px; overflow: visible; }
+/* 17 pt wide, as the app's menubar mark since round 14. */
+.lv-mb-mark { width: 17px; height: 10.87px; overflow: visible; }
 .lv-mb-mark path { fill: none; stroke: currentColor; stroke-width: 1.5px; transition: fill .3s; }
 .lv-mb-levo[data-state="ready"] .lv-mb-mark path,
 .lv-mb-levo[data-state="alert"] .lv-mb-mark path { fill: currentColor; stroke: none; }
@@ -1112,3 +1113,6 @@ html.dark .lv-bsheet { box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 -4px 16px r
 html.dark .lv-scene .lv-auto { color: #FF9217; }
 .lv-auto[hidden] { display: none; }
 .lv-auto:not([hidden]) { animation: lv-in .25s var(--ease-out); }
+
+/* "Checked just now" analyses on a click, with no other look (round 12). */
+.lv-scene .lv-checked { padding: 0; border: 0; background: none; font: inherit; font-size: 12px; color: inherit; cursor: pointer; }

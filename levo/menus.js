@@ -1082,7 +1082,7 @@
 				'<div class="lvm-cc-mod lvm-cc-wide"><b>Sound</b><div class="lvm-cc-sound">' + slider("vol", "speaker.wave.2.fill", "Volume") +
 					'<span class="lvm-cc-air">' + sym("airplayaudio", 14) + "</span></div></div>" +
 				(hook("auto") ? '<button type="button" class="lvm-cc-mod lvm-cc-tile lvm-cc-auto" data-lvm-cc="auto" aria-pressed="' + !!call("auto") + '">' +
-					'<span class="lvm-cc-btn' + (call("auto") ? " is-on" : "") + '">' + sym("gauge.with.dots.needle.67percent", 15) + '</span><span class="lvm-cc-txt"><b>Auto mode</b><small>' + (call("auto") ? "On" : "Off") + "</small></span></button>" : "") +
+					'<span class="lvm-cc-btn' + (call("auto") ? " is-on" : "") + '">' + sym("arrow.triangle.2.circlepath", 15) + '</span><span class="lvm-cc-txt"><b>Auto mode</b><small>' + (call("auto") ? "On" : "Off") + "</small></span></button>" : "") +
 			"</div>";
 	}
 	function ccToggle(key) {

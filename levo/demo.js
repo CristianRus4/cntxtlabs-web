@@ -405,17 +405,17 @@
 	// The disk in ticks. Each tick is wholly one category's colour, shared out by
 	// size with at least one tick for every category present (the app's rule):
 	// what's in use, then what a clean would free, in green, then free space.
-	// The app's five parts (Gauges.swift DiskPart): System Data, Your Data, Apps,
-	// Ready to free (what's ticked, in green) and Free. Unticked findings stay Your Data.
+	// The app's five parts in macOS's order (Gauges.swift DiskPart, round 14): Your Data, Apps,
+	// System Data, Ready to free (what's ticked, in green) and Free. Unticked findings stay Your Data.
 	// macOS's own storage palette, without its grey: System Data yellow, Your Data red, Apps orange.
 	var PARTS = { system: ["#F2B800", "#FFD60A"], yourData: ["#FF3B30", "#FF453A"], apps: ["#FF9500", "#FF9F0A"] };
 	function segments() {
 		var unticked = readyGB() - tickedGB(), d = dark() ? 1 : 0;
 		var part = function (id) { return sum(S.disk.used.filter(function (u) { return (u.id === "system" ? "system" : u.id === "apps" ? "apps" : "yourData") === id; }), function (u) { return u.gb; }); };
 		var segs = [
-			{ id: "system", label: "System Data", gb: part("system"), color: PARTS.system[d] },
 			{ id: "yourData", label: "Your Data", gb: part("yourData") + unticked, color: PARTS.yourData[d] },
-			{ id: "apps", label: "Apps", gb: part("apps"), color: PARTS.apps[d] }
+			{ id: "apps", label: "Apps", gb: part("apps"), color: PARTS.apps[d] },
+			{ id: "system", label: "System Data", gb: part("system"), color: PARTS.system[d] }
 		];
 		var t = tickedGB();
 		if (t > 0) segs.push({ id: "can", label: "Ready to free", gb: t, color: "var(--lv-ready)" });
@@ -668,7 +668,7 @@
 		$("[data-plabel]").textContent = p.label;
 		$("[data-pcaps]").innerHTML = caps(p.keys, "lv-cap-sm");
 		btn.disabled = !p.act;
-		if (!toastTimer) $("[data-actleft]").innerHTML = '<span class="lv-checked">' + (S.analysing ? "Checking" : "Checked just now") + "</span>";
+		if (!toastTimer) $("[data-actleft]").innerHTML = S.analysing ? "" : '<button type="button" class="lv-checked" data-act="analyse">Checked just now</button>';
 	}
 
 	function renderMenubar() {
@@ -1240,10 +1240,21 @@
 		S.undo = null;
 		clearTimeout(toastTimer);
 		toastTimer = 1;
-		$("[data-actleft]").innerHTML = '<span class="lv-toast">Asking ' + esc(S.agent) + "…</span>";
 		renderDisk(S.freeShown);
 		renderGroups();
-		later(regrow, 1700);
+		// The status line counts up, as the app's (round 14): "Scanning disk… 62%", then "Analysing… 40%".
+		progressLine("Scanning disk…", REDUCED ? 1 : 700, function () {
+			progressLine("Analysing…", REDUCED ? 1 : 1100, regrow);
+		});
+	}
+	function progressLine(title, ms, done) {
+		var el = $("[data-actleft]"), t0 = performance.now(), last = -1;
+		var step = function (t) {
+			var pct = Math.min(100, Math.floor((t - t0) / ms * 100));
+			if (pct !== last) { last = pct; el.innerHTML = '<span class="lv-toast">' + esc(title) + (pct > 0 ? " " + pct + "%" : "") + "</span>"; }
+			if (pct < 100) requestAnimationFrame(step); else done();
+		};
+		requestAnimationFrame(step);
 	}
 	function regrow() {
 		var base = fresh(), from = S.disk.free;
