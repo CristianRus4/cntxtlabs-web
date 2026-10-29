@@ -11,6 +11,8 @@ let types: [(String, String)] = [
     ("folder", "public.folder"),
     ("txt", "public.plain-text"),
     ("zip", "public.zip-archive"),
+    ("doc", "public.data"),
+    ("pdf", "com.adobe.pdf"),
     ("png", "public.png"),
     ("psd", "com.adobe.photoshop-image"),
     ("dmg", "com.apple.disk-image-udif"),
@@ -42,12 +44,20 @@ func render(_ uti: String, appearance: Int) -> CGImage? {
     return unsafeBitCast(send, to: Image.self)(icon, NSSelectorFromString("CGImageForDescriptor:"), desc)?.takeUnretainedValue()
 }
 
-func png(_ image: CGImage) -> Data? { NSBitmapImageRep(cgImage: image).representation(using: .png, properties: [:]) }
+// IconServices may hand back a larger representation; draw it at exactly 128 px.
+func png(_ image: CGImage) -> Data? {
+    guard let ctx = CGContext(data: nil, width: 128, height: 128, bitsPerComponent: 8, bytesPerRow: 0,
+                              space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+    ctx.interpolationQuality = .high
+    ctx.draw(image, in: CGRect(x: 0, y: 0, width: 128, height: 128))
+    guard let out = ctx.makeImage() else { return nil }
+    return NSBitmapImageRep(cgImage: out).representation(using: .png, properties: [:])
+}
 
 for (name, uti) in types {
     guard let light = render(uti, appearance: 0), let lightPNG = png(light) else { print("no image for \(name)"); continue }
     try? lightPNG.write(to: out.appendingPathComponent(name + ".png"))
-    print("wrote img/desk/\(name).png (\(light.width) px)")
+    print("wrote img/desk/\(name).png")
     let darkURL = out.appendingPathComponent(name + "-dark.png")
     if let dark = render(uti, appearance: 1), let darkPNG = png(dark), darkPNG != lightPNG {
         try? darkPNG.write(to: darkURL)

@@ -48,7 +48,7 @@
 			{ id: "xcode", about: ["Compiled code, indexes and previews Xcode keeps for your projects.", "Xcode makes it from your source code, which stays untouched.", "Xcode rebuilds it on the next build; that build takes longer."], title: "Xcode build data", symbol: "hammer.fill", tile: "blue", changed: "12 days ago",
 				location: "~/Library/Developer/Xcode", verdict: "Rebuilds on next build", good: true,
 				items: [{ name: "DerivedData/Levo", gb: 6.8, level: 1 }, { name: "DerivedData/Elevate", gb: 4.9, level: 1 }, { name: "DerivedData/Context", gb: 1.8, level: 1 }] },
-			{ id: "sims", about: ["Simulator devices you haven\u2019t opened in weeks.", "Their apps and data are test copies; the runtimes stay.", "Xcode makes a fresh device when you need one."], title: "Simulators and emulators", symbol: "iphone", tile: "grey", changed: "3 weeks ago",
+			{ id: "sims", about: ["Simulator devices you haven\u2019t opened in weeks.", "Their apps and data are test copies; the runtimes stay.", "Xcode makes a fresh device when you need one."], title: "Simulators", symbol: "iphone", tile: "grey", changed: "3 weeks ago",
 				location: "~/Library/Developer/CoreSimulator", verdict: "Unused devices, runtimes kept", good: true,
 				items: [{ name: "iPhone 17 Pro", gb: 2.1, level: 2 }, { name: "iPad Air", gb: 1.9, level: 2 }, { name: "iPhone 16e", gb: 1.7, level: 2 }, { name: "iPhone SE", gb: 1.5, level: 2 }, { name: "Apple Watch Series 11", gb: 1.4, level: 2 }, { name: "Apple TV 4K", gb: 1.2, level: 2 }] },
 			{ id: "worktrees", about: ["Copies of your repos that coding agents made to work in.", "Two still have unmerged work, so they stay unticked.", "Merged ones go with git worktree remove."], title: "Agent worktrees", symbol: "arrow.triangle.branch", tile: "purple", tag: "Review", changed: "2 days ago",
@@ -142,7 +142,8 @@
 	}
 	function gb(v) {
 		var r = Math.round(v * 10) / 10;
-		return (Math.abs(r) >= 100 ? num0.format(Math.round(r)) : num1.format(r)) + " GB";
+		if (Math.abs(r) > 0 && Math.abs(r) < 1) return num0.format(Math.round(r * 1000)) + " MB";
+		return (Math.abs(r) >= 10 ? num0.format(Math.round(r)) : num1.format(r)) + " GB";
 	}
 	function pct(v) { return num0.format(Math.round(v)) + " %"; }
 	function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
@@ -206,7 +207,7 @@
 		var st = {
 			disk: d.disk, mem: d.memory, cpu: d.cpu, gpu: d.gpu,
 			groups: d.groups, procs: d.processes, level: d.level,
-			sort: "cpu", sel: null, showAll: false, frozen: null, openChips: {}, working: null,
+			sort: "memory", sel: null, showAll: false, frozen: null, openChips: {}, working: null,
 			open: {}, info: {}, more: false,
 			freeShown: d.disk.free, alerted: false, popOpen: false, locked: false, unzipped: false,
 			panel: null, sheet: false, menu: false, undo: null, agent: S ? S.agent : d.agent,

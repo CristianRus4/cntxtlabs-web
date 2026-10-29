@@ -238,6 +238,43 @@
 		return D(label, keys, { checked: st[key], act: function () { st[key] = !st[key]; } });
 	}
 
+	// macOS 26 menus show an SF Symbol beside most standard items, in a column of
+	// its own after the checkmark. Each entry lists the symbol Tahoe uses first,
+	// then a stand-in from img/symbols while the first isn't exported; a missing
+	// symbol leaves the column empty, as Tahoe does for items without one.
+	// ["flip"] mirrors the symbol (Redo is Undo's arrow, mirrored).
+	var MENU_ICONS = {
+		"System Settings…": ["gearshape"], "App Store…": ["app.badge"], "Recent items": ["clock", "clock.arrow.circlepath"],
+		"Force quit…": ["xmark.octagon", "xmark.circle"], "Sleep": ["moon", "moon.fill"], "Restart…": ["restart", "arrow.clockwise"],
+		"Shut down…": ["power"], "Lock screen": ["lock"], "Log out…": ["rectangle.portrait.and.arrow.right", "person.crop.circle"],
+		"About Finder": ["info.circle"], "Settings…": ["gearshape"], "Empty Trash…": ["trash"], "Hide Finder": ["eye.slash"],
+		"New Finder window": ["macwindow.badge.plus", "macwindow"], "New folder": ["folder.badge.plus", "folder"], "New tab": ["plus.square.on.square"],
+		"Open": ["arrow.up.forward.app"], "Close window": ["xmark"], "Get info": ["info.circle"], "Rename": ["pencil"],
+		"Compress": ["archivebox"], "Duplicate": ["plus.square.on.square"], "Quick Look": ["eye"], "Move to Trash": ["trash"],
+		"Find": ["magnifyingglass"], "Tags…": ["tag"],
+		"Undo": ["arrow.uturn.backward"], "Redo": ["arrow.uturn.forward", "flip:arrow.uturn.backward"], "Cut": ["scissors"],
+		"Copy": ["doc.on.doc"], "Paste": ["document.on.clipboard", "doc.on.clipboard"], "Select all": ["checkmark.circle"],
+		"Start dictation…": ["mic"], "Emoji & symbols": ["face.smiling"],
+		"as icons": ["square.grid.2x2"], "as list": ["list.bullet"], "as columns": ["rectangle.split.3x1"], "as gallery": ["rectangle.grid.1x2"],
+		"Show sidebar": ["sidebar.left"], "Hide sidebar": ["sidebar.left"], "Enter full screen": ["arrow.up.left.and.arrow.down.right"],
+		"Back": ["chevron.left"], "Forward": ["chevron.right"], "Enclosing folder": ["arrow.up.left"],
+		"Recents": ["clock", "clock.arrow.circlepath"], "Documents": ["doc"], "Desktop": ["menubar.dock.rectangle", "dock.rectangle"],
+		"Downloads": ["arrow.down.circle"], "Home": ["house"], "Computer": ["desktopcomputer"], "AirDrop": ["dot.radiowaves.left.and.right"],
+		"Network": ["network", "globe"], "iCloud Drive": ["icloud"], "Applications": ["square.grid.2x2"], "Utilities": ["hammer", "hammer.fill"],
+		"Go to folder…": ["folder"], "Connect to server…": ["server.rack"],
+		"Minimise": ["minus.rectangle", "minus"], "Bring all to front": ["macwindow.on.rectangle", "macwindow"]
+	};
+	function menuIcon(label) {
+		var list = MENU_ICONS[label];
+		if (!list) return "";
+		var html = "";
+		for (var i = 0; i < list.length && html.indexOf("<svg") < 0; i++) {
+			var flip = list[i].indexOf("flip:") === 0;
+			html = sym(flip ? list[i].slice(5) : list[i], 13, "lvm-mi" + (flip ? " is-flip" : ""));
+		}
+		return html.indexOf("<svg") < 0 ? "" : html;
+	}
+
 	var MENUS = {
 		apple: function () {
 			return [
@@ -315,10 +352,10 @@
 		},
 		view: function () {
 			return [
-				radio("view", "icons", "as Icons", "⌘1"),
-				radio("view", "list", "as List", "⌘2"),
-				radio("view", "columns", "as Columns", "⌘3"),
-				radio("view", "gallery", "as Gallery", "⌘4"),
+				radio("view", "icons", "as icons", "⌘1"),
+				radio("view", "list", "as list", "⌘2"),
+				radio("view", "columns", "as columns", "⌘3"),
+				radio("view", "gallery", "as gallery", "⌘4"),
 				SEP,
 				check("stacks", "Use stacks", "⌃⌘0"),
 				D("Sort by", "", { sub: sortBy }),
@@ -362,7 +399,7 @@
 		},
 		window: function () {
 			return [
-				off("Minimize", "⌘M"),
+				off("Minimise", "⌘M"),
 				off("Zoom"),
 				off("Move & resize", "", { sub: function () { return []; } }),
 				off("Fill", "fn⌃F"),
@@ -537,7 +574,7 @@
 		if (d.html) inner = d.html;
 		else {
 			inner = (soft ? "" : '<span class="lvm-check">' + (d.checked ? sym("checkmark", 11) : "") + "</span>") +
-				(d.icon || "") +
+				(d.icon || (soft ? "" : '<span class="lvm-mic">' + menuIcon(d.label) + "</span>")) +
 				'<span class="lvm-label">' + esc(d.label) + "</span>" +
 				(d.after || "") +
 				(d.sub ? sym("chevron.right", 10, "lvm-chev") : keysHTML(d.keys));
@@ -1106,19 +1143,13 @@
 		return m ? m[1].toUpperCase() : "";
 	}
 
-	// File icons, drawn: never an app's own icon.
+	// File icons: macOS's own, rendered from this Mac by tools/export-desk-icons.swift.
+	// macOS draws document and folder icons the same in light and dark, so one file each.
+	var FILE_ICONS = { folder: "folder", dmg: "dmg", pkg: "pkg", app: "app", zip: "zip", txt: "txt", pdf: "pdf", psd: "psd", png: "png", jpg: "png", jpeg: "png", heic: "png", gif: "png" };
 	function fileIcon(it) {
-		var k = it.kind || "doc", x = ext(it.name);
-		if (k === "folder") return '<span class="lvm-ic-folder">' + sym("folder.fill", 54) + "</span>";
-		if (k === "dmg") return '<span class="lvm-ic-dmg"><i>' + sym(["internaldrive.fill", "internaldrive"], 20) + "</i></span>";
-		if (k === "pkg") return '<span class="lvm-ic-pkg"><svg viewBox="0 0 56 56" width="56" height="56" aria-hidden="true">' +
-			'<path d="M7 19.5L28 11l21 8.5v23L28 51 7 42.5z" fill="#C8955A"/><path d="M7 19.5L28 28l21-8.5L28 11z" fill="#E3BC84"/>' +
-			'<path d="M28 28v23L49 42.5v-23z" fill="#B27D45"/><path d="M16.5 15.2l21 8.6v7.4l4.6-1.9v-7.4l-21-8.6z" fill="#F5E1B8"/>' +
-			'<path d="M7 19.5L28 28l21-8.5" fill="none" stroke="rgba(0,0,0,.12)" stroke-width=".8"/></svg></span>';
-		if (k === "app") return '<span class="lvm-ic-app">' + sym("app.dashed", 26) + "</span>";
-		if (k === "image") return '<span class="lvm-ic-shot"><i></i></span>';
-		if (k === "zip") return '<span class="lvm-ic-page lvm-ic-zip"><i></i><b>ZIP</b></span>';
-		return '<span class="lvm-ic-page lvm-ic-txt"><em></em><em></em><em></em>' + (x && x.length <= 4 ? "<b>" + esc(x) + "</b>" : "") + "</span>";
+		var k = it.kind || "doc", x = ext(it.name).toLowerCase();
+		var name = k === "folder" ? "folder" : FILE_ICONS[x] || FILE_ICONS[k] || (k === "image" ? "png" : "doc");
+		return '<img class="lvm-ic-real" src="img/desk/' + name + '.png" width="64" height="64" alt="" draggable="false">';
 	}
 
 	var BUILD = {
