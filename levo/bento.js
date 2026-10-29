@@ -145,8 +145,8 @@
 		if (REDUCED) return;
 		Array.prototype.forEach.call(t.el.querySelectorAll(".lv-gauge"), function (g) {
 			var lines = Array.prototype.slice.call(g.querySelectorAll("line.on"));
-			lines.forEach(function (l) { l.classList.remove("on"); });
-			lines.forEach(function (l, i) { t.later(function () { l.classList.add("on"); }, 200 + i * 34); });
+			lines.forEach(function (l) { l.classList.remove("on"); l.style.stroke = ""; });
+			lines.forEach(function (l, i) { t.later(function () { l.classList.add("on"); l.style.stroke = l.getAttribute("data-c"); }, 200 + i * 34); });
 		});
 	}
 	// A row's tick changes, and back.

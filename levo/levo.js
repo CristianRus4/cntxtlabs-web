@@ -91,6 +91,29 @@
 		setTheme: setTheme, theme: theme
 	});
 
+	// "Click here": the arrow's tip sits just above the frame, over Levo's menubar icon; it fades
+	// once the visitor clicks that icon.
+	var cue = document.querySelector("[data-cue]");
+	function placeCue() {
+		var icon = document.querySelector(".lv-mb-levo"), first = cue && cue.parentNode, scene = document.querySelector(".lv-scene");
+		if (!cue || !icon || !scene || cue.classList.contains("is-done") || scene.dataset.mode !== "desk") return;
+		var f = first.getBoundingClientRect(), r = icon.getBoundingClientRect(), sc = scene.getBoundingClientRect();
+		var t = cue.querySelector(".cue-t"), tipX = t.offsetWidth + 2 + 120, tipY = 88;
+		cue.style.left = Math.round(r.left + r.width / 2 - f.left - tipX) + "px";
+		cue.style.top = Math.round(sc.top - f.top - tipY - 4) + "px";
+		cue.classList.add("is-placed");
+	}
+	if (cue) {
+		var settle = function () { requestAnimationFrame(placeCue); };
+		window.addEventListener("resize", settle);
+		if (document.fonts && document.fonts.ready) document.fonts.ready.then(settle);
+		setTimeout(settle, 300);
+		setTimeout(settle, 1800);
+		document.addEventListener("click", function (e) {
+			if (e.target.closest && e.target.closest(".lv-mb-levo")) { cue.classList.add("is-done"); setTimeout(function () { cue.hidden = true; }, 500); }
+		});
+	}
+
 	// ------------------------------------------------------------ Agents
 
 	// One click copies a short prompt that has the agent install Levo.

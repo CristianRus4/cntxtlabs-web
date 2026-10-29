@@ -459,7 +459,7 @@ html:not(.dark) .lv-lock { color: #fff; background: rgba(60, 70, 110, 0.18); }
 .lv-dial { position: relative; width: 58px; height: 58px; }
 .lv-dial svg { display: block; width: 58px; height: 58px; }
 .lv-dial line { stroke: rgb(var(--fg) / 0.1); stroke-width: 2; stroke-linecap: round; transition: stroke .45s; }
-.lv-dial line.on { stroke: var(--on); }
+
 .lv-dial-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.2px; }
 .lv-dial-num small { font-size: 10px; color: rgb(var(--fg) / 0.6); margin-left: 1px; font-weight: 600; }
 .lv-dial-spin { position: absolute; right: 2px; bottom: 2px; }
@@ -1065,7 +1065,7 @@ html.dark .lv-bsheet { box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 -4px 16px r
    the whole screen fits a short laptop window; 16:10, capped at 1440 px wide. Laid out at its final
    pixel size (no transform), so its text renders as crisply as the page's. */
 .lv-scene[data-mode="desk"] {
-	--lv-h: min(90svh, calc(100svh - 64px - 40px - 16px));
+	--lv-h: min(90svh, calc(100svh - 64px - 104px - 16px));
 	width: min(100%, 1440px, calc(var(--lv-h) * 1.6));
 	height: auto;
 	aspect-ratio: 16 / 10;
@@ -1126,10 +1126,6 @@ html.dark .lv-bsheet { box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 -4px 16px r
 
 /* Round 13: the Mac's name first, over a divider; "Auto mode" in plain orange at its end while it's on. */
 .lv-namerow { padding: 12px 16px 10px; }
-.lv-scene .lv-auto { flex-shrink: 0; padding: 0; border: 0; background: none; color: #9E4700; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; }
-html.dark .lv-scene .lv-auto { color: #FF9217; }
-.lv-auto[hidden] { display: none; }
-.lv-auto:not([hidden]) { animation: lv-in .25s var(--ease-out); }
 
 /* "Checked just now" analyses on a click, with no other look (round 12). */
 .lv-scene .lv-checked { padding: 0; border: 0; background: none; font: inherit; font-size: 12px; color: inherit; cursor: pointer; }
@@ -1139,33 +1135,39 @@ html.dark .lv-scene .lv-auto { color: #FF9217; }
 /* A word just clicked shows no hover look until the pointer leaves it. */
 .lv-chip.is-quiet:hover:not([data-lit])::before { background: transparent; }
 
-/* Clean up at the name row's end while Auto mode is off: icon only, prominent, with its tooltip. */
-.lv-scene .lv-topclean {
+/* The name row's button (round 16): a Liquid Glass capsule, translucent with a light rim, tinted
+   blue for Clean up and orange for Auto mode; disabled, the same shape dimmed. Its tooltip names the
+   shortcut, or Auto mode's limit and scope. */
+.lv-scene .lv-topclean, .lv-kit .lv-topclean {
+	--tint: var(--accent);
 	position: relative;
 	flex-shrink: 0;
-	width: 26px;
 	height: 22px;
-	margin: -2px -4px -2px 0;
-	padding: 0;
+	margin: -2px -6px -2px 0;
+	padding: 0 10px;
 	border: 0;
-	border-radius: 7px;
-	background: var(--accent);
-	color: #fff;
+	border-radius: 11px;
 	display: inline-flex;
 	align-items: center;
-	justify-content: center;
-	box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.18);
+	background: color-mix(in srgb, var(--tint) 80%, transparent);
+	-webkit-backdrop-filter: blur(12px) saturate(1.6);
+	backdrop-filter: blur(12px) saturate(1.6);
+	box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.5), inset 0 0 0 0.5px rgba(255, 255, 255, 0.22), 0 1px 3px color-mix(in srgb, var(--tint) 35%, transparent);
+	color: #fff;
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
 }
-.lv-scene .lv-topclean[hidden] { display: none; }
-.lv-scene .lv-topclean:hover:not(:disabled) { filter: brightness(1.08); }
-.lv-scene .lv-topclean:active:not(:disabled) { filter: brightness(.92); }
-.lv-scene .lv-topclean:disabled { background: rgb(var(--fg) / 0.08); color: rgb(var(--fg) / 0.3); box-shadow: none; cursor: default; }
-.lv-topclean .lv-sym { width: 13px; height: auto; }
+.lv-scene .lv-topclean.is-auto, .lv-kit .lv-topclean.is-auto { --tint: #FF9500; }
+html.dark .lv-scene .lv-topclean.is-auto, html.dark .lv-kit .lv-topclean.is-auto { --tint: #FF9F0A; }
+.lv-scene .lv-topclean:hover:not(:disabled) { filter: brightness(1.06); }
+.lv-scene .lv-topclean:active:not(:disabled) { filter: brightness(.94); }
+.lv-scene .lv-topclean:disabled { opacity: .4; cursor: default; }
 .lv-topclean::after {
 	content: attr(data-tipkeys);
 	position: absolute;
 	top: calc(100% + 8px);
-	right: -4px;
+	right: 0;
 	padding: 4px 8px;
 	border-radius: 7px;
 	background: var(--panel);
@@ -1183,7 +1185,6 @@ html.dark .lv-scene .lv-auto { color: #FF9217; }
 
 /* The action bar's keycap buttons, quieter: secondary text, no strong fill. */
 .lv-actions:not(.lv-cbar) .lv-primary { color: rgb(var(--fg) / 0.6) !important; font-weight: 500 !important; }
-.lv-actions:not(.lv-cbar) .lv-primary .lv-cap-sm { background: rgb(var(--fg) / 0.05); color: rgb(var(--fg) / 0.55); }
 .lv-actions:not(.lv-cbar) .lv-primary:hover:not(:disabled) { color: rgb(var(--fg) / 0.85) !important; }
 
 /* The disk tip glides between sections; inside one it holds still. */
@@ -1195,7 +1196,7 @@ html.dark .lv-scene .lv-auto { color: #FF9217; }
 .lv-scene.is-small .lv-lwin-app, .lv-scene.is-small .lv-lwin-apps { width: 100px; }
 .lv-scene.is-small .lv-lwin-ic, .lv-scene.is-small .lv-lwin-ic img { width: 80px; height: 80px; }
 .lv-scene.is-small .lv-lwin-arrow { width: 44px; }
-.lv-scene.is-small .lv-ic.is-roomy { display: none; }
+.lv-scene.is-small .lv-ic.is-roomy, .lv-scene.is-tiny .lv-ic.is-roomy-tiny { display: none; }
 
 /* ------------------------------------------------------------ The kit: the popover's tokens outside the scene
  * The tiles below the Mac (bento.js) are built from the popover's own components, so they wear

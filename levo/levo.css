@@ -258,4 +258,23 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 @media (prefers-reduced-motion: reduce) { .ag-prompt.in { animation: none; } }
 
 /* Clear space between the navbar and the framed Mac. */
-.first { padding-top: 40px; }
+.first { padding-top: 104px; }
+
+/* "Click here": a hand-drawn arrow over the simulator, pointing at Levo in its menubar. It draws on,
+   bobs gently, and fades once the visitor has clicked Levo. levo.js places it over the icon. */
+.cue { position: absolute; z-index: 5; top: 6px; left: 0; display: flex; align-items: flex-start; gap: 2px; pointer-events: none; opacity: 0; transition: opacity .5s ease; }
+.cue.is-placed { opacity: 1; }
+.cue.is-done { opacity: 0; transition-duration: .4s; }
+.cue-t { margin-top: 4px; font-family: "Bradley Hand", "Marker Felt", "Segoe Print", "Comic Sans MS", cursive; font-size: 22px; font-weight: 700; letter-spacing: .01em; color: var(--text); transform: rotate(-4deg); white-space: nowrap; }
+.cue-svg { display: block; overflow: visible; }
+.cue-svg path { fill: none; stroke: var(--text); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.cue.is-placed .cue-line { animation: cue-draw 1.1s cubic-bezier(.55, 0, .3, 1) .4s forwards; }
+.cue.is-placed .cue-head { animation: cue-draw .35s ease-out 1.45s forwards; }
+.cue.is-placed { animation: cue-bob 3.2s ease-in-out 2s infinite; }
+@keyframes cue-draw { to { stroke-dashoffset: 0; } }
+@keyframes cue-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 6px; } }
+@media (prefers-reduced-motion: reduce) {
+	.cue-svg path { stroke-dashoffset: 0; animation: none !important; }
+	.cue.is-placed { animation: none; }
+}
+@media (max-width: 760px) { .cue { display: none; } }

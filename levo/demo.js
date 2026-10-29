@@ -93,7 +93,7 @@
 		desktop: [
 			{ id: "shot", kind: "shot", name: "Screenshot 2026-10-12 at 9.41.22 am.png", col: 0, row: 0, roomy: true },
 			{ id: "installers", kind: "folder", name: "Old Installers", col: 1, row: 0 },
-			{ id: "zip", kind: "zip", name: "project-final-v2.zip", col: 0, row: 1 },
+			{ id: "zip", kind: "zip", name: "project-final-v2.zip", col: 0, row: 1, roomy: "tiny" },
 			{ id: "notes", kind: "doc", name: "notes (3).txt", col: 1, row: 1, roomy: true },
 			{ id: "prices", kind: "doc", name: "prices_Levo.txt", col: 0, row: 3 },
 			{ id: "features", kind: "doc", name: "features_Levo.txt", col: 1, row: 3 },
@@ -289,7 +289,9 @@
 		var lines = "";
 		for (var i = 0; i < 26; i++) {
 			var a = (135 + i * 10.8) * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
-			lines += '<line x1="' + (32 + 23 * c).toFixed(2) + '" y1="' + (32 + 23 * s).toFixed(2) + '" x2="' + (32 + 30.5 * c).toFixed(2) + '" y2="' + (32 + 30.5 * s).toFixed(2) + '" style="--on:' + arcColor(i / 25) + '"/>';
+			// Each tick keeps its own colour along the arc (blue, green, yellow, orange, red), set as the
+			// line's own stroke when lit, which every browser draws.
+			lines += '<line x1="' + (32 + 23 * c).toFixed(2) + '" y1="' + (32 + 23 * s).toFixed(2) + '" x2="' + (32 + 30.5 * c).toFixed(2) + '" y2="' + (32 + 30.5 * s).toFixed(2) + '" data-c="' + arcColor(i / 25) + '"/>';
 		}
 		return '<div class="lv-gauge" data-gauge="' + id + '">' +
 			'<div class="lv-dial"><svg viewBox="0 0 64 64" aria-hidden="true">' + lines + '</svg><span class="lv-dial-num"><span data-gnum></span><small>%</small></span><i class="lv-spin lv-dial-spin" hidden></i></div>' +
@@ -308,8 +310,7 @@
 		return '' +
 		'<div class="lv-pop" role="dialog" aria-label="Levo" tabindex="-1">' +
 			'<div class="lv-dhead lv-namerow"><span class="lv-sec" data-devsym>' + sym("desktopcomputer", 14) + '</span><b data-devname>Mac</b><span class="lv-flex"></span>' +
-				'<button type="button" class="lv-auto" data-act="automode" data-autopill hidden>Auto mode</button>' +
-				'<button type="button" class="lv-topclean" data-act="topclean" data-topclean aria-label="Clean up" data-tipkeys="Clean up \u2318\u232b">' + sym("trash", 13) + '</button></div>' +
+				'<button type="button" class="lv-topclean" data-act="topclean" data-topclean data-tipkeys="\u2318\u232b">Clean up</button></div>' +
 			'<div class="lv-sep"></div>' +
 			'<section class="lv-gauges">' + gaugeHTML("memory", "Memory") + gaugeHTML("cpu", "CPU") + gaugeHTML("gpu", "GPU") + '</section>' +
 			'<div class="lv-freed" data-freed hidden></div>' +
@@ -352,7 +353,7 @@
 		if (DESK_ICONS[ic.kind]) art = '<span class="lv-ic-real"><img src="img/desk/' + DESK_ICONS[ic.kind] + '.png" width="64" height="64" alt="" draggable="false"></span>';
 		else if (ic.kind === "volume") art = '<span class="lv-ic-vol"><img class="lv-dk-l" src="img/desk/levo-volume.png" width="64" height="64" alt="" draggable="false"><img class="lv-dk-d" src="img/desk/levo-volume-dark.png" width="64" height="64" alt="" draggable="false"></span>';
 		else art = '<span class="lv-ic-shot"><i></i></span>';
-		return '<button type="button" class="lv-ic' + (ic.later ? " is-hidden" : "") + (ic.roomy ? " is-roomy" : "") + '" data-icon="' + ic.id + '" style="--col:' + ic.col + ";--row:" + ic.row + '">' + art + '<span class="lv-ic-name">' + esc(ic.name) + "</span></button>";
+		return '<button type="button" class="lv-ic' + (ic.later ? " is-hidden" : "") + (ic.roomy === "tiny" ? " is-roomy-tiny" : ic.roomy ? " is-roomy" : "") + '" data-icon="' + ic.id + '" style="--col:' + ic.col + ";--row:" + ic.row + '">' + art + '<span class="lv-ic-name">' + esc(ic.name) + "</span></button>";
 	}
 	// The Levo window on the desktop: the app, Applications, the price and Download.
 	// A disk image window, as a Mac app arrives. On a phone it is a plain card.
@@ -462,7 +463,7 @@
 	function setGauge(id, value) {
 		var g = $('[data-gauge="' + id + '"]');
 		var on = Math.round(Math.max(0, Math.min(100, value)) / 100 * 26);
-		$$("line", g).forEach(function (l, i) { l.classList.toggle("on", i < on); });
+		$$("line", g).forEach(function (l, i) { l.classList.toggle("on", i < on); l.style.stroke = i < on ? l.getAttribute("data-c") : ""; });
 		$("[data-gnum]", g).textContent = num0.format(Math.round(value));
 	}
 	function renderGauges() {
@@ -599,8 +600,6 @@
 	}
 	function setAuto(on) {
 		S.auto = !!on;
-		var pill = $("[data-autopill]");
-		if (pill) pill.hidden = !S.auto;
 		renderActions();
 		renderSummary();
 		if (window.LevoMenus && LevoMenus.refresh) LevoMenus.refresh();
@@ -673,8 +672,14 @@
 	}
 	function renderActions() {
 		var p = primary(), btn = $('[data-act="primary"]'), top = $("[data-topclean]");
-		// Clean up sits at the name row's end while Auto mode is off (round 15).
-		if (top) { top.hidden = !!S.auto; top.disabled = tickedGB() <= 0; }
+		// The name row's button (round 16): "Clean up", tinted blue; while Auto mode is on, "Auto mode",
+		// tinted orange, its limit and scope on hover.
+		if (top) {
+			top.textContent = S.auto ? "Auto mode" : "Clean up";
+			top.classList.toggle("is-auto", !!S.auto);
+			top.disabled = !S.auto && tickedGB() <= 0;
+			top.setAttribute("data-tipkeys", S.auto ? gb(S.disk.alert) + " \u00b7 " + autoGroups().map(function (g) { return g.title; }).join(", ") : "\u2318\u232b");
+		}
 		$("[data-plabel]").textContent = p.label;
 		$("[data-pcaps]").innerHTML = caps(p.keys, "lv-cap-sm");
 		btn.disabled = !p.act;
@@ -813,6 +818,7 @@
 		// On a small screen the window is smaller and sits further left, so it clears the popover.
 		var small = W < 1100;
 		scene.classList.toggle("is-small", small);
+		scene.classList.toggle("is-tiny", W < 920);
 		var win = $("[data-lwin]"), left = widgets ? 380 : small ? 214 : 236, right = popLeft - 20;
 		var ww = win.offsetWidth, wh = win.offsetHeight;
 		var x = Math.round(Math.max(Math.min(left, right - ww), left + (right - left - ww) / 2));
@@ -1767,7 +1773,7 @@
 			case "freedx": $("[data-freed]").hidden = true; break;
 			case "sumall": e.stopPropagation(); toggleAll(); break;
 			case "automode": case "automode-open": e.stopPropagation(); togglePanel(); break;
-			case "topclean": askClean(); break;
+			case "topclean": if (S.auto) togglePanel(); else askClean(); break;
 			case "sumspace": toggleAll(); break;
 			case "chip": e.stopPropagation(); S.openChips[id] = !S.openChips[id]; if (S.openChips[id]) S.open[id] = true; renderSummary(); break;
 			case "levelword": e.stopPropagation(); levelWordMenu(t); return;
@@ -2195,7 +2201,7 @@
 		disk: function () {
 			var owners = allocate(segments(), TICKS), t = tickedGB();
 			return '<div class="lv-dhead lv-namerow"><span class="lv-sec">' + sym("laptopcomputer", 14) + '</span><b>MacBook Pro</b><span class="lv-flex"></span>' +
-				'<span class="lv-topclean" aria-hidden="true">' + sym("trash", 13) + "</span></div>" +
+				'<span class="lv-topclean" aria-hidden="true">Clean up</span></div>' +
 				'<div class="lv-sep"></div>' +
 				'<section class="lv-disk"><div class="lv-hero"><span class="lv-free lv-num">' + gb(S.disk.free) + '</span><span class="lv-sec">free</span><span class="lv-flex"></span>' +
 				'<span class="lv-can lv-num"><b>' + gb(t) + "</b>\u2009ready</span></div>" +
@@ -2209,7 +2215,7 @@
 			var vals = { memory: memUsed() / S.mem.total * 100, cpu: cpuPct(), gpu: gpuPct() };
 			return '<section class="lv-gauges">' + [["memory", "Memory"], ["cpu", "CPU"], ["gpu", "GPU"]].map(function (g) {
 				var on = Math.round(vals[g[0]] / 100 * 26), k = 0;
-				return gaugeHTML(g[0], g[1]).replace(/<line /g, function () { return k++ < on ? '<line class="on" ' : "<line "; })
+				return gaugeHTML(g[0], g[1]).replace(/<line ([^>]*?)data-c="([^"]+)"/g, function (m, a, c) { return k++ < on ? '<line class="on" style="stroke:' + c + '" ' + a + 'data-c="' + c + '"' : m; })
 					.replace("<span data-gnum></span>", "<span data-gnum>" + num0.format(Math.round(vals[g[0]])) + "</span>");
 			}).join("") + "</section>";
 		},
