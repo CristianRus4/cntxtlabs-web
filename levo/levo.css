@@ -146,24 +146,22 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 .price b { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
 .price > span:last-child { font-size: 17px; font-weight: 600; color: var(--muted); }
 
-/* The price rises: one capsule of ten steps, never broken, filled from the left to the current
-   step; hairline notches mark the steps on both parts. levo.js builds it from the live price; on
-   arrival the fill grows from the left. */
+/* The price rises: ten columns from the first price to the last on a faint baseline. Those passed
+   are the accent, softer; the current one is strongest, its price above it; later ones are faint.
+   levo.js builds them from the live price; they grow in on arrival. */
 .tiers { margin: 26px auto 0; max-width: 320px; text-align: center; }
 .tiers-line { margin: 0; font-size: 15px; color: var(--muted); }
-.tiers-bar { margin: 40px auto 0; width: 100%; }
-.tiers-track { position: relative; display: block; height: 12px; border-radius: 6px; background: rgb(var(--ink) / 0.04); box-shadow: inset 0 0 0 1px rgb(var(--ink) / 0.1); }
-.tiers-track i { position: absolute; font-style: normal; }
-.tiers-fill { left: 0; top: 0; bottom: 0; width: var(--w); border-radius: 6px; background: linear-gradient(90deg, color-mix(in srgb, var(--lit) 62%, transparent), var(--lit)); transition: width .9s cubic-bezier(.22, 1, .36, 1) .3s; }
-.tiers-notch { top: 3px; bottom: 3px; width: 1px; margin-left: -0.5px; background: rgb(var(--ink) / 0.12); }
-.tiers-notch.is-on { background: rgba(255, 255, 255, 0.5); }
-html.dark .tiers-notch.is-on { background: rgba(0, 0, 0, 0.28); }
-.tiers-now { position: absolute; bottom: calc(100% + 8px); translate: -50% 0; font-size: 13px; font-weight: 700; color: var(--lit); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tiers-bar { margin: 44px auto 0; width: 100%; }
+.tiers-steps { display: flex; align-items: flex-end; gap: 6px; height: 84px; padding-bottom: 1px; box-shadow: 0 1px 0 rgb(var(--ink) / 0.12); }
+.tiers-steps i { position: relative; flex: 1; font-style: normal; border-radius: 5px 5px 2px 2px; background: rgb(var(--ink) / 0.07); transform-origin: 50% 100%; transition: transform .6s cubic-bezier(.22, 1, .36, 1) calc(.25s + var(--i) * 45ms); }
+.tiers-steps i.is-past { background: color-mix(in srgb, var(--lit) 42%, transparent); }
+.tiers-steps i.is-now { background: linear-gradient(180deg, var(--lit), color-mix(in srgb, var(--lit) 78%, transparent)); box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--lit) 70%, transparent); }
+.tiers-steps b { position: absolute; left: 50%; bottom: calc(100% + 8px); translate: -50% 0; font-size: 13px; font-weight: 700; color: var(--lit); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .tiers-ends { margin-top: 8px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
 .tiers-next { margin: 20px 0 0; font-size: 15px; color: var(--muted); }
 .tiers-next b { font-weight: 600; color: var(--text); }
 .tiers-left { margin: 6px 0 0; font-size: 15px; color: var(--muted); }
-.js .tiers:not(.in):not(.is-in) .tiers-fill { width: 0; }
+.js .tiers:not(.in):not(.is-in) .tiers-steps i { transform: scaleY(0.12); }
 
 .foot { max-width: 1080px; margin: 110px auto 0; padding: 26px 20px 44px; display: flex; gap: 22px; justify-content: center; border-top: 1px solid var(--rim); font-size: 14px; color: var(--muted); }
 .foot a:hover { color: var(--text); }
@@ -190,7 +188,7 @@ html.dark .tiers-notch.is-on { background: rgba(0, 0, 0, 0.28); }
 @media (prefers-reduced-motion: reduce) {
 	html { scroll-behavior: auto; }
 	.circled.drawn path { animation: none; stroke-dashoffset: 0; }
-	.js .tiers .tiers-fill { width: var(--w); transition: none; }
+	.js .tiers .tiers-steps i { transform: none; transition: none; }
 	.js .rv { opacity: 1; transform: none; transition: opacity .3s; }
 	.btn:hover, .btn:active { transform: none; }
 	.lv-sym { animation: none !important; }
