@@ -173,8 +173,7 @@ desktop say Auto mode too.
 
 The desktop follows macOS Tahoe (macOS 26). Apple publishes no point values for
 it, so sizes come from Apple's macOS pages and screenshots plus community
-measurements: 26 pt window corners, the sidebar as an inset floating glass panel
-(18 pt), toolbar controls in glass capsules, 13 pt menu corners with SF Symbols
+measurements: 26 pt window corners, toolbar controls in glass capsules, 13 pt menu corners with SF Symbols
 beside standard items, Liquid Glass widgets and notifications with a lit rim.
 Real icons are rendered from this Mac through IconServices:
 `swift tools/export-dock-icons.swift` (the dock's apps, light and dark, and the
@@ -183,3 +182,19 @@ pdf, png, psd, dmg, pkg and app document icons; macOS gives the same image in
 light and dark for document types, so there is one file each). desk.css holds
 the desktop's Tahoe styling; menus.js and menus.css the menus, Finder windows and
 Control Centre.
+
+Finder windows follow Levo/design/refs/finder-ref (light and dark), style only:
+a 170 pt sidebar down the window's left (Recents, Shared; Favourites:
+Applications, Downloads, Desktop, Documents; Locations: iCloud Drive, AirDrop;
+Tags), 32 pt rows of 13 pt text with blue outline symbols, then back and
+forward, the title, the view, group, actions and search capsules, 64 pt icons
+with blue sizes, and "N items, X GB available". Never the owner's own folders.
+
+The Trash: drag a desktop file or a Finder item onto the dock's Trash, press
+Command Delete, or right-click › Move to Trash. It flies in, the Trash icon fills
+(CoreTypes.bundle's TrashIcon and FullTrashIcon), and the popover gains a Trash
+row sized by what's in it, placed by size. Clicking the Trash opens its window
+with Empty; emptying asks first, the icons shrink away, the space comes back
+and the icon empties. A clean's Trash-bound items show there too, already
+counted as freed. LevoMenus has updateWindow(id, patch) and
+contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.

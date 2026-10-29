@@ -722,3 +722,73 @@ html.dark .lvm-cap { background: rgba(255, 255, 255, 0.09); box-shadow: inset 0 
 
 /* Levo's Auto mode control. */
 .lvm-cc-auto { grid-column: 1 / -1; }
+
+/* ------------------------------------------------------------ Finder, from finder-light.png and finder-dark.png */
+
+/* The sidebar runs the window's full height on its left, a shade off the content. */
+.lvm-w-finder { background: #FFFFFF; }
+html.dark .lvm-w-finder { background: #1E1E1E; }
+.lvm-fside {
+	flex: 0 0 170px;
+	margin: 0;
+	padding: 0 8px 0 10px;
+	display: flex;
+	flex-direction: column;
+	border-radius: var(--lvm-wr) 0 0 var(--lvm-wr);
+	background: rgba(236, 236, 238, 0.86);
+	box-shadow: inset -0.5px 0 0 rgba(0, 0, 0, 0.08);
+	-webkit-backdrop-filter: blur(24px) saturate(1.6);
+	backdrop-filter: blur(24px) saturate(1.6);
+}
+html:not(.dark) .lvm-fside { background: rgba(236, 236, 238, 0.86); }
+html.dark .lvm-fside { background: rgba(43, 43, 45, 0.9); box-shadow: inset -0.5px 0 0 rgba(0, 0, 0, 0.6); }
+.lvm-fside .lvm-side-top { flex: none; height: 52px; }
+.lvm-side-scroll { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; padding-bottom: 10px; }
+.lvm-side-scroll::-webkit-scrollbar { display: none; }
+.lvm-side-sec + .lvm-side-sec { margin-top: 12px; }
+.lvm-fside .lvm-side-head { height: 24px; padding: 0 6px; display: flex; align-items: center; font-size: 11px; font-weight: 600; color: rgb(var(--fg) / 0.45); }
+.lvm-fside .lvm-side-row { height: 32px; padding: 0 6px; gap: 9px; border-radius: 8px; font-size: 13px; color: rgb(var(--fg) / 0.88); }
+.lvm-fside .lvm-side-row > span:not([class]) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lvm-fside .lvm-side-row > span[class] { flex: none; display: inline-flex; justify-content: center; }
+.lvm-fside .lvm-side-ic { flex: none; width: 19px; height: 18px; color: var(--accent); }
+.lvm-side-sec.is-grey .lvm-side-ic { color: rgb(var(--fg) / 0.55); }
+.lvm-side-cloud { flex: none; width: 15px; color: rgb(var(--fg) / 0.3); }
+.lvm-tag { flex: none; width: 12px; height: 12px; margin: 0 3px 0 4px; border-radius: 50%; }
+
+/* The toolbar: back and forward, the title, then the view, group, actions and search capsules. */
+.lvm-ftb { height: 52px; gap: 8px; padding: 0 10px 0 9px; }
+.lvm-ftb .lvm-wtitle { margin-left: 4px; font-size: 15px; font-weight: 700; }
+.lvm-ftb .lvm-cap { height: 36px; padding: 0 2px; border-radius: 18px; }
+html:not(.dark) .lvm-ftb .lvm-cap { background: #FFFFFF; box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08), 0 3px 10px -4px rgba(0, 0, 0, 0.12); }
+html.dark .lvm-ftb .lvm-cap { background: #262626; box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.12), 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 1px 4px rgba(0, 0, 0, 0.4); }
+.lvm-ftb .lvm-cap button { width: 36px; height: 36px; border-radius: 18px; color: rgb(var(--fg) / 0.8) !important; }
+.lvm-ftb .lvm-cap button.is-dim { color: rgb(var(--fg) / 0.25) !important; }
+.lvm-cap-nav button + button { position: relative; }
+.lvm-cap-nav button + button::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 1px; background: rgb(var(--fg) / 0.1); }
+.lvm-ftb .lvm-cap-view button { width: 38px; }
+.lvm-ftb .lvm-cap-view button.is-on { border: 3px solid transparent; background: rgb(var(--fg) / 0.08) padding-box; }
+.lvm-ftb .lvm-cap-group button { width: 46px; gap: 3px; }
+.lvm-ftb .lvm-cap-empty button { width: auto; padding: 0 14px; font: inherit; font-size: 13px; font-weight: 500; color: rgb(var(--fg) / 0.85) !important; }
+.lvm-ftb .lvm-cap-empty button:disabled { color: rgb(var(--fg) / 0.3) !important; }
+.lvm-w-finder .lvm-wmain { container-type: inline-size; }
+@container (max-width: 640px) { .lvm-cap-acts, .lvm-cap-group { display: none !important; } }
+@container (max-width: 430px) { .lvm-cap-view { display: none !important; } }
+
+/* Icon view: 64 pt icons on a 112 pt pitch, names in 12 pt, sizes in blue under them. */
+.lvm-w-finder .lvm-fw-grid { padding: 14px 12px 12px; grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); gap: 12px 4px; }
+.lvm-w-finder .lvm-fi-art { width: 72px; height: 68px; }
+.lvm-w-finder .lvm-fi-name { max-width: 104px; font-size: 12px; line-height: 16px; color: rgb(var(--fg) / 0.88); }
+.lvm-w-finder .lvm-fi-size { font-size: 11px; line-height: 14px; color: #0A6CF0; }
+html.dark .lvm-w-finder .lvm-fi-size { color: #4DA3FF; }
+.lvm-fi.is-dragged { opacity: .5; }
+.lvm-fw-empty { grid-column: 1 / -1; align-self: center; padding-top: 90px; text-align: center; font-size: 15px; color: rgb(var(--fg) / 0.3); }
+.lvm-w-finder .lvm-fw-status { height: 30px; border-top: 0.5px solid rgb(var(--fg) / 0.1); font-size: 11px; color: rgb(var(--fg) / 0.5); }
+
+/* A Finder icon being dragged, and the right-click menu. */
+.lvm-drag-ghost { position: absolute; z-index: 60; width: 64px; height: 64px; opacity: .85; pointer-events: none; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.25)); }
+.lvm-drag-ghost.is-home { transition: transform .3s cubic-bezier(.2, .85, .25, 1), opacity .3s; opacity: 0; }
+.lvm-ctx { position: absolute; min-width: 200px; animation: none; }
+.lvm-ctx .lvm-item { padding-left: 12px; }
+.lvm-ctx .lvm-item:not(.is-off):hover { background: var(--lvm-hi); color: #fff; }
+.lvm-ctx .lvm-item:not(.is-off):hover .lvm-keys { color: rgba(255, 255, 255, 0.78); }
+.lvm-fi.is-vanish { transform: scale(.2); opacity: 0; transition: transform .32s cubic-bezier(.5, 0, .75, 0), opacity .3s; }

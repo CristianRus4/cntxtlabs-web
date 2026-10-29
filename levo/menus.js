@@ -1155,35 +1155,55 @@
 		return '<img class="lvm-ic-real" src="img/desk/' + name + '.png" width="64" height="64" alt="" draggable="false">';
 	}
 
+	// Finder's sidebar (finder-light.png and finder-dark.png in Levo/design/refs): generic places only.
+	var APPS_GLYPH = '<svg class="lv-sym lvm-side-ic" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M7.4 3.2 13.6 14"/><path d="M10.6 3.2 4.4 14"/><path d="M2.8 11h12.4"/></svg>';
+	var SIDE = [
+		{ rows: [["Recents", "clock"], ["Shared", "person.2"]] },
+		{ head: "Favourites", rows: [["Applications", APPS_GLYPH], ["Downloads", "arrow.down.circle"], ["Desktop", "menubar.dock.rectangle", true], ["Documents", "doc", true]] },
+		{ head: "Locations", grey: true, rows: [["iCloud Drive", "icloud"], ["AirDrop", "dot.radiowaves.left.and.right"]] },
+		{ head: "Tags", tags: [["Red", "#FF453A"], ["Orange", "#FF9F0A"], ["Green", "#30D158"], ["Blue", "#0A84FF"], ["Grey", "#98989D"]] }
+	];
+	function sideHTML(sel) {
+		return SIDE.map(function (sec) {
+			var rows = sec.tags ? sec.tags.map(function (t) {
+				return '<div class="lvm-side-row"><i class="lvm-tag" style="background:' + t[1] + '"></i><span>' + t[0] + "</span></div>";
+			}) : sec.rows.map(function (r) {
+				var ic = r[1].charAt(0) === "<" ? r[1] : sym(r[1], 16, "lvm-side-ic");
+				return '<div class="lvm-side-row' + (sel === r[0] ? " is-sel" : "") + '">' + ic + "<span>" + r[0] + "</span>" + (r[2] ? sym("icloud", 13, "lvm-side-cloud") : "") + "</div>";
+			});
+			return '<div class="lvm-side-sec' + (sec.grey ? " is-grey" : "") + '">' + (sec.head ? '<div class="lvm-side-head">' + sec.head + "</div>" : "") + rows.join("") + "</div>";
+		}).join("");
+	}
+	function gridHTML(o) {
+		var items = o.items || [];
+		if (!items.length && o.trash) return '<div class="lvm-fw-empty">Trash is empty</div>';
+		return items.map(function (it, i) {
+			var hid = it.kind === "hidden" || it.hidden;
+			return '<div class="lvm-fi' + (hid ? " is-hidden" : "") + '" role="option" data-lvm-fi="' + i + '">' +
+				'<span class="lvm-fi-art">' + fileIcon(hid && it.kind === "hidden" ? { name: it.name, kind: "doc" } : it) + "</span>" +
+				'<span class="lvm-fi-name">' + esc(it.name) + "</span>" +
+				(size(it.size) ? '<span class="lvm-fi-size">' + esc(size(it.size)) + "</span>" : it.kind === "folder" && it.empty ? '<span class="lvm-fi-size">No items</span>' : "") + "</div>";
+		}).join("");
+	}
+	function capBtn(name, label, cls) { return '<button type="button"' + (cls ? ' class="' + cls + '"' : "") + ' aria-label="' + label + '">' + sym(name, 15) + "</button>"; }
+
 	var BUILD = {
 		finder: function (o) {
-			var side = [
-				["Recents", ["clock", "clock.arrow.circlepath"]],
-				["Applications", ["square.grid.2x2", "app.dashed"]],
-				["Desktop", ["menubar.dock.rectangle", "dock.rectangle"]],
-				["Documents", ["doc", "doc.text.fill"]],
-				["Downloads", ["arrow.down.circle", "arrow.down.circle.fill"]]
-			];
 			return {
-				w: 640, h: 400, toolbar: true,
+				w: 720, h: 420, toolbar: true,
 				html:
-					'<aside class="lvm-side" data-lvm-drag><div class="lvm-side-top"></div><div class="lvm-side-head">Favourites</div>' +
-						side.map(function (s) {
-							return '<div class="lvm-side-row' + (o.sidebar === s[0] ? " is-sel" : "") + '">' + sym(s[1], 14, "lvm-side-ic") + "<span>" + s[0] + "</span></div>";
-						}).join("") + "</aside>" +
+					'<aside class="lvm-side lvm-fside" data-lvm-drag><div class="lvm-side-top"></div><div class="lvm-side-scroll">' + sideHTML(o.sidebar) + "</div></aside>" +
 					'<div class="lvm-wmain">' +
-						'<div class="lvm-wtb" data-lvm-drag><span class="lvm-cap"><button type="button" class="is-dim" aria-label="Back">' + sym("chevron.left", 13) + '</button><button type="button" class="is-dim" aria-label="Forward">' + sym("chevron.right", 13) + "</button></span>" +
+						'<div class="lvm-wtb lvm-ftb" data-lvm-drag>' +
+							'<span class="lvm-cap lvm-cap-nav">' + capBtn("chevron.left", "Back", "is-dim") + capBtn("chevron.right", "Forward", "is-dim") + "</span>" +
 							'<b class="lvm-wtitle">' + esc(o.title || "Untitled") + '</b><span class="lvm-flex"></span>' +
-							'<span class="lvm-cap lvm-cap-view"><button type="button" aria-label="View">' + sym("square.grid.2x2", 14) + sym("chevron.down", 8, "lvm-cap-chev") + '</button></span><span class="lvm-cap"><button type="button" aria-label="Search">' + sym("magnifyingglass", 14) + "</button></span></div>" +
-						'<div class="lvm-fw-grid" role="listbox" aria-label="' + esc(o.title || "") + '">' +
-							(o.items || []).map(function (it, i) {
-								var hid = it.kind === "hidden" || it.hidden;
-								return '<div class="lvm-fi' + (hid ? " is-hidden" : "") + '" role="option" data-lvm-fi="' + i + '">' +
-									'<span class="lvm-fi-art">' + fileIcon(hid && it.kind === "hidden" ? { name: it.name, kind: "doc" } : it) + "</span>" +
-									'<span class="lvm-fi-name">' + esc(it.name) + "</span>" +
-									(size(it.size) ? '<span class="lvm-fi-size">' + esc(size(it.size)) + "</span>" : "") + "</div>";
-							}).join("") +
+							'<span class="lvm-cap lvm-cap-view">' + capBtn("square.grid.2x2", "Icons", "is-on") + capBtn("list.bullet", "List") + capBtn("rectangle.split.3x1", "Columns") + capBtn("squares.below.rectangle", "Gallery") + "</span>" +
+							'<span class="lvm-cap lvm-cap-group"><button type="button" aria-label="Group">' + sym("square.grid.3x2", 15) + sym("chevron.down", 8, "lvm-cap-chev") + "</button></span>" +
+							(o.trash ? '<span class="lvm-cap lvm-cap-empty"><button type="button" data-lvm-empty' + ((o.items || []).length ? "" : " disabled") + ">Empty</button></span>"
+								: '<span class="lvm-cap lvm-cap-acts">' + capBtn("square.and.arrow.up", "Share") + capBtn("tag", "Tags") + capBtn("ellipsis", "More") + "</span>") +
+							'<span class="lvm-cap lvm-cap-search">' + capBtn("magnifyingglass", "Search") + "</span>" +
 						"</div>" +
+						'<div class="lvm-fw-grid" role="listbox" aria-label="' + esc(o.title || "") + '">' + gridHTML(o) + "</div>" +
 						'<div class="lvm-fw-status" data-lvm-status></div>' +
 					"</div>",
 				after: function (w) { drawStatus(w, o); }
@@ -1308,6 +1328,46 @@
 		fire("lvm:window", { id: id, kind: kind, action: "open" });
 		return w;
 	}
+	// New items for an open Finder window (the demo's Trash, a folder after a move to the Trash).
+	function updateWindow(id, patch) {
+		var g = gwins[id];
+		if (!g) return false;
+		for (var k in patch) g.o[k] = patch[k];
+		if (g.kind === "finder") {
+			g.el.querySelector(".lvm-fw-grid").innerHTML = gridHTML(g.o);
+			var e = g.el.querySelector("[data-lvm-empty]");
+			if (e) e.disabled = !(g.o.items || []).length;
+			drawStatus(g.el, g.o);
+		}
+		return true;
+	}
+	// A right-click menu at a point in the scene: items are { label, act, disabled, keys } or null for a line.
+	var ctx = null;
+	function contextMenu(x, y, items) {
+		closeContext();
+		ensureLayer();
+		var defs = items.filter(function (d) { return d !== undefined; });
+		var m = el("div", "lvm-menu lvm-ctx", '<div class="lvm-body">' + defs.map(function (d, i) {
+			if (!d) return '<div class="lvm-sep" role="separator"></div>';
+			return '<div class="lvm-item' + (d.disabled ? " is-off" : "") + '" role="menuitem" data-ctx="' + i + '"><span class="lvm-label">' + esc(d.label) + "</span>" + keysHTML(d.keys) + "</div>";
+		}).join("") + "</div>");
+		m.setAttribute("role", "menu");
+		layer.appendChild(m);
+		var p = offsetIn(layer);
+		m.style.left = Math.round(clamp(x - p.x, 4, W() - m.offsetWidth - 4)) + "px";
+		m.style.top = Math.round(clamp(y - p.y, 30, Hh() - m.offsetHeight - 4)) + "px";
+		m.addEventListener("click", function (e) {
+			var it = e.target.closest("[data-ctx]");
+			if (!it || it.classList.contains("is-off")) return;
+			var d = defs[+it.dataset.ctx];
+			closeContext();
+			if (d && d.act) d.act();
+		});
+		ctx = m;
+		return m;
+	}
+	function closeContext() { if (ctx) { ctx.remove(); ctx = null; } }
+
 	function stack() {
 		var n = gOrder.length;
 		gOrder.forEach(function (id, i) {
@@ -1416,6 +1476,72 @@
 		if (!fi || !wlayer || !wlayer.contains(fi)) return;
 		openItem(fi);
 	}
+	// The window, index and item behind a Finder icon.
+	function fiInfo(fi) {
+		var w = fi.closest(".lvm-w"), id = w && w.dataset.lvmGw, g = id && gwins[id];
+		if (!g) return null;
+		var i = +fi.dataset.lvmFi;
+		return { window: id, index: i, item: (g.o.items || [])[i], el: fi, trash: !!g.o.trash };
+	}
+	function trashFi(fi) {
+		var info = fiInfo(fi);
+		if (info && !info.trash) call("trashItem", info);
+	}
+	function onContext(e) {
+		var fi = e.target.closest && wlayer && wlayer.contains(e.target) && e.target.closest(".lvm-fi");
+		if (!fi) return;
+		e.preventDefault();
+		var info = fiInfo(fi);
+		if (!info) return;
+		Array.prototype.forEach.call(fi.parentNode.querySelectorAll(".lvm-fi"), function (x) { x.classList.toggle("is-sel", x === fi); });
+		var r = scene.getBoundingClientRect();
+		contextMenu(e.clientX - r.left, e.clientY - r.top, [
+			{ label: "Open", act: function () { openItem(fi); } },
+			null,
+			info.trash ? { label: "Put back", disabled: true } : { label: "Move to Trash", keys: "⌘⌫", act: function () { trashFi(fi); } },
+			null,
+			{ label: "Get info", keys: "⌘I", disabled: true },
+			{ label: "Rename", disabled: true },
+			{ label: "Copy", disabled: true }
+		]);
+	}
+	// Dragging an icon out of a Finder window: a copy follows the pointer. hooks.dropItem says whether the
+	// drop was taken (the Trash in the dock); if not, the copy flies home.
+	function dragItem(e, fi) {
+		var info = fiInfo(fi);
+		if (!info || info.trash) return;
+		var x0 = e.clientX, y0 = e.clientY, ghost = null, img = fi.querySelector("img"), r0, sr;
+		function mv(ev) {
+			var dx = ev.clientX - x0, dy = ev.clientY - y0;
+			if (!ghost) {
+				if (Math.abs(dx) + Math.abs(dy) < 6 || !img) return;
+				sr = scene.getBoundingClientRect();
+				r0 = img.getBoundingClientRect();
+				ghost = el("img", "lvm-drag-ghost");
+				ghost.src = img.src;
+				ghost.style.left = (r0.left - sr.left) + "px";
+				ghost.style.top = (r0.top - sr.top) + "px";
+				scene.appendChild(ghost);
+				fi.classList.add("is-dragged");
+			}
+			ghost.style.transform = "translate(" + dx + "px," + dy + "px)";
+			call("dragItem", { x: ev.clientX, y: ev.clientY, over: true });
+		}
+		function up(ev) {
+			document.removeEventListener("pointermove", mv);
+			document.removeEventListener("pointerup", up);
+			if (!ghost) return;
+			call("dragItem", { over: false });
+			var taken = call("dropItem", { window: info.window, index: info.index, item: info.item, x: ev.clientX, y: ev.clientY, ghost: ghost.getBoundingClientRect(), src: ghost.src });
+			fi.classList.remove("is-dragged");
+			if (taken) { ghost.remove(); return; }
+			ghost.classList.add("is-home");
+			ghost.style.transform = "";
+			setTimeout(function () { ghost.remove(); }, 320);
+		}
+		document.addEventListener("pointermove", mv);
+		document.addEventListener("pointerup", up);
+	}
 	function openItem(fi) {
 		var w = fi.closest(".lvm-w"), g = w && gwins[w.dataset.lvmGw];
 		if (!g) return;
@@ -1521,6 +1647,7 @@
 		if (!id || !gwins[id]) return;
 		var b = t.closest("[data-lvm-w]");
 		if (b) { var a = b.dataset.lvmW; if (a === "close") closeWindow(id, "close"); else if (a === "min") closeWindow(id, "minimise"); else zoomWin(id); return; }
+		if (t.closest("[data-lvm-empty]")) { askEmptyTrash(); return; }
 		var fi = t.closest(".lvm-fi");
 		var grid = t.closest(".lvm-fw-grid");
 		if (grid) {
@@ -1543,6 +1670,9 @@
 	function onDown(e) {
 		var t = e.target;
 		swallow = false;
+		if (ctx && !(t.closest && t.closest(".lvm-ctx"))) closeContext();
+		var dfi = t.closest && wlayer && wlayer.contains(t) && t.closest(".lvm-fi");
+		if (dfi && e.button === 0) dragItem(e, dfi);
 		ptrType = e.pointerType || "mouse";
 		var sl = t.closest && t.closest("[data-lvm-slider]");
 		if (sl && layer && layer.contains(sl)) { startSlide(e, sl); return; }
@@ -1689,6 +1819,11 @@
 			}
 			return;
 		}
+		if (ctx && k === "Escape") { stop(e); closeContext(); return; }
+		if (gFocus && (e.metaKey || e.ctrlKey) && k === "Backspace" && !editable && !levoOpen()) {
+			var front = gOrder[0] && gwins[gOrder[0]], sel = front && front.kind === "finder" && front.el.querySelector(".lvm-fi.is-sel");
+			if (sel) { stop(e); trashFi(sel); return; }
+		}
 		if (gFocus && k === "Escape" && !levoOpen()) {
 			var f = frontEsc();
 			if (f) { stop(e); if (editable) tg.blur(); closeWindow(f, "esc"); }
@@ -1751,6 +1886,7 @@
 		on(window, "keydown", onKey, true);
 		on(window, "resize", onResize);
 		on(scene, "dblclick", onDbl);
+		on(scene, "contextmenu", onContext);
 		if (window.MutationObserver) {
 			themeObs = new MutationObserver(refreshTheme);
 			themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] });
@@ -1767,6 +1903,9 @@
 		refresh: function () { drawCC(); },
 		window: function (kind, opts) { return openWindow(kind, opts); },
 		closeWindow: function (id) { return closeWindow(String(id), "api"); },
+		updateWindow: function (id, patch) { return updateWindow(String(id), patch || {}); },
+		contextMenu: function (x, y, items) { return scene ? contextMenu(x, y, items) : null; },
+		emptyTrash: function () { askEmptyTrash(); },
 		windows: function () { return gOrder.slice(); },
 		content: CONTENT
 	};

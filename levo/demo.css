@@ -386,6 +386,9 @@ html:not(.dark) .lv-lock { color: #fff; background: rgba(60, 70, 110, 0.18); }
 /* ------------------------------------------------------------ Popover */
 
 .lv-popwrap { position: absolute; z-index: 5; top: 36px; left: 800px; width: 360px; }
+/* Closed, the popover's empty box lets clicks through to windows under it. */
+.lv-popwrap { pointer-events: none; }
+.is-open .lv-popwrap { pointer-events: auto; }
 .lv-pop {
 	position: relative;
 	width: 360px;

@@ -213,7 +213,7 @@
 			open: {}, info: {}, more: false,
 			freeShown: d.disk.free, alerted: false, popOpen: false, locked: false, unzipped: false,
 			panel: null, sheet: false, menu: false, undo: null, agent: S ? S.agent : d.agent,
-			cleanedNote: null, freed: null, analysing: false, trashFull: false, auto: false, attempts: 0, quipped: false
+			cleanedNote: null, freed: null, analysing: false, trashFull: false, trash: [], binned: {}, kept: {}, auto: false, attempts: 0, quipped: false
 		};
 		applyLevel(st.groups, st.level);
 		return st;
@@ -680,7 +680,7 @@
 			var id = el.dataset.icon;
 			el.style.setProperty("--tx", (tx - el.offsetLeft - 46) + "px");
 			el.style.setProperty("--ty", (ty - el.offsetTop - 30) + "px");
-			el.classList.toggle("is-gone", !!owned[id] && !live[id]);
+			el.classList.toggle("is-gone", (!!owned[id] && !live[id] && !S.kept[id]) || !!S.binned[id]);
 		});
 	}
 
@@ -873,12 +873,16 @@
 			if (!moved) { moved = true; S.dragged = true; if (el.dataset.icon === "dmg") S.dmgMoved = true; el.classList.add("is-dragging"); $$(".lv-ic").forEach(function (x) { x.classList.toggle("is-sel", x === el); }); }
 			el.style.left = (l0 + dx) + "px";
 			el.style.top = (t0 + dy) + "px";
+			if (el.dataset.icon !== "dmg") overTrash({ x: ev.clientX, y: ev.clientY });
 		};
-		var up = function () {
+		var up = function (ev) {
 			document.removeEventListener("pointermove", mv);
 			document.removeEventListener("pointerup", up);
 			if (!moved) return;
 			el.classList.remove("is-dragging");
+			var binIt = el.dataset.icon !== "dmg" && overTrash({ x: ev.clientX, y: ev.clientY });
+			overTrash(null);
+			if (binIt && trashDesk(el.dataset.icon)) { setTimeout(function () { S.dragged = false; }, 0); return; }
 			var me = { x: el.offsetLeft, y: el.offsetTop, w: IC_W, h: IC_H };
 			var W = scene.offsetWidth, H = scene.offsetHeight;
 			var vol = el.dataset.icon === "dmg";
@@ -1156,14 +1160,14 @@
 	}
 	function hideBubble() { var tip = $("[data-bubbletip]"); if (tip) tip.hidden = true; }
 
-	function snapshot() { return JSON.stringify({ disk: S.disk, groups: S.groups, procs: S.procs, freeShown: S.freeShown, level: S.level, trashFull: S.trashFull }); }
+	function snapshot() { return JSON.stringify({ disk: S.disk, groups: S.groups, procs: S.procs, freeShown: S.freeShown, level: S.level, trashFull: S.trashFull, trash: S.trash }); }
 	function restore(snap) {
 		var o = JSON.parse(snap);
-		S.disk = o.disk; S.groups = o.groups; S.procs = o.procs; S.freeShown = o.freeShown; S.level = o.level; S.trashFull = o.trashFull;
+		S.disk = o.disk; S.groups = o.groups; S.procs = o.procs; S.freeShown = o.freeShown; S.level = o.level; S.trashFull = o.trashFull; S.trash = o.trash || [];
 		S.cleanedNote = null;
 		renderBar(true);
 		render();
-		renderTrash();
+		syncTrash();
 	}
 
 	// pick says what goes (the ticks by default); Auto mode passes its own groups and says so in the toast.
@@ -1175,7 +1179,12 @@
 		S.undo = snapshot();
 		$$(".lv-grow").forEach(function (r) { var g = group(r.dataset.id); if (g && g.items.every(function (it) { return pick(g, it); })) r.classList.add("is-going"); });
 		if (!said) $$(".lv-items, .lv-detail").forEach(function (r) { r.classList.add("is-going"); });
-		var trashed = S.groups.some(function (g) { return g.trash && g.items.some(function (it) { return pick(g, it); }); });
+		var binned = [], emptied = false;
+		S.groups.forEach(function (g) { g.items.forEach(function (it) {
+			if (!pick(g, it)) return;
+			if (g.id === "trash") emptied = true;
+			else if (g.trash) binned.push({ name: it.name.replace(/^.*\//, ""), kind: it.desk === "installers" ? "folder" : "", gb: it.gb, counted: true });
+		}); });
 		later(function () {
 			var from = S.disk.free;
 			S.groups.forEach(function (g) { g.items = g.items.filter(function (it) { return !pick(g, it); }); });
@@ -1183,7 +1192,8 @@
 			S.open = {}; S.info = {};
 			S.disk.free = Math.round((from + freed) * 10) / 10;
 			S.sel = null; S.openChips = {};
-			if (trashed) { S.trashFull = true; renderTrash(true); }
+			if (emptied) S.trash = S.trash.filter(function (x) { return x.counted; });
+			if (binned.length || emptied) { S.trash = S.trash.concat(binned); syncTrash(true); }
 			if (!S.groups.some(function (g) { return g.items.some(function (it) { return it.desk === "installers"; }); }) && window.LevoMenus && LevoMenus.closeWindow) LevoMenus.closeWindow("installers");
 			renderGroups();
 			renderBar(true);
@@ -1366,7 +1376,7 @@
 			items.push({ label: "Select", sub: true, run: function () { S.panel = "select"; panelAt = -1; drawPanel(); } });
 		}
 		items.push({ label: "Analyse now", keys: ["\u2318", "R"], run: analyse });
-		items.push({ label: S.auto ? "Turn off Auto mode" : "Turn on Auto mode", keys: ["\u2318", "A"], run: function () { setAuto(!S.auto); } });
+		items.push({ label: S.auto ? "Turn off Auto mode" : "Turn on Auto mode", run: function () { setAuto(!S.auto); } });
 		items.push(S.paused ? { label: "Resume alerts", keys: ["\u2318", "P"], run: function () { S.paused = false; toast("info", "Alerts resumed"); } }
 			: { label: "Pause alerts for 1 hour", keys: ["\u2318", "P"], run: function () { S.paused = true; toast("info", "Alerts paused for 1 hour"); } });
 		items.push(null);
@@ -1482,6 +1492,101 @@
 		var d = LEVO_DEMO.dock.filter(function (x) { return x.id === "trash"; })[0];
 		$("img", t).src = S.trashFull ? d.full : d.img;
 		if (bump) { t.classList.remove("is-bounce"); void t.offsetWidth; t.classList.add("is-bump"); later(function () { t.classList.remove("is-bump"); }, 500); }
+	}
+	// What's in the Trash: files moved there from the desktop or a Finder window, and what a clean sent
+	// there (counted: its space was freed already). The popover lists it as a Trash row sized by the rest.
+	var TRASH_GROUP = { id: "trash", about: ["Files you moved to the Trash.", "You chose them yourself.", "Emptying the Trash frees their space for good."], title: "Trash", symbol: "trash.fill", tile: "grey", changed: "today", location: "~/.Trash", verdict: "Already in the Trash", good: true, items: [] };
+	var DESK_GB = { shot: 0.004, notes: 0.000004, prices: 0.000001, features: 0.000002, unzipped: 2.4 };
+	function binGB() { return Math.round(sum(S.trash, function (x) { return x.counted ? 0 : x.gb; }) * 1000) / 1000; }
+	function syncTrash(bump) {
+		var total = binGB(), g = group("trash");
+		if (total <= 0) { if (g) S.groups = S.groups.filter(function (x) { return x.id !== "trash"; }); }
+		else {
+			// It sits in the list where its size puts it, moving as it grows.
+			if (!g) g = JSON.parse(JSON.stringify(TRASH_GROUP));
+			else S.groups = S.groups.filter(function (x) { return x !== g; });
+			var at = S.groups.findIndex(function (x) { return sum(x.items, function (it) { return it.gb; }) < total; });
+			S.groups.splice(at < 0 ? S.groups.length : at, 0, g);
+			var on = g.items.length ? g.items[0].on : S.level !== "None";
+			g.items = [{ name: "Trash", gb: Math.max(0.01, Math.round(total * 100) / 100), level: 1, on: on }];
+		}
+		S.trashFull = S.trash.length > 0;
+		renderTrash(bump);
+		renderGroups(); renderBar(); renderActions();
+		if (window.LevoMenus && LevoMenus.updateWindow) LevoMenus.updateWindow("trash", { items: trashList() });
+	}
+	function trashList() { return S.trash.map(function (x) { return { name: x.name, kind: x.kind, size: x.gb }; }); }
+	function openTrash() {
+		var M = window.LevoMenus;
+		if (!M || !M.window) return;
+		later(function () { M.window("finder", { id: "trash", title: "Trash", trash: true, items: trashList() }); }, 300);
+	}
+	// The pointer over the dock's Trash (client px), lighting it as a drop target.
+	function overTrash(p) {
+		var t = $('[data-dock="trash"]');
+		var on = false;
+		if (p && t) { var r = t.getBoundingClientRect(); on = p.x >= r.left - 6 && p.x <= r.right + 6 && p.y >= r.top - 14 && p.y <= r.bottom + 6; }
+		if (t) t.classList.toggle("is-target", on);
+		return on;
+	}
+	function trashPoint() {
+		var t = $('[data-dock="trash"]'), r = t.getBoundingClientRect(), sr = scene.getBoundingClientRect();
+		return { x: r.left + r.width / 2 - sr.left, y: r.top + r.height / 2 - sr.top - 4 };
+	}
+	// A desktop file to the Trash: it flies in (CSS), the Trash fills and the popover's Trash row grows.
+	function trashDesk(id) {
+		var el = $('[data-icon="' + id + '"]');
+		if (!el || id === "dmg" || el.classList.contains("is-gone")) return false;
+		var info = LEVO_DEMO.desktop.filter(function (d) { return d.id === id; })[0];
+		var gbs = DESK_GB[id] || 0;
+		S.groups.forEach(function (g) { g.items = g.items.filter(function (it) { if (it.desk === id) { gbs += it.gb; return false; } return true; }); });
+		S.groups = S.groups.filter(function (g) { return g.items.length || g.id === "trash"; });
+		if (id === "installers" && S.installers) gbs = Math.max(gbs, sum(S.installers, function (x) { return x.size || 0; }));
+		S.binned[id] = true;
+		renderIcons();
+		if (id === "installers" || id === "unzipped") { var M = window.LevoMenus; if (M && M.closeWindow) M.closeWindow(id); }
+		later(function () {
+			S.trash.push({ name: info.name, kind: info.kind === "doc" ? "txt" : info.kind === "shot" ? "image" : info.kind, gb: Math.round(gbs * 1e6) / 1e6, desk: id });
+			syncTrash(true);
+		}, REDUCED ? 0 : 560);
+		return true;
+	}
+	// An item from a Finder window to the Trash, flying from its icon (or where it was dropped).
+	function trashWinItem(info, rect) {
+		var list = info.window === "installers" ? S.installers : info.window === "unzipped" ? S.unzippedItems : null;
+		if (!list || !info.item) return;
+		var i = list.indexOf(info.item);
+		if (i < 0) return;
+		var sr = scene.getBoundingClientRect(), r = rect || (info.el && info.el.querySelector("img") && info.el.querySelector("img").getBoundingClientRect());
+		var a = r ? { x: r.left + r.width / 2 - sr.left, y: r.top + r.height / 2 - sr.top } : trashPoint();
+		var src = (info.el && info.el.querySelector("img") && info.el.querySelector("img").src) || info.src || "img/desk/doc.png";
+		list.splice(i, 1);
+		if (window.LevoMenus) LevoMenus.updateWindow(info.window, { items: list });
+		var gbs = info.item.size || 0;
+		// The folder on the desktop shrinks by what left it; it stays on the desktop even when empty.
+		if (info.window === "installers") S.groups.forEach(function (g) {
+			g.items.forEach(function (it) { if (it.desk === "installers") it.gb = Math.max(0, Math.round((it.gb - gbs) * 1000) / 1000); });
+			g.items = g.items.filter(function (it) { if (it.desk === "installers" && it.gb <= 0.001) { S.kept.installers = true; return false; } return true; });
+		});
+		S.groups = S.groups.filter(function (g) { return g.items.length || g.id === "trash"; });
+		flyArc(src, a, trashPoint(), { lift: 60, dur: 520, shrink: 0.6 }, function () {
+			S.trash.push({ name: info.item.name, kind: info.item.kind, gb: gbs });
+			syncTrash(true);
+		});
+	}
+	// Emptying: the Trash window's icons shrink away, the dock's Trash goes back to empty and the space comes back.
+	function emptyTrash() {
+		if (!S.trash.length) return false;
+		var w = scene.querySelector('[data-lvm-gw="trash"]');
+		if (w) Array.prototype.forEach.call(w.querySelectorAll(".lvm-fi"), function (x, i) { x.style.transitionDelay = (i * 40) + "ms"; x.classList.add("is-vanish"); });
+		var from = S.disk.free, freed = binGB();
+		later(function () {
+			S.trash = [];
+			S.disk.free = Math.round((from + freed) * 10) / 10;
+			syncTrash(true);
+			if (freed > 0.05) { countFree(from, S.disk.free); renderMenubar(); }
+		}, REDUCED ? 0 : 420);
+		return true;
 	}
 	function bounce(el) {
 		el.classList.remove("is-bounce");
@@ -1604,10 +1709,28 @@
 			case "undo": clearTimeout(toastTimer); toastTimer = null; if (S.undo) { var u = S.undo; S.undo = null; restore(u); toast("info", "Undone"); } break;
 		}
 	}
+	// Right-click on a desktop icon: Finder's menu, with Move to Trash.
+	function onContext(e) {
+		var ic = e.target.closest && e.target.closest("[data-icon]");
+		if (!ic || !root.contains(ic) || !window.LevoMenus || !LevoMenus.contextMenu) return;
+		e.preventDefault();
+		$$(".lv-ic").forEach(function (x) { x.classList.toggle("is-sel", x === ic); });
+		var id = ic.dataset.icon, sr = scene.getBoundingClientRect();
+		LevoMenus.contextMenu(e.clientX - sr.left, e.clientY - sr.top, [
+			{ label: "Open", act: function () { openFile(id); } },
+			null,
+			id === "dmg" ? { label: "Eject \u201cLevo\u201d", keys: "⌘E", disabled: true } : { label: "Move to Trash", keys: "⌘⌫", act: function () { trashDesk(id); } },
+			null,
+			{ label: "Get info", keys: "⌘I", disabled: true },
+			{ label: "Rename", disabled: true },
+			{ label: "Compress", disabled: true },
+			{ label: "Copy", disabled: true }
+		]);
+	}
 	function dockClick(el) {
 		var id = el.dataset.dock, M = window.LevoMenus;
 		if (id === "levo") { bounce(el); openPop(); return; }
-		if (id === "trash") { el.classList.add("is-bump"); later(function () { el.classList.remove("is-bump"); }, 500); return; }
+		if (id === "trash") { el.classList.add("is-bump"); later(function () { el.classList.remove("is-bump"); }, 500); openTrash(); return; }
 		if (id === "downloads") { toggleFan(); return; }
 		bounce(el);
 		if (!M || !M.window) return;
@@ -1666,7 +1789,8 @@
 			var el = $('[data-icon="installers"]');
 			if (el && el.classList.contains("is-gone")) return;
 			var p = at(-60, 40);
-			M.window("finder", { id: "installers", title: "Old Installers", x: p.x, y: p.y, w: 560, h: 340, items: C.installers || [] });
+			S.installers = S.installers || (C.installers || []).slice();
+			M.window("finder", { id: "installers", title: "Old Installers", x: p.x, y: p.y, items: S.installers });
 		} else if (id === "notes") {
 			var q = at(40, 70);
 			M.window("textedit", { id: "notes", title: "notes (3).txt", x: q.x, y: q.y, w: 420, h: 300, text: C.notes || "" });
@@ -1675,7 +1799,8 @@
 			M.window("textedit", { id: id, title: n.title, x: r.x, y: r.y, w: 440, h: 320, text: n.text });
 		} else if (id === "unzipped") {
 			var u = at(0, 90);
-			M.window("finder", { id: "unzipped", title: "project-final-v2", x: u.x, y: u.y, w: 560, h: 340, items: C.unzipped || [] });
+			S.unzippedItems = S.unzippedItems || (C.unzipped || []).slice();
+			M.window("finder", { id: "unzipped", title: "project-final-v2", x: u.x, y: u.y, items: S.unzippedItems });
 		} else if (id === "zip") unzip();
 		else if (id === "dmg") lwin(true);
 	}
@@ -1699,8 +1824,12 @@
 	function onKey(e) {
 		if (scene.dataset.menu) return;
 		if (S.locked && inView && (e.key === "Enter" || e.key === " ") && root.contains(document.activeElement)) { unlock(); return; }
-		if (!S.popOpen || !inView) return;
 		var k = e.key, mod = e.metaKey || e.ctrlKey;
+		if (!S.popOpen && inView && mod && k === "Backspace") {
+			var selIc = $(".lv-ic.is-sel"), tg = e.target;
+			if (selIc && !(tg && (tg.isContentEditable || /^(INPUT|TEXTAREA)$/.test(tg.tagName))) && trashDesk(selIc.dataset.icon)) { e.preventDefault(); return; }
+		}
+		if (!S.popOpen || !inView) return;
 		var inPanel = S.panel && document.activeElement && document.activeElement.matches("[data-psearch]");
 		if (mod && (k === "k" || k === "K")) { e.preventDefault(); togglePanel(); return; }
 		if (k === "Escape") {
@@ -1763,6 +1892,7 @@
 		if (scene.dataset.mode === "compact") openPop();
 		if (REDUCED) scene.classList.add("is-reduced");
 		root.addEventListener("click", onClick);
+		root.addEventListener("contextmenu", onContext);
 		document.addEventListener("keydown", onKey);
 		var bubbleTimer = null;
 		pop.addEventListener("pointerover", function (ev) {
@@ -1802,7 +1932,10 @@
 			openLevo: function () { S.touched = true; openPop(); },
 			auto: function () { return S.auto; },
 			setAuto: function (on) { setAuto(on); },
-			emptyTrash: function () { var had = S.trashFull; S.trashFull = false; renderTrash(had); return had; },
+			emptyTrash: emptyTrash,
+			trashItem: function (info) { trashWinItem(info); },
+			dragItem: function (d) { overTrash(d.over ? d : null); },
+			dropItem: function (d) { var on = overTrash(d); overTrash(null); if (on) trashWinItem(d, d.ghost); return on; },
 			revealGroup: function (id) {
 				S.touched = true; openPop();
 				if (group(id)) { S.sel = { type: "group", id: id }; S.open[id] = true; if (S.groups.map(function (g) { return g.id; }).indexOf(id) >= 5) S.more = true; renderGroups(); renderActions(); }
@@ -1848,22 +1981,26 @@
 		} else a = { x: scene.offsetWidth / 2, y: 46 };
 		later(function () {
 			var r2 = st.getBoundingClientRect(), b = { x: r2.left + r2.width / 2 - sr.left, y: r2.top + r2.height / 2 - sr.top - 6 };
-			var fly = document.createElement("img");
-			fly.className = "lv-dl-fly";
-			fly.src = "img/desk/dmg.png";
-			fly.alt = "";
-			scene.appendChild(fly);
-			var c = { x: (a.x + b.x) / 2, y: Math.min(a.y, b.y) - 180 }, t0 = performance.now(), dur = REDUCED ? 1 : 780;
-			var step = function (t) {
-				var k = Math.min(1, (t - t0) / dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2, u = 1 - e;
-				var x = u * u * a.x + 2 * u * e * c.x + e * e * b.x, y = u * u * a.y + 2 * u * e * c.y + e * e * b.y;
-				fly.style.transform = "translate(" + (x - 32).toFixed(1) + "px," + (y - 32).toFixed(1) + "px) scale(" + (1 - 0.45 * e).toFixed(3) + ")";
-				fly.style.opacity = k > 0.92 ? String((1 - k) / 0.08) : "1";
-				if (k < 1) requestAnimationFrame(step);
-				else { fly.remove(); progress(st); }
-			};
-			requestAnimationFrame(step);
+			flyArc("img/desk/dmg.png", a, b, { lift: 180, dur: 780, shrink: 0.45 }, function () { progress(st); });
 		}, fresh ? 320 : 0);
+	}
+	// An icon flies along a quadratic arc from a to b (scene px), shrinking as it goes, then fades in the last moment.
+	function flyArc(src, a, b, o, done) {
+		var fly = document.createElement("img");
+		fly.className = "lv-dl-fly";
+		fly.src = src;
+		fly.alt = "";
+		scene.appendChild(fly);
+		var c = { x: (a.x + b.x) / 2, y: Math.min(a.y, b.y) - o.lift }, t0 = performance.now(), dur = REDUCED ? 1 : o.dur;
+		var step = function (t) {
+			var k = Math.min(1, (t - t0) / dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2, u = 1 - e;
+			var x = u * u * a.x + 2 * u * e * c.x + e * e * b.x, y = u * u * a.y + 2 * u * e * c.y + e * e * b.y;
+			fly.style.transform = "translate(" + (x - 32).toFixed(1) + "px," + (y - 32).toFixed(1) + "px) scale(" + (1 - o.shrink * e).toFixed(3) + ")";
+			fly.style.opacity = k > 0.92 ? String((1 - k) / 0.08) : "1";
+			if (k < 1) requestAnimationFrame(step);
+			else { fly.remove(); if (done) done(); }
+		};
+		requestAnimationFrame(step);
 	}
 	function progress(st) {
 		var bar = $(".lv-dl-bar", st), fillEl = $("b", bar), t0 = performance.now(), dur = REDUCED ? 1 : 2600;
