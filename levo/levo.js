@@ -122,9 +122,14 @@
 	function drawAgents() {
 		var el = document.getElementById("levo-agents");
 		if (!el) return;
-		el.innerHTML = '<ul class="chips">' + CLIS.map(function (a, i) {
+		// Three steps as labels, then the chips; a click copies the prompt and shows it.
+		el.innerHTML = '<ol class="ag-steps">' + ["Click your agent", "Paste the prompt", "It installs Levo"].map(function (t, i) {
+			return '<li><span class="ag-n">' + (i + 1) + "</span>" + t + "</li>";
+		}).join("") + "</ol>" +
+			'<ul class="chips">' + CLIS.map(function (a, i) {
 			return '<li><button type="button" class="chip' + (a.any ? " chip-any" : "") + '" data-ag="' + i + '" title="' + esc(a.name) + '"><span class="chip-p" aria-hidden="true">\u276f</span>' + esc(a.cli === "your-agent" ? "any CLI" : a.cli) + "</button></li>";
-		}).join("") + '</ul><div class="toast" data-toast role="status" aria-live="polite" hidden></div>';
+		}).join("") + '</ul><div class="toast" data-toast role="status" aria-live="polite" hidden></div>' +
+			'<figure class="ag-prompt" data-prompt hidden><figcaption data-prompt-for></figcaption><pre data-prompt-text></pre></figure>';
 	}
 	function copyFor(a) {
 		if (!a) return;
@@ -139,6 +144,16 @@
 			t.classList.remove("in"); void t.offsetWidth; t.classList.add("in");
 			toastTimer = setTimeout(function () { t.classList.remove("in"); setTimeout(function () { t.hidden = true; }, 250); }, 4200);
 		};
+		// What's on the clipboard, shown so the visitor sees what they paste.
+		var box = document.querySelector("[data-prompt]");
+		if (box) {
+			box.querySelector("[data-prompt-for]").textContent = a.any ? "Any CLI" : a.name;
+			box.querySelector("[data-prompt-text]").textContent = prompt();
+			var first = box.hidden;
+			box.hidden = false;
+			if (first) { box.classList.remove("in"); void box.offsetWidth; box.classList.add("in"); }
+			Array.prototype.forEach.call(document.querySelectorAll("[data-ag]"), function (x) { x.classList.toggle("is-on", x.dataset.ag === String(CLIS.indexOf(a))); });
+		}
 		copy(prompt()).then(function () { done(true); }, function () { done(false); });
 	}
 	document.addEventListener("click", function (e) {

@@ -250,7 +250,7 @@
 				SEP,
 				D("Force quit…", "⌥⌘⎋", { act: openForceQuit }),
 				SEP,
-				D("Sleep", "", { act: function () { dim(); } }),
+				D("Sleep", "", { act: function () { blackout(); } }),
 				D("Restart…", "", { act: function () { power("restart"); } }),
 				D("Shut down…", "", { act: function () { power("shutdown"); } }),
 				SEP,
@@ -890,7 +890,7 @@
 	FALLBACK.power = '<path d="M8 2v5.2"/><path d="M4.7 4.3a5 5 0 1 0 6.6 0"/>';
 	function power(kind) {
 		var p = POWER[kind], n = 60;
-		alertBox({ sym: p.sym, title: p.t, body: p.b.replace("{n}", n), ok: p.ok, check: "Reopen windows when logging back in", onOk: function () { dim(); } });
+		alertBox({ sym: p.sym, title: p.t, body: p.b.replace("{n}", n), ok: p.ok, check: "Reopen windows when logging back in", onOk: function () { if (kind === "logout") dim(); else blackout(); } });
 		wins.alertTimer = setInterval(function () {
 			n--;
 			var b = wins.alert && wins.alert.querySelector("[data-lvm-ab]");
@@ -908,6 +908,24 @@
 		void d.offsetWidth;
 		d.style.opacity = level || 0.94;
 		setTimeout(function () { d.style.opacity = 0; setTimeout(function () { d.remove(); }, 260); }, ms || 800);
+	}
+
+	// Sleep, Restart and Shut down: the screen fades to black, stays black for two
+	// seconds and comes back. With reduced motion it cuts to black and back.
+	var blackTimer = 0;
+	function blackout() {
+		ensureLayer();
+		if (layer.querySelector(".lvm-black")) return;
+		var d = el("div", "lvm-dim lvm-black"), still = REDUCED();
+		if (still) d.style.transition = "none";
+		layer.appendChild(d);
+		void d.offsetWidth;
+		d.style.opacity = 1;
+		clearTimeout(blackTimer);
+		blackTimer = setTimeout(function () {
+			d.style.opacity = 0;
+			setTimeout(function () { d.remove(); }, still ? 0 : 260);
+		}, (still ? 0 : 250) + 2000);
 	}
 
 	// Go to Folder: a field with suggestions from a small fake tree.

@@ -320,7 +320,7 @@ html:not(.dark) .lv-dk-label { background: rgba(246, 246, 246, 0.9); color: #1d1
 .lv-dk:hover .lv-dk-label { opacity: 1; transform: translateX(-50%) scale(1); }
 .lv-dk.is-dragging .lv-dk-label { opacity: 0; }
 .lv-dk-dot { position: absolute; bottom: 1px; width: 4px; height: 4px; border-radius: 50%; background: rgb(var(--fg) / 0.7); opacity: 0; transition: opacity .3s; }
-.lv-dk.is-running .lv-dk-dot, .lv-dk[data-dock="finder"] .lv-dk-dot, .lv-dk[data-dock="levo"] .lv-dk-dot { opacity: 1; }
+.lv-dk.is-running .lv-dk-dot { opacity: 1; }
 .lv-dk.is-bounce .lv-dk-lift { animation: lv-bounce 1.4s cubic-bezier(.3, .6, .4, 1); }
 .lv-dk.is-bump .lv-dk-lift { animation: lv-bump .45s var(--spring); }
 .lv-dk.is-dragging { transition: none; z-index: 20; }
@@ -1070,9 +1070,13 @@ html.dark .lv-bsheet { box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 -4px 16px r
 /* ------------------------------------------------------------ The Mac in a frame (desktop) */
 
 .lv-scene[data-mode="desk"] {
-	height: clamp(640px, calc(100svh - 64px - 40px), 900px);
+	height: clamp(640px, calc(100svh - 64px - 56px), 900px);
 	min-height: 0;
 	border-radius: 28px;
 	box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 40px 100px -40px rgba(0, 0, 0, 0.45), 0 14px 30px -18px rgba(0, 0, 0, 0.25);
 	transform: translateZ(0);
 }
+
+/* "Working…" is the gauge's word, as text only. */
+.lv-g-label.is-working::before, .lv-g-label.is-working:hover::before { content: "Working\2026"; }
+.lv-dial-spin { display: none !important; }

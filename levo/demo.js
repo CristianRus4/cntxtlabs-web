@@ -33,7 +33,7 @@
 			used: [
 				{ id: "system", label: "System data", gb: 64, color: ["#3D5AFE", "#7C8CFF"] },
 				{ id: "apps", label: "Apps", gb: 96, color: ["#1F7AE0", "#4FA3F8"] },
-				{ id: "developer", label: "Developer", gb: 101, color: ["#6A3DEC", "#A485FF"] },
+				{ id: "developer", label: "Developer", gb: 79, color: ["#6A3DEC", "#A485FF"] },
 				{ id: "documents", label: "Documents", gb: 70, color: ["#D99A00", "#FFC531"] },
 				{ id: "media", label: "Photos and media", gb: 44, color: ["#C2307E", "#EC5FA8"] },
 				{ id: "other", label: "Other", gb: 29, color: ["#9A6A43", "#C99A72"] }
@@ -47,7 +47,7 @@
 		groups: [
 			{ id: "xcode", about: ["Compiled code, indexes and previews Xcode keeps for your projects.", "Xcode makes it from your source code, which stays untouched.", "Xcode rebuilds it on the next build; that build takes longer."], title: "Xcode build data", symbol: "hammer.fill", tile: "blue", changed: "12 days ago",
 				location: "~/Library/Developer/Xcode", verdict: "Rebuilds on next build", good: true,
-				items: [{ name: "DerivedData/Levo", gb: 6.8, level: 1 }, { name: "DerivedData/Elevate", gb: 4.9, level: 1 }, { name: "DerivedData/Context", gb: 2.5, level: 1 }] },
+				items: [{ name: "DerivedData/Levo", gb: 6.8, level: 1 }, { name: "DerivedData/Elevate", gb: 4.9, level: 1 }, { name: "DerivedData/Context", gb: 1.8, level: 1 }] },
 			{ id: "sims", about: ["Simulator devices you haven\u2019t opened in weeks.", "Their apps and data are test copies; the runtimes stay.", "Xcode makes a fresh device when you need one."], title: "Simulators and emulators", symbol: "iphone", tile: "grey", changed: "3 weeks ago",
 				location: "~/Library/Developer/CoreSimulator", verdict: "Unused devices, runtimes kept", good: true,
 				items: [{ name: "iPhone 17 Pro", gb: 2.1, level: 2 }, { name: "iPad Air", gb: 1.9, level: 2 }, { name: "iPhone 16e", gb: 1.7, level: 2 }, { name: "iPhone SE", gb: 1.5, level: 2 }, { name: "Apple Watch Series 11", gb: 1.4, level: 2 }, { name: "Apple TV 4K", gb: 1.2, level: 2 }] },
@@ -65,7 +65,16 @@
 				items: [{ name: "Chrome", gb: 0.7, level: 1 }, { name: "Safari", gb: 0.4, level: 1 }] },
 			{ id: "logs", about: ["Crash reports and logs from apps and the simulator.", "Nothing reads them unless something breaks.", "New ones are written as things happen."], title: "Logs and crash reports", symbol: "doc.text.fill", tile: "grey", changed: "yesterday",
 				location: "~/Library/Logs", verdict: "Old reports nobody reads", good: true,
-				items: [{ name: "DiagnosticReports", gb: 0.6, level: 2 }, { name: "CoreSimulator logs", gb: 0.3, level: 2 }] }
+				items: [{ name: "DiagnosticReports", gb: 0.6, level: 2 }, { name: "CoreSimulator logs", gb: 0.3, level: 2 }] },
+			{ id: "deps", about: ["Packages installed inside projects you haven\u2019t opened in months.", "Your code stays; only the downloaded packages go.", "They come back with the next install."], title: "Project dependencies", symbol: "shippingbox.fill", tile: "orange", changed: "3 months ago",
+				location: "~/Developer", verdict: "Projects idle for months", good: true,
+				items: [{ name: "levo-site/node_modules", gb: 2.9, level: 3 }, { name: "notes-app/node_modules", gb: 1.8, level: 3 }, { name: "old-prototype/node_modules", gb: 1.4, level: 3 }] },
+			{ id: "appcaches", about: ["Caches that apps keep to start and load faster.", "Your messages, songs and settings aren\u2019t in them.", "Apps fill them again as you use them."], title: "App caches", symbol: "tray.full.fill", tile: "orange", changed: "today",
+				location: "~/Library/Caches", verdict: "Apps rebuild them", good: true,
+				items: [{ name: "Chat app cache", gb: 2.4, level: 3 }, { name: "Music cache", gb: 1.6, level: 3 }] },
+			{ id: "backups", about: ["An old iPhone backup and an archive you made last year.", "Your current iPhone keeps its own newer backup.", "They go to the Trash, so you can get them back."], title: "Backups and archives", symbol: "archivebox.fill", tile: "grey", changed: "1 year ago",
+				location: "~/Library/Application Support/MobileSync", verdict: "Only with Everything", good: false,
+				trash: true, items: [{ name: "iPhone backup (2025)", gb: 9.6, level: 4 }, { name: "Old archives.zip", gb: 3.4, level: 4 }] }
 		],
 		processes: [
 			// Rows Levo won't quit are dimmed; why sits behind the ⓘ on hover.
@@ -77,7 +86,7 @@
 			{ id: "windowserver", name: "WindowServer", symbol: "terminal", tile: "grey", why: "macOS needs it, so Levo won\u2019t quit it.", system: true, cpu: 12, gpu: 4, mem: 0.8 },
 			{ id: "claude", name: "Claude", app: "claude", why: "Open with one window.", cpu: 6, gpu: 1, mem: 0.9 },
 			{ id: "safari", name: "Safari", app: "safari", why: "Open with four tabs.", cpu: 5, gpu: 2, mem: 2.6 },
-			{ id: "ffmpeg", name: "ffmpeg", symbol: "terminal", tile: "grey", why: "A video export that finished an hour ago. Safe to quit.", safe: true, cpu: 6, gpu: 80, mem: 0.6 },
+			{ id: "ffmpeg", name: "ffmpeg", symbol: "terminal", tile: "grey", why: "A video export that finished an hour ago. Safe to quit.", safe: true, cpu: 6, gpu: 18, mem: 0.6 },
 			{ id: "cursor", name: "Cursor", app: "cursor", why: "An editor with two projects open.", cpu: 4, gpu: 0, mem: 2.1 }
 		],
 		// Desktop icons, in a column from the top left (below the widgets when they show).
@@ -91,16 +100,17 @@
 		],
 		// The dock, from img/dock/ (one folder, so the set can be swapped).
 		dock: [
-			{ id: "finder", name: "Finder", img: "img/dock/finder.png" },
-			{ id: "safari", name: "Safari", img: "img/dock/safari.png" },
+			{ id: "finder", name: "Finder", img: "img/dock/finder.png", open: true },
+			{ id: "safari", name: "Safari", img: "img/dock/safari.png", open: true },
 			{ id: "mail", name: "Mail", img: "img/dock/mail.png" },
-			{ id: "messages", name: "Messages", img: "img/dock/messages.png" },
+			{ id: "messages", name: "Messages", img: "img/dock/messages.png", open: true },
 			{ id: "notes", name: "Notes", img: "img/dock/notes.png" },
 			{ id: "music", name: "Music", img: "img/dock/music.png" },
-			{ id: "photos", name: "Photos", img: "img/dock/photos.png" },
-			{ id: "calendar", name: "Calendar", img: "img/dock/calendar.png" },
-			{ id: "settings", name: "System Settings", img: "img/dock/settings.png" },
+			{ id: "photos", name: "Photos", img: "img/dock/photos.png", open: true },
+			{ id: "calendar", name: "Calendar", img: "img/dock/calendar.png", open: true },
+			{ id: "settings", name: "System Settings", img: "img/dock/settings.png", open: true },
 			{ id: "terminal", name: "Terminal", img: "img/dock/terminal.png" },
+			{ id: "elevate", name: "Elevate", img: "img/dock/elevate.png", open: true },
 			{ id: "levo", name: "Levo", img: "img/dock/levo.png" },
 			{ id: "trash", name: "Trash", img: "img/dock/trash-empty.png", full: "img/dock/trash-full.png" }
 		],
@@ -209,7 +219,7 @@
 		if (level === "Selected") return;
 		var n = LEVO_DEMO.levels.indexOf(level) + 1;
 		groups.forEach(function (g) { g.items.forEach(function (it) {
-			it.on = level === "All" ? it.level > 0 : level === "None" ? false : it.level > 0 && it.level <= n;
+			it.on = level === "All" ? it.level > 0 : level === "None" ? false : it.level > 0 && it.level <= Math.min(n, 3);
 		}); });
 	}
 
@@ -358,7 +368,7 @@
 			var art = d.full ? '<img src="' + d.img + '" alt="" draggable="false">' :
 				'<img class="lv-dk-l" src="' + d.img + '" alt="" draggable="false"><img class="lv-dk-d" src="' + dark + '" alt="" draggable="false">';
 			return (d.id === "trash" ? '<span class="lv-dock-sep"></span>' : "") +
-				'<button type="button" class="lv-dk" data-dock="' + d.id + '" aria-label="' + esc(d.name) + '"><span class="lv-dk-lift"><span class="lv-dk-art">' + art + '</span></span><span class="lv-dk-label">' + esc(d.name) + '</span><i class="lv-dk-dot"></i></button>';
+				'<button type="button" class="lv-dk' + (d.open ? " is-running" : "") + '" data-dock="' + d.id + '" aria-label="' + esc(d.name) + '"><span class="lv-dk-lift"><span class="lv-dk-art">' + art + '</span></span><span class="lv-dk-label">' + esc(d.name) + '</span><i class="lv-dk-dot"></i></button>';
 		}).join("");
 	}
 
@@ -498,7 +508,9 @@
 		var all = S.groups.map(function (g) { return { g: g, gb: sum(g.items, function (it) { return it.on ? it.gb : 0; }) }; })
 			.filter(function (x) { return x.gb > 0; }).sort(function (a, b) { return b.gb - a.gb; });
 		var shown = all.length <= 3 ? all : all.slice(0, 2);
-		var unnamed = Math.max(0, S.groups.length - shown.length), moreChip = all.length > shown.length;
+		// "N more" counts the ticked groups the sentence doesn't name, so each level changes it;
+		// "More to choose from." follows when everything ticked is named but more is listed.
+		var moreChip = all.length > shown.length, unnamed = moreChip ? all.length - shown.length : S.groups.length - shown.length;
 		var lead = !all.length ? "nothing" : S.level === "All" ? "everything" : LEVO_DEMO.levels.indexOf(S.level) >= 0 ? "level" : "yours";
 		return { lead: lead, level: S.level, groups: shown.map(function (x) { return x.g.id; }), unnamed: unnamed, moreChip: moreChip, moreChoices: !moreChip && unnamed > 0 };
 	}
@@ -537,7 +549,7 @@
 		if (st.moreChoices) h += w("More") + chip("sumall", "to choose", S.showAll ? ' data-lit=""' : "") + w("from.");
 		h += "</p>";
 		// "Free up GPU, it's at 88%.": a metric past its limit; the phrase runs its free plan.
-		over().forEach(function (o) {
+		if (SHOW_METRICS_LINE) over().forEach(function (o) {
 			var working = S.working === o.metric;
 			h += '<p class="lv-sline">' + '<span class="lv-gl">' + chip("free", working ? "Working…" : "Free up " + (o.metric === "memory" ? "memory" : o.metric.toUpperCase()), ' data-metric="' + o.metric + '"' + (working ? " disabled" : "")) +
 				'<span class="lv-w lv-p">,</span></span>' + w("it’s at " + o.pct + "%.") + "</p>";
@@ -550,6 +562,8 @@
 		if (amt && !S.showAll) S.amountW = amt.offsetWidth;
 		$("[data-breakdown]").hidden = !S.showAll;
 	}
+	// The app shows a metrics line when one is high; the demo leaves it out.
+	var SHOW_METRICS_LINE = false;
 	// Memory, CPU or GPU past its limit (Settings › Memory, CPU, GPU), the fullest first.
 	function over() {
 		var out = [], m = Math.round(memUsed() / S.mem.total * 100), c = Math.round(cpuPct()), g = Math.round(gpuPct());
@@ -1046,7 +1060,8 @@
 
 	// Clean up: the app's confirm, inside the popover. The first time, the
 	// acceptance step; then what goes, what is removed and what goes to the Trash.
-	var accepted = false;
+	// The demo goes straight to the clean question (no first-time Accept step).
+	var accepted = true;
 	function askClean() {
 		if (tickedGB() <= 0) return;
 		closeOverlays();
@@ -1238,12 +1253,12 @@
 	function freeMetric(metric) {
 		if (S.working) return;
 		var key = metric === "memory" ? "mem" : metric;
-		var spin = $(".lv-dial-spin", $('[data-gauge="' + metric + '"]'));
+		var word = $('[data-gauge="' + metric + '"] .lv-g-label');
 		S.working = metric;
-		spin.hidden = false;
+		word.classList.add("is-working");
 		renderSummary();
 		later(function () {
-			spin.hidden = true;
+			word.classList.remove("is-working");
 			S.working = null;
 			var go = S.procs.filter(function (p) { return p.safe && p[key] > (key === "mem" ? 0.5 : 2); });
 			if (!go.length) toast("info", "Nothing to quit");
