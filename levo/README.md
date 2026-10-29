@@ -145,15 +145,29 @@ carries names, labels, numbers and the price only.
 
 ## The popover
 
-The demo shows the app's Summary layout (round 10, SummarySection.swift): the
-five-part disk bar (System Data, Your Data, Apps, Ready to free, Free; only the
-green fills), the gauges, then "A balanced clean up frees 33.7 GB: Xcode build
-data, Simulators and emulators and 5 more." The level word is a menu (Careful,
-Balanced, Aggressive, Everything); the amount, "5 more" and the empty space open
-the full breakdown, and the sentence holds still while ticking there. A metric
-past its limit adds "Free up GPU, it's at 88%." The Command K panel and every
-confirm are bottom sheets that grow the popover if needed. The Expanded lists
-are still in the code (the breakdown).
+The demo shows the app's Summary layout in round 12's order (PopoverView.swift):
+the Mac's name, the gauges, then free space, "to clean up" and the five-part
+disk bar (System Data, Your Data, Apps, Ready to free, Free; only the green
+fills), then "A balanced clean up frees 33 GB: Xcode build data, Simulators and
+4 more." The level word is a menu (Careful, Balanced, Aggressive, Everything);
+the amount, "4 more" and the empty space open the full breakdown, and the
+sentence holds still while ticking there. The Command K panel and every confirm
+are bottom sheets that grow the popover if needed. The Expanded lists are still
+in the code (the breakdown). The phone stills in img/shots are element
+screenshots of the popover at 3x, corners masked; re-render them when it changes.
+
+## Auto mode
+
+Auto mode (the app's name; it used to be auto-clean) keeps free space above the
+limit on its own. In the demo, Control Centre's Auto mode control or "Turn on
+Auto mode" in the Command K panel switch it: the "Auto mode" pill shows beside
+the Mac's name, "Auto mode keeps 20 GB free: it cleans Xcode build data, Package
+caches and Browser caches on its own." leads the summary, and if free space is
+under the limit Levo cleans those groups with no click. The groups are the ones
+whose every item is level 1. The first bento tile (bento.js, drawn live, not a
+render) shows the same pill and sentence beside free space falling to the limit
+and coming back up. agents.md, llms.txt and features_Levo.txt on the demo's
+desktop say Auto mode too.
 
 ## macOS realism
 

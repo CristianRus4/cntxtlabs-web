@@ -660,6 +660,8 @@ html.dark .lvm-cc-mod { background: rgba(255, 255, 255, 0.07); box-shadow: inset
 .lvm-cc-conn { padding: 10px 8px; gap: 8px; }
 .lvm-cc-btn { width: 30px; height: 30px; background: rgb(var(--fg) / 0.08); }
 html.dark .lvm-cc-btn { background: rgba(255, 255, 255, 0.12); }
+html.dark .lvm-cc-btn.is-on { background: var(--accent); }
+html.dark .lvm-cc-tile.is-focus .lvm-cc-btn.is-on { background: #5E5CE6; }
 .lvm-cc-btn.is-on { box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.35); }
 .lvm-cc-tile { padding: 0 10px; min-height: 52px; }
 .lvm-cc-wide { padding: 10px 12px 12px; }
@@ -717,3 +719,6 @@ html.dark .lvm-cap { background: rgba(255, 255, 255, 0.09); box-shadow: inset 0 
 .lvm-fi.is-sel .lvm-fi-art { background: rgb(var(--fg) / 0.1); }
 .lvm-fi-name { margin-top: 2px; font-size: 12px; line-height: 15px; border-radius: 5px; padding: 0 5px; }
 .lvm-fw-status { height: 28px; border-top: 0; color: rgb(var(--fg) / 0.45); }
+
+/* Levo's Auto mode control. */
+.lvm-cc-auto { grid-column: 1 / -1; }

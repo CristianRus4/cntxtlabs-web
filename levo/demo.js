@@ -95,6 +95,8 @@
 			{ id: "installers", kind: "folder", name: "Old Installers", col: 1, row: 0 },
 			{ id: "zip", kind: "zip", name: "project-final-v2.zip", col: 0, row: 1 },
 			{ id: "notes", kind: "doc", name: "notes (3).txt", col: 1, row: 1 },
+			{ id: "prices", kind: "doc", name: "prices_Levo.txt", col: 0, row: 3 },
+			{ id: "features", kind: "doc", name: "features_Levo.txt", col: 1, row: 3 },
 			{ id: "unzipped", kind: "folder", name: "project-final-v2", col: 0, row: 2, later: true },
 			{ id: "dmg", kind: "volume", name: "Levo", col: 1, row: 2 }
 		],
@@ -211,7 +213,7 @@
 			open: {}, info: {}, more: false,
 			freeShown: d.disk.free, alerted: false, popOpen: false, locked: false, unzipped: false,
 			panel: null, sheet: false, menu: false, undo: null, agent: S ? S.agent : d.agent,
-			cleanedNote: null, freed: null, analysing: false, trashFull: false, attempts: 0, quipped: false
+			cleanedNote: null, freed: null, analysing: false, trashFull: false, auto: false, attempts: 0, quipped: false
 		};
 		applyLevel(st.groups, st.level);
 		return st;
@@ -304,14 +306,15 @@
 		for (var i = 0; i < TICKS; i++) ticks += '<i class="lv-tick" data-i="' + i + '"></i>';
 		return '' +
 		'<div class="lv-pop" role="dialog" aria-label="Levo" tabindex="-1">' +
+			'<div class="lv-dhead lv-namerow"><span class="lv-sec" data-devsym>' + sym("desktopcomputer", 14) + '</span><b data-devname>Mac</b><span class="lv-flex"></span>' +
+				'<button type="button" class="lv-auto" data-act="automode" data-autopill hidden>Auto mode</button></div>' +
+			'<section class="lv-gauges">' + gaugeHTML("memory", "Memory") + gaugeHTML("cpu", "CPU") + gaugeHTML("gpu", "GPU") + '</section>' +
+			'<div class="lv-freed" data-freed hidden></div>' +
+			'<div class="lv-sep"></div>' +
 			'<section class="lv-disk">' +
-				'<div class="lv-dhead"><span class="lv-sec" data-devsym>' + sym("desktopcomputer", 14) + '</span><b data-devname>Mac</b></div>' +
 				'<div class="lv-hero"><span class="lv-free lv-num" data-free></span><span class="lv-sec">free</span><span class="lv-flex"></span><span class="lv-can lv-num" data-can></span></div>' +
 				'<div class="lv-dbar" data-dbar><div class="lv-ticks">' + ticks + '</div><span class="lv-tip" data-tip hidden></span></div>' +
 			'</section>' +
-			'<div class="lv-sep"></div>' +
-			'<section class="lv-gauges">' + gaugeHTML("memory", "Memory") + gaugeHTML("cpu", "CPU") + gaugeHTML("gpu", "GPU") + '</section>' +
-			'<div class="lv-freed" data-freed hidden></div>' +
 			'<div class="lv-sep"></div>' +
 			'<div class="lv-scroll">' +
 				'<div class="lv-sum" data-summary data-act="sumspace"></div>' +
@@ -339,11 +342,11 @@
 		'</div>';
 	}
 
+	// macOS's own file icons (tools/export-desk-icons.swift); one image each, as macOS draws them the same in light and dark.
+	var DESK_ICONS = { folder: "folder", zip: "zip", doc: "txt", dmg: "dmg", pkg: "pkg" };
 	function iconHTML(ic) {
 		var art;
-		if (ic.kind === "folder") art = '<span class="lv-ic-folder">' + sym("folder.fill", 54) + "</span>";
-		else if (ic.kind === "zip") art = '<span class="lv-ic-page lv-ic-zip"><i></i><b>ZIP</b></span>';
-		else if (ic.kind === "doc") art = '<span class="lv-ic-page lv-ic-txt"><i></i><em></em><em></em><em></em><b>TXT</b></span>';
+		if (DESK_ICONS[ic.kind]) art = '<span class="lv-ic-real"><img src="img/desk/' + DESK_ICONS[ic.kind] + '.png" width="64" height="64" alt="" draggable="false"></span>';
 		else if (ic.kind === "volume") art = '<span class="lv-ic-vol"><img class="lv-dk-l" src="img/desk/levo-volume.png" width="64" height="64" alt="" draggable="false"><img class="lv-dk-d" src="img/desk/levo-volume-dark.png" width="64" height="64" alt="" draggable="false"></span>';
 		else art = '<span class="lv-ic-shot"><i></i></span>';
 		return '<button type="button" class="lv-ic' + (ic.later ? " is-hidden" : "") + '" data-icon="' + ic.id + '" style="--col:' + ic.col + ";--row:" + ic.row + '">' + art + '<span class="lv-ic-name">' + esc(ic.name) + "</span></button>";
@@ -525,7 +528,8 @@
 		if (!el) return;
 		// While the breakdown is open the sentence holds still; only the amount follows the ticks.
 		var live = sentence(), st = S.showAll && S.frozen ? S.frozen : live;
-		var h = '<p class="lv-sline">';
+		var h = S.auto ? autoLine() : "";
+		h += '<p class="lv-sline">';
 		var amount = '<span class="lv-gl">' + chip("sumall", gb(tickedGB()), ' style="min-width:' + (S.showAll && S.amountW ? S.amountW + "px" : "0") + '"') + '<span class="lv-w lv-p">:</span></span>';
 		var level = function (word) { return chip("levelword", word, ' aria-haspopup="menu"'); };
 		if (st.lead === "nothing") {
@@ -564,6 +568,31 @@
 		if (amt && !S.showAll) S.amountW = amt.offsetWidth;
 		$("[data-breakdown]").hidden = !S.showAll;
 	}
+	// Auto mode: Levo and the agent keep the limit free on their own, with what can always go.
+	function autoGroups() { return LEVO_DEMO.groups.filter(function (g) { return g.items.every(function (it) { return it.level === 1; }); }); }
+	function autoLine() {
+		var gs = autoGroups();
+		return '<p class="lv-sline lv-autoline">' + w("Auto mode keeps " + gb(S.disk.alert) + " free: it cleans") + gs.map(function (g, i) {
+			var punct = i < gs.length - 2 ? "," : "";
+			return '<span class="lv-gl">' + chip("chip", g.title, ' data-id="' + g.id + '"', tile(g.tile, g.symbol, "chip")) + (punct ? '<span class="lv-w lv-p">' + punct + "</span>" : "") + "</span>" + (i === gs.length - 2 ? w("and") : "");
+		}).join("") + w("on its own.") + "</p>";
+	}
+	function setAuto(on) {
+		S.auto = !!on;
+		var pill = $("[data-autopill]");
+		if (pill) pill.hidden = !S.auto;
+		renderSummary();
+		if (window.LevoMenus && LevoMenus.refresh) LevoMenus.refresh();
+		toast("info", S.auto ? "Auto mode on" : "Auto mode off");
+		if (S.auto) later(autoRun, REDUCED ? 600 : 1400);
+	}
+	// Below the limit, Auto mode cleans its groups with no click.
+	function autoRun() {
+		if (!S.auto || S.disk.free >= S.disk.alert) return;
+		var ids = autoGroups().map(function (g) { return g.id; });
+		clean(function (g) { return ids.indexOf(g.id) >= 0; }, "Auto mode freed");
+	}
+
 	// The app shows a metrics line when one is high; the demo leaves it out.
 	var SHOW_METRICS_LINE = false;
 	// Memory, CPU or GPU past its limit (Settings › Memory, CPU, GPU), the fullest first.
@@ -1137,17 +1166,19 @@
 		renderTrash();
 	}
 
-	function clean() {
+	// pick says what goes (the ticks by default); Auto mode passes its own groups and says so in the toast.
+	function clean(pick, said) {
 		closeOverlays();
-		var freed = tickedGB();
+		pick = pick || function (g, it) { return it.on; };
+		var freed = Math.round(sum(S.groups, function (g) { return sum(g.items, function (it) { return pick(g, it) ? it.gb : 0; }); }) * 10) / 10;
 		if (freed <= 0) return;
 		S.undo = snapshot();
-		$$(".lv-grow").forEach(function (r) { var g = group(r.dataset.id); if (g && gState(g) === "on") r.classList.add("is-going"); });
-		$$(".lv-items, .lv-detail").forEach(function (r) { r.classList.add("is-going"); });
-		var trashed = S.groups.some(function (g) { return g.items.some(function (it) { return it.on && it.desk; }); });
+		$$(".lv-grow").forEach(function (r) { var g = group(r.dataset.id); if (g && g.items.every(function (it) { return pick(g, it); })) r.classList.add("is-going"); });
+		if (!said) $$(".lv-items, .lv-detail").forEach(function (r) { r.classList.add("is-going"); });
+		var trashed = S.groups.some(function (g) { return g.trash && g.items.some(function (it) { return pick(g, it); }); });
 		later(function () {
 			var from = S.disk.free;
-			S.groups.forEach(function (g) { g.items = g.items.filter(function (it) { return !it.on; }); });
+			S.groups.forEach(function (g) { g.items = g.items.filter(function (it) { return !pick(g, it); }); });
 			S.groups = S.groups.filter(function (g) { return g.items.length; });
 			S.open = {}; S.info = {};
 			S.disk.free = Math.round((from + freed) * 10) / 10;
@@ -1160,7 +1191,7 @@
 			renderActions();
 			renderMenubar();
 			renderIcons();
-			toast("good", "Freed " + gb(freed), { act: "undo", label: "Undo" });
+			toast("good", (said || "Freed") + " " + gb(freed), { act: "undo", label: "Undo" });
 			S.cleanedNote = [fill(LEVO_DEMO.cleaned.title, { freed: gb(freed) }), fill(LEVO_DEMO.cleaned.body, { free: gb(S.disk.free), disk: S.disk.name })];
 		}, 380);
 	}
@@ -1335,6 +1366,7 @@
 			items.push({ label: "Select", sub: true, run: function () { S.panel = "select"; panelAt = -1; drawPanel(); } });
 		}
 		items.push({ label: "Analyse now", keys: ["\u2318", "R"], run: analyse });
+		items.push({ label: S.auto ? "Turn off Auto mode" : "Turn on Auto mode", keys: ["\u2318", "A"], run: function () { setAuto(!S.auto); } });
 		items.push(S.paused ? { label: "Resume alerts", keys: ["\u2318", "P"], run: function () { S.paused = false; toast("info", "Alerts resumed"); } }
 			: { label: "Pause alerts for 1 hour", keys: ["\u2318", "P"], run: function () { S.paused = true; toast("info", "Alerts paused for 1 hour"); } });
 		items.push(null);
@@ -1553,6 +1585,7 @@
 			case "free": freeMetric(t.dataset.metric); break;
 			case "freedx": $("[data-freed]").hidden = true; break;
 			case "sumall": e.stopPropagation(); toggleAll(); break;
+			case "automode": e.stopPropagation(); setAuto(false); break;
 			case "sumspace": toggleAll(); break;
 			case "chip": e.stopPropagation(); S.openChips[id] = !S.openChips[id]; if (S.openChips[id]) S.open[id] = true; renderSummary(); break;
 			case "levelword": e.stopPropagation(); levelWordMenu(t); return;
@@ -1595,6 +1628,35 @@
 		later(function () { w.hidden = true; w.classList.remove("is-closing", "is-minimising"); }, how === "min" ? 420 : 200);
 	}
 
+	// The two Levo notes on the desktop, written like quick notes. The price comes from the one value in levo.js.
+	var NOTES = {
+		prices: function () {
+			return { title: "prices_Levo.txt", text: [
+				"Levo price",
+				"",
+				"- " + (OPTS.price || "$5") + " right now",
+				"- Lifetime licence, one payment",
+				"- Scan and suggestions are free",
+				"- Cleaning needs the licence",
+				"- The price goes up over time, so earlier is cheaper"
+			].join("\n") };
+		},
+		features: function () {
+			return { title: "features_Levo.txt", text: [
+				"Levo",
+				"",
+				"- Watches disk, memory, CPU and GPU against my limits",
+				"- My own agent works out what's safe before the alert. Read-only, sandboxed",
+				"- I tick what goes. My files go to the Trash",
+				"- Holds anything a tool is still using",
+				"- Protected folders stay out of it",
+				"- Cleanup levels: careful, balanced, aggressive",
+				"- Auto mode keeps " + gb(S.disk.alert) + " free and cleans on its own",
+				"- No account, no server"
+			].join("\n") };
+		}
+	};
+
 	// Desktop files open in Finder or TextEdit windows (menus.js), and the zip unzips.
 	function openFile(id) {
 		var M = window.LevoMenus, C = (M && M.content) || {};
@@ -1608,6 +1670,9 @@
 		} else if (id === "notes") {
 			var q = at(40, 70);
 			M.window("textedit", { id: "notes", title: "notes (3).txt", x: q.x, y: q.y, w: 420, h: 300, text: C.notes || "" });
+		} else if (NOTES[id]) {
+			var r = at(id === "prices" ? 90 : 130, id === "prices" ? 30 : 60), n = NOTES[id]();
+			M.window("textedit", { id: id, title: n.title, x: r.x, y: r.y, w: 440, h: 320, text: n.text });
 		} else if (id === "unzipped") {
 			var u = at(0, 90);
 			M.window("finder", { id: "unzipped", title: "project-final-v2", x: u.x, y: u.y, w: 560, h: 340, items: C.unzipped || [] });
@@ -1735,6 +1800,8 @@
 			disk: function () { return { name: S.disk.name, total: S.disk.total, free: S.disk.free }; },
 			closeLevo: closePop,
 			openLevo: function () { S.touched = true; openPop(); },
+			auto: function () { return S.auto; },
+			setAuto: function (on) { setAuto(on); },
 			emptyTrash: function () { var had = S.trashFull; S.trashFull = false; renderTrash(had); return had; },
 			revealGroup: function (id) {
 				S.touched = true; openPop();

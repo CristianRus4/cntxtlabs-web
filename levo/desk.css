@@ -3,8 +3,6 @@
  * Desktop icons are macOS's own (img/desk/, from tools/export-desk-icons.swift),
  * 64 pt with 12 pt labels; widgets and the notification are Liquid Glass with a
  * lit rim; widget figures use SF Pro Rounded, as Apple's widgets do.
- * Works with demo.js's drawn icon markup (.lv-ic-folder, .lv-ic-zip, .lv-ic-txt)
- * and with real <img> markup (.lv-ic-real).
  */
 
 .lv-scene {
@@ -31,23 +29,8 @@ html.dark .lv-ic.is-sel > span:first-child { background-color: rgba(255, 255, 25
 .lv-ic.is-sel .lv-ic-name { background: var(--accent); color: #fff; text-shadow: none; }
 html:not(.dark) .lv-ic.is-sel .lv-ic-name { background: #0A6CF0; }
 
-/* macOS's own folder, text and zip icons, over the drawn ones. */
-.lv-ic-folder, .lv-ic-zip, .lv-ic-txt, .lv-ic-real {
-	width: 64px;
-	height: 64px;
-	margin: 0;
-	padding: 0;
-	clip-path: none;
-	box-shadow: none;
-	border-radius: 7px;
-	background: center / 64px 64px no-repeat;
-	filter: none;
-	display: block;
-}
-.lv-ic-folder { background-image: url(img/desk/folder.png); }
-.lv-ic-zip { background-image: url(img/desk/zip.png); }
-.lv-ic-txt { background-image: url(img/desk/txt.png); }
-.lv-ic-folder > *, .lv-ic-zip > *, .lv-ic-txt > * { display: none !important; }
+/* macOS's own file icons. */
+.lv-ic-real { display: block; width: 64px; height: 64px; border-radius: 7px; }
 .lv-ic-real img { display: block; width: 64px; height: 64px; }
 .lv-ic-vol { height: 64px; margin: 0; filter: none; border-radius: 7px; }
 

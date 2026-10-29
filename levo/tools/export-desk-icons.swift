@@ -1,69 +1,57 @@
-// Renders the desktop's and Finder's file icons from this Mac into img/desk/.
+// Renders the desktop's, Finder's and the Downloads stack's file icons from this Mac into img/desk/.
 // Usage, from levo/: swift tools/export-desk-icons.swift
-// Each icon is 64 pt @2x (128 px), in light (<name>.png) and dark (<name>-dark.png),
-// asked of IconServices per appearance (0 light, 1 dark), like export-dock-icons.swift.
-// When macOS draws a type the same in both appearances, only the light file is kept.
+// Each icon is 64 pt @2x (128 px), from NSWorkspace.shared.icon(for: UTType(filenameExtension:)),
+// drawn in light (<name>.png) and, only when macOS draws it differently, dark (<name>-dark.png).
 // Leaves img/desk/levo-volume*.png (made by export-dock-icons.swift) alone.
 import AppKit
+import UniformTypeIdentifiers
 
-// (file name, uniform type identifier)
-let types: [(String, String)] = [
-    ("folder", "public.folder"),
-    ("txt", "public.plain-text"),
-    ("zip", "public.zip-archive"),
-    ("doc", "public.data"),
-    ("pdf", "com.adobe.pdf"),
-    ("png", "public.png"),
-    ("psd", "com.adobe.photoshop-image"),
-    ("dmg", "com.apple.disk-image-udif"),
-    ("pkg", "com.apple.installer-package-archive"),
-    ("app", "com.apple.application-bundle"),
+// (file name, filename extension, or nil for a folder)
+let types: [(String, String?)] = [
+    ("folder", nil),
+    ("dmg", "dmg"),
+    ("pkg", "pkg"),
+    ("zip", "zip"),
+    ("txt", "txt"),
+    ("png", "png"),
+    ("pdf", "pdf"),
+    ("psd", "psd"),
+    ("app", "app"),
+    ("doc", "data"),
 ]
 
 let out = URL(fileURLWithPath: "img/desk", isDirectory: true)
 try? FileManager.default.createDirectory(at: out, withIntermediateDirectories: true)
 
-guard Bundle(path: "/System/Library/PrivateFrameworks/IconServices.framework")?.load() == true,
-      let iconClass = NSClassFromString("ISTypeIcon"), let descClass = NSClassFromString("ISImageDescriptor"),
-      let send = dlsym(UnsafeMutableRawPointer(bitPattern: -2), "objc_msgSend") else {
-    fatalError("IconServices isn't available")
-}
-typealias InitType = @convention(c) (AnyObject, Selector, NSString) -> AnyObject
-typealias InitSize = @convention(c) (AnyObject, Selector, CGSize, CGFloat) -> AnyObject
-typealias SetInt = @convention(c) (AnyObject, Selector, Int) -> Void
-typealias Prepare = @convention(c) (AnyObject, Selector, NSArray) -> Void
-typealias Image = @convention(c) (AnyObject, Selector, AnyObject) -> Unmanaged<CGImage>?
-
-func alloc(_ cls: AnyClass) -> AnyObject { (cls as AnyObject).perform(NSSelectorFromString("alloc")).takeUnretainedValue() }
-
-func render(_ uti: String, appearance: Int) -> CGImage? {
-    let icon = unsafeBitCast(send, to: InitType.self)(alloc(iconClass), NSSelectorFromString("initWithType:"), uti as NSString)
-    let desc = unsafeBitCast(send, to: InitSize.self)(alloc(descClass), NSSelectorFromString("initWithSize:scale:"), CGSize(width: 64, height: 64), 2)
-    unsafeBitCast(send, to: SetInt.self)(desc, NSSelectorFromString("setAppearance:"), appearance)
-    unsafeBitCast(send, to: Prepare.self)(icon, NSSelectorFromString("prepareImagesForDescriptors:"), [desc] as NSArray)
-    return unsafeBitCast(send, to: Image.self)(icon, NSSelectorFromString("CGImageForDescriptor:"), desc)?.takeUnretainedValue()
+func png(_ image: NSImage, appearance: NSAppearance.Name) -> Data? {
+    let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 128, pixelsHigh: 128, bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true,
+                               isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
+    rep.size = NSSize(width: 64, height: 64)
+    NSGraphicsContext.saveGraphicsState()
+    NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
+    NSGraphicsContext.current?.imageInterpolation = .high
+    NSAppearance(named: appearance)?.performAsCurrentDrawingAppearance {
+        image.draw(in: NSRect(x: 0, y: 0, width: 64, height: 64), from: .zero, operation: .copy, fraction: 1)
+    }
+    NSGraphicsContext.restoreGraphicsState()
+    return rep.representation(using: .png, properties: [:])
 }
 
-// IconServices may hand back a larger representation; draw it at exactly 128 px.
-func png(_ image: CGImage) -> Data? {
-    guard let ctx = CGContext(data: nil, width: 128, height: 128, bitsPerComponent: 8, bytesPerRow: 0,
-                              space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
-    ctx.interpolationQuality = .high
-    ctx.draw(image, in: CGRect(x: 0, y: 0, width: 128, height: 128))
-    guard let out = ctx.makeImage() else { return nil }
-    return NSBitmapImageRep(cgImage: out).representation(using: .png, properties: [:])
-}
-
-for (name, uti) in types {
-    guard let light = render(uti, appearance: 0), let lightPNG = png(light) else { print("no image for \(name)"); continue }
-    try? lightPNG.write(to: out.appendingPathComponent(name + ".png"))
+func write(_ image: NSImage, _ name: String) {
+    guard let light = png(image, appearance: .aqua) else { return }
+    try? light.write(to: out.appendingPathComponent(name + ".png"))
     print("wrote img/desk/\(name).png")
-    let darkURL = out.appendingPathComponent(name + "-dark.png")
-    if let dark = render(uti, appearance: 1), let darkPNG = png(dark), darkPNG != lightPNG {
-        try? darkPNG.write(to: darkURL)
+    if let dark = png(image, appearance: .darkAqua), dark != light {
+        try? dark.write(to: out.appendingPathComponent(name + "-dark.png"))
         print("wrote img/desk/\(name)-dark.png")
-    } else {
-        try? FileManager.default.removeItem(at: darkURL)
-        print("\(name): the same in dark, light only")
     }
 }
+
+for (name, ext) in types {
+    let type: UTType? = ext.map { UTType(filenameExtension: $0) ?? .data } ?? .folder
+    guard let type else { continue }
+    let icon = NSWorkspace.shared.icon(for: type)
+    icon.size = NSSize(width: 64, height: 64)
+    write(icon, name)
+}
+

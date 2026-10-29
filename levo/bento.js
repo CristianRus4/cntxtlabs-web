@@ -8,6 +8,9 @@
  * settles, the disk bar wipes in, a hover tip fades in, a tick changes, the actions
  * sheet rises, the agents pan past. Leaving the view resets a tile, so it plays again.
  * Less motion: the end state at once, fades only.
+ *
+ * The first tile, Auto mode, is drawn live in the popover's look: free space falls to
+ * the limit and Levo brings it back up with no click, again and again.
  */
 (function () {
 	"use strict";
@@ -45,7 +48,81 @@
 		return '<div class="bt-layer ' + cls + '"' + style + ">" + pics(name) + "</div>";
 	}
 
+	// ---------------------------------------------------------------- Auto mode (live)
+
+	var D = window.LevoDemo || {};
+	var AUTO = { limit: (D.data && D.data.disk && D.data.disk.alert) || 20, top: 34, end: 30, total: 245, ticks: 60 };
+	function gbText(v) { return Math.round(v) + " GB"; }
+	// Free space over one loop (0 to 1): down to the limit, Levo cleans, then a slow fall again.
+	var DROP = 0.58, BACK = 0.64;
+	function freeAt(x) {
+		var ease = function (u) { return u * u * (3 - 2 * u); };
+		if (x <= DROP) { var u = x / DROP; return AUTO.top - (AUTO.top - AUTO.limit) * (0.15 * u + 0.85 * ease(u)) + Math.sin(u * Math.PI * 5) * 0.7 * Math.sin(u * Math.PI); }
+		if (x <= BACK) return AUTO.limit + (AUTO.top - AUTO.limit) * ease((x - DROP) / (BACK - DROP));
+		return AUTO.top - (AUTO.top - AUTO.end) * ((x - BACK) / (1 - BACK));
+	}
+	var CW = 600, CH = 220, LO = 12, HI = 40;
+	function cy(v) { return CH - (v - LO) / (HI - LO) * CH; }
+	function chartPath() {
+		var d = "";
+		for (var i = 0; i <= 160; i++) { var x = i / 160; d += (i ? "L" : "M") + (x * CW).toFixed(1) + " " + cy(freeAt(x)).toFixed(1); }
+		return d;
+	}
+	function autoHTML() {
+		var groups = ((D.data && D.data.groups) || []).filter(function (g) { return g.items.every(function (it) { return it.level === 1; }); });
+		var chips = groups.map(function (g, i) {
+			var punct = i < groups.length - 2 ? "," : "";
+			return '<span class="lv-gl"><span class="lv-chip">' + (D.tile ? D.tile(g.tile, g.symbol, "chip") : "") + "<span>" + g.title + "</span></span>" +
+				(punct ? '<span class="lv-w lv-p">' + punct + "</span>" : "") + "</span>" + (i === groups.length - 2 ? '<span class="lv-w">and</span>' : "");
+		}).join("");
+		var words = function (t) { return t.split(" ").map(function (x) { return '<span class="lv-w">' + x + "</span>"; }).join(""); };
+		var ticks = "";
+		for (var i = 0; i < AUTO.ticks; i++) ticks += "<i></i>";
+		var limitY = cy(AUTO.limit), dropX = DROP * CW;
+		return '<div class="bt-auto-pop">' +
+				'<div class="bt-auto-name">' + (D.sym ? D.sym("laptopcomputer", 14) : "") + "<b>MacBook Pro</b><span class=\"bt-auto-flex\"></span><span class=\"bt-auto-pill\">Auto mode</span></div>" +
+				'<div class="bt-auto-hero"><span class="bt-auto-free" data-autofree>' + gbText(AUTO.top) + '</span><span class="bt-auto-sec">free</span></div>' +
+				'<div class="bt-auto-ticks" data-autoticks>' + ticks + "</div>" +
+				'<p class="lv-sline">' + words("Auto mode keeps " + gbText(AUTO.limit) + " free: it cleans") + chips + words("on its own.") + "</p>" +
+			"</div>" +
+			'<div class="bt-auto-chart">' +
+				'<svg viewBox="0 0 ' + CW + " " + CH + '" preserveAspectRatio="none">' +
+					'<defs><clipPath id="bt-auto-clip"><rect data-autoclip x="0" y="-10" width="' + CW + '" height="' + (CH + 20) + '"/></clipPath></defs>' +
+					'<line class="bt-auto-limit" x1="0" x2="' + CW + '" y1="' + limitY + '" y2="' + limitY + '" vector-effect="non-scaling-stroke"/>' +
+					'<path class="bt-auto-line" clip-path="url(#bt-auto-clip)" d="' + chartPath() + '" vector-effect="non-scaling-stroke"/>' +
+				"</svg>" +
+				'<span class="bt-auto-dot" data-autodot></span>' +
+				'<span class="bt-auto-lim" style="top:' + (limitY / CH * 100).toFixed(2) + '%">' + gbText(AUTO.limit) + "</span>" +
+				'<span class="bt-auto-freed" data-autofreed style="left:' + (dropX / CW * 100).toFixed(2) + '%;top:' + (cy(AUTO.top) / CH * 100).toFixed(2) + '%">Freed ' + gbText(AUTO.top - AUTO.limit) + "</span>" +
+			"</div>";
+	}
+	// One frame of the loop at x (0 to 1): the line so far, its dot, the free number and the bar.
+	function autoFrame(el, x) {
+		var v = freeAt(x), free = Math.round(v);
+		el.querySelector("[data-autoclip]").setAttribute("width", (x * CW).toFixed(1));
+		var dot = el.querySelector("[data-autodot]");
+		dot.style.left = (x * 100).toFixed(2) + "%";
+		dot.style.top = (cy(v) / CH * 100).toFixed(2) + "%";
+		el.querySelector("[data-autofree]").textContent = gbText(free);
+		el.classList.toggle("is-freed", x >= DROP);
+		el.classList.toggle("is-low", x < DROP && v < AUTO.limit + 2);
+		var n = Math.round((v / AUTO.total) * AUTO.ticks * 2.4), ticks = el.querySelectorAll("[data-autoticks] i");
+		for (var i = 0; i < ticks.length; i++) ticks[i].className = i >= ticks.length - n ? "is-free" : i < 12 ? "is-sys" : i < 40 ? "is-data" : "is-apps";
+	}
+	function autoPlay(t) {
+		var el = t.el, gen = t.gen, LOOP = 7600, HOLD = 1600;
+		if (REDUCED) { autoFrame(el, 1); el.classList.add("is-still"); return; }
+		var t0 = performance.now();
+		(function step(now) {
+			if (gen !== t.gen) return;
+			var ms = (now - t0) % (LOOP + HOLD);
+			autoFrame(el, Math.min(1, ms / LOOP));
+			requestAnimationFrame(step);
+		})(t0);
+	}
+
 	var TILES = [
+		{ id: "auto", label: "Auto mode", live: true, inner: autoHTML, play: autoPlay },
 		// Round 9's popover top (R9 summary) with its hover tip (R9 disk tip): the bar wipes in, then the tip shows.
 		{ id: "disk", label: "Disk by category", base: "disk",
 			inner: function () { return layer("disk", "bt-l-base") + '<div class="bt-wipe"><i></i></div>' + layer("disk-tip", "bt-l-alt"); },
@@ -96,6 +173,8 @@
 	];
 
 	grid.innerHTML = TILES.map(function (k) {
+		if (k.live) return '<article class="bt-tile bt-shot bt-live" data-tile="' + k.id + '"><h3 class="bt-label">' + k.label + "</h3>" +
+			'<div class="bt-stage bt-' + k.id + '" aria-hidden="true">' + k.inner() + "</div></article>";
 		var s = IMG[k.base];
 		return '<article class="bt-tile bt-shot" data-tile="' + k.id + '"><h3 class="bt-label">' + k.label + "</h3>" +
 			'<div class="bt-stage" aria-hidden="true"><div class="bt-frame' + (k.pan ? " bt-pan" : "") + '" style="--w:' + s[0] + ";--h:" + s[1] + '">' +
@@ -136,7 +215,7 @@
 		this.timers = [];
 		var el = this.el;
 		el.classList.add("bt-still");
-		el.classList.remove("is-play", "is-alt", "is-open", "is-wiped", "is-panning");
+		el.classList.remove("is-play", "is-alt", "is-open", "is-wiped", "is-panning", "is-freed", "is-low");
 		void el.offsetWidth;
 		el.classList.remove("bt-still");
 	};

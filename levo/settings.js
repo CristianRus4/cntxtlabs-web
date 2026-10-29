@@ -15,7 +15,7 @@
 		general: { title: "General", symbol: "gearshape.fill", tint: ["#8E8E93", "#8E8E93"] },
 		agent: { title: "Agent", symbol: "apple.terminal.fill", tint: ["#6A3DEC", "#A485FF"], header: true, sw: "analyse" },
 		protected: { title: "Protected", symbol: "checkmark.shield.fill", tint: ["#138AF2", "#56C2FF"], header: true },
-		autoClean: { title: "Auto-clean", symbol: "wand.and.stars", tint: ["#C75D07", "#FF9217"], header: true, sw: "autoClean" },
+		autoClean: { title: "Auto mode", symbol: "wand.and.stars", tint: ["#C75D07", "#FF9217"], header: true, sw: "autoClean" },
 		access: { title: "Access", symbol: "lock.fill", tint: ["#5E6AD2", "#5E6AD2"] },
 		disk: { title: "Disk", symbol: "internaldrive.fill", tint: ["#1F7AE0", "#1F7AE0"], header: true, sw: "diskWatch" },
 		memory: { title: "Memory", symbol: "memorychip.fill", tint: ["#F8A300", "#FFC531"], header: true, sw: "memWatch" },
@@ -77,10 +77,10 @@
 		alsoIndex: "Levo looks through your home folder. Add other places, like a second drive, to look there too.",
 		always: "Places Levo never touches, whatever your settings: things like your photos, mail, passwords and keys.",
 
-		acFree: "Auto-clean starts when free space falls below this.",
-		acEvery: "The shortest time between two auto-cleans.",
+		acFree: "Auto mode starts when free space falls below this.",
+		acEvery: "The shortest time between two Auto mode cleans.",
 		acGain: "Skips a clean that would free less than this.",
-		what: "The kinds of items auto-clean may free. Your own files, protected folders and anything in use are never cleaned.",
+		what: "The kinds of items Auto mode may free. Your own files, protected folders and anything in use are never cleaned.",
 		regen: "Only items that come back on their own when needed, like caches and build files. Picking groups below replaces this.",
 
 		fda: "Lets Levo see every folder when it looks for space to free. Without it, some folders are skipped.",
@@ -95,7 +95,7 @@
 		gpuTotal: "Levo alerts you when the graphics as a whole stay busier than this.",
 		gpuProc: "Levo alerts you when one app keeps the graphics busier than this.",
 
-		status: "Free watches your Mac and suggests what to free. A licence adds Clean and Auto-clean.",
+		status: "Free watches your Mac and suggests what to free. A licence adds Clean and Auto mode.",
 		activation: "Deactivate to free this Mac’s place, so you can use the key on another Mac.",
 		key: "The licence key from your purchase email. Levo keeps it in your Keychain."
 	};
@@ -133,7 +133,7 @@
 	var SAMPLE_FOLDERS = ["~/Documents/Clients", "~/Pictures/Shoots", "~/Movies/Finals", "~/Music/Stems"];
 	var SAMPLE_ROOTS = ["/Volumes/Work", "/Volumes/Archive", "/Volumes/Projects"];
 	var GROUPS = ["Agent worktrees", "Browser caches", "Package caches", "Simulators", "Xcode build data"];
-	var DISCLAIMER = "Auto-clean deletes files without asking you first, so be careful. Review what’s ticked before you turn it on. Items Levo removes directly, like caches and build files, can’t be restored; your own files go to the Trash. Levo is not responsible for deleted files.";
+	var DISCLAIMER = "Auto mode deletes files without asking you first, so be careful. Review what’s ticked before you turn it on. Items Levo removes directly, like caches and build files, can’t be restored; your own files go to the Trash. Levo is not responsible for deleted files.";
 
 	var reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -380,7 +380,7 @@
 						row("Free below", "diskFree", diskLimit("diskFree", "diskUnit"), check("diskNotify", "Send a notification")),
 						row("Start analysing early", "early", step("early", "%", "Start analysing early"))
 					], "diskWatch") +
-					'<div class="ls-section">' + card([linkRow("Auto-clean", V.autoClean ? "On" : "Off", "autoClean")]) + "</div>";
+					'<div class="ls-section">' + card([linkRow("Auto mode", V.autoClean ? "On" : "Off", "autoClean")]) + "</div>";
 			},
 			memory: function () {
 				return section(null, null, [row("Now", null, status((opts.memory || "32 GB") + " · Normal"))]) +
@@ -589,7 +589,7 @@
 			var l = layer();
 			l.className = "ls-layer is-sheet";
 			layerKind = "sheet";
-			l.innerHTML = '<div class="ls-dim"></div><div class="ls-sheet" role="dialog" aria-modal="true" aria-label="Turn on Auto-clean"><p>' + esc(DISCLAIMER) + "</p>" +
+			l.innerHTML = '<div class="ls-dim"></div><div class="ls-sheet" role="dialog" aria-modal="true" aria-label="Turn on Auto mode"><p>' + esc(DISCLAIMER) + "</p>" +
 				'<div class="ls-form"><label class="ls-frow"><button type="button" class="ls-check ls-check-lg" role="checkbox" data-ack aria-checked="false">' + sym("checkmark", 10) + "</button><span>I accept</span></label>" +
 				'<label class="ls-frow"><span>Type confirm</span><input class="ls-confirm" type="text" placeholder="confirm" spellcheck="false" autocomplete="off" aria-label="Type confirm"></label></div>' +
 				'<div class="ls-sheetbtns"><button type="button" class="ls-btn" data-act="sheetCancel">Cancel</button><button type="button" class="ls-btn ls-btn-go" data-act="sheetOk" disabled>Turn on</button></div></div>';

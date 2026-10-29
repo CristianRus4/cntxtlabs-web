@@ -6,7 +6,7 @@ Levo is a Mac menubar app by Cntxt Labs. This file is for a coding agent that ha
 
 - A menubar app that watches disk, memory, CPU and GPU against thresholds the user sets.
 - When something runs high, the user's own agent CLI has already looked. Levo shows what is safe to clean or quit, with sizes and reasons.
-- Levo cleans only what the user ticks.
+- Levo cleans only what the user ticks, or, in Auto mode, keeps free space above the user's limit on its own.
 - No Levo account and no Levo server.
 
 ## How Levo uses your agent
@@ -35,10 +35,10 @@ Levo also verifies every finding the agent submits: the path exists, sits inside
 
 Cleaning:
 
-- Only what the user ticks is cleaned. The exception is the auto-clean categories the user has turned on. Auto-clean is off by default and needs an acknowledgement.
+- Only what the user ticks is cleaned. The exception is Auto mode: when free space drops below the user's limit, Levo cleans the categories the user chose for it, with no click, then says what it freed. Auto mode is off by default and needs an acknowledgement.
 - Levo uses the tool's official clean command first. Items that can be regenerated are removed. Everything else goes to the Trash.
 - A journal records every action, and anything trashed can be undone.
-- The licence is checked inside the delete path itself. Deleting is reachable only from a click in the confirm step or from the auto-clean scheduler. No URL scheme, AppleScript, CLI or MCP tool can trigger it.
+- The licence is checked inside the delete path itself. Deleting is reachable only from a click in the confirm step or from Auto mode. No URL scheme, AppleScript, CLI or MCP tool can trigger it.
 
 Privacy:
 
@@ -50,7 +50,7 @@ Privacy:
 - macOS 26 or later.
 - For suggestions, any agent CLI installed and signed in.
 - Full Disk Access is recommended. Without it, Levo skips, and does not watch, protected areas such as Mail and other apps' containers.
-- A licence, for Clean and Auto-clean only. Monitoring, the index, analysis, suggestions and Quit are free.
+- A licence, for Clean and Auto mode only. Monitoring, the index, analysis, suggestions and Quit are free.
 
 ## Price
 

@@ -1078,9 +1078,12 @@
 				'<div class="lvm-cc-mod lvm-cc-wide"><b>Display</b>' + slider("bright", "sun.max.fill", "Display brightness") + "</div>" +
 				'<div class="lvm-cc-mod lvm-cc-wide"><b>Sound</b><div class="lvm-cc-sound">' + slider("vol", "speaker.wave.2.fill", "Volume") +
 					'<span class="lvm-cc-air">' + sym("airplayaudio", 14) + "</span></div></div>" +
+				(hook("auto") ? '<button type="button" class="lvm-cc-mod lvm-cc-tile lvm-cc-auto" data-lvm-cc="auto" aria-pressed="' + !!call("auto") + '">' +
+					'<span class="lvm-cc-btn' + (call("auto") ? " is-on" : "") + '">' + sym("gauge.with.dots.needle.67percent", 15) + '</span><span class="lvm-cc-txt"><b>Auto mode</b><small>' + (call("auto") ? "On" : "Off") + "</small></span></button>" : "") +
 			"</div>";
 	}
 	function ccToggle(key) {
+		if (key === "auto") { call("setAuto", !call("auto")); drawCC(); return; }
 		if (key === "wifi") { toggleWifi(); drawCC(); return; }
 		if (key === "dark") {
 			st.spin = true;
@@ -1761,6 +1764,7 @@
 		open: function (id) { if (scene) openMenu(id); },
 		close: function () { closeMenu(); },
 		isOpen: function () { return !!openId; },
+		refresh: function () { drawCC(); },
 		window: function (kind, opts) { return openWindow(kind, opts); },
 		closeWindow: function (id) { return closeWindow(String(id), "api"); },
 		windows: function () { return gOrder.slice(); },

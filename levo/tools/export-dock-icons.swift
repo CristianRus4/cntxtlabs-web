@@ -58,8 +58,9 @@ for (name, path) in apps {
     }
 }
 
-// The Trash, empty and full: the same in both appearances.
-for (name, image) in [("trash-empty", NSImage(named: NSImage.trashEmptyName)), ("trash-full", NSImage(named: NSImage.trashFullName))] {
+// The Trash, empty and full, from CoreTypes.bundle: the same in both appearances.
+let core = "/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/"
+for (name, image) in [("trash-empty", NSImage(contentsOfFile: core + "TrashIcon.icns")), ("trash-full", NSImage(contentsOfFile: core + "FullTrashIcon.icns"))] {
     guard let image else { print("missing \(name)"); continue }
     let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 256, pixelsHigh: 256, bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true,
                                isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!

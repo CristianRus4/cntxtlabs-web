@@ -1,6 +1,6 @@
 # Levo
 
-> Levo is a Mac menubar app that watches disk, memory, CPU and GPU. Your own agent CLI works out what is safe to clean or quit, read-only and in a sandbox, and Levo cleans only what you tick. Made by Cntxt Labs.
+> Levo is a Mac menubar app that watches disk, memory, CPU and GPU. Your own agent CLI works out what is safe to clean or quit, read-only and in a sandbox, and Levo cleans only what you tick. Auto mode keeps free space above your limit on its own. Made by Cntxt Labs.
 
 - Needs macOS 26 or later. No Levo account and no Levo server.
 - Works with the agent CLI you already use: Claude Code, Codex, Gemini CLI, Cursor, Copilot, opencode, Qwen Code, Kimi CLI, Grok CLI, or a custom command.
