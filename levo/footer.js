@@ -17,7 +17,8 @@
  * (hidden behind the bin, which shows macOS's full Trash icon): once its opening tilts past 45
  * degrees they come out one at a time, every ~80 ms, each in a spot just inside the rim (or just
  * past it) where it overlaps nothing, with the bin's own velocity there, a small nudge and a little
- * spin, so they spread along the fall. Files dropped into the upright bin's opening go in the same
+ * spin, so they spread along the fall; when it lands, the jolt throws the rest out quicker and
+ * harder, each still on its own. Files dropped into the upright bin's opening go in the same
  * way, and come out the same way.
  *
  * Every body is its real rectangle with low bounce; low static friction lets things roll off the
@@ -269,18 +270,20 @@
 	// (the bin's walls, the letters, the files already out), with the bin's own velocity there, a
 	// small nudge out of the opening and a little spin; the bin's tilt does the rest. With no free
 	// spot (the opening against a letter or a pile), it waits, and after a few seconds gives up.
+	// When it lands (or hits anything hard), the jolt throws what's left out quicker and harder:
+	// for a moment one file every ~50 ms, each on its own, with a firmer push and more spin.
 	function pour() {
-		var o = opening();
-		if (!bin.inside.length || o < POUR || frame - (bin.poured || 0) < EVERY) return;
+		var o = opening(), burst = bin.jolt && frame - bin.jolt < 70;
+		if (!bin.inside.length || o < POUR || frame - (bin.poured || 0) < (burst ? 3 : EVERY)) return;
 		var f = bin.inside[0], c = binCentre(), fh = S * f.h, fw = S * f.w, p = null;
 		var room = Math.max(0, (G.bw - 2 * G.wall - fw) / 2);
 		var others = statics.concat(bin.parts.slice(1), files.map(function (x) { return x.body; }).filter(Boolean));
 		// Just inside the rim, a little deeper, or just past the rim when those are taken (the file
 		// before it is still leaving): wherever it fits without touching anything.
 		var deep = Math.max(0, G.bh - 2 * G.wall - fh);
-		for (var t = 0; t < 10 && !p; t++) {
+		for (var t = 0, n = burst ? 18 : 10; t < n && !p; t++) {
 			var rim = t < 4 ? local(bin, { x: (Math.random() * 2 - 1) * room, y: -G.bh / 2 + fh / 2 + 1 + deep * t / 3 })
-				: local(bin, { x: (Math.random() - 0.5) * G.bw * 1.2, y: -G.bh / 2 - fh * (0.5 + (t - 4) * 0.2) });
+				: local(bin, { x: (Math.random() - 0.5) * G.bw * (burst ? 1.8 : 1.2), y: -G.bh / 2 - fh * (0.5 + (t - 4) * (burst ? 0.12 : 0.2)) });
 			var q = { x: c.x + rim.x, y: c.y + rim.y };
 			if (!M.Query.collides(M.Bodies.rectangle(q.x, q.y, fw, fh, { angle: bin.angle }), others).length) p = q;
 		}
@@ -292,9 +295,10 @@
 		f.body = rect(fw, fh, p.x, p.y);
 		f.body.isFile = true;
 		M.Body.setAngle(f.body, bin.angle + (Math.random() - 0.5) * 0.2);
-		var out = local(bin, { x: (Math.random() - 0.5) * 0.5, y: -1 }), push = 1.2 + Math.random() * 1.6;
+		var fan = (Math.random() - 0.5) * (burst ? 0.8 : 0.5), out = local(bin, { x: Math.sin(fan), y: -Math.cos(fan) });
+		var push = burst ? 3.4 + Math.random() * 2.2 : 1.2 + Math.random() * 1.6;
 		M.Body.setVelocity(f.body, { x: bin.velocity.x - bin.angularVelocity * r.y + out.x * push, y: bin.velocity.y + bin.angularVelocity * r.x + out.y * push });
-		M.Body.setAngularVelocity(f.body, bin.angularVelocity * 0.6 + (Math.random() - 0.5) * 0.12);
+		M.Body.setAngularVelocity(f.body, bin.angularVelocity * 0.6 + (Math.random() - 0.5) * (burst ? 0.24 : 0.12));
 		f.body.calmUntil = frame + 30;
 		M.Composite.add(world, f.body);
 		f.el.classList.remove("is-in");
@@ -370,8 +374,8 @@
 	function capSpeeds() {
 		files.forEach(function (f) {
 			var b = f.body;
-			if (!b || !(b.calmUntil > frame) || b.speed < 6) return;
-			var k = 6 / b.speed;
+			if (!b || !(b.calmUntil > frame) || b.speed < 7.5) return;
+			var k = 7.5 / b.speed;
 			M.Body.setVelocity(b, { x: b.velocity.x * k, y: b.velocity.y * k });
 		});
 	}
@@ -386,7 +390,9 @@
 		frame++;
 		if (grab) grab.c.pointA = { x: grab.x, y: grab.y };
 		settle();
+		var was = bin.speed;
 		M.Engine.update(engine, 1000 / 60);
+		if (!hinge && was > 3 && was - bin.speed > 2.2) bin.jolt = frame;
 		capSpeeds();
 		if (hinge && (Math.abs(bin.angle) > 0.3 || grab)) letGo();
 		pour();

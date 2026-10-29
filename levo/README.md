@@ -290,7 +290,9 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   in the bin aren't bodies: past 45 degrees of tilt they come out one at a
   time, every ~80 ms, each just inside the rim (or just past it) where it
   overlaps nothing, with the bin's own velocity, a small nudge and a little
-  spin, so they spread along the fall; the v is two bars, so its notch can
+  spin, so they spread along the fall; when it lands, the jolt throws the rest
+  out quicker and harder (one every ~50 ms, each on its own, never
+  overlapping), so it ends nearly empty; the v is two bars, so its notch can
   catch one. With no free spot, the rest stay in. A file dropped into the
   upright bin goes in, and the bin turns full.
 - Everything is grabbed at the exact point under the pointer (a soft spring
