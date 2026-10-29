@@ -260,22 +260,33 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 /* Clear space between the navbar and the framed Mac. */
 .first { padding-top: 104px; }
 
-/* "Click here": a hand-drawn arrow over the simulator, pointing at Levo in its menubar. It draws on,
-   bobs gently, and fades once the visitor has clicked Levo. levo.js places it over the icon. */
-.cue { position: absolute; z-index: 5; top: 6px; left: 0; display: flex; align-items: flex-start; gap: 2px; pointer-events: none; opacity: 0; transition: opacity .5s ease; }
+/* "Click here": "click" over "here" in handwriting, a few rays around it, and a short soft arc from
+   under the words to Levo in the simulator's menubar. It draws on, bobs gently, and fades once the
+   visitor has clicked Levo. levo.js places the arrow's tip over the icon. */
+.cue { position: absolute; z-index: 5; top: 6px; left: 0; width: 140px; height: 100px; pointer-events: none; opacity: 0; transition: opacity .5s ease; }
 .cue.is-placed { opacity: 1; }
 .cue.is-done { opacity: 0; transition-duration: .4s; }
-.cue-t { margin-top: 4px; font-family: "Bradley Hand", "Marker Felt", "Segoe Print", "Comic Sans MS", cursive; font-size: 22px; font-weight: 700; letter-spacing: .01em; color: var(--text); transform: rotate(-4deg); white-space: nowrap; }
-.cue-svg { display: block; overflow: visible; }
+.cue-t { position: absolute; left: 0; top: 0; width: 140px; text-align: center; font-family: "Bradley Hand", "Marker Felt", "Segoe Print", "Comic Sans MS", cursive; font-size: 22px; font-weight: 700; line-height: 21px; letter-spacing: .01em; color: var(--text); transform: rotate(-3deg); white-space: nowrap; }
+.cue-svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
 .cue-svg path { fill: none; stroke: var(--text); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
-.cue.is-placed .cue-line { animation: cue-draw 1.1s cubic-bezier(.55, 0, .3, 1) .4s forwards; }
-.cue.is-placed .cue-head { animation: cue-draw .35s ease-out 1.45s forwards; }
+.cue.is-placed .cue-line { animation: cue-draw .8s cubic-bezier(.55, 0, .3, 1) .4s forwards; }
+.cue.is-placed .cue-head { animation: cue-draw .3s ease-out 1.15s forwards; }
+.cue.is-placed .cue-rays path { animation: cue-draw .18s ease-out forwards; }
+.cue.is-placed .cue-rays path:nth-child(1) { animation-delay: 1.5s; }
+.cue.is-placed .cue-rays path:nth-child(4) { animation-delay: 1.56s; }
+.cue.is-placed .cue-rays path:nth-child(2) { animation-delay: 1.62s; }
+.cue.is-placed .cue-rays path:nth-child(5) { animation-delay: 1.68s; }
+.cue.is-placed .cue-rays path:nth-child(3) { animation-delay: 1.74s; }
+.cue.is-placed .cue-rays path:nth-child(6) { animation-delay: 1.8s; }
+.cue-rays { transform-origin: 70px 21px; transform-box: view-box; }
+.cue.is-placed .cue-rays { animation: cue-pulse 3.2s ease-in-out 2s infinite; }
 .cue.is-placed { animation: cue-bob 3.2s ease-in-out 2s infinite; }
 @keyframes cue-draw { to { stroke-dashoffset: 0; } }
 @keyframes cue-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 6px; } }
+@keyframes cue-pulse { 0%, 100% { scale: 1; opacity: 1; } 50% { scale: 1.08; opacity: .55; } }
 @media (prefers-reduced-motion: reduce) {
 	.cue-svg path { stroke-dashoffset: 0; animation: none !important; }
-	.cue.is-placed { animation: none; }
+	.cue.is-placed, .cue.is-placed .cue-rays { animation: none; }
 }
 @media (max-width: 760px) { .cue { display: none; } }
 

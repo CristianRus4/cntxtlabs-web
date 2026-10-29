@@ -99,7 +99,7 @@
 		var icon = document.querySelector(".lv-mb-levo"), first = cue && cue.parentNode, scene = document.querySelector(".lv-scene");
 		if (!cue || !icon || !scene || cue.classList.contains("is-done") || scene.dataset.mode !== "desk") return;
 		var f = first.getBoundingClientRect(), r = icon.getBoundingClientRect(), sc = scene.getBoundingClientRect();
-		var t = cue.querySelector(".cue-t"), tipX = t.offsetWidth + 2 + 120, tipY = 88;
+		var tipX = 100, tipY = 98; // the arrow's tip in the cue's own box (index.html's SVG)
 		cue.style.left = Math.round(r.left + r.width / 2 - f.left - tipX) + "px";
 		cue.style.top = Math.round(sc.top - f.top - tipY - 4) + "px";
 		cue.classList.add("is-placed");

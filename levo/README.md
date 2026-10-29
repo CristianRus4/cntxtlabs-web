@@ -243,8 +243,10 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   panel's keycaps); while it's on, "Auto mode" as an orange Liquid Glass
   capsule with its limit and scope on hover. Gauge ticks take their own colour
   along the arc, set as each line's stroke.
-- "Click here": a hand-drawn arrow above the simulator, placed by levo.js over
-  Levo's menubar icon; it draws on, bobs, and fades once the icon is clicked.
+- "Click here": "click" over "here" in handwriting above the simulator, three
+  short rays on each side, and a short soft arc from under the words to Levo's
+  menubar icon (levo.js places the tip). The arrow and rays draw on, the cue
+  bobs while the rays pulse, and it fades once the icon is clicked.
   Phones have no simulator, so no arrow.
 - The installer is a normal desktop window (LevoMenus.window "custom", id
   levo-dmg): front on a click, resizable, dragged by its title bar, working
