@@ -263,6 +263,12 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   Strokes stay hidden until the cue appears, then words, rays and arrow draw
   on together at once (0.7 s) and pulse together;
   it fades once the icon is clicked.
+- Elevate and Amply sit in the dock, closed (no running dot). Clicking either
+  opens its own installer window, like Levo's (the app and Applications; front
+  on a click, drag, resize, lights), with "Coming soon" in place of the
+  download; the app keeps its running dot while its window is open.
+  tools/export-dock-icons.swift renders Amply's icon from /Applications
+  (`swift tools/export-dock-icons.swift amply` renders only that one).
 - The simulator's Levo menubar item is the filled mark with the free space
   ("16 GB") from the start, as the app shows while the disk is low.
   Phones have no simulator, so no arrow.

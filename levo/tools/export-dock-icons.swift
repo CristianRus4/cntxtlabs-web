@@ -1,5 +1,5 @@
 // Renders the demo dock's app icons from the apps on this Mac into img/dock/.
-// Usage, from levo/: swift tools/export-dock-icons.swift
+// Usage, from levo/: swift tools/export-dock-icons.swift [name …] (no names: the whole set)
 // Each icon is 128 pt @2x (256 px), in light (<name>.png) and dark (<name>-dark.png).
 // NSWorkspace's icons follow this Mac's own icon style whatever appearance is drawn
 // in, so this asks IconServices for each appearance (0 light, 1 dark) instead.
@@ -19,7 +19,9 @@ let apps: [(String, String)] = [
     ("terminal", "/System/Applications/Utilities/Terminal.app"),
     ("textedit", "/System/Applications/TextEdit.app"),
     ("levo", NSString(string: "~/Applications/Levo.app").expandingTildeInPath),
+    ("amply", "/Applications/Amply.app"),
 ]
+let only = Set(CommandLine.arguments.dropFirst())
 
 let out = URL(fileURLWithPath: "img/dock", isDirectory: true)
 try? FileManager.default.createDirectory(at: out, withIntermediateDirectories: true)
@@ -52,7 +54,7 @@ func write(_ image: CGImage, _ name: String) {
     print("wrote img/dock/\(name).png")
 }
 
-for (name, path) in apps {
+for (name, path) in apps where only.isEmpty || only.contains(name) {
     guard FileManager.default.fileExists(atPath: path) else { print("missing \(path)"); continue }
     for (suffix, appearance) in [("", 0), ("-dark", 1)] {
         if let image = render(path, appearance: appearance) { write(image, name + suffix) } else { print("no image for \(name)\(suffix)") }

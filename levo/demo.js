@@ -112,7 +112,9 @@
 			{ id: "calendar", name: "Calendar", img: "img/dock/calendar.png", open: true },
 			{ id: "settings", name: "System Settings", img: "img/dock/settings.png", open: true },
 			{ id: "terminal", name: "Terminal", img: "img/dock/terminal.png" },
-			{ id: "elevate", name: "Elevate", img: "img/dock/elevate.png", open: true },
+			// Cntxt Labs' other apps: closed until clicked; each opens its own installer window, coming soon.
+			{ id: "elevate", name: "Elevate", img: "img/dock/elevate.png", soon: true },
+			{ id: "amply", name: "Amply", img: "img/dock/amply.png", soon: true },
 			{ id: "levo", name: "Levo", img: "img/dock/levo.png" },
 			// In the dock only while a text window is open, as a running app that isn't kept there.
 			{ id: "textedit", name: "TextEdit", img: "img/dock/textedit.png", transient: true },
@@ -393,6 +395,27 @@
 			w.addEventListener("pointerdown", function (e) { if (e.target.closest(".lvm-rz")) S.lwinMoved = true; }, true);
 		}
 		return w;
+	}
+	// Elevate and Amply: an installer window like Levo's (the app, Applications), "Coming soon" in
+	// place of the download. Open, the app has its running dot; closed, it goes.
+	function soonHTML(d) {
+		var dark = d.img.replace(/\.png$/, "-dark.png");
+		return '<div class="lv-lwin-in">' +
+			'<div class="lv-lwin-body">' +
+				'<span class="lv-lwin-app"><span class="lv-lwin-ic"><img class="lv-dk-l" src="' + d.img + '" width="96" height="96" alt="" draggable="false"><img class="lv-dk-d" src="' + dark + '" width="96" height="96" alt="" draggable="false"></span><span>' + esc(d.name) + "</span></span>" +
+				'<svg class="lv-lwin-arrow" viewBox="0 0 120 24" aria-hidden="true"><path d="M4 12h98"/><path d="M98 4l10 8-10 8"/></svg>' +
+				'<span class="lv-lwin-apps"><span class="lv-lwin-ic"><img class="lv-lwin-folder" src="img/desk/applications.png" width="96" height="96" alt="" draggable="false"></span><span>Applications</span></span>' +
+			"</div>" +
+			'<div class="lv-lwin-foot"><span class="lv-flex"></span><span class="lv-lbtn lv-lbtn-soon">Coming soon</span></div>' +
+		"</div>";
+	}
+	function openSoon(id, el) {
+		var M = window.LevoMenus, d = LEVO_DEMO.dock.filter(function (x) { return x.id === id; })[0];
+		if (!M || !M.window || !d) return;
+		var sz = lwinSize();
+		var w = M.window("custom", { id: id + "-dmg", title: d.name, html: soonHTML(d), w: sz[0], h: sz[1], minW: 320, minH: 230, esc: false,
+			onClose: function (reason) { if (reason !== "minimise") el.classList.remove("is-running"); } });
+		if (w) w.classList.add("lv-lwin-w");
 	}
 	function dockHTML() {
 		return '<div class="lv-dock-shelf"></div>' + LEVO_DEMO.dock.map(function (d) {
@@ -1848,6 +1871,7 @@
 		if (id === "levo") { bounce(el); openPop(); return; }
 		if (id === "trash") { el.classList.add("is-bump"); later(function () { el.classList.remove("is-bump"); }, 500); openTrash(); return; }
 		if (id === "downloads") { toggleFan(); return; }
+		if (id === "elevate" || id === "amply") { bounce(el); later(function () { openSoon(id, el); }, 400); return; }
 		if (id === "textedit") { bounce(el); var M2 = window.LevoMenus, tw = M2 && M2.kinds().filter(function (k) { return k.kind === "textedit"; })[0]; if (tw) M2.focus(tw.id); return; }
 		bounce(el);
 		if (!M || !M.window) return;

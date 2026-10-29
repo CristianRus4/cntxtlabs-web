@@ -730,6 +730,8 @@ html.dark .lv-lwin { background: #262628; box-shadow: inset 0 0 0 0.5px rgba(255
 .lv-lbtn:hover { background: rgb(var(--fg) / 0.13); }
 .lv-lbtn:active { transform: scale(.97); }
 .lv-lbtn-primary { background: var(--accent); color: #fff; }
+.lv-lbtn-soon, .lv-lbtn-soon:hover { color: rgb(var(--fg) / 0.6); background: rgb(var(--fg) / 0.06); cursor: default; }
+.lv-lbtn-soon:active { transform: none; }
 .lv-lbtn-primary:hover { background: var(--accent); filter: brightness(1.08); }
 .lv-hint { position: absolute; z-index: 2; margin: 0; transform: translateX(-50%); display: flex; align-items: center; gap: 7px; white-space: nowrap; font-family: var(--rounded); font-size: 13px; font-weight: 600; color: rgb(var(--fg) / 0.45); pointer-events: none; transition: opacity .3s; }
 html:not(.dark) .lv-hint { color: rgba(0, 0, 0, 0.45); }
