@@ -803,8 +803,8 @@ html.dark .lvm-w-finder .lvm-fi-size { color: #4DA3FF; }
  * Measured from the 2x screenshots in Levo/design/refs/macos-menus: 12 pt corners, 5 pt padding,
  * 24 pt rows with 8 pt hover corners inset 5 pt, text 15 pt from the edge (an icon's own 16 pt
  * box and 7 pt gap push only its row's text), separators inset to the text, shortcuts one glyph
- * per modifier in secondary colour. Light: pale glass, dark text. Dark, as the screenshots show
- * over a dark desktop: mid-grey glass with dark text and a thin light rim.
+ * per modifier in secondary colour. Light (the screenshots, taken in light mode): pale glass, dark
+ * text. Dark: dark translucent glass, white text, secondary-white shortcuts, the same blue hover.
  */
 .lvm-layer {
 	--lvm-sys-bg: rgba(242, 242, 244, 0.78);
@@ -817,12 +817,12 @@ html.dark .lvm-w-finder .lvm-fi-size { color: #4DA3FF; }
 	--lvm-sys-hi: #0A84FF;
 }
 html.dark .lvm-layer {
-	--lvm-sys-bg: rgba(150, 150, 152, 0.62);
-	--lvm-sys-ink: rgba(0, 0, 0, 0.87);
-	--lvm-sys-dim: rgba(0, 0, 0, 0.4);
-	--lvm-sys-keys: rgba(0, 0, 0, 0.5);
-	--lvm-sys-sep: rgba(255, 255, 255, 0.13);
-	--lvm-sys-rim: inset 0 0 0 0.5px rgba(255, 255, 255, 0.26), 0 0 0 0.5px rgba(0, 0, 0, 0.5);
+	--lvm-sys-bg: rgba(40, 40, 44, 0.66);
+	--lvm-sys-ink: rgba(255, 255, 255, 0.9);
+	--lvm-sys-dim: rgba(255, 255, 255, 0.28);
+	--lvm-sys-keys: rgba(255, 255, 255, 0.5);
+	--lvm-sys-sep: rgba(255, 255, 255, 0.12);
+	--lvm-sys-rim: inset 0 0.5px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 0.5px rgba(255, 255, 255, 0.12), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
 	--lvm-sys-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), 0 16px 40px -10px rgba(0, 0, 0, 0.6);
 	--lvm-sys-hi: #0A84FF;
 }
@@ -842,7 +842,7 @@ html.dark .lvm-layer {
 	letter-spacing: 0;
 	-webkit-font-smoothing: antialiased;
 }
-html.dark .lvm-menu:not(.lvm-soft) { color: var(--lvm-sys-ink); -webkit-backdrop-filter: blur(30px) saturate(1.4); backdrop-filter: blur(30px) saturate(1.4); }
+html.dark .lvm-menu:not(.lvm-soft) { color: var(--lvm-sys-ink); -webkit-backdrop-filter: blur(30px) saturate(1.6) brightness(0.9); backdrop-filter: blur(30px) saturate(1.6) brightness(0.9); }
 .lvm-menu:not(.lvm-soft) .lvm-item { height: 24px; gap: 0; padding: 0 14px 0 10px; border-radius: 8px; }
 .lvm-menu:not(.lvm-soft) .lvm-check { position: static; width: 16px; margin-right: 4px; flex: none; }
 .lvm-menu:not(.lvm-soft) .lvm-mic { width: 16px; margin: 0 7px 0 0; flex: none; color: inherit; }
@@ -871,6 +871,9 @@ html.dark .lvm-menu:not(.lvm-soft) { color: var(--lvm-sys-ink); -webkit-backdrop
 .lvm-m-help .lvm-field { height: 26px; padding: 0 10px; gap: 7px; border-radius: 13px; background: rgba(255, 255, 255, 0.86); box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.08); color: rgba(0, 0, 0, 0.5); }
 .lvm-m-help .lvm-field input { font-size: 13px; color: rgba(0, 0, 0, 0.86); }
 .lvm-m-help .lvm-field input::placeholder { color: rgba(0, 0, 0, 0.42); }
+html.dark .lvm-m-help .lvm-field { background: rgba(255, 255, 255, 0.1); box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.12); color: rgba(255, 255, 255, 0.5); }
+html.dark .lvm-m-help .lvm-field input { color: rgba(255, 255, 255, 0.9); }
+html.dark .lvm-m-help .lvm-field input::placeholder { color: rgba(255, 255, 255, 0.4); }
 
 /* The open menu's title: a capsule in the menubar. */
 .lv-menubar [data-menu].lvm-on { border-radius: 12px; background: rgb(var(--fg) / 0.1); }
