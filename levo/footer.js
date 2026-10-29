@@ -11,12 +11,13 @@
  * scaled to match: positions follow the letters, clamped inside the walls and clear of the letters,
  * and gravity settles them.
  *
- * The Trash, about two files tall, stands on the L's round top a little right of its centre, full.
- * A tiny tilt makes it wobble; after a couple of seconds a gentle push tips it over towards "evo". Its
- * files aren't bodies while they're inside (hidden behind the bin, which shows macOS's full Trash
- * icon): once its opening tilts past about 57 degrees they come out at the rim one at a time, with
- * the bin's own velocity and a small nudge out of the opening, their speed capped for a moment, so
- * they tumble out rather than shoot. Files dropped into the upright bin's opening go in the same
+ * The Trash, about two files tall, stands full at the right of the L's round top, its centre of
+ * mass just past where it stands: on a hinge at its base it leans, slowly and then faster, and past
+ * about 17 degrees it's let go and falls onto "evo". Its files aren't bodies while they're inside
+ * (hidden behind the bin, which shows macOS's full Trash icon): once its opening tilts past 45
+ * degrees they come out one at a time, every ~80 ms, each in a spot just inside the rim (or just
+ * past it) where it overlaps nothing, with the bin's own velocity there, a small nudge and a little
+ * spin, so they spread along the fall. Files dropped into the upright bin's opening go in the same
  * way, and come out the same way.
  *
  * Every body is its real rectangle with low bounce; low static friction lets things roll off the
@@ -122,7 +123,8 @@
 		SB = Math.round(S * 2.3);
 		G = { F: F, floor: floor, base: base, glyphs: glyphs, stemTop: top, stemX: (stemL + stemR) / 2, stemW: stemR - stemL,
 			bw: SB * BW, bh: SB * BH, wall: Math.max(3, SB * WALL) };
-		G.binX = G.stemX + G.stemW * 0.04;
+		// At the right of the L's top, its centre of mass just past where it stands: it leans.
+		G.binX = G.stemX + G.stemW * 0.18;
 		G.binY = top - G.bh / 2 - 1;
 		return G;
 	}
@@ -228,8 +230,9 @@
 		];
 		G.glyphs.forEach(function (g) {
 			g.hulls.forEach(function (h) {
-				var c = M.Vertices.centre(h);
-				statics.push(M.Bodies.fromVertices(c.x, c.y, [h], LETTER));
+				var c = M.Vertices.centre(h), b = M.Bodies.fromVertices(c.x, c.y, [h], LETTER);
+				if (g.ch === "L") b.parts.forEach(function (p) { p.collisionFilter.category = 0x0002; });
+				statics.push(b);
 			});
 		});
 		M.Composite.add(world, statics);
@@ -259,50 +262,39 @@
 	function binCentre() { var o = local(bin, bin.imageOffset); return { x: bin.position.x + o.x, y: bin.position.y + o.y }; }
 	function opening() { return Math.abs(Math.atan2(Math.sin(bin.angle), Math.cos(bin.angle))); }
 
-	// Past this tilt of the opening (about 57 degrees) the files start to slide out.
-	var POUR = 1.0;
-	// Out at the rim: one file every other frame once the opening has tilted past POUR, placed just
-	// beyond the rim with the velocity of the bin at that point and a small nudge out of the opening.
+	// Past this tilt of the opening (45 degrees) the files start to slide out, one every ~80 ms.
+	var POUR = Math.PI / 4, EVERY = 5;
+	// Out at the rim: each file appears just inside the opening (deeper, or just past the rim, when
+	// that's taken), in a spot where it overlaps nothing
+	// (the bin's walls, the letters, the files already out), with the bin's own velocity there, a
+	// small nudge out of the opening and a little spin; the bin's tilt does the rest. With no free
+	// spot (the opening against a letter or a pile), it waits, and after a few seconds gives up.
 	function pour() {
-		// The further it turns over, the quicker they slide out: upside down, they all fall at once.
-		var o = opening(), wait = 2;
-		if (!bin.inside.length || o < POUR || frame - (bin.poured || 0) < wait) return;
-		var f = bin.inside[0], c = binCentre(), fh = S * f.h, fw = S * f.w, p = null, r = null;
-		// Only into open space: a few spots across the opening and just beyond it; with the opening
-		// against a letter or a pile, the rest stay in.
-		// Files just out pass through one another for a moment, as a spilling pile does, so they
-		// don't block the next one at the rim; letters and files already lying there do.
-		var others = M.Composite.allBodies(world).filter(function (b) { return b !== bin && !b.ghost; }), blockers = null;
-		for (var t = 0; t < 5 && !p; t++) {
-			var rim = local(bin, { x: (Math.random() - 0.5) * G.bw * 0.7, y: -G.bh / 2 - fh * (0.55 + t * 0.25) });
-			var q = { x: c.x + rim.x, y: c.y + rim.y }, probe = M.Bodies.rectangle(q.x, q.y, fw, fh, { angle: bin.angle });
-			var hits = M.Query.collides(probe, others).map(function (h) { return h.bodyA === probe ? h.bodyB : h.bodyA; });
-			if (!hits.length) p = q;
-			else if (t === 0) blockers = hits;
+		var o = opening();
+		if (!bin.inside.length || o < POUR || frame - (bin.poured || 0) < EVERY) return;
+		var f = bin.inside[0], c = binCentre(), fh = S * f.h, fw = S * f.w, p = null;
+		var room = Math.max(0, (G.bw - 2 * G.wall - fw) / 2);
+		var others = statics.concat(bin.parts.slice(1), files.map(function (x) { return x.body; }).filter(Boolean));
+		// Just inside the rim, a little deeper, or just past the rim when those are taken (the file
+		// before it is still leaving): wherever it fits without touching anything.
+		var deep = Math.max(0, G.bh - 2 * G.wall - fh);
+		for (var t = 0; t < 10 && !p; t++) {
+			var rim = t < 4 ? local(bin, { x: (Math.random() * 2 - 1) * room, y: -G.bh / 2 + fh / 2 + 1 + deep * t / 3 })
+				: local(bin, { x: (Math.random() - 0.5) * G.bw * 1.2, y: -G.bh / 2 - fh * (0.5 + (t - 4) * 0.2) });
+			var q = { x: c.x + rim.x, y: c.y + rim.y };
+			if (!M.Query.collides(M.Bodies.rectangle(q.x, q.y, fw, fh, { angle: bin.angle }), others).length) p = q;
 		}
-		if (!p) {
-			// What's still inside pushes on what's just out, gently, as a pile does; against a
-			// letter, nothing more comes out, and after a few seconds the bin stops trying.
-			bin.blocked = (bin.blocked || 0) + 1;
-			if (blockers && blockers.every(function (b) { return b.isFile; }) && frame % 6 === 0) {
-				var dir = local(bin, { x: 0, y: -1 });
-				blockers.forEach(function (b) { if (b.speed < 1.2 && !(grab && grab.body === b)) M.Body.setVelocity(b, { x: b.velocity.x + dir.x * 1.4, y: b.velocity.y + dir.y * 1.4 - 0.3 }); });
-			}
-			return;
-		}
+		if (!p) { bin.blocked = (bin.blocked || 0) + 1; return; }
 		bin.blocked = 0;
-		r = { x: p.x - bin.position.x, y: p.y - bin.position.y };
 		bin.poured = frame;
 		bin.inside.shift();
+		var r = { x: p.x - bin.position.x, y: p.y - bin.position.y };
 		f.body = rect(fw, fh, p.x, p.y);
 		f.body.isFile = true;
-		f.body.ghost = frame;
-		f.body.collisionFilter.group = -1;
-		M.Body.setAngle(f.body, bin.angle);
-		// Out of the opening, each a little differently, so they fan out rather than leave as one.
-		var spread = (Math.random() - 0.5) * 0.7, out = local(bin, { x: Math.sin(spread), y: -Math.cos(spread) }), push = 3 + Math.random() * 3.5;
+		M.Body.setAngle(f.body, bin.angle + (Math.random() - 0.5) * 0.2);
+		var out = local(bin, { x: (Math.random() - 0.5) * 0.5, y: -1 }), push = 1.2 + Math.random() * 1.6;
 		M.Body.setVelocity(f.body, { x: bin.velocity.x - bin.angularVelocity * r.y + out.x * push, y: bin.velocity.y + bin.angularVelocity * r.x + out.y * push });
-		M.Body.setAngularVelocity(f.body, bin.angularVelocity * 0.5 + (Math.random() - 0.5) * 0.08);
+		M.Body.setAngularVelocity(f.body, bin.angularVelocity * 0.6 + (Math.random() - 0.5) * 0.12);
 		f.body.calmUntil = frame + 30;
 		M.Composite.add(world, f.body);
 		f.el.classList.remove("is-in");
@@ -328,13 +320,28 @@
 		world = engine.world;
 		buildStatics();
 		bin = makeBin(G.binX, G.binY);
-		// A tiny tilt to the right: it wobbles on the L before anything else happens.
-		M.Body.rotate(bin, 0.03, { x: G.binX, y: G.binY + G.bh / 2 });
 		bin.inside = files.slice();
 		M.Composite.add(world, bin);
+		lean();
 		wire(binEl, function () { return bin; });
 		files.forEach(function (f) { wire(f.el, function () { return f.body; }); });
 		binEl.addEventListener("dblclick", standUp);
+	}
+	// The lean: the bin turns on a hinge at its base, a hair left of its centre of mass, so it starts
+	// slowly and speeds up, as a bin balanced just past an edge does; past about 17 degrees it's let
+	// go and falls by itself. While it leans it passes over the L's round top (it stands on the hinge).
+	var hinge = null;
+	function lean() {
+		var foot = { x: bin.position.x - 0.15, y: G.binY + G.bh / 2 };
+		hinge = M.Constraint.create({ pointA: foot, bodyB: bin, pointB: { x: foot.x - bin.position.x, y: foot.y - bin.position.y }, length: 0, stiffness: 1, damping: 0 });
+		M.Composite.add(world, hinge);
+		bin.parts.forEach(function (b) { b.collisionFilter.mask = 0xFFFFFFFD; });
+	}
+	function letGo() {
+		if (!hinge) return;
+		M.Composite.remove(world, hinge);
+		hinge = null;
+		bin.parts.forEach(function (b) { b.collisionFilter.mask = 0xFFFFFFFF; });
 	}
 	function standUp() {
 		if (!bin) return;
@@ -360,20 +367,11 @@
 		});
 	}
 	// Just out of the bin, a file can't be flung: its speed is capped for half a second.
-	// A file just out becomes solid to the others once it's clear of them, or after two seconds.
-	function solidify() {
-		var bodies = files.map(function (f) { return f.body; }).filter(Boolean);
-		bodies.forEach(function (b) {
-			if (!b.ghost) return;
-			var rest = bodies.filter(function (o) { return o !== b; });
-			if (frame - b.ghost > 120 || (frame - b.ghost > 6 && !M.Query.collides(b, rest).length)) { b.ghost = 0; b.collisionFilter.group = 0; }
-		});
-	}
 	function capSpeeds() {
 		files.forEach(function (f) {
 			var b = f.body;
-			if (!b || !(b.calmUntil > frame) || b.speed < 7) return;
-			var k = 7 / b.speed;
+			if (!b || !(b.calmUntil > frame) || b.speed < 6) return;
+			var k = 6 / b.speed;
 			M.Body.setVelocity(b, { x: b.velocity.x * k, y: b.velocity.y * k });
 		});
 	}
@@ -390,7 +388,7 @@
 		settle();
 		M.Engine.update(engine, 1000 / 60);
 		capSpeeds();
-		solidify();
+		if (hinge && (Math.abs(bin.angle) > 0.3 || grab)) letGo();
 		pour();
 		catchIn();
 		render();
@@ -443,17 +441,6 @@
 			setup();
 			render();
 			wake();
-			// After its wobble, a gentle push to the right, off the L towards "evo". On the round top
-			// the bin can rock back; then it gets the push again, a little firmer.
-			var tries = 0, nudge = function () {
-				if (grab || Math.abs(bin.position.x - G.binX) > G.bw || bin.inside.length < files.length) return;
-				var k = 1 + tries * 0.5;
-				M.Body.setAngularVelocity(bin, 0.07 * k);
-				M.Body.setVelocity(bin, { x: 1.6 * k, y: -0.4 });
-				wake();
-				if (++tries < 4) setTimeout(nudge, 1200);
-			};
-			setTimeout(nudge, 2600);
 		});
 	}
 
@@ -471,6 +458,7 @@
 		buildStatics();
 		if (!old || (W === oldW && H === oldH && G.F === old.F)) { wake(); return; }
 		if (grab) { M.Composite.remove(world, grab.c); grab = null; }
+		letGo();
 		var sx = W / oldW, sf = G.F / old.F, placed = statics.slice();
 		var bodies = M.Composite.allBodies(world).filter(function (b) { return !b.isStatic && b.parent === b; });
 		bodies.sort(function (p, q) { return q.position.y - p.position.y; });

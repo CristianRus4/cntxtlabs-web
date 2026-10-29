@@ -281,17 +281,16 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   (debounced) or the fonts loading rebuilds both; every body is then moved and
   scaled with the letters, kept inside the walls, lifted clear of the letters,
   and left to gravity. The levo assets carry ?v= so a cached mix can't return.
-- The full Trash, about two files tall, stands on the L's round top a little
-  right of its centre, wobbles, and after a push (repeated a little firmer if
-  it rocks back) tips right towards "evo"; "evo" sits close to the L's stem
-  (its foot is under the edge), so the bin lands across the L and the e.
-  Files in the bin aren't bodies: past about 57 degrees of tilt they come out
-  at the rim, one every other frame, with the bin's own velocity and a nudge
-  out of the opening that fans a little. Just out, they pass through one
-  another until they're clear (as a spilling pile does), so most come out as
-  it falls and land on "evo"; the v is two bars, so its notch catches files.
-  Only into open space; against a letter the rest stay in. A file dropped into
-  the upright bin goes in, and the bin turns full.
+- The full Trash, about two files tall, stands at the right of the L's round
+  top, its centre of mass just past its footing: on a hinge at its base it
+  leans slowly, then faster, and past about 17 degrees falls freely onto
+  "evo" ("evo" sits close to the L's stem; its foot is under the edge). Files
+  in the bin aren't bodies: past 45 degrees of tilt they come out one at a
+  time, every ~80 ms, each just inside the rim (or just past it) where it
+  overlaps nothing, with the bin's own velocity, a small nudge and a little
+  spin, so they spread along the fall; the v is two bars, so its notch can
+  catch one. With no free spot, the rest stay in. A file dropped into the
+  upright bin goes in, and the bin turns full.
 - Everything is grabbed at the exact point under the pointer (a soft spring
   with a little damping), so things hang and swing; mouse and touch alike. A
   gentle settle tips anything at rest onto its nearest flat side. Double-click
