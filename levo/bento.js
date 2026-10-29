@@ -251,24 +251,25 @@
 	}
 
 	var TILES = [
-		{ id: "auto", label: "Auto mode", cls: "bt-auto", inner: autoHTML, play: autoPlay, reset: autoReset },
-		{ id: "disk", label: "Disk by category", inner: function () { return kit("bt-disk", P.disk()); }, play: diskPlay, reset: diskReset },
-		{ id: "gauges", label: "Memory, CPU, GPU", inner: function () { return kit("bt-gauges", P.gauges()); }, play: gaugesPlay },
-		{ id: "list", label: "What can go", inner: function () { return kit("bt-list", '<div class="lv-scroll">' + P.list(5) + "</div>"); }, play: listPlay },
-		{ id: "confirm", label: "Confirm first", inner: function () { return kit("bt-confirm", '<div class="lv-sheet lv-bsheet lv-confirm is-in bt-sheet">' + P.confirm() + "</div>"); } },
-		{ id: "actions", label: "Keyboard first", inner: function () {
+		{ id: "auto", label: "Auto mode", sub: "Cleans on its own before your disk runs low.", cls: "bt-auto", inner: autoHTML, play: autoPlay, reset: autoReset },
+		{ id: "disk", label: "Disk by category", sub: "What fills your disk, and what can go.", inner: function () { return kit("bt-disk", P.disk()); }, play: diskPlay, reset: diskReset },
+		{ id: "gauges", label: "Memory, CPU, GPU", sub: "What your Mac is working on, at a glance.", inner: function () { return kit("bt-gauges", P.gauges()); }, play: gaugesPlay },
+		{ id: "list", label: "What can go", sub: "Each item with its size and why it\u2019s safe.", inner: function () { return kit("bt-list", '<div class="lv-scroll">' + P.list(5) + "</div>"); }, play: listPlay },
+		{ id: "confirm", label: "Confirm first", sub: "Nothing is cleaned until you say so.", inner: function () { return kit("bt-confirm", '<div class="lv-sheet lv-bsheet lv-confirm is-in bt-sheet">' + P.confirm() + "</div>"); } },
+		{ id: "actions", label: "Keyboard first", sub: "Every action is a keystroke away.", inner: function () {
 			// The whole popover, as the app's: name, gauges, disk, the sentence and the action bar.
 			var top = P.disk().replace('<div class="lv-sep"></div>', '<div class="lv-sep"></div>' + P.gauges() + '<div class="lv-sep"></div>') + '<div class="lv-sep"></div>';
 			return kit("bt-actions", top + '<div class="lv-scroll"><div class="lv-sum">' + P.summary() + '</div></div><div class="lv-actions">' + P.actionBar() + "</div>" +
 				'<div class="lv-scrim bt-scrim"></div><div class="lv-panel lv-bsheet bt-panel">' + P.panel() + "</div>");
 		}, play: actionsPlay },
-		{ id: "agents", label: "Your own agent", inner: agentsHTML, play: agentsPlay },
-		{ id: "levels", label: "Cleanup levels", inner: levelsHTML, play: levelsPlay }
+		{ id: "agents", label: "Your own agent", sub: "Your coding agent works out what\u2019s safe.", inner: agentsHTML, play: agentsPlay },
+		{ id: "levels", label: "Cleanup levels", sub: "Choose how far a clean goes.", inner: levelsHTML, play: levelsPlay }
 	];
 
 	grid.innerHTML = TILES.map(function (k) {
-		return '<article class="bt-tile bt-shot" data-tile="' + k.id + '"><h3 class="bt-label">' + k.label + "</h3>" +
-			'<div class="bt-stage' + (k.cls ? " " + k.cls : "") + '" aria-hidden="true">' + k.inner() + "</div></article>";
+		return '<article class="bt-tile bt-shot" data-tile="' + k.id + '">' +
+			'<div class="bt-stage' + (k.cls ? " " + k.cls : "") + '" aria-hidden="true">' + k.inner() + "</div>" +
+			'<div class="bt-cap"><h3 class="bt-label">' + k.label + '</h3><p class="bt-sub">' + k.sub + "</p></div></article>";
 	}).join("");
 	var byId = {};
 	TILES.forEach(function (k) { byId[k.id] = k; });

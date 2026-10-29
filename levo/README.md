@@ -243,6 +243,12 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   "Levo" the page's bottom edge clips. Privacy and Terms are placeholders in
   levo.js until their pages exist.
 
+- The tiles: each tile is the component on top, then a title and one line at
+  its bottom-leading corner, the same in every tile, over a soft wash of its
+  own in the page's palette (bento.css, --bt-a to --bt-t, light and dark).
+  Auto mode's screen slice is exactly as tall as its popover. The disk tile's
+  tip sits under the bar, so it never covers the numbers.
+
 ## Website round 9
 
 - The popover follows the app's round 16: nothing at the name row's end while
