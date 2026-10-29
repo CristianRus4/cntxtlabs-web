@@ -52,7 +52,7 @@
 				location: "~/Library/Developer/CoreSimulator", verdict: "Unused devices, runtimes kept", good: true,
 				items: [{ name: "iPhone 17 Pro", gb: 2.1, level: 2 }, { name: "iPad Air", gb: 1.9, level: 2 }, { name: "iPhone 16e", gb: 1.7, level: 2 }, { name: "iPhone SE", gb: 1.5, level: 2 }, { name: "Apple Watch Series 11", gb: 1.4, level: 2 }, { name: "Apple TV 4K", gb: 1.2, level: 2 }] },
 			{ id: "worktrees", about: ["Copies of your repos that coding agents made to work in.", "Two still have unmerged work, so they stay unticked.", "Merged ones go with git worktree remove."], title: "Agent worktrees", symbol: "arrow.triangle.branch", tile: "purple", tag: "Review", changed: "2 days ago",
-				location: "~/Developer/.worktrees", verdict: "Two have unmerged work", good: false,
+				location: "~/Projects/.worktrees", verdict: "Two have unmerged work", good: false,
 				items: [{ name: "fix-login", gb: 2.3, level: 0 }, { name: "settings-pass", gb: 1.9, level: 0 }, { name: "ui-cleanup", gb: 1.2, level: 3 }, { name: "tmp-copy", gb: 0.7, level: 3 }] },
 			{ id: "downloads", about: ["Installers and archives you already used.", "The apps they installed stay installed.", "They go to the Trash, so you can get them back."], title: "Downloads and installers", symbol: "arrow.down.circle.fill", tile: "green", changed: "5 months ago",
 				location: "~/Desktop, ~/Downloads", verdict: "Installed long ago", good: true,
@@ -67,7 +67,7 @@
 				location: "~/Library/Logs", verdict: "Old reports nobody reads", good: true,
 				items: [{ name: "DiagnosticReports", gb: 0.6, level: 2 }, { name: "CoreSimulator logs", gb: 0.3, level: 2 }] },
 			{ id: "deps", about: ["Packages installed inside projects you haven\u2019t opened in months.", "Your code stays; only the downloaded packages go.", "They come back with the next install."], title: "Project dependencies", symbol: "shippingbox.fill", tile: "orange", changed: "3 months ago",
-				location: "~/Developer", verdict: "Projects idle for months", good: true,
+				location: "~/Projects", verdict: "Projects idle for months", good: true,
 				items: [{ name: "levo-site/node_modules", gb: 2.9, level: 3 }, { name: "notes-app/node_modules", gb: 1.8, level: 3 }, { name: "old-prototype/node_modules", gb: 1.4, level: 3 }] },
 			{ id: "appcaches", about: ["Caches that apps keep to start and load faster.", "Your messages, songs and settings aren\u2019t in them.", "Apps fill them again as you use them."], title: "App caches", symbol: "tray.full.fill", tile: "orange", changed: "today",
 				location: "~/Library/Caches", verdict: "Apps rebuild them", good: true,
@@ -359,7 +359,7 @@
 			'<div class="lv-lwin-body">' +
 				'<button type="button" class="lv-lwin-app" data-act="lwinapp" aria-label="Levo"><img src="img/icon-256.png" width="104" height="104" alt="" draggable="false"><span>Levo</span></button>' +
 				'<svg class="lv-lwin-arrow" viewBox="0 0 120 24" aria-hidden="true"><path d="M4 12h98"/><path d="M98 4l10 8-10 8"/></svg>' +
-				'<span class="lv-lwin-apps" data-lwinapps><span class="lv-lwin-folder">' + sym("folder.fill", 84) + '<span class="lv-lwin-a">' + sym("app.badge", 26) + '</span></span><span>Applications</span></span>' +
+				'<span class="lv-lwin-apps" data-lwinapps><img class="lv-lwin-folder" src="img/desk/applications.png" width="104" height="104" alt="" draggable="false"><span>Applications</span></span>' +
 			'</div>' +
 			'<div class="lv-lwin-foot"><span class="lv-lwin-price"><b data-lprice></b><span data-lterm></span></span><span class="lv-flex"></span>' +
 				'<a class="lv-lbtn" data-lbuy href="#">Buy</a><a class="lv-lbtn lv-lbtn-primary" data-ldownload href="#">Download</a></div>' +

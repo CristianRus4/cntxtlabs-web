@@ -179,7 +179,12 @@ Real icons are rendered from this Mac through IconServices:
 `swift tools/export-dock-icons.swift` (the dock's apps, light and dark, and the
 Levo disk image) and `swift tools/export-desk-icons.swift` (folder, txt, zip,
 pdf, png, psd, dmg, pkg and app document icons; macOS gives the same image in
-light and dark for document types, so there is one file each). desk.css holds
+light and dark for document types, so there is one file each; plus, at 128 pt,
+the Applications folder for the installer window, this Mac's own icon for About
+This Mac on a Mac mini and for power alerts, and a MacBook Pro and an iMac from
+CoreTypes.bundle). Nothing on the desktop is drawn by hand: Force Quit and
+Battery list apps with their own icons, Go to Folder rows use the real folder,
+and Finder's alerts show Finder's icon. desk.css holds
 the desktop's Tahoe styling; menus.js and menus.css the menus, Finder windows and
 Control Centre.
 

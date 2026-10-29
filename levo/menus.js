@@ -81,14 +81,14 @@
 	};
 
 	var DEVICES = {
-		mac: { sym: "laptopcomputer", name: "MacBook Pro", sub: "14-inch, 2024" },
-		imac: { sym: "desktopcomputer", name: "iMac", sub: "24-inch, 2024" },
-		mini: { sym: "macmini.fill", name: "Mac mini", sub: "2024" }
+		mac: { img: "img/desk/macbook-pro.png", name: "MacBook Pro", sub: "14-inch, 2024" },
+		imac: { img: "img/desk/imac.png", name: "iMac", sub: "24-inch, 2024" },
+		mini: { img: "img/desk/this-mac.png", name: "Mac mini", sub: "2024" }
 	};
 
 	var FOLDERS = [
 		"~/Desktop", "~/Documents", "~/Downloads", "~/Movies", "~/Music", "~/Pictures", "~/Public",
-		"~/Developer", "~/Developer/.worktrees", "~/Developer/Levo",
+		"~/Projects", "~/Projects/.worktrees", "~/Projects/levo-site",
 		"~/Library", "~/Library/Application Support", "~/Library/Caches", "~/Library/Caches/Homebrew",
 		"~/Library/Caches/com.apple.Safari", "~/Library/Containers", "~/Library/Developer",
 		"~/Library/Developer/CoreSimulator", "~/Library/Developer/CoreSimulator/Devices",
@@ -96,11 +96,11 @@
 		"~/Library/Logs", "~/Library/Preferences",
 		"/Applications", "/Library", "/System", "/Users", "/Volumes"
 	];
-	var RECENT_FOLDERS = ["~/Downloads", "~/Developer", "~/Library/Caches"];
+	var RECENT_FOLDERS = ["~/Downloads", "~/Projects", "~/Library/Caches"];
 	var TERRITORY = [
 		["~/library/developer/xcode/deriveddata", "xcode"],
 		["~/library/developer/coresimulator", "sims"],
-		["~/developer/.worktrees", "worktrees"],
+		["~/projects/.worktrees", "worktrees"],
 		["~/library/caches", "packages"]
 	];
 
@@ -117,14 +117,17 @@
 	var WIFI_HOME = "Cntxt Labs";
 	var WIFI_OTHER = ["Pretty Fly for a Wi-Fi", "Spark-5G-7A2C", "Tell My Wi-Fi Love Her", "Hide Yo Kids, Hide Yo Wi-Fi", "TP-Link_3F10"];
 
-	// Running apps, shared by Force Quit and Battery. Names only, never icons.
+	// Running apps, shared by Force Quit and Battery, with their own icons (light and dark).
 	var APPS = [
-		{ id: "finder", name: "Finder", sym: "folder.fill" },
-		{ id: "chrome", name: "Google Chrome", sym: "globe", energy: true },
+		{ id: "finder", name: "Finder", img: "img/dock/finder" },
+		{ id: "safari", name: "Safari", img: "img/apps/safari", energy: true },
 		{ id: "levo", name: "Levo", levo: true },
-		{ id: "simulator", name: "Simulator", sym: "iphone" },
-		{ id: "xcode", name: "Xcode", sym: "hammer.fill", energy: true }
+		{ id: "claude", name: "Claude", img: "img/apps/claude" },
+		{ id: "xcode", name: "Xcode", img: "img/apps/xcode", energy: true }
 	];
+	function appIcon(a) {
+		return '<span class="lvm-app lvm-app-real"><img class="lv-dk-l" src="' + a.img + '.png" alt="" draggable="false"><img class="lv-dk-d" src="' + a.img + '-dark.png" alt="" draggable="false"></span>';
+	}
 
 	var scene, hooks = {}, layer, levels = [], openId = null, openBtn = null;
 	var subTimer = 0, subOwner = -1, flashTimer = 0, busy = false, swallow = false, clockTimer = 0, aboutTimer = 0;
@@ -521,7 +524,7 @@
 		];
 		d.push(SEP, { header: "Using significant energy" });
 		var hungry = APPS.filter(function (a) { return a.energy && running(a.id); });
-		if (hungry.length) hungry.forEach(function (a) { d.push({ label: a.name, icon: '<span class="lvm-app">' + sym(a.sym, 12) + "</span>" }); });
+		if (hungry.length) hungry.forEach(function (a) { d.push({ label: a.name, icon: appIcon(a) }); });
 		else d.push({ block: '<div class="lvm-none">No apps using significant energy</div>' });
 		d.push(SEP, D("Battery settings…"));
 		return { defs: d };
@@ -814,7 +817,7 @@
 		var dv = device();
 		var w = makeWin("about", "lvm-about",
 			'<div class="lvm-tb" data-lvm-drag>' + lights(false) + "</div>" +
-			'<div class="lvm-about-img">' + sym(dv.sym, 104) + "</div>" +
+			'<div class="lvm-about-img"><img src="' + dv.img + '" width="128" height="128" alt="" draggable="false"></div>' +
 			'<div class="lvm-about-name">' + esc(dv.name) + "</div>" +
 			'<div class="lvm-about-sub">' + esc(dv.sub) + "</div>" +
 			'<dl class="lvm-rows">' +
@@ -856,7 +859,7 @@
 		if (!w) return;
 		w.querySelector(".lvm-fq-list").innerHTML = APPS.filter(function (a) { return running(a.id); }).map(function (a) {
 			return '<div class="lvm-fq-row' + (a.id === fqSel ? " is-sel" : "") + '" role="option" data-lvm="fq-pick" data-app="' + a.id + '">' +
-				(a.levo ? levoIcon("lvm-levo-icon") : '<span class="lvm-app">' + sym(a.sym, 12) + "</span>") + "<span>" + esc(a.name) + "</span></div>";
+				(a.levo ? levoIcon("lvm-levo-icon") : appIcon(a)) + "<span>" + esc(a.name) + "</span></div>";
 		}).join("");
 		var b = w.querySelector('[data-lvm="fq-go"]');
 		var levo = fqSel === "levo";
@@ -883,7 +886,7 @@
 	function alertBox(o) {
 		var shield = makeWin("alert", "lvm-shield",
 			'<div class="lvm-alert" role="alertdialog" aria-label="' + esc(o.title) + '">' +
-				'<div class="lvm-alert-ic">' + sym(o.sym || "exclamationmark.triangle.fill", 44) + "</div>" +
+				'<div class="lvm-alert-ic">' + (o.img ? '<img src="' + o.img + '" width="52" height="52" alt="">' : sym(o.sym || "exclamationmark.triangle.fill", 44)) + "</div>" +
 				'<b class="lvm-alert-t">' + esc(o.title) + "</b>" +
 				(o.body ? '<p class="lvm-alert-b" data-lvm-ab>' + esc(o.body) + "</p>" : "") +
 				(o.check ? '<label class="lvm-alert-check"><span class="lvm-cb' + (st.reopen ? " is-on" : "") + '" data-lvm="alert-check">' + sym("checkmark", 9) + "</span>" + esc(o.check) + "</label>" : "") +
@@ -906,14 +909,14 @@
 
 	function askEmptyTrash() {
 		alertBox({
-			sym: "trash",
+			img: "img/dock/finder.png",
 			title: "Are you sure you want to permanently erase the items in the Trash?",
 			body: "You can’t undo this action.",
 			ok: "Empty Trash",
 			onOk: function () {
 				var had = call("emptyTrash");
 				if (had === false) setTimeout(function () {
-					alertBox({ sym: "trash", title: "The Trash is already empty.", ok: "OK", cancel: false });
+					alertBox({ img: "img/dock/finder.png", title: "The Trash is already empty.", ok: "OK", cancel: false });
 				}, 120);
 			}
 		});
@@ -927,7 +930,7 @@
 	FALLBACK.power = '<path d="M8 2v5.2"/><path d="M4.7 4.3a5 5 0 1 0 6.6 0"/>';
 	function power(kind) {
 		var p = POWER[kind], n = 60;
-		alertBox({ sym: p.sym, title: p.t, body: p.b.replace("{n}", n), ok: p.ok, check: "Reopen windows when logging back in", onOk: function () { if (kind === "logout") dim(); else blackout(); } });
+		alertBox({ img: device().img, title: p.t, body: p.b.replace("{n}", n), ok: p.ok, check: "Reopen windows when logging back in", onOk: function () { if (kind === "logout") dim(); else blackout(); } });
 		wins.alertTimer = setInterval(function () {
 			n--;
 			var b = wins.alert && wins.alert.querySelector("[data-lvm-ab]");
@@ -996,7 +999,7 @@
 		goSel = clamp(goSel, 0, Math.max(0, goList.length - 1));
 		w.querySelector(".lvm-goto-list").innerHTML = (err ? '<div class="lvm-goto-err">The folder can’t be found.</div>' : "") +
 			goList.map(function (f, i) {
-				return '<div class="lvm-goto-row' + (i === goSel ? " is-hi" : "") + '" role="option" data-lvm="goto-pick" data-i="' + i + '">' + sym("folder.fill", 15, "lvm-goto-f") + "<span>" + esc(f) + "</span></div>";
+				return '<div class="lvm-goto-row' + (i === goSel ? " is-hi" : "") + '" role="option" data-lvm="goto-pick" data-i="' + i + '">' + '<img class="lvm-goto-f" src="img/desk/folder.png" width="18" height="18" alt="">' + "<span>" + esc(f) + "</span></div>";
 			}).join("");
 	}
 	function goTo(path) {

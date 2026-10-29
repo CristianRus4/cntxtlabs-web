@@ -792,3 +792,11 @@ html.dark .lvm-w-finder .lvm-fi-size { color: #4DA3FF; }
 .lvm-ctx .lvm-item:not(.is-off):hover { background: var(--lvm-hi); color: #fff; }
 .lvm-ctx .lvm-item:not(.is-off):hover .lvm-keys { color: rgba(255, 255, 255, 0.78); }
 .lvm-fi.is-vanish { transform: scale(.2); opacity: 0; transition: transform .32s cubic-bezier(.5, 0, .75, 0), opacity .3s; }
+
+/* Real app, device and folder icons in About This Mac, Force Quit, Battery, Go to Folder and alerts. */
+.lvm-app.lvm-app-real, .lvm-fq-row.is-sel .lvm-app.lvm-app-real { background: none; border-radius: 0; }
+.lvm-app-real img { width: 20px; height: 20px; }
+.lvm-about-img { height: 140px; padding-top: 24px; }
+.lvm-about-img img { display: block; width: 128px; height: 128px; }
+.lvm-goto-f { flex: none; }
+.lvm-alert-ic img { display: block; width: 52px; height: 52px; }
