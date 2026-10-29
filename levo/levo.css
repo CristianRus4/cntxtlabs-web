@@ -284,22 +284,22 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
    menubar. Words, rays and arrow draw on together, then pulse together; it fades once the visitor
    has clicked Levo. levo.js places the arrow's tip over the icon. */
 .cue { position: absolute; z-index: 5; top: 6px; left: 0; width: 130px; height: 100px; pointer-events: none; opacity: 0; transition: opacity .5s ease; transform-origin: 40% 40%; }
-.cue.is-placed { opacity: 1; }
+.cue.is-placed { opacity: 1; transition-duration: 0s; }
 .cue.is-done { opacity: 0; transition-duration: .4s; }
 .cue-word { position: absolute; left: 0; top: 0; width: 100px; height: 42px; transform: rotate(-10deg); }
 .cue-t { position: absolute; left: 0; top: 0; width: 100px; text-align: center; font-family: "Bradley Hand", "Marker Felt", "Segoe Print", "Comic Sans MS", cursive; font-size: 22px; font-weight: 700; line-height: 21px; letter-spacing: .01em; color: var(--text); white-space: nowrap; }
 .cue-svg, .cue-rays { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
-.cue-svg path, .cue-rays path { fill: none; stroke: var(--text); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
-/* One stroke of the pen: everything draws on over the same moment. */
-.cue.is-placed .cue-svg path, .cue.is-placed .cue-rays path { animation: cue-draw .9s cubic-bezier(.55, 0, .3, 1) .4s forwards; }
+/* Hidden until the pen starts (no round-cap dots waiting), then all of it draws at once. */
+.cue-svg path, .cue-rays path { fill: none; stroke: var(--text); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 2; stroke-dashoffset: 1; opacity: 0; }
+.cue.is-placed .cue-svg path, .cue.is-placed .cue-rays path { animation: cue-draw .7s cubic-bezier(.3, .7, .4, 1) forwards; }
 .cue-t { clip-path: inset(0 100% 0 0); }
-.cue.is-placed .cue-t { animation: cue-write .9s cubic-bezier(.55, 0, .3, 1) .4s forwards; }
-.cue.is-placed { animation: cue-pulse 3.2s ease-in-out 1.6s infinite; }
-@keyframes cue-draw { to { stroke-dashoffset: 0; } }
+.cue.is-placed .cue-t { animation: cue-write .7s cubic-bezier(.3, .7, .4, 1) forwards; }
+.cue.is-placed { animation: cue-pulse 3.2s ease-in-out 1s infinite; }
+@keyframes cue-draw { from { stroke-dashoffset: 1; opacity: 1; } to { stroke-dashoffset: 0; opacity: 1; } }
 @keyframes cue-write { to { clip-path: inset(0 0 0 0); } }
 @keyframes cue-pulse { 0%, 100% { translate: 0 0; scale: 1; } 50% { translate: 0 5px; scale: 1.05; } }
 @media (prefers-reduced-motion: reduce) {
-	.cue-svg path, .cue-rays path { stroke-dashoffset: 0; animation: none !important; }
+	.cue-svg path, .cue-rays path { stroke-dashoffset: 0; opacity: 1; animation: none !important; }
 	.cue-t { clip-path: none; animation: none !important; }
 	.cue.is-placed { animation: none; }
 }

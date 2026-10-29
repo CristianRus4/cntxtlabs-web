@@ -258,8 +258,10 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   along the arc, set as each line's stroke.
 - "Click here": "click" over "here" in handwriting above the simulator, turned
   about 10 degrees anticlockwise, three short rays on each side in the same ink,
-  and a short soft arc from just under "here" to Levo's menubar mark (levo.js
-  places the tip). Words, rays and arrow draw on together and pulse together;
+  and an arrow that leaves from just under the middle of "here", heads down,
+  then curves right and down to Levo's menubar mark (levo.js places the tip).
+  Strokes stay hidden until the cue appears, then words, rays and arrow draw
+  on together at once (0.7 s) and pulse together;
   it fades once the icon is clicked.
 - The simulator's Levo menubar item is the filled mark with the free space
   ("16 GB") from the start, as the app shows while the disk is low.
