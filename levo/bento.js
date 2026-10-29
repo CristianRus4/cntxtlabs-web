@@ -29,31 +29,16 @@
 	function chip(inner) { return '<span class="lv-chip">' + inner + "</span>"; }
 
 	// ---------------------------------------------------------------- Auto mode
+	// The product's own UI, no chart: day by day the popover's disk bar fills and the green Ready
+	// ticks grow; when free space reaches the limit, Levo cleans, the green clears, free space grows
+	// back and a macOS notification slides in. Then the days go on, calmly, while it's in view.
 
-	var AUTO = { limit: (D.data && D.data.disk && D.data.disk.alert) || 20, start: 31, back: 32, days: 5, hit: 3.35, step: 0.12 };
-	var DAYS = (function () {
-		var out = [], d = new Date();
-		var f = new Intl.DateTimeFormat("en-NZ", { weekday: "short" });
-		for (var i = AUTO.days - 1; i >= 0; i--) out.push(f.format(new Date(d.getTime() - i * 864e5)));
+	var AUTO = { limit: (D.data && D.data.disk && D.data.disk.alert) || 20, total: 245, sys: 32, apps: 46, free: 31, ready: 4, perDay: 2.3, grow: 1.7, day: 1500 };
+	var DAYNAMES = (function () {
+		var f = new Intl.DateTimeFormat("en-NZ", { weekday: "short" }), out = [], d = new Date(2026, 9, 26);
+		for (var i = 0; i < 7; i++) out.push(f.format(new Date(d.getTime() + i * 864e5)));
 		return out;
 	})();
-	function ease(u) { return u * u * (3 - 2 * u); }
-	// Free space (GB) at t days: a slow drift down with a daily rhythm, Levo's step at the limit, then the drift again.
-	function freeAt(t) {
-		var wob = function (x) { return Math.sin(x * Math.PI * 2) * 0.55; };
-		if (t <= AUTO.hit) return AUTO.limit + (AUTO.start - AUTO.limit) * (1 - t / AUTO.hit) + wob(t) * (1 - t / AUTO.hit);
-		if (t <= AUTO.hit + AUTO.step) return AUTO.limit + (AUTO.back - AUTO.limit) * ease((t - AUTO.hit) / AUTO.step);
-		var u = (t - AUTO.hit - AUTO.step) / (AUTO.days - AUTO.hit - AUTO.step);
-		return AUTO.back - 2.6 * u + wob(t) * 0.6 * u;
-	}
-	var CW = 600, CH = 200, LO = 14, HI = 36;
-	function cx(t) { return t / AUTO.days * CW; }
-	function cy(v) { return CH - (v - LO) / (HI - LO) * CH; }
-	function path() {
-		var d = "";
-		for (var i = 0; i <= 240; i++) { var t = i / 240 * AUTO.days; d += (i ? "L" : "M") + cx(t).toFixed(1) + " " + cy(freeAt(t)).toFixed(1); }
-		return d;
-	}
 	function gbText(v) { return Math.round(v) + " GB"; }
 	function autoHTML() {
 		var groups = ((D.data && D.data.groups) || []).filter(function (g) { return g.items.every(function (it) { return it.level === 1; }); });
@@ -62,54 +47,90 @@
 			return chip(tile(g.tile, g.symbol, "chip") + "<span>" + esc(g.title) + "</span>") + (i === shown.length + (more ? 1 : 0) - 2 ? words("and") : "");
 		}).join("") + (more ? chip("<span>" + more + " more</span>") : "");
 		var ticks = "";
-		for (var i = 0; i < 60; i++) ticks += "<i></i>";
-		var limY = cy(AUTO.limit), hitX = cx(AUTO.hit + AUTO.step);
+		for (var i = 0; i < 60; i++) ticks += '<i class="lv-tick"></i>';
 		return '<div class="bt-auto-card">' +
 				kit("bt-auto-pop",
-					'<div class="lv-dhead lv-namerow"><span class="lv-sec">' + sym("laptopcomputer", 14) + '</span><b>MacBook Pro</b><span class="lv-flex"></span><span class="bt-auto-on">Auto mode</span></div>' +
+					'<div class="lv-dhead lv-namerow"><span class="lv-sec">' + sym("laptopcomputer", 14) + '</span><b>MacBook Pro</b><span class="lv-flex"></span><span class="lv-topclean is-auto">Auto mode</span></div>' +
 					'<div class="lv-sep"></div>' +
-					'<section class="lv-disk"><div class="lv-hero"><span class="lv-free lv-num" data-autofree>' + gbText(AUTO.start) + '</span><span class="lv-sec">free</span></div>' +
-					'<div class="lv-dbar"><div class="lv-ticks bt-auto-ticks" data-autoticks>' + ticks + "</div></div></section>" +
+					'<section class="lv-disk"><div class="lv-hero"><span class="lv-free lv-num" data-autofree>' + gbText(AUTO.free) + '</span><span class="lv-sec">free</span><span class="lv-flex"></span>' +
+						'<span class="lv-can lv-num" data-autoready><b>' + gbText(AUTO.ready) + "</b> ready</span></div>" +
+					'<div class="lv-dbar"><div class="lv-ticks" data-autoticks>' + ticks + "</div></div>" +
+					'<div class="bt-auto-day"><span data-autoday>' + DAYNAMES[0] + "</span></div></section>" +
 					'<div class="lv-sep"></div>' +
 					'<div class="lv-sum"><p class="lv-sline">' + chip("<span>Auto mode</span>") + words("keeps") + chip("<span>" + gbText(AUTO.limit) + "</span>") + words("free: it cleans") + chips + words("on its own.") + "</p></div>") +
 			"</div>" +
-			'<div class="bt-auto-chart">' +
-				'<svg viewBox="0 0 ' + CW + " " + CH + '" preserveAspectRatio="none" aria-hidden="true">' +
-					'<defs><clipPath id="bt-auto-clip"><rect data-autoclip x="-4" y="-20" width="0" height="' + (CH + 40) + '"/></clipPath></defs>' +
-					'<line class="bt-auto-limit" x1="0" x2="' + CW + '" y1="' + limY.toFixed(1) + '" y2="' + limY.toFixed(1) + '" vector-effect="non-scaling-stroke"/>' +
-					'<path class="bt-auto-line" clip-path="url(#bt-auto-clip)" d="' + path() + '" vector-effect="non-scaling-stroke"/>' +
-				"</svg>" +
-				'<span class="bt-auto-dot" data-autodot></span>' +
-				'<span class="bt-auto-lim" style="top:' + (limY / CH * 100).toFixed(2) + '%">' + gbText(AUTO.limit) + "</span>" +
-				'<span class="bt-auto-freed" data-autofreed style="left:' + (hitX / CW * 100).toFixed(2) + "%;top:" + (cy(AUTO.back) / CH * 100).toFixed(2) + '%">Freed ' + gbText(AUTO.back - AUTO.limit) + "</span>" +
-				'<div class="bt-auto-days">' + DAYS.map(function (d) { return "<span>" + esc(d) + "</span>"; }).join("") + "</div>" +
-			"</div>";
+			// A slice of the Mac's screen, where the notification arrives.
+			'<div class="bt-auto-screen"><div class="lv-kit bt-kit"><div class="bt-auto-menubar"><span class="bt-auto-mark">' + (D.mark ? D.mark("bt-auto-m") : "") + "</span>" +
+				'<b data-automb>' + gbText(AUTO.free) + "</b></div>" +
+				'<div class="lv-note bt-auto-note" data-autonote><img class="lv-note-icon" src="img/icon-96.png" width="38" height="38" alt="">' +
+					'<span class="lv-note-text"><span class="lv-note-top"><b>Auto mode</b><span class="lv-note-when">now</span></span><span data-autonotebody>Freed 12 GB</span></span></div>' +
+			"</div></div>";
 	}
-	// The line drawn up to t days, its dot, the free number and the bar's free ticks.
-	function autoFrame(el, t) {
-		var v = freeAt(t);
-		el.querySelector("[data-autoclip]").setAttribute("width", (cx(t) + 4).toFixed(1));
-		var dot = el.querySelector("[data-autodot]");
-		dot.style.left = (cx(t) / CW * 100).toFixed(2) + "%";
-		dot.style.top = (cy(v) / CH * 100).toFixed(2) + "%";
-		el.querySelector("[data-autofree]").textContent = gbText(v);
-		el.classList.toggle("is-freed", t >= AUTO.hit + AUTO.step * 0.5);
-		var ticks = el.querySelectorAll("[data-autoticks] i"), free = Math.round(v / 245 * 60 * 2.2);
-		for (var i = 0; i < ticks.length; i++) ticks[i].className = i >= ticks.length - free ? "is-free" : i < 30 ? "is-data" : i < 38 ? "is-sys" : "is-apps";
+	// The bar's ticks in the app's order: Your Data, System Data, Apps, Ready, Free.
+	function autoBar(el, st) {
+		var parts = [["data", AUTO.total - AUTO.sys - AUTO.apps - st.ready - st.free], ["sys", AUTO.sys], ["apps", AUTO.apps], ["ready", st.ready], ["free", st.free]];
+		var n = 60, count = parts.map(function (p) { return p[1] > 0.05 ? Math.max(1, Math.round(p[1] / AUTO.total * n)) : 0; });
+		var used = count.reduce(function (a, b) { return a + b; }, 0);
+		count[0] += n - used;
+		var ticks = el.querySelectorAll("[data-autoticks] i"), k = 0;
+		parts.forEach(function (p, i) { for (var j = 0; j < count[i]; j++) ticks[k++].className = "lv-tick is-" + p[0]; });
+	}
+	function autoShow(el, st) {
+		autoBar(el, st);
+		el.querySelector("[data-autofree]").textContent = gbText(st.free);
+		el.querySelector("[data-automb]").textContent = gbText(st.free);
+		el.querySelector("[data-autoready]").innerHTML = st.ready >= 0.5 ? "<b>" + gbText(st.ready) + "</b>\u2009ready" : "";
+		el.querySelector("[data-autoday]").textContent = DAYNAMES[st.day % 7];
 	}
 	function autoPlay(t) {
-		var el = t.el;
-		if (REDUCED) { autoFrame(el, AUTO.days); el.classList.add("is-done"); return; }
-		autoFrame(el, 0);
-		var dur = 5200, t0 = null, gen = t.gen;
-		// Calm: an ease-in-out over the whole run, slower while the line drifts.
-		(function step(now) {
-			if (gen !== t.gen) return;
-			if (t0 === null) t0 = now;
-			var u = Math.min(1, (now - t0) / dur);
-			autoFrame(el, AUTO.days * (u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2));
-			if (u < 1) requestAnimationFrame(step); else el.classList.add("is-done");
-		})(performance.now());
+		var el = t.el, note = el.querySelector("[data-autonote]");
+		var st = { free: AUTO.free, ready: AUTO.ready, day: 0 };
+		autoShow(el, st);
+		if (REDUCED) {
+			// The moment after a clean: the green cleared, the notification in.
+			st = { free: AUTO.limit + 12, ready: 0.6, day: 4 };
+			autoShow(el, st);
+			el.querySelector("[data-autonotebody]").textContent = "Freed 12 GB";
+			note.classList.add("is-in");
+			return;
+		}
+		// Numbers glide between days.
+		var tween = function (from, to, ms) {
+			var t0 = performance.now(), gen = t.gen;
+			(function step(now) {
+				if (gen !== t.gen) return;
+				var u = Math.min(1, (now - t0) / ms), e = u * u * (3 - 2 * u);
+				autoShow(el, { free: from.free + (to.free - from.free) * e, ready: from.ready + (to.ready - from.ready) * e, day: to.day });
+				if (u < 1) requestAnimationFrame(step);
+			})(t0);
+		};
+		var day = function () {
+			var from = { free: st.free, ready: st.ready, day: st.day };
+			st.day++;
+			if (st.free - AUTO.perDay <= AUTO.limit) {
+				// The limit: down to it, then Levo cleans what Auto mode may clean.
+				st.free = AUTO.limit; st.ready += AUTO.grow;
+				tween(from, st, 900);
+				var freed = st.ready;
+				t.later(function () {
+					var before = { free: st.free, ready: st.ready, day: st.day };
+					st.free += freed; st.ready = 0;
+					tween(before, st, 1000);
+					el.querySelector("[data-autonotebody]").textContent = "Freed " + gbText(freed);
+					note.classList.add("is-in");
+					t.later(function () { note.classList.remove("is-in"); }, 3600);
+				}, 1100);
+				t.later(day, AUTO.day + 4200);
+				return;
+			}
+			st.free -= AUTO.perDay; st.ready += AUTO.grow;
+			tween(from, st, 900);
+			t.later(day, AUTO.day);
+		};
+		t.later(day, 900);
+	}
+	function autoReset(el) {
+		el.querySelector("[data-autonote]").classList.remove("is-in");
 	}
 
 	// ---------------------------------------------------------------- The other tiles
@@ -222,7 +243,7 @@
 	}
 
 	var TILES = [
-		{ id: "auto", label: "Auto mode", cls: "bt-auto", inner: autoHTML, play: autoPlay },
+		{ id: "auto", label: "Auto mode", cls: "bt-auto", inner: autoHTML, play: autoPlay, reset: autoReset },
 		{ id: "disk", label: "Disk by category", inner: function () { return kit("bt-disk", P.disk()); }, play: diskPlay, reset: diskReset },
 		{ id: "gauges", label: "Memory, CPU, GPU", inner: function () { return kit("bt-gauges", P.gauges()); }, play: gaugesPlay },
 		{ id: "list", label: "What can go", inner: function () { return kit("bt-list", '<div class="lv-scroll">' + P.list(5) + "</div>"); }, play: listPlay },

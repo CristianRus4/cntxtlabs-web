@@ -17,6 +17,7 @@ let apps: [(String, String)] = [
     ("calendar", "/System/Applications/Calendar.app"),
     ("settings", "/System/Applications/System Settings.app"),
     ("terminal", "/System/Applications/Utilities/Terminal.app"),
+    ("textedit", "/System/Applications/TextEdit.app"),
     ("levo", NSString(string: "~/Applications/Levo.app").expandingTildeInPath),
 ]
 

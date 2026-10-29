@@ -150,40 +150,57 @@ html.dark .bt-scrim { background: rgba(0, 0, 0, 0.35); }
 
 /* ------------------------------------------------------------ Auto mode */
 
-.bt-auto { gap: 40px; align-items: center; min-height: 340px; }
+.bt-auto { gap: 32px; align-items: center; min-height: 340px; }
 .bt-auto-card { flex: none; }
 .bt-auto-pop { width: 360px; }
-.bt-auto-on { font-size: 13px; font-weight: 500; color: #9E4700; }
-html.dark .bt-auto-on { color: #FF9217; }
-.bt-auto-ticks i { flex: 1; height: 18px; border-radius: 1.5px; background: rgb(var(--fg) / 0.12); transition: background-color .25s; }
-.bt-auto-ticks i.is-data { background: #FF3B30; }
-.bt-auto-ticks i.is-sys { background: #F2B800; }
-.bt-auto-ticks i.is-apps { background: #FF9500; }
-html.dark .bt-auto-ticks i.is-data { background: #FF453A; }
-html.dark .bt-auto-ticks i.is-sys { background: #FFD60A; }
-html.dark .bt-auto-ticks i.is-apps { background: #FF9F0A; }
-.bt-auto-ticks i.is-free { background: rgb(var(--fg) / 0.12); }
-.bt-auto .lv-disk { padding-bottom: 14px; }
+.bt-auto .lv-disk { padding-bottom: 10px; }
+.bt-auto .lv-tick { transition: background-color .35s ease; }
+.bt-auto .lv-tick.is-data { background-color: #FF3B30; }
+.bt-auto .lv-tick.is-sys { background-color: #F2B800; }
+.bt-auto .lv-tick.is-apps { background-color: #FF9500; }
+html.dark .bt-auto .lv-tick.is-data { background-color: #FF453A; }
+html.dark .bt-auto .lv-tick.is-sys { background-color: #FFD60A; }
+html.dark .bt-auto .lv-tick.is-apps { background-color: #FF9F0A; }
+.bt-auto .lv-tick.is-ready { background-color: var(--lv-ready); }
+.bt-auto .lv-tick.is-free { background-color: var(--lv-free); }
+html.dark .bt-auto .lv-tick.is-free { background-color: rgb(var(--fg) / 0.14); }
+.bt-auto-day { margin-top: 8px; display: flex; justify-content: flex-end; font-size: 12px; font-weight: 500; color: rgb(var(--fg) / 0.5); font-variant-numeric: tabular-nums; }
 
-.bt-auto-chart { position: relative; align-self: stretch; flex: 1; min-width: 0; margin: 26px 44px 40px 0; color: var(--text); }
-.bt-auto-chart svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.bt-auto-line { fill: none; stroke: currentColor; stroke-opacity: .78; stroke-width: 2.25; stroke-linejoin: round; stroke-linecap: round; }
-.bt-auto-limit { stroke: currentColor; stroke-opacity: .28; stroke-width: 1; stroke-dasharray: 4 5; }
-.bt-auto-lim { position: absolute; right: -44px; transform: translateY(-50%); font-size: 12px; font-weight: 500; opacity: .55; font-variant-numeric: tabular-nums; }
-.bt-auto-dot { position: absolute; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px var(--bt-tile); opacity: 0; transition: background-color .3s; }
-.is-play .bt-auto-dot { opacity: 1; }
-.bt-auto.is-freed .bt-auto-dot, .is-freed .bt-auto-dot { background: #008A66; }
-html.dark .is-freed .bt-auto-dot { background: #59D499; }
-.bt-auto-freed { position: absolute; transform: translate(10px, -150%); padding: 2px 8px; border-radius: 9px; background: rgba(0, 138, 102, 0.12); color: #006B4F; font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; transition: opacity .5s ease; }
-html.dark .bt-auto-freed { background: rgba(89, 212, 153, 0.15); color: #59D499; }
-.is-freed .bt-auto-freed { opacity: 1; }
-.bt-auto-days { position: absolute; left: 0; right: 0; top: calc(100% + 12px); display: flex; justify-content: space-between; font-size: 12px; opacity: .45; }
+/* A slice of the Mac's screen: the wallpaper, Levo in the menubar, and the notification arriving. */
+.bt-auto-screen {
+	--glass-lit: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 0 0 0.5px rgba(255, 255, 255, 0.5);
+	position: relative;
+	flex: 1;
+	min-width: 0;
+	align-self: stretch;
+	min-height: 260px;
+	border-radius: 18px;
+	overflow: hidden;
+	background:
+		radial-gradient(60% 80% at 85% 10%, rgba(255, 196, 160, 0.9), rgba(255, 196, 160, 0) 70%),
+		radial-gradient(70% 90% at 10% 100%, rgba(150, 190, 255, 0.9), rgba(150, 190, 255, 0) 70%),
+		linear-gradient(160deg, #E9EDF7, #F4EAE6);
+	box-shadow: inset 0 0 0 1px var(--bt-tile-rim);
+}
+html.dark .bt-auto-screen {
+	--glass-lit: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 0.5px rgba(255, 255, 255, 0.1);
+	background:
+		radial-gradient(60% 80% at 80% 10%, rgba(110, 70, 200, 0.75), rgba(110, 70, 200, 0) 70%),
+		radial-gradient(70% 90% at 10% 100%, rgba(30, 90, 160, 0.7), rgba(30, 90, 160, 0) 70%),
+		linear-gradient(160deg, #141428, #1C1230);
+}
+.bt-auto-menubar { position: absolute; top: 0; left: 0; right: 0; height: 30px; padding: 0 14px; display: flex; align-items: center; justify-content: flex-end; gap: 6px; background: rgba(255, 255, 255, 0.32); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); font-size: 13px; color: #000; }
+html.dark .bt-auto-menubar { background: rgba(0, 0, 0, 0.22); color: #fff; }
+.bt-auto-menubar b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.bt-auto-m { display: block; width: 17px; height: 10.87px; overflow: visible; }
+.bt-auto-m path { fill: currentColor; }
+.bt-auto-note.lv-note { width: min(344px, calc(100% - 24px)); top: 40px; right: 12px; }
 
 /* ------------------------------------------------------------ Phones: one column of full-width cards */
 
 @media (max-width: 1020px) {
 	.bt-auto { flex-direction: column; gap: 18px; align-items: center; }
-	.bt-auto-chart { flex: none; width: calc(100% - 44px); align-self: flex-start; height: 160px; margin: 8px 44px 32px 0; }
+	.bt-auto-screen { flex: none; width: 100%; min-height: 140px; }
 }
 @media (max-width: 760px) {
 	.bento { padding: 64px 20px 0; }

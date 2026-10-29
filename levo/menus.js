@@ -306,6 +306,22 @@
 			];
 		},
 		app: function () {
+			if (frontApp() === "TextEdit") {
+				var f = frontWin();
+				return [
+					D("About TextEdit"),
+					SEP,
+					I("gearshape", "Settings…", "⌘,"),
+					SEP,
+					D("Services", "", { sub: function () { return [off("No Services Apply"), SEP, D("Services Settings…", "", { act: function () { openWindow("settings", { id: "settings" }); } })]; } }),
+					SEP,
+					D("Hide TextEdit", "⌘H"),
+					D("Hide Others", "⌥⌘H"),
+					off("Show All"),
+					SEP,
+					D("Quit TextEdit", "⌘Q", { act: function () { gOrder.slice().forEach(function (id) { if (gwins[id] && gwins[id].kind === "textedit") closeWindow(id, "quit"); }); } })
+				];
+			}
 			return [
 				D("About Finder"),
 				SEP,
@@ -1455,6 +1471,13 @@
 			g.el.style.zIndex = n - i;
 			g.el.classList.toggle("is-key", i === 0);
 		});
+		syncApp();
+	}
+	// The app in front: TextEdit while one of its windows has the focus, else Finder.
+	function frontApp() { var f = frontWin(); return f && f.g.kind === "textedit" ? "TextEdit" : "Finder"; }
+	function syncApp() {
+		var b = scene && btnFor("app"), name = frontApp();
+		if (b && b.textContent !== name) { b.textContent = name; fire("lvm:app", { name: name }); }
 	}
 	function focusWin(id) {
 		var i = gOrder.indexOf(id);
@@ -1627,6 +1650,8 @@
 		if (!g) return;
 		var it = (g.o.items || [])[+fi.dataset.lvmFi];
 		if (it && typeof g.o.onOpen === "function") { try { g.o.onOpen(it); } catch (err) { if (window.console) console.warn("LevoMenus onOpen", err); } }
+		// A text file opens in TextEdit.
+		else if (it && /\.txt$/i.test(it.name)) openWindow("textedit", { id: "te-" + it.name, title: it.name, text: it.text || "" });
 	}
 
 	// ---------------------------------------------------------------- Desktop content
@@ -1660,7 +1685,7 @@
 			{ name: "final-FINAL-use-this-one.psd", kind: "image", size: 0.519 },
 			{ name: "final-FINAL-use-this-one (1).psd", kind: "image", size: 0.519 },
 			{ name: "feedback round 4.pdf", kind: "doc", size: 0.0012 },
-			{ name: "notes.txt", kind: "txt", size: 0.000004 },
+			{ name: "notes.txt", kind: "txt", size: 0.000004, text: "final final\n\nuse the one with the blue logo\nask sam about the fonts" },
 			{ name: ".DS_Store", kind: "hidden", size: 0.000006 }
 		]
 	};
@@ -1786,6 +1811,7 @@
 			focusWin(gw.dataset.lvmGw);
 			if (t.closest("[data-lvm-drag]") && !t.closest("button, input, textarea, select, a, [contenteditable], .lvm-fi, [data-lvm-nodrag]") && e.button === 0) startDrag(e, gw);
 		} else if (!inLayer && !(t.closest && t.closest(".lv-menubar"))) gFocus = false;
+		syncApp();
 	}
 	function onClickCapture(e) {
 		if (!swallow) return;
@@ -1983,6 +2009,8 @@
 		refresh: function () { drawCC(); },
 		window: function (kind, opts) { return openWindow(kind, opts); },
 		closeWindow: function (id) { return closeWindow(String(id), "api"); },
+		focus: function (id) { if (gwins[id]) { focusWin(String(id)); gFocus = true; syncApp(); } },
+		kinds: function () { return gOrder.map(function (id) { return { id: id, kind: gwins[id].kind }; }); },
 		updateWindow: function (id, patch) { return updateWindow(String(id), patch || {}); },
 		contextMenu: function (x, y, items) { return scene ? contextMenu(x, y, items) : null; },
 		emptyTrash: function () { askEmptyTrash(); },

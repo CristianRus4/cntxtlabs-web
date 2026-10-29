@@ -114,6 +114,8 @@
 			{ id: "terminal", name: "Terminal", img: "img/dock/terminal.png" },
 			{ id: "elevate", name: "Elevate", img: "img/dock/elevate.png", open: true },
 			{ id: "levo", name: "Levo", img: "img/dock/levo.png" },
+			// In the dock only while a text window is open, as a running app that isn't kept there.
+			{ id: "textedit", name: "TextEdit", img: "img/dock/textedit.png", transient: true },
 			{ id: "trash", name: "Trash", img: "img/dock/trash-empty.png", full: "img/dock/trash-full.png" }
 		],
 		notification: { title: "Disk below {alert}", body: "{ready} ready to clean up" },
@@ -256,7 +258,6 @@
 				'<div class="lv-widget lv-w-cal" data-wcal></div>' +
 			'</div>' +
 			'<div class="lv-dock" data-dock></div>' +
-			lwinHTML() +
 			'<div class="lv-menubar">' +
 				'<div class="lv-mb-left">' +
 					'<button type="button" class="lv-mb-btn lv-mb-apple" data-menu="apple" aria-label="Apple menu">' + sym("applelogo", 15) + '</button>' +
@@ -358,8 +359,8 @@
 	// The Levo window on the desktop: the app, Applications, the price and Download.
 	// A disk image window, as a Mac app arrives. On a phone it is a plain card.
 	function lwinHTML() {
-		return '<div class="lv-lwin" data-lwin role="dialog" aria-label="Levo">' +
-			'<div class="lv-lwin-bar"><span class="lv-lights"><button type="button" data-act="lwinclose" aria-label="Close">' + sym("xmark", 7) + '</button><button type="button" data-act="lwinmin" aria-label="Minimise">' + sym("minus", 7) + '</button><button type="button" tabindex="-1" aria-hidden="true">' + sym("plus", 7) + '</button></span><b>Levo</b></div>' +
+		// The installer's contents: a normal desktop window (LevoMenus.window, like Finder's) holds them.
+		return '<div class="lv-lwin-in">' +
 			'<div class="lv-lwin-body">' +
 				'<button type="button" class="lv-lwin-app" data-act="lwinapp" aria-label="Levo"><span class="lv-lwin-ic"><img class="lv-dk-l" src="img/dock/levo.png" width="96" height="96" alt="" draggable="false"><img class="lv-dk-d" src="img/dock/levo-dark.png" width="96" height="96" alt="" draggable="false"></span><span>Levo</span></button>' +
 				'<svg class="lv-lwin-arrow" viewBox="0 0 120 24" aria-hidden="true"><path d="M4 12h98"/><path d="M98 4l10 8-10 8"/></svg>' +
@@ -367,8 +368,29 @@
 			'</div>' +
 			'<div class="lv-lwin-foot"><span class="lv-lwin-price"><b data-lprice></b><span data-lterm></span></span><span class="lv-flex"></span>' +
 				'<a class="lv-lbtn" data-lbuy href="#">Buy</a><a class="lv-lbtn lv-lbtn-primary" data-ldownload href="#">Download</a></div>' +
-		'</div>' +
-		'';
+		'</div>';
+	}
+	// The installer: a desktop window from the same code as Finder's (menus.js), so it comes to
+	// the front on a click, resizes from its edges, drags by its title bar, and its lights work.
+	function lwinSize() { return scene.classList.contains("is-small") ? [352, 32 + 170 + 60] : [400, 32 + 196 + 60]; }
+	function openInstaller(x, y) {
+		var M = window.LevoMenus;
+		if (!M || !M.window) return null;
+		var open = M.windows().indexOf("levo-dmg") >= 0, sz = lwinSize();
+		var w = M.window("custom", { id: "levo-dmg", title: "Levo", html: lwinHTML(), w: sz[0], h: sz[1], minW: 320, minH: 230, esc: false,
+			x: x != null ? x : S.lwinAt ? S.lwinAt[0] : null, y: y != null ? y : S.lwinAt ? S.lwinAt[1] : null,
+			onClose: function () { S.lwinClosed = true; S.lwinAt = [parseFloat(w.style.left) || 0, parseFloat(w.style.top) || 0]; } });
+		if (!w) return null;
+		S.lwinClosed = false;
+		if (!open) {
+			w.setAttribute("data-lwin", "");
+			w.classList.add("lv-lwin-w");
+			setupLevoWindow(w);
+			var bar = w.querySelector("[data-lvm-drag]");
+			if (bar) bar.addEventListener("pointerdown", function () { S.lwinMoved = true; });
+			w.addEventListener("pointerdown", function (e) { if (e.target.closest(".lvm-rz")) S.lwinMoved = true; }, true);
+		}
+		return w;
 	}
 	function dockHTML() {
 		return '<div class="lv-dock-shelf"></div>' + LEVO_DEMO.dock.map(function (d) {
@@ -377,7 +399,7 @@
 				'<img class="lv-dk-l" src="' + d.img + '" alt="" draggable="false"><img class="lv-dk-d" src="' + dark + '" alt="" draggable="false">';
 			return (d.id === "trash" ? '<span class="lv-dock-sep"></span>' +
 				'<button type="button" class="lv-dk lv-dk-stack is-hidden" data-dock="downloads" aria-label="Downloads"><span class="lv-dk-lift"><span class="lv-dk-art"><img src="img/dock/downloads.png" alt="" draggable="false"><i class="lv-dl-bar" hidden><b></b></i></span></span><span class="lv-dk-label">Downloads</span><i class="lv-dk-dot"></i></button>' : "") +
-				'<button type="button" class="lv-dk' + (d.open ? " is-running" : "") + '" data-dock="' + d.id + '" aria-label="' + esc(d.name) + '"><span class="lv-dk-lift"><span class="lv-dk-art">' + art + '</span></span><span class="lv-dk-label">' + esc(d.name) + '</span><i class="lv-dk-dot"></i></button>';
+				'<button type="button" class="lv-dk' + (d.open ? " is-running" : "") + (d.transient ? " lv-dk-stack is-hidden" : "") + '" data-dock="' + d.id + '" aria-label="' + esc(d.name) + '"><span class="lv-dk-lift"><span class="lv-dk-art">' + art + '</span></span><span class="lv-dk-label">' + esc(d.name) + '</span><i class="lv-dk-dot"></i></button>';
 		}).join("");
 	}
 
@@ -820,10 +842,13 @@
 		scene.classList.toggle("is-small", small);
 		scene.classList.toggle("is-tiny", W < 920);
 		var win = $("[data-lwin]"), left = widgets ? 380 : small ? 214 : 236, right = popLeft - 20;
-		var ww = win.offsetWidth, wh = win.offsetHeight;
+		if (!win && !S.lwinClosed) win = openInstaller();
+		var sz = lwinSize(), ww = win ? win.offsetWidth : sz[0], wh = win ? win.offsetHeight : sz[1];
+		if (win && !S.lwinMoved && ww !== sz[0]) { win.style.width = sz[0] + "px"; win.style.height = sz[1] + "px"; ww = sz[0]; wh = sz[1]; }
 		var x = Math.round(Math.max(Math.min(left, right - ww), left + (right - left - ww) / 2));
 		var y = Math.round(Math.max(64, Math.min(H - wh - 190, (H - wh) / 2 - 40)));
-		if (!S.lwinMoved) { win.style.left = x + "px"; win.style.top = y + "px"; }
+		if (win && !S.lwinMoved) { win.style.left = x + "px"; win.style.top = y + "px"; }
+		if (!S.lwinMoved) S.lwinAt = [x, y];
 		var hint = null;
 		var dock = $("[data-dock]");
 		pop.style.maxHeight = Math.max(320, H - 48) + "px";
@@ -1750,8 +1775,6 @@
 		if (act !== "levelmenu" && act !== "levelpick" && act !== "smartly" && act !== "levelword" && S.menu) { S.menu = false; $("[data-levels]").hidden = true; }
 		switch (act) {
 			case "toggle": S.popOpen ? closePop() : openPop(); break;
-			case "lwinclose": lwin(false, "close"); break;
-			case "lwinmin": lwin(false, "min"); break;
 			case "note": openPop(); break;
 			case "noteclose": e.stopPropagation(); hideNote(); break;
 			case "unlock": unlock(); break;
@@ -1815,6 +1838,7 @@
 		if (id === "levo") { bounce(el); openPop(); return; }
 		if (id === "trash") { el.classList.add("is-bump"); later(function () { el.classList.remove("is-bump"); }, 500); openTrash(); return; }
 		if (id === "downloads") { toggleFan(); return; }
+		if (id === "textedit") { bounce(el); var M2 = window.LevoMenus, tw = M2 && M2.kinds().filter(function (k) { return k.kind === "textedit"; })[0]; if (tw) M2.focus(tw.id); return; }
 		bounce(el);
 		if (!M || !M.window) return;
 		if (id === "settings") later(function () { M.window("settings", { id: "settings" }); }, 500);
@@ -1825,14 +1849,9 @@
 	}
 
 	// The Levo window closes or minimises like a Finder window; Finder in the dock brings it back.
-	function lwin(show, how) {
-		var w = $("[data-lwin]");
-		S.lwinClosed = !show;
-		w.classList.remove("is-closing", "is-minimising", "is-opening");
-		if (show && !w.hidden && !w.classList.contains("is-closing")) { w.classList.remove("is-opening"); void w.offsetWidth; w.classList.add("is-opening"); return; }
-		if (show) { w.hidden = false; void w.offsetWidth; w.classList.add("is-opening"); later(function () { w.classList.remove("is-opening"); }, 500); return; }
-		w.classList.add(how === "min" ? "is-minimising" : "is-closing");
-		later(function () { w.hidden = true; w.classList.remove("is-closing", "is-minimising"); }, how === "min" ? 420 : 200);
+	function lwin(show) {
+		if (show) openInstaller();
+		else if (window.LevoMenus) LevoMenus.closeWindow("levo-dmg");
 	}
 
 	// The two Levo notes on the desktop, written like quick notes. The price comes from the one value in levo.js.
@@ -1868,7 +1887,7 @@
 	function openFile(id) {
 		var M = window.LevoMenus, C = (M && M.content) || {};
 		if (!M || !M.window) return;
-		var at = function (dx, dy) { var w = $("[data-lwin]"); return { x: (parseFloat(w.style.left) || 300) + dx, y: (parseFloat(w.style.top) || 120) + dy }; };
+		var at = function (dx, dy) { var w = $("[data-lwin]"), p = w ? [w.offsetLeft, w.offsetTop] : S.lwinAt || [300, 120]; return { x: p[0] + dx, y: p[1] + dy }; };
 		if (id === "installers") {
 			var el = $('[data-icon="installers"]');
 			if (el && el.classList.contains("is-gone")) return;
@@ -2050,8 +2069,18 @@
 			}
 		} });
 		scene.addEventListener("lvm:open", hideNote);
-		setupLevoWindow();
+		// TextEdit joins the dock, running, while one of its windows is open, and leaves with the last.
+		scene.addEventListener("lvm:window", function () {
+			var te = $('[data-dock="textedit"]'), M = window.LevoMenus;
+			if (!te || !M || !M.kinds) return;
+			var open = M.kinds().some(function (k) { return k.kind === "textedit"; }), was = !te.classList.contains("is-hidden");
+			if (open && !was) { te.classList.remove("is-hidden"); te.classList.add("is-arriving", "is-running"); later(function () { te.classList.remove("is-arriving"); }, 500); }
+			if (!open && was) { te.classList.add("is-hidden"); te.classList.remove("is-running"); }
+		});
 		scene.addEventListener("lvm:wifi", function (ev) { $("[data-wifi]").innerHTML = sym(ev.detail && ev.detail.on === false ? "wifi.slash" : "wifi", 15); });
+		// The window manager is here now: place the installer window, and the icons around it.
+		S.iconsPlaced = false;
+		layout();
 	}
 
 	// ---------------------------------------------------------------- Downloads
@@ -2139,18 +2168,18 @@
 
 	// The Levo window: price and links from the page; double-click the app to open
 	// Levo; drag it onto Applications to download; drag the window by its title bar.
-	function setupLevoWindow() {
-		var win = $("[data-lwin]");
-		$("[data-lprice]").textContent = OPTS.price || "";
-		$("[data-lterm]").textContent = OPTS.term || "";
-		var dl = $("[data-ldownload]"), buy = $("[data-lbuy]");
+	function setupLevoWindow(win) {
+		if (!win) return;
+		$("[data-lprice]", win).textContent = OPTS.price || "";
+		$("[data-lterm]", win).textContent = OPTS.term || "";
+		var dl = $("[data-ldownload]", win), buy = $("[data-lbuy]", win);
 		dl.href = OPTS.download || "#";
 		buy.href = OPTS.buy || "#";
 		buy.textContent = OPTS.price ? "Buy for " + OPTS.price : "Buy";
 		[dl, buy].forEach(function (a) { if (/^\[|^#$/.test(a.getAttribute("href"))) a.setAttribute("data-placeholder", ""); });
 		if (!dl.hasAttribute("data-placeholder")) dl.setAttribute("download", "");
 		dl.addEventListener("click", function () { download(dl); });
-		var app = $('[data-act="lwinapp"]'), apps = $("[data-lwinapps]");
+		var app = $('[data-act="lwinapp"]', win), apps = $("[data-lwinapps]", win);
 		app.addEventListener("dblclick", function () { S.touched = true; openPop(); });
 		app.addEventListener("pointerdown", function (e) {
 			if (e.button !== 0) return;
@@ -2176,19 +2205,6 @@
 				if (over) dl.click();
 				setTimeout(function () { S.dragged = false; }, 0);
 			};
-			document.addEventListener("pointermove", mv);
-			document.addEventListener("pointerup", up);
-		});
-		var bar = $(".lv-lwin-bar");
-		bar.addEventListener("pointerdown", function (e) {
-			if (e.button !== 0 || scene.dataset.mode === "compact") return;
-			var x0 = e.clientX, y0 = e.clientY, l0 = parseFloat(win.style.left) || 0, t0 = parseFloat(win.style.top) || 0;
-			var mv = function (ev) {
-				S.lwinMoved = true;
-				win.style.left = Math.max(-200, Math.min(scene.offsetWidth - 120, l0 + ev.clientX - x0)) + "px";
-				win.style.top = Math.max(30, Math.min(scene.offsetHeight - 60, t0 + ev.clientY - y0)) + "px";
-			};
-			var up = function () { document.removeEventListener("pointermove", mv); document.removeEventListener("pointerup", up); };
 			document.addEventListener("pointermove", mv);
 			document.addEventListener("pointerup", up);
 		});

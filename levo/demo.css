@@ -1260,3 +1260,10 @@ html.dark .lv-kit {
 }
 .lv-kit button { font: inherit; color: inherit; margin: 0; cursor: default; -webkit-tap-highlight-color: transparent; }
 .lv-kit .lv-pop { position: relative; opacity: 1; visibility: visible; transform: none; transition: none; max-height: none; }
+
+/* The installer is a normal desktop window (menus.js); its contents fill it as it resizes. */
+.lv-lwin-w .lvm-wbody { display: flex; flex-direction: column; overflow: hidden; }
+.lv-lwin-in { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.lv-lwin-w .lv-lwin-body, .lv-scene.is-small .lv-lwin-w .lv-lwin-body { flex: 1; height: auto; min-height: 0; }
+.lv-lwin-w .lv-lwin-foot { flex: none; }
+.is-intro .lv-lwin-w { animation: lv-win .6s var(--spring) .75s both; }
