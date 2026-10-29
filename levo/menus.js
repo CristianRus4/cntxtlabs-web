@@ -1169,9 +1169,9 @@
 							return '<div class="lvm-side-row' + (o.sidebar === s[0] ? " is-sel" : "") + '">' + sym(s[1], 14, "lvm-side-ic") + "<span>" + s[0] + "</span></div>";
 						}).join("") + "</aside>" +
 					'<div class="lvm-wmain">' +
-						'<div class="lvm-wtb" data-lvm-drag><span class="lvm-cap"><button type="button" class="is-dim" aria-label="Back">' + sym("chevron.left", 12) + '</button><button type="button" class="is-dim" aria-label="Forward">' + sym("chevron.right", 12) + "</button></span>" +
+						'<div class="lvm-wtb" data-lvm-drag><span class="lvm-cap"><button type="button" class="is-dim" aria-label="Back">' + sym("chevron.left", 13) + '</button><button type="button" class="is-dim" aria-label="Forward">' + sym("chevron.right", 13) + "</button></span>" +
 							'<b class="lvm-wtitle">' + esc(o.title || "Untitled") + '</b><span class="lvm-flex"></span>' +
-							'<span class="lvm-cap"><button type="button" aria-label="View">' + sym("square.grid.2x2", 13) + '</button></span><span class="lvm-cap"><button type="button" aria-label="Search">' + sym("magnifyingglass", 13) + "</button></span></div>" +
+							'<span class="lvm-cap lvm-cap-view"><button type="button" aria-label="View">' + sym("square.grid.2x2", 14) + sym("chevron.down", 8, "lvm-cap-chev") + '</button></span><span class="lvm-cap"><button type="button" aria-label="Search">' + sym("magnifyingglass", 14) + "</button></span></div>" +
 						'<div class="lvm-fw-grid" role="listbox" aria-label="' + esc(o.title || "") + '">' +
 							(o.items || []).map(function (it, i) {
 								var hid = it.kind === "hidden" || it.hidden;
@@ -1233,7 +1233,7 @@
 							return '<div class="lvm-side-row' + (p[0] === "Appearance" ? " is-sel" : "") + '"><span class="lvm-ss-tile lvm-t-' + p[1] + '">' + sym(p[2], 11) + "</span><span>" + esc(p[0]) + "</span></div>";
 						}).join("") + "</div></aside>" +
 					'<div class="lvm-wmain">' +
-						'<div class="lvm-wtb" data-lvm-drag><span class="lvm-cap"><button type="button" class="is-dim" aria-label="Back">' + sym("chevron.left", 12) + '</button><button type="button" class="is-dim" aria-label="Forward">' + sym("chevron.right", 12) + '</button></span><b class="lvm-wtitle">Appearance</b></div>' +
+						'<div class="lvm-wtb" data-lvm-drag><span class="lvm-cap"><button type="button" class="is-dim" aria-label="Back">' + sym("chevron.left", 13) + '</button><button type="button" class="is-dim" aria-label="Forward">' + sym("chevron.right", 13) + '</button></span><b class="lvm-wtitle">Appearance</b></div>' +
 						'<div class="lvm-ss-body">' +
 							'<div class="lvm-ss-group">' +
 								'<div class="lvm-ss-row lvm-ss-ap"><span>Appearance</span><div class="lvm-ap" role="radiogroup" aria-label="Appearance">' +

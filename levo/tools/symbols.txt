@@ -124,3 +124,4 @@ battery.75percent
 arrow.up.left
 powerplug.fill
 bolt.horizontal.circle.fill
+pencil scissors tag mic house icloud network server.rack list.bullet rectangle.split.3x1 rectangle.grid.1x2 sidebar.left arrow.up.left.and.arrow.down.right folder.badge.plus macwindow.badge.plus plus.square.on.square arrow.up.forward.app archivebox arrow.uturn.forward doc.on.clipboard document.on.clipboard clock moon xmark.octagon restart rectangle.portrait.and.arrow.right minus.rectangle macwindow.on.rectangle hammer doc

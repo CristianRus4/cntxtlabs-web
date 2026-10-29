@@ -154,3 +154,18 @@ the full breakdown, and the sentence holds still while ticking there. A metric
 past its limit adds "Free up GPU, it's at 88%." The Command K panel and every
 confirm are bottom sheets that grow the popover if needed. The Expanded lists
 are still in the code (the breakdown).
+
+## macOS realism
+
+The desktop follows macOS Tahoe (macOS 26). Apple publishes no point values for
+it, so sizes come from Apple's macOS pages and screenshots plus community
+measurements: 26 pt window corners, the sidebar as an inset floating glass panel
+(18 pt), toolbar controls in glass capsules, 13 pt menu corners with SF Symbols
+beside standard items, Liquid Glass widgets and notifications with a lit rim.
+Real icons are rendered from this Mac through IconServices:
+`swift tools/export-dock-icons.swift` (the dock's apps, light and dark, and the
+Levo disk image) and `swift tools/export-desk-icons.swift` (folder, txt, zip,
+pdf, png, psd, dmg, pkg and app document icons; macOS gives the same image in
+light and dark for document types, so there is one file each). desk.css holds
+the desktop's Tahoe styling; menus.js and menus.css the menus, Finder windows and
+Control Centre.
