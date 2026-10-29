@@ -368,7 +368,8 @@
 			var dark = d.img.replace(/\.png$/, "-dark.png");
 			var art = d.full ? '<img src="' + d.img + '" alt="" draggable="false">' :
 				'<img class="lv-dk-l" src="' + d.img + '" alt="" draggable="false"><img class="lv-dk-d" src="' + dark + '" alt="" draggable="false">';
-			return (d.id === "trash" ? '<span class="lv-dock-sep"></span>' : "") +
+			return (d.id === "trash" ? '<span class="lv-dock-sep"></span>' +
+				'<button type="button" class="lv-dk lv-dk-stack is-hidden" data-dock="downloads" aria-label="Downloads"><span class="lv-dk-lift"><span class="lv-dk-art"><img src="img/dock/downloads.png" alt="" draggable="false"><i class="lv-dl-bar" hidden><b></b></i></span></span><span class="lv-dk-label">Downloads</span><i class="lv-dk-dot"></i></button>' : "") +
 				'<button type="button" class="lv-dk' + (d.open ? " is-running" : "") + '" data-dock="' + d.id + '" aria-label="' + esc(d.name) + '"><span class="lv-dk-lift"><span class="lv-dk-art">' + art + '</span></span><span class="lv-dk-label">' + esc(d.name) + '</span><i class="lv-dk-dot"></i></button>';
 		}).join("");
 	}
@@ -779,7 +780,7 @@
 	function blockers(except) {
 		var out = [], wg = $(".lv-widgets"), pw = $(".lv-popwrap");
 		if (!scene.classList.contains("no-widgets")) out.push(rectOf(wg));
-		out.push({ x: pw.offsetLeft, y: pw.offsetTop, w: pw.offsetWidth, h: $(".lv-pop").offsetHeight });
+		if (!except || except.dataset.icon !== "dmg") out.push({ x: pw.offsetLeft, y: pw.offsetTop, w: pw.offsetWidth, h: $(".lv-pop").offsetHeight });
 		out.push(rectOf($("[data-lwin]")));
 		out.push({ x: 0, y: $("[data-dock]").offsetTop - 50, w: scene.offsetWidth, h: 200 });
 		$$(".lv-ic").forEach(function (el) { if (el !== except && !el.classList.contains("is-hidden") && el.style.left) out.push({ x: el.offsetLeft, y: el.offsetTop, w: IC_W, h: IC_H }); });
@@ -825,14 +826,14 @@
 	}
 	// The mounted disk image: top right under the menubar, or just left of the
 	// popover's column when the popover would cover it. Follows the popover until dragged.
+	// The mounted disk image sits in the top-trailing corner, where macOS puts
+	// volumes: just under the menubar at the right edge, behind the notification.
+	// Only the open popover may cover it.
 	function placeDmg() {
 		var dmg = $('[data-icon="dmg"]');
 		if (!dmg || S.dmgMoved) return dmg;
-		var W = scene.offsetWidth, popLeft = $(".lv-popwrap").offsetLeft;
-		var dx = W - IC_W - 14;
-		if (dx + IC_W > popLeft - 8) dx = popLeft - IC_W - 14;
-		dmg.style.left = dx + "px";
-		dmg.style.top = "40px";
+		dmg.style.left = (scene.offsetWidth - IC_W - 4) + "px";
+		dmg.style.top = "34px";
 		return dmg;
 	}
 	function dragIcon(el, e) {
@@ -851,7 +852,9 @@
 			el.classList.remove("is-dragging");
 			var me = { x: el.offsetLeft, y: el.offsetTop, w: IC_W, h: IC_H };
 			var W = scene.offsetWidth, H = scene.offsetHeight;
-			var bad = me.x < 0 || me.y < 32 || me.x + IC_W > W || me.y + IC_H > H || blockers(el).some(function (b) { return hits(me, b, 2); });
+			var vol = el.dataset.icon === "dmg";
+			if (vol) { me.x = Math.max(0, Math.min(W - IC_W, me.x)); me.y = Math.max(30, me.y); el.style.left = me.x + "px"; el.style.top = me.y + "px"; }
+			var bad = (!vol && (me.x < 0 || me.y < 32 || me.x + IC_W > W)) || me.y + IC_H > H || blockers(el).some(function (b) { return hits(me, b, 2); });
 			if (bad) {
 				var p = freeSpot(el, Math.max(8, Math.min(W - IC_W - 8, me.x)), Math.max(40, me.y));
 				el.classList.add("is-snapping");
@@ -1533,7 +1536,9 @@
 			case "lwinmin": lwin(false, "min"); break;
 			case "note": openPop(); break;
 			case "unlock": unlock(); break;
-			case "desk": closePop(); $$(".lv-ic").forEach(function (x) { x.classList.remove("is-sel"); }); break;
+			case "fanitem": var fi = S.downloads[+t.dataset.n]; closeFan(); if (fi && fi.levo) lwin(true); break;
+			case "fanfinder": closeFan(); openFile("installers"); break;
+			case "desk": closeFan(); closePop(); $$(".lv-ic").forEach(function (x) { x.classList.remove("is-sel"); }); break;
 			case "tick": e.stopPropagation(); tick(id); break;
 			case "titem": e.stopPropagation(); tick(id, +t.dataset.item); break;
 			case "info": e.stopPropagation(); bubble(t, true); break;
@@ -1570,6 +1575,7 @@
 		var id = el.dataset.dock, M = window.LevoMenus;
 		if (id === "levo") { bounce(el); openPop(); return; }
 		if (id === "trash") { el.classList.add("is-bump"); later(function () { el.classList.remove("is-bump"); }, 500); return; }
+		if (id === "downloads") { toggleFan(); return; }
 		bounce(el);
 		if (!M || !M.window) return;
 		if (id === "settings") later(function () { M.window("settings", { id: "settings" }); }, 500);
@@ -1748,6 +1754,85 @@
 		scene.addEventListener("lvm:wifi", function (ev) { $("[data-wifi]").innerHTML = sym(ev.detail && ev.detail.on === false ? "wifi.slash" : "wifi", 15); });
 	}
 
+	// ---------------------------------------------------------------- Downloads
+
+	// A download, as macOS shows it: the Downloads stack appears in the dock (right
+	// of the divider, before the Trash), Levo.dmg flies into it on an arc, a
+	// progress bar fills on the stack, then it bounces. A click fans the recent
+	// downloads out, Levo.dmg on top.
+	var DOWNLOADS = [
+		{ name: "Setup.dmg", icon: "dmg" },
+		{ name: "Invoice-2026-10.pdf", icon: "pdf" },
+		{ name: "project-final-v2.zip", icon: "zip" },
+		{ name: "Screenshot 2026-10-12 at 9.41.22 am.png", icon: "png" }
+	];
+	function download(from) {
+		if (!scene || scene.dataset.mode !== "desk") return;
+		S.downloads = S.downloads || DOWNLOADS.slice();
+		S.downloads = S.downloads.filter(function (d) { return !d.levo; });
+		S.downloads.unshift({ name: "Levo.dmg", icon: "dmg", levo: true });
+		closeFan();
+		var st = $('[data-dock="downloads"]'), fresh = st.classList.contains("is-hidden");
+		if (fresh) { st.classList.remove("is-hidden"); st.classList.add("is-arriving"); later(function () { st.classList.remove("is-arriving"); }, 500); }
+		var sr = scene.getBoundingClientRect(), a;
+		if (from && scene.contains(from) && from.getBoundingClientRect().width) {
+			var fr = from.getBoundingClientRect();
+			a = { x: fr.left + fr.width / 2 - sr.left, y: fr.top + fr.height / 2 - sr.top };
+		} else a = { x: scene.offsetWidth / 2, y: 46 };
+		later(function () {
+			var r2 = st.getBoundingClientRect(), b = { x: r2.left + r2.width / 2 - sr.left, y: r2.top + r2.height / 2 - sr.top - 6 };
+			var fly = document.createElement("img");
+			fly.className = "lv-dl-fly";
+			fly.src = "img/desk/dmg.png";
+			fly.alt = "";
+			scene.appendChild(fly);
+			var c = { x: (a.x + b.x) / 2, y: Math.min(a.y, b.y) - 180 }, t0 = performance.now(), dur = REDUCED ? 1 : 780;
+			var step = function (t) {
+				var k = Math.min(1, (t - t0) / dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2, u = 1 - e;
+				var x = u * u * a.x + 2 * u * e * c.x + e * e * b.x, y = u * u * a.y + 2 * u * e * c.y + e * e * b.y;
+				fly.style.transform = "translate(" + (x - 32).toFixed(1) + "px," + (y - 32).toFixed(1) + "px) scale(" + (1 - 0.45 * e).toFixed(3) + ")";
+				fly.style.opacity = k > 0.92 ? String((1 - k) / 0.08) : "1";
+				if (k < 1) requestAnimationFrame(step);
+				else { fly.remove(); progress(st); }
+			};
+			requestAnimationFrame(step);
+		}, fresh ? 320 : 0);
+	}
+	function progress(st) {
+		var bar = $(".lv-dl-bar", st), fillEl = $("b", bar), t0 = performance.now(), dur = REDUCED ? 1 : 2600;
+		bar.hidden = false;
+		var step = function (t) {
+			var k = Math.min(1, (t - t0) / dur);
+			// Steady, with the small stalls a real download has.
+			var v = k < 1 ? Math.min(1, k + Math.sin(k * 9) * 0.03) : 1;
+			fillEl.style.width = (v * 100).toFixed(1) + "%";
+			if (k < 1) requestAnimationFrame(step);
+			else later(function () { bar.hidden = true; fillEl.style.width = "0"; bounce(st); st.classList.remove("is-running"); }, 220);
+		};
+		requestAnimationFrame(step);
+	}
+	function toggleFan() { if ($("[data-fan]")) closeFan(); else openFan(); }
+	function closeFan() { var f = $("[data-fan]"); if (f) { f.classList.add("is-out"); setTimeout(function () { f.remove(); }, 180); } }
+	function openFan() {
+		var st = $('[data-dock="downloads"]');
+		if (!st || st.classList.contains("is-hidden")) return;
+		var list = (S.downloads || DOWNLOADS).slice(0, 6);
+		var sr = scene.getBoundingClientRect(), r2 = st.getBoundingClientRect();
+		var fan = document.createElement("div");
+		fan.className = "lv-fan";
+		fan.setAttribute("data-fan", "");
+		fan.style.left = (r2.left + r2.width / 2 - sr.left) + "px";
+		fan.style.top = (r2.top - sr.top - 6) + "px";
+		fan.innerHTML = list.map(function (d, i) {
+			// A gentle arc to the right, as the Dock's fan.
+			var y = -(i + 1) * 64, x = Math.round(i * i * 4.5), rot = (i * 1.6).toFixed(1);
+			return '<button type="button" class="lv-fan-item" data-act="fanitem" data-n="' + i + '" style="--x:' + x + "px;--y:" + y + "px;--r:" + rot + "deg;--i:" + i + '">' +
+				'<span class="lv-fan-name">' + esc(d.name) + '</span><img src="img/desk/' + d.icon + '.png" width="52" height="52" alt=""></button>';
+		}).join("") +
+			'<button type="button" class="lv-fan-open" data-act="fanfinder" style="--x:' + Math.round(list.length * list.length * 4.5) + "px;--y:" + (-(list.length + 1) * 64 + 14) + 'px">Open in Finder</button>';
+		scene.appendChild(fan);
+	}
+
 	// The Levo window: price and links from the page; double-click the app to open
 	// Levo; drag it onto Applications to download; drag the window by its title bar.
 	function setupLevoWindow() {
@@ -1759,6 +1844,8 @@
 		buy.href = OPTS.buy || "#";
 		buy.textContent = OPTS.price ? "Buy for " + OPTS.price : "Buy";
 		[dl, buy].forEach(function (a) { if (/^\[|^#$/.test(a.getAttribute("href"))) a.setAttribute("data-placeholder", ""); });
+		if (!dl.hasAttribute("data-placeholder")) dl.setAttribute("download", "");
+		dl.addEventListener("click", function () { download(dl); });
 		var app = $('[data-act="lwinapp"]'), apps = $("[data-lwinapps]");
 		app.addEventListener("dblclick", function () { S.touched = true; openPop(); });
 		app.addEventListener("pointerdown", function (e) {
@@ -1804,6 +1891,7 @@
 	}
 
 	window.LevoDemo = {
+		download: function (from) { download(from); },
 		data: LEVO_DEMO,
 		sym: sym,
 		tile: tile,

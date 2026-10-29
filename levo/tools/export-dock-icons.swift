@@ -120,3 +120,16 @@ for (name, path) in processApps {
         print("wrote img/apps/\(name)\(suffix).png")
     }
 }
+
+// The Downloads stack: the real Downloads folder icon (the same in both appearances).
+do {
+    let icon = NSWorkspace.shared.icon(forFile: NSString(string: "~/Downloads").expandingTildeInPath)
+    let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 256, pixelsHigh: 256, bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true,
+                               isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
+    rep.size = NSSize(width: 128, height: 128)
+    NSGraphicsContext.saveGraphicsState()
+    NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
+    icon.draw(in: NSRect(x: 0, y: 0, width: 128, height: 128), from: .zero, operation: .copy, fraction: 1)
+    NSGraphicsContext.restoreGraphicsState()
+    if let png = rep.representation(using: .png, properties: [:]) { try? png.write(to: out.appendingPathComponent("downloads.png")); print("wrote img/dock/downloads.png") }
+}

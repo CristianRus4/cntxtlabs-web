@@ -1088,3 +1088,36 @@ html.dark .lv-bsheet { box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 -4px 16px r
 
 /* A chip sits 2 pt wider than its word on each side, as SentenceButtonStyle leaves it. */
 .lv-chip { margin: 0 2px; }
+
+/* ------------------------------------------------------------ Downloads: the stack, the flight, the fan */
+
+.lv-dk-stack { transition: opacity .3s, max-width .4s var(--ease-out), padding .4s var(--ease-out); max-width: 80px; }
+.lv-dk-stack.is-hidden { display: none; }
+.lv-dk-stack.is-arriving { animation: lv-dk-grow .45s var(--ease-out); }
+@keyframes lv-dk-grow { from { max-width: 0; opacity: 0; transform: scale(.4); } }
+.lv-dk-stack .lv-dk-art { position: relative; }
+.lv-dl-bar { position: absolute; left: 14%; right: 14%; bottom: 12%; height: 6px; border-radius: 3px; background: rgba(0, 0, 0, 0.35); box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.5); overflow: hidden; }
+.lv-dl-bar[hidden] { display: none; }
+.lv-dl-bar b { display: block; height: 100%; width: 0; border-radius: 3px; background: #fff; }
+.lv-dl-fly { position: absolute; left: 0; top: 0; z-index: 66; width: 64px; height: 64px; pointer-events: none; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3)); will-change: transform; }
+.lv-fan { position: absolute; z-index: 40; width: 0; height: 0; }
+.lv-fan-item, .lv-fan-open {
+	position: absolute; right: auto; left: 0; top: 0;
+	display: flex; align-items: center; gap: 10px;
+	padding: 0; border: 0; background: transparent; cursor: default;
+	transform: translate(calc(-100% + 26px + var(--x)), var(--y)) rotate(var(--r, 0deg));
+	transform-origin: 100% 50%;
+	animation: lv-fan-in .32s cubic-bezier(.2, .9, .3, 1.1) both;
+	animation-delay: calc(var(--i, 0) * 28ms);
+	white-space: nowrap;
+}
+.lv-fan-item img { width: 52px; height: 52px; display: block; filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25)); }
+.lv-fan-name { max-width: 220px; overflow: hidden; text-overflow: ellipsis; padding: 3px 9px; border-radius: 8px; font-size: 12.5px; font-weight: 500; color: #fff; background: rgba(30, 30, 32, 0.78); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+.lv-fan-item:hover .lv-fan-name { background: var(--accent); }
+.lv-fan-open { transform: translate(calc(-100% + 40px + var(--x)), var(--y)); padding: 4px 12px; border-radius: 10px; font-size: 12.5px; font-weight: 600; color: #fff; background: rgba(30, 30, 32, 0.78); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+.lv-fan-open:hover { background: var(--accent); }
+.lv-fan.is-out { opacity: 0; transition: opacity .18s; }
+@keyframes lv-fan-in { from { opacity: 0; transform: translate(calc(-100% + 26px), 0) scale(.4); } }
+@media (prefers-reduced-motion: reduce) {
+	.lv-fan-item, .lv-fan-open, .lv-dk-stack.is-arriving { animation: none; }
+}

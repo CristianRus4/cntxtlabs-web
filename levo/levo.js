@@ -30,7 +30,7 @@
 	all("[data-price]").forEach(function (el) { el.textContent = LEVO.price; });
 	all("[data-term]").forEach(function (el) { el.textContent = LEVO.term; });
 	all("[data-buy]").forEach(function (a) { a.textContent = "Buy for " + LEVO.price; a.href = LEVO.buy; if (placeholder(LEVO.buy)) a.setAttribute("data-placeholder", ""); });
-	all("[data-download]").forEach(function (a) { a.href = LEVO.download; if (placeholder(LEVO.download)) a.setAttribute("data-placeholder", ""); });
+	all("[data-download]").forEach(function (a) { a.href = LEVO.download; if (placeholder(LEVO.download)) a.setAttribute("data-placeholder", ""); else a.setAttribute("download", ""); });
 	all("[data-sym]").forEach(function (el) { el.innerHTML = sym(el.dataset.sym, +el.dataset.size || 16); });
 
 	// Appearance follows the system. The one switch is an easter egg (Control
@@ -56,9 +56,13 @@
 	}
 
 	// Download and Buy are placeholders until the links exist.
+	// Download starts the real download at once (a normal browser download) and
+	// plays it in the simulated Mac; while the link is a placeholder, only the animation.
 	document.addEventListener("click", function (e) {
 		var a = e.target.closest && e.target.closest("a[data-placeholder]");
 		if (a) e.preventDefault();
+		var dl = e.target.closest && e.target.closest("a[data-download]");
+		if (dl && window.LevoDemo && LevoDemo.download) LevoDemo.download(dl);
 	});
 
 	// Arrivals: each block rises a little as it comes into view.
