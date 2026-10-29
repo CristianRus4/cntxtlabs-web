@@ -281,17 +281,21 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   (debounced) or the fonts loading rebuilds both; every body is then moved and
   scaled with the letters, kept inside the walls, lifted clear of the letters,
   and left to gravity. The levo assets carry ?v= so a cached mix can't return.
-- The full Trash, about one and a half files tall, stands centred on the e's
-  round top, wobbles, and after a push (repeated a little firmer if it rocks
-  back) tips towards "vo". Files in the bin aren't bodies: past about 70
-  degrees of tilt they come out at the rim one at a time with the bin's own
-  velocity and a small nudge out of the opening, quicker the further it turns
-  over, and only into open space, so some may stay in. A file dropped into the
-  upright bin goes in, and the bin turns full.
+- The full Trash, about two files tall, stands on the L's round top a little
+  right of its centre, wobbles, and after a push (repeated a little firmer if
+  it rocks back) tips right towards "evo"; "evo" sits close to the L's stem
+  (its foot is under the edge), so the bin lands across the L and the e.
+  Files in the bin aren't bodies: past about 57 degrees of tilt they come out
+  at the rim, one every other frame, with the bin's own velocity and a nudge
+  out of the opening that fans a little. Just out, they pass through one
+  another until they're clear (as a spilling pile does), so most come out as
+  it falls and land on "evo"; the v is two bars, so its notch catches files.
+  Only into open space; against a letter the rest stay in. A file dropped into
+  the upright bin goes in, and the bin turns full.
 - Everything is grabbed at the exact point under the pointer (a soft spring
   with a little damping), so things hang and swing; mouse and touch alike. A
   gentle settle tips anything at rest onto its nearest flat side. Double-click
-  stands the bin up. Reduced motion: no physics, the bin on its side on the e,
-  files on the other letters.
+  stands the bin up. Reduced motion: no physics, the bin on its side on the L,
+  files on "evo".
 - The page has no visible scrollbar (html only; the simulator's own scroll
   areas are untouched).

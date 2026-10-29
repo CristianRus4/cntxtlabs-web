@@ -11,10 +11,10 @@
  * scaled to match: positions follow the letters, clamped inside the walls and clear of the letters,
  * and gravity settles them.
  *
- * The Trash, about one and a half files tall, stands centred on the e's round top, full. A tiny
- * tilt makes it wobble; after a couple of seconds a gentle push tips it over towards "vo". Its
+ * The Trash, about two files tall, stands on the L's round top a little right of its centre, full.
+ * A tiny tilt makes it wobble; after a couple of seconds a gentle push tips it over towards "evo". Its
  * files aren't bodies while they're inside (hidden behind the bin, which shows macOS's full Trash
- * icon): once its opening tilts past about 70 degrees they come out at the rim one at a time, with
+ * icon): once its opening tilts past about 57 degrees they come out at the rim one at a time, with
  * the bin's own velocity and a small nudge out of the opening, their speed capped for a moment, so
  * they tumble out rather than shoot. Files dropped into the upright bin's opening go in the same
  * way, and come out the same way.
@@ -23,7 +23,7 @@
  * round letters, and a gentle settle tips anything at rest onto its nearest flat side. Grab
  * anything at any point, with the mouse or a finger: a soft constraint holds it at exactly that
  * point, so it hangs and swings under gravity. A double-click stands the bin up.
- * Reduced motion: no physics; the bin lies on its side on the e, the files rest on the letters.
+ * Reduced motion: no physics; the bin lies on its side on the L, the files rest on "evo".
  */
 (function () {
 	"use strict";
@@ -39,7 +39,8 @@
 	var MATTER = { src: "https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js", sri: "sha384-ZRKYEXtLBVeqs9z1WxyeKutCqnkqolS/r1EUWuoUpG4ZKbnRAIXnHhHdnNuiB6CL" };
 	var BIN = { empty: "img/dock/trash-empty.png", full: "img/dock/trash-full.png" };
 	var FACE = 'ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
-	var WORD = "Levo", TRACK = -0.045;
+	// The L's foot is under the page's edge, so "evo" sits closer to its stem than the face spaces it.
+	var WORD = "Levo", TRACK = -0.045, KERN_L = -0.3;
 
 	// macOS's own icons, as on the simulated desktop (img/desk). The rectangle is each icon's real
 	// outline as a share of its image: folders are wide, documents tall.
@@ -55,7 +56,8 @@
 
 	function font(px) { return "800 " + px + "px " + FACE; }
 	// A glyph's outline above the floor, from the glyph itself: the top edge of every column of its
-	// pixels, as the convex hull with the floor.
+	// pixels, as convex hulls with the floor. Where the top edge dips into a valley between two
+	// peaks (the v's notch), it's two parts that meet there, so the notch stays open and can catch.
 	function outline(ch, x, base, F, floor) {
 		var c = probe.getContext("2d", { willReadFrequently: true });
 		c.font = font(F);
@@ -78,9 +80,16 @@
 			}
 		}
 		if (pts.length < 3) return null;
-		var minX = Math.min.apply(null, pts.map(function (p) { return p.x; })), maxX = Math.max.apply(null, pts.map(function (p) { return p.x; }));
-		pts.push({ x: minX, y: floor + 80 }, { x: maxX, y: floor + 80 });
-		return hull(pts);
+		var half = pts.length >> 1, low = function (list) { return Math.min.apply(null, list.map(function (p) { return p.y; })); };
+		var peakL = pts.indexOf(pts.slice(0, half).reduce(function (m, p) { return p.y < m.y ? p : m; }));
+		var peakR = half + pts.slice(half).indexOf(pts.slice(half).reduce(function (m, p) { return p.y < m.y ? p : m; }));
+		var k = peakL;
+		for (var i = peakL; i <= peakR; i++) if (pts[i].y > pts[k].y) k = i;
+		var parts = pts[k].y - Math.max(low(pts.slice(0, half)), low(pts.slice(half))) > F * 0.15 ? [pts.slice(0, k + 1), pts.slice(k)] : [pts];
+		return parts.map(function (q) {
+			q = q.concat([{ x: q[0].x, y: floor + 80 }, { x: q[q.length - 1].x, y: floor + 80 }]);
+			return hull(q);
+		});
 	}
 	function hull(p) {
 		p = p.slice().sort(function (a, b) { return a.x - b.x || a.y - b.y; });
@@ -95,25 +104,25 @@
 		var c = probe.getContext("2d", { willReadFrequently: true });
 		c.font = font(100);
 		var adv = WORD.split("").map(function (ch) { return c.measureText(ch).width / 100; });
-		var em = adv.reduce(function (s, v) { return s + v; }, 0) + TRACK * (WORD.length - 1);
+		var em = adv.reduce(function (s, v) { return s + v; }, 0) + TRACK * (WORD.length - 1) + KERN_L;
 		// Huge: the width of the footer, or as tall as fits; about a fifth of it below the edge.
 		var F = Math.round(Math.min(W * 0.92 / em, H * 1.3));
 		var floor = H, base = floor + Math.round(F * 0.2), x = Math.round((W - em * F) / 2);
 		var glyphs = WORD.split("").map(function (ch, i) {
-			var g = { ch: ch, x: x, hull: outline(ch, x, base, F, floor) };
-			x += Math.round((adv[i] + TRACK) * F);
+			var parts = outline(ch, x, base, F, floor);
+			var g = { ch: ch, x: x, hulls: parts || [], hull: parts ? [].concat.apply([], parts) : null };
+			x += Math.round((adv[i] + TRACK + (i === 0 ? KERN_L : 0)) * F);
 			return g;
 		});
-		// The e's round top: where the bin stands, centred on it.
-		var E = glyphs[1].hull, top = Math.min.apply(null, E.map(function (p) { return p.y; }));
-		var near = E.filter(function (p) { return p.y < top + 2; });
-		var ex = near.reduce(function (s, p) { return s + p.x; }, 0) / near.length;
-		// Files at their size; the Trash about one and a half documents tall beside them.
+		// The L's round top: the bin stands on it, a little right of its centre.
+		var L = glyphs[0].hull, top = Math.min.apply(null, L.map(function (p) { return p.y; }));
+		var stemL = Math.min.apply(null, L.map(function (p) { return p.x; })), stemR = Math.max.apply(null, L.filter(function (p) { return p.y < floor - 2; }).map(function (p) { return p.x; }));
+		// Files at their size; the Trash about two documents tall beside them.
 		S = Math.round(Math.max(28, Math.min(52, F * 0.1)));
-		SB = Math.round(S * 1.62);
-		G = { F: F, floor: floor, base: base, glyphs: glyphs, eTop: top, eX: ex,
+		SB = Math.round(S * 2.3);
+		G = { F: F, floor: floor, base: base, glyphs: glyphs, stemTop: top, stemX: (stemL + stemR) / 2, stemW: stemR - stemL,
 			bw: SB * BW, bh: SB * BH, wall: Math.max(3, SB * WALL) };
-		G.binX = ex;
+		G.binX = G.stemX + G.stemW * 0.04;
 		G.binY = top - G.bh / 2 - 1;
 		return G;
 	}
@@ -155,23 +164,24 @@
 	function topAt(g, x) {
 		// The glyph's top at x, from its outline (for resting things on it without physics).
 		var best = G.floor;
-		g.hull.forEach(function (p, i) {
-			var q = g.hull[(i + 1) % g.hull.length];
-			if ((p.x - x) * (q.x - x) <= 0 && p.x !== q.x) { var y = p.y + (q.y - p.y) * (x - p.x) / (q.x - p.x); if (y < best) best = y; }
+		g.hulls.forEach(function (h) {
+			h.forEach(function (p, i) {
+				var q = h[(i + 1) % h.length];
+				if ((p.x - x) * (q.x - x) <= 0 && p.x !== q.x) { var y = p.y + (q.y - p.y) * (x - p.x) / (q.x - p.x); if (y < best) best = y; }
+			});
 		});
 		return best;
 	}
-	// Reduced motion: the bin on its side on top of the e, files flat on the other letters and the floor.
+	// Reduced motion: the bin on its side on top of the L, files on "evo" (one in the v's notch) and the floor.
 	function lieStill() {
 		binEl.src = BIN.empty;
-		place(binEl, G.eX, G.eTop - G.bw / 2, Math.PI / 2, SB);
+		place(binEl, G.stemX + G.bh * 0.1, G.stemTop - G.bw / 2, Math.PI / 2, SB);
 		var spots = [];
-		[0, 2, 3].forEach(function (k) {
+		[1, 2, 3].forEach(function (k) {
 			var g = G.glyphs[k];
 			var xs = g.hull.map(function (p) { return p.x; }), a = Math.min.apply(null, xs), b = Math.max.apply(null, xs), mid = (a + b) / 2;
 			spots.push([mid, topAt(g, mid)]);
 		});
-		spots = [spots[1], spots[2], spots[0]];
 		files.forEach(function (f, i) {
 			f.el.classList.remove("is-in");
 			var fh = S * f.h, s = spots[i % spots.length], layer = Math.floor(i / spots.length);
@@ -179,7 +189,7 @@
 			else place(f.el, Math.min(W - S, W * 0.92 - (i - 6) * S), G.floor - fh / 2, 0, S);
 		});
 	}
-	// Before it plays: the bin upright and full on the e.
+	// Before it plays: the bin upright and full on the L.
 	function poseStart() {
 		binEl.src = BIN.full;
 		place(binEl, G.binX, G.binY, 0, SB);
@@ -190,7 +200,7 @@
 	var M, engine, world, statics = [], bin = null, raf = 0, calm = 0, grab = null, started = false, frame = 0;
 	// Matter pairs take the lower friction and the higher static friction of two bodies, so the
 	// moving bodies keep a low static friction: on the round letters they roll or slide off.
-	var SURFACE = { friction: 0.24, frictionStatic: 0.14, restitution: 0.04 };
+	var SURFACE = { friction: 0.12, frictionStatic: 0.08, restitution: 0.04 };
 
 	function loadMatter(done) {
 		if (window.Matter) { done(); return; }
@@ -208,7 +218,7 @@
 	function buildStatics() {
 		var B = M.Bodies, thick = 400;
 		if (statics.length) M.Composite.remove(world, statics);
-		var LETTER = { isStatic: true, friction: 0.3, frictionStatic: 0.14, restitution: 0.04 };
+		var LETTER = { isStatic: true, friction: 0.2, frictionStatic: 0.08, restitution: 0.04 };
 		var WALLS = { isStatic: true, friction: 0.5, frictionStatic: 0.14, restitution: 0.04 };
 		statics = [
 			B.rectangle(W / 2, G.floor + thick / 2, W * 3, thick, WALLS),
@@ -217,9 +227,10 @@
 			B.rectangle(W / 2, -thick / 2 - H * 0.6, W * 3, thick, WALLS)
 		];
 		G.glyphs.forEach(function (g) {
-			if (!g.hull) return;
-			var c = M.Vertices.centre(g.hull);
-			statics.push(M.Bodies.fromVertices(c.x, c.y, [g.hull], LETTER));
+			g.hulls.forEach(function (h) {
+				var c = M.Vertices.centre(h);
+				statics.push(M.Bodies.fromVertices(c.x, c.y, [h], LETTER));
+			});
 		});
 		M.Composite.add(world, statics);
 	}
@@ -248,24 +259,48 @@
 	function binCentre() { var o = local(bin, bin.imageOffset); return { x: bin.position.x + o.x, y: bin.position.y + o.y }; }
 	function opening() { return Math.abs(Math.atan2(Math.sin(bin.angle), Math.cos(bin.angle))); }
 
-	// Out at the rim: one file per few frames once the opening has tilted past 70 degrees, placed just
+	// Past this tilt of the opening (about 57 degrees) the files start to slide out.
+	var POUR = 1.0;
+	// Out at the rim: one file every other frame once the opening has tilted past POUR, placed just
 	// beyond the rim with the velocity of the bin at that point and a small nudge out of the opening.
 	function pour() {
 		// The further it turns over, the quicker they slide out: upside down, they all fall at once.
-		var o = opening(), wait = Math.max(2, Math.round(9 - 4 * (o - 1.22)));
-		if (!bin.inside.length || o < 1.22 || frame - (bin.poured || 0) < wait) return;
-		var f = bin.inside[0], c = binCentre(), fh = S * f.h, fw = S * f.w;
-		var rim = local(bin, { x: (Math.random() - 0.5) * G.bw * 0.3, y: -G.bh / 2 - fh * 0.55 });
-		var p = { x: c.x + rim.x, y: c.y + rim.y }, r = { x: p.x - bin.position.x, y: p.y - bin.position.y };
-		// Only into open space: with the opening against a letter or a pile, the rest stay in.
-		var probe = M.Bodies.rectangle(p.x, p.y, fw, fh, { angle: bin.angle });
-		var others = M.Composite.allBodies(world).filter(function (b) { return b !== bin; });
-		if (M.Query.collides(probe, others).length) return;
+		var o = opening(), wait = 2;
+		if (!bin.inside.length || o < POUR || frame - (bin.poured || 0) < wait) return;
+		var f = bin.inside[0], c = binCentre(), fh = S * f.h, fw = S * f.w, p = null, r = null;
+		// Only into open space: a few spots across the opening and just beyond it; with the opening
+		// against a letter or a pile, the rest stay in.
+		// Files just out pass through one another for a moment, as a spilling pile does, so they
+		// don't block the next one at the rim; letters and files already lying there do.
+		var others = M.Composite.allBodies(world).filter(function (b) { return b !== bin && !b.ghost; }), blockers = null;
+		for (var t = 0; t < 5 && !p; t++) {
+			var rim = local(bin, { x: (Math.random() - 0.5) * G.bw * 0.7, y: -G.bh / 2 - fh * (0.55 + t * 0.25) });
+			var q = { x: c.x + rim.x, y: c.y + rim.y }, probe = M.Bodies.rectangle(q.x, q.y, fw, fh, { angle: bin.angle });
+			var hits = M.Query.collides(probe, others).map(function (h) { return h.bodyA === probe ? h.bodyB : h.bodyA; });
+			if (!hits.length) p = q;
+			else if (t === 0) blockers = hits;
+		}
+		if (!p) {
+			// What's still inside pushes on what's just out, gently, as a pile does; against a
+			// letter, nothing more comes out, and after a few seconds the bin stops trying.
+			bin.blocked = (bin.blocked || 0) + 1;
+			if (blockers && blockers.every(function (b) { return b.isFile; }) && frame % 6 === 0) {
+				var dir = local(bin, { x: 0, y: -1 });
+				blockers.forEach(function (b) { if (b.speed < 1.2 && !(grab && grab.body === b)) M.Body.setVelocity(b, { x: b.velocity.x + dir.x * 1.4, y: b.velocity.y + dir.y * 1.4 - 0.3 }); });
+			}
+			return;
+		}
+		bin.blocked = 0;
+		r = { x: p.x - bin.position.x, y: p.y - bin.position.y };
 		bin.poured = frame;
 		bin.inside.shift();
 		f.body = rect(fw, fh, p.x, p.y);
+		f.body.isFile = true;
+		f.body.ghost = frame;
+		f.body.collisionFilter.group = -1;
 		M.Body.setAngle(f.body, bin.angle);
-		var out = local(bin, { x: 0, y: -1 }), push = 1.3 + Math.random() * 0.9;
+		// Out of the opening, each a little differently, so they fan out rather than leave as one.
+		var spread = (Math.random() - 0.5) * 0.7, out = local(bin, { x: Math.sin(spread), y: -Math.cos(spread) }), push = 3 + Math.random() * 3.5;
 		M.Body.setVelocity(f.body, { x: bin.velocity.x - bin.angularVelocity * r.y + out.x * push, y: bin.velocity.y + bin.angularVelocity * r.x + out.y * push });
 		M.Body.setAngularVelocity(f.body, bin.angularVelocity * 0.5 + (Math.random() - 0.5) * 0.08);
 		f.body.calmUntil = frame + 30;
@@ -293,7 +328,7 @@
 		world = engine.world;
 		buildStatics();
 		bin = makeBin(G.binX, G.binY);
-		// A tiny tilt to the right: it wobbles on the e before anything else happens.
+		// A tiny tilt to the right: it wobbles on the L before anything else happens.
 		M.Body.rotate(bin, 0.03, { x: G.binX, y: G.binY + G.bh / 2 });
 		bin.inside = files.slice();
 		M.Composite.add(world, bin);
@@ -325,11 +360,20 @@
 		});
 	}
 	// Just out of the bin, a file can't be flung: its speed is capped for half a second.
+	// A file just out becomes solid to the others once it's clear of them, or after two seconds.
+	function solidify() {
+		var bodies = files.map(function (f) { return f.body; }).filter(Boolean);
+		bodies.forEach(function (b) {
+			if (!b.ghost) return;
+			var rest = bodies.filter(function (o) { return o !== b; });
+			if (frame - b.ghost > 120 || (frame - b.ghost > 6 && !M.Query.collides(b, rest).length)) { b.ghost = 0; b.collisionFilter.group = 0; }
+		});
+	}
 	function capSpeeds() {
 		files.forEach(function (f) {
 			var b = f.body;
-			if (!b || !(b.calmUntil > frame) || b.speed < 5) return;
-			var k = 5 / b.speed;
+			if (!b || !(b.calmUntil > frame) || b.speed < 7) return;
+			var k = 7 / b.speed;
 			M.Body.setVelocity(b, { x: b.velocity.x * k, y: b.velocity.y * k });
 		});
 	}
@@ -346,6 +390,7 @@
 		settle();
 		M.Engine.update(engine, 1000 / 60);
 		capSpeeds();
+		solidify();
 		pour();
 		catchIn();
 		render();
@@ -354,7 +399,7 @@
 			if (b.isStatic || b.parent !== b) return;
 			if (b.speed > 0.06 || Math.abs(b.angularVelocity) > 0.002 || (Math.abs(tilt(b)) > 0.06 && (b.tries || 0) <= 240)) still = false;
 		});
-		calm = still && !grab && !(bin.inside.length && opening() >= 1.22) ? calm + 1 : 0;
+		calm = still && !grab && !(bin.inside.length && opening() >= POUR && (bin.blocked || 0) < 240) ? calm + 1 : 0;
 		if (calm > 90 && frame > 300) { raf = 0; return; }
 		raf = requestAnimationFrame(tick);
 	}
@@ -398,8 +443,8 @@
 			setup();
 			render();
 			wake();
-			// After its wobble, a gentle push to the right, over the e's shoulder towards "vo". On the
-			// round top a small bin can rock back; then it gets the push again, a little firmer.
+			// After its wobble, a gentle push to the right, off the L towards "evo". On the round top
+			// the bin can rock back; then it gets the push again, a little firmer.
 			var tries = 0, nudge = function () {
 				if (grab || Math.abs(bin.position.x - G.binX) > G.bw || bin.inside.length < files.length) return;
 				var k = 1 + tries * 0.5;
