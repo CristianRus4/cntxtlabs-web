@@ -145,11 +145,13 @@ carries names, labels, numbers and the price only.
 
 ## The popover
 
-The demo shows the app's Summary layout in round 12's order (PopoverView.swift):
-the Mac's name, the gauges, then free space, "to clean up" and the five-part
+The demo shows the app's Summary layout in round 13's order (PopoverView.swift):
+the Mac's name (with "Auto mode" in plain orange at its end while it's on), a
+divider, the gauges, a divider, free space, "to clean up" and the five-part
 disk bar (macOS's storage palette as the app: System Data yellow, Your Data
-red, Apps orange, Ready to free green, Free faint; only the green fills), then "A balanced clean up frees 33 GB: Xcode build data, Simulators and
-4 more." The level word is a menu (Careful, Balanced, Aggressive, Everything);
+red, Apps orange, Ready to free green, Free faint; only the green fills), a
+divider, then "A balanced clean up frees 33 GB: Xcode build data, Simulators and
+4 more.", then the status line and the action bar. The level word is a menu (Careful, Balanced, Aggressive, Everything);
 the amount, "4 more" and the empty space open the full breakdown, and the
 sentence holds still while ticking there. The Command K panel and every confirm
 are bottom sheets that grow the popover if needed. The Expanded lists are still
@@ -163,8 +165,9 @@ pixel's blend with the panel), since they are crops of older renders.
 Auto mode (the app's name; it used to be auto-clean) keeps free space above the
 limit on its own. In the demo, Control Centre's Auto mode control or "Turn on
 Auto mode" in the Command K panel switch it: the "Auto mode" pill shows beside
-the Mac's name, "Auto mode keeps 20 GB free: it cleans Xcode build data, Package
-caches and Browser caches on its own." leads the summary, and if free space is
+the Mac's name, and "Auto mode keeps 20 GB free: it cleans Xcode build data
+and 2 more on its own." takes the cleanup sentence's place (as the app: two
+groups by name, or one and "N more"); if free space is
 under the limit Levo cleans those groups with no click. The groups are the ones
 whose every item is level 1. The first bento tile (bento.js, drawn live, not a
 render) shows the same pill and sentence beside free space falling to the limit

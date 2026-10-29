@@ -308,6 +308,7 @@
 		'<div class="lv-pop" role="dialog" aria-label="Levo" tabindex="-1">' +
 			'<div class="lv-dhead lv-namerow"><span class="lv-sec" data-devsym>' + sym("desktopcomputer", 14) + '</span><b data-devname>Mac</b><span class="lv-flex"></span>' +
 				'<button type="button" class="lv-auto" data-act="automode" data-autopill hidden>Auto mode</button></div>' +
+			'<div class="lv-sep"></div>' +
 			'<section class="lv-gauges">' + gaugeHTML("memory", "Memory") + gaugeHTML("cpu", "CPU") + gaugeHTML("gpu", "GPU") + '</section>' +
 			'<div class="lv-freed" data-freed hidden></div>' +
 			'<div class="lv-sep"></div>' +
@@ -529,11 +530,12 @@
 		if (!el) return;
 		// While the breakdown is open the sentence holds still; only the amount follows the ticks.
 		var live = sentence(), st = S.showAll && S.frozen ? S.frozen : live;
-		var h = S.auto ? autoLine() : "";
-		h += '<p class="lv-sline">';
+		// While Auto mode is on its sentence says it all (round 13); manual cleaning stays in the bar and the breakdown.
+		var h = S.auto ? autoLine() : '<p class="lv-sline">';
 		var amount = '<span class="lv-gl">' + chip("sumall", gb(tickedGB()), ' style="min-width:' + (S.showAll && S.amountW ? S.amountW + "px" : "0") + '"') + '<span class="lv-w lv-p">:</span></span>';
 		var level = function (word) { return chip("levelword", word, ' aria-haspopup="menu"'); };
-		if (st.lead === "nothing") {
+		if (S.auto) {
+		} else if (st.lead === "nothing") {
 			h += S.groups.length ? level("Nothing") + w("to clean up.") : w(S.analysing ? "Looking for what can go." : "Nothing to clean up.");
 		} else if (st.lead === "level") {
 			h += w(st.level === "Aggressive" ? "An" : "A") + level(st.level.toLowerCase()) + w("clean up frees") + amount;
@@ -542,7 +544,7 @@
 		} else {
 			h += level("Your") + w("clean up frees") + amount;
 		}
-		if (st.lead !== "nothing") {
+		if (st.lead !== "nothing" && !S.auto) {
 			var count = st.groups.length + (st.moreChip ? 1 : 0);
 			st.groups.forEach(function (id, i) {
 				var g = group(id) || LEVO_DEMO.groups.filter(function (x) { return x.id === id; })[0];
@@ -553,8 +555,10 @@
 			});
 			if (st.moreChip) h += '<span class="lv-gl">' + chip("sumall", st.unnamed + " more", S.showAll ? ' data-lit=""' : "") + '<span class="lv-w lv-p">.</span></span>';
 		}
-		if (st.moreChoices) h += w("More") + chip("sumall", "to choose", S.showAll ? ' data-lit=""' : "") + w("from.");
-		h += "</p>";
+		if (!S.auto) {
+			if (st.moreChoices) h += w("More") + chip("sumall", "to choose", S.showAll ? ' data-lit=""' : "") + w("from.");
+			h += "</p>";
+		}
 		// "Free up GPU, it's at 88%.": a metric past its limit; the phrase runs its free plan.
 		if (SHOW_METRICS_LINE) over().forEach(function (o) {
 			var working = S.working === o.metric;
@@ -562,7 +566,8 @@
 				'<span class="lv-w lv-p">,</span></span>' + w("it’s at " + o.pct + "%.") + "</p>";
 		});
 		// Open chips show their rows in place, with their checkboxes.
-		var rows = st.lead === "nothing" ? [] : st.groups.filter(function (id) { return S.openChips[id] && group(id); });
+		var ids = S.auto ? autoGroups().map(function (g) { return g.id; }) : st.lead === "nothing" ? [] : st.groups;
+		var rows = ids.filter(function (id) { return S.openChips[id] && group(id); });
 		if (rows.length && !S.showAll) h += '<div class="lv-chiprows">' + rows.map(function (id) { return groupHTML(group(id)); }).join("") + "</div>";
 		el.innerHTML = h;
 		var amt = $('[data-act="sumall"]', el);
@@ -571,12 +576,19 @@
 	}
 	// Auto mode: Levo and the agent keep the limit free on their own, with what can always go.
 	function autoGroups() { return LEVO_DEMO.groups.filter(function (g) { return g.items.every(function (it) { return it.level === 1; }); }); }
+	// As the app (SummarySection.autoModeWords): two groups by name, or one and "N more".
 	function autoLine() {
-		var gs = autoGroups();
-		return '<p class="lv-sline lv-autoline">' + w("Auto mode keeps " + gb(S.disk.alert) + " free: it cleans") + gs.map(function (g, i) {
-			var punct = i < gs.length - 2 ? "," : "";
-			return '<span class="lv-gl">' + chip("chip", g.title, ' data-id="' + g.id + '"', tile(g.tile, g.symbol, "chip")) + (punct ? '<span class="lv-w lv-p">' + punct + "</span>" : "") + "</span>" + (i === gs.length - 2 ? w("and") : "");
-		}).join("") + w("on its own.") + "</p>";
+		var gs = autoGroups(), shown = gs.length <= 2 ? gs : gs.slice(0, 1), more = gs.length - shown.length;
+		var h = '<p class="lv-sline lv-autoline">' + chip("automode-open", "Auto mode") + w("keeps") + chip("automode-open", gb(S.disk.alert));
+		if (!gs.length) return h + w("free.") + "</p>";
+		h += w("free: it cleans");
+		var count = shown.length + (more > 0 ? 1 : 0);
+		shown.forEach(function (g, i) {
+			h += chip("chip", g.title, ' data-id="' + g.id + '"' + (S.openChips[g.id] ? ' data-lit=""' : ""), tile(g.tile, g.symbol, "chip"));
+			if (i === count - 2) h += w("and");
+		});
+		if (more > 0) h += chip("sumall", more + " more", S.showAll ? ' data-lit=""' : "");
+		return h + w("on its own.") + "</p>";
 	}
 	function setAuto(on) {
 		S.auto = !!on;
@@ -1691,7 +1703,7 @@
 			case "free": freeMetric(t.dataset.metric); break;
 			case "freedx": $("[data-freed]").hidden = true; break;
 			case "sumall": e.stopPropagation(); toggleAll(); break;
-			case "automode": e.stopPropagation(); setAuto(false); break;
+			case "automode": case "automode-open": e.stopPropagation(); togglePanel(); break;
 			case "sumspace": toggleAll(); break;
 			case "chip": e.stopPropagation(); S.openChips[id] = !S.openChips[id]; if (S.openChips[id]) S.open[id] = true; renderSummary(); break;
 			case "levelword": e.stopPropagation(); levelWordMenu(t); return;

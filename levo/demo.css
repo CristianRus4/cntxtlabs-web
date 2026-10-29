@@ -1106,9 +1106,9 @@ html.dark .lv-bsheet { box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 -4px 16px r
 	.lv-fan-item, .lv-fan-open, .lv-dk-stack.is-arriving { animation: none; }
 }
 
-/* Round 12: the Mac's name first, Auto mode's pill beside it while it's on. */
-.lv-namerow { padding: 14px 16px 0; }
-.lv-auto { flex-shrink: 0; height: 18px; padding: 0 7px; border: 0; border-radius: 9px; background: color-mix(in srgb, var(--lv-ready) 15%, transparent); color: var(--lv-ready); font: inherit; font-size: 11px; font-weight: 500; cursor: default; }
+/* Round 13: the Mac's name first, over a divider; "Auto mode" in plain orange at its end while it's on. */
+.lv-namerow { padding: 12px 16px 10px; }
+.lv-scene .lv-auto { flex-shrink: 0; padding: 0; border: 0; background: none; color: #9E4700; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; }
+html.dark .lv-scene .lv-auto { color: #FF9217; }
 .lv-auto[hidden] { display: none; }
 .lv-auto:not([hidden]) { animation: lv-in .25s var(--ease-out); }
-.lv-autoline { margin-bottom: 8px; }

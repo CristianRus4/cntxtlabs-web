@@ -70,20 +70,21 @@
 	}
 	function autoHTML() {
 		var groups = ((D.data && D.data.groups) || []).filter(function (g) { return g.items.every(function (it) { return it.level === 1; }); });
-		var chips = groups.map(function (g, i) {
-			var punct = i < groups.length - 2 ? "," : "";
-			return '<span class="lv-gl"><span class="lv-chip">' + (D.tile ? D.tile(g.tile, g.symbol, "chip") : "") + "<span>" + g.title + "</span></span>" +
-				(punct ? '<span class="lv-w lv-p">' + punct + "</span>" : "") + "</span>" + (i === groups.length - 2 ? '<span class="lv-w">and</span>' : "");
-		}).join("");
+		// As the app's sentence: two groups by name, or one and "N more".
+		var shown = groups.length <= 2 ? groups : groups.slice(0, 1), more = groups.length - shown.length;
+		var chip = function (inner) { return '<span class="lv-chip">' + inner + "</span>"; };
+		var chips = shown.map(function (g, i) {
+			return chip((D.tile ? D.tile(g.tile, g.symbol, "chip") : "") + "<span>" + g.title + "</span>") + (i === shown.length + (more ? 1 : 0) - 2 ? '<span class="lv-w">and</span>' : "");
+		}).join("") + (more ? chip("<span>" + more + " more</span>") : "");
 		var words = function (t) { return t.split(" ").map(function (x) { return '<span class="lv-w">' + x + "</span>"; }).join(""); };
 		var ticks = "";
 		for (var i = 0; i < AUTO.ticks; i++) ticks += "<i></i>";
 		var limitY = cy(AUTO.limit), dropX = DROP * CW;
 		return '<div class="bt-auto-pop">' +
-				'<div class="bt-auto-name">' + (D.sym ? D.sym("laptopcomputer", 14) : "") + "<b>MacBook Pro</b><span class=\"bt-auto-flex\"></span><span class=\"bt-auto-pill\">Auto mode</span></div>" +
+				'<div class="bt-auto-name">' + (D.sym ? D.sym("laptopcomputer", 14) : "") + "<b>MacBook Pro</b><span class=\"bt-auto-flex\"></span><span class=\"bt-auto-pill\">Auto mode</span></div><i class=\"bt-auto-sep\"></i>" +
 				'<div class="bt-auto-hero"><span class="bt-auto-free" data-autofree>' + gbText(AUTO.top) + '</span><span class="bt-auto-sec">free</span></div>' +
-				'<div class="bt-auto-ticks" data-autoticks>' + ticks + "</div>" +
-				'<p class="lv-sline">' + words("Auto mode keeps " + gbText(AUTO.limit) + " free: it cleans") + chips + words("on its own.") + "</p>" +
+				'<div class="bt-auto-ticks" data-autoticks>' + ticks + '</div><i class="bt-auto-sep"></i>' +
+				'<p class="lv-sline">' + chip("<span>Auto mode</span>") + words("keeps") + chip("<span>" + gbText(AUTO.limit) + "</span>") + words("free: it cleans") + chips + words("on its own.") + "</p>" +
 			"</div>" +
 			'<div class="bt-auto-chart">' +
 				'<svg viewBox="0 0 ' + CW + " " + CH + '" preserveAspectRatio="none">' +

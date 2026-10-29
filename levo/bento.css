@@ -170,7 +170,7 @@ html.dark .bt-auto { --fg: 255 255 255; --lv-ready: #59D499; --lv-free: rgb(255 
 	flex: 0 0 360px;
 	align-self: center;
 	box-sizing: border-box;
-	padding: 14px 16px 16px;
+	padding: 12px 16px 16px;
 	border-radius: 18px;
 	background: linear-gradient(180deg, #F8F8F8 0%, #F0F0F0 70%);
 	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08), var(--bt-frame-shadow);
@@ -179,15 +179,17 @@ html.dark .bt-auto { --fg: 255 255 255; --lv-ready: #59D499; --lv-free: rgb(255 
 html.dark .bt-auto-pop { background: linear-gradient(180deg, #232323 0%, #1B1B1B 70%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), var(--bt-frame-shadow); }
 .bt-auto .lv-gl .lv-p { margin-left: -1px; }
 .bt-auto-name { display: flex; align-items: center; gap: 8px; }
+.bt-auto-sep { display: block; height: 1px; margin: 10px -16px 0; background: rgb(var(--fg) / 0.08); }
+.bt-auto-ticks + .bt-auto-sep { margin: 14px -16px 14px; }
 .bt-auto-name .lv-sym { color: rgb(var(--fg) / 0.5); }
 .bt-auto-name b { font-weight: 500; }
 .bt-auto-flex { flex: 1; }
-.bt-auto-pill { height: 18px; padding: 0 7px; border-radius: 9px; display: inline-flex; align-items: center; background: color-mix(in srgb, var(--lv-ready) 15%, transparent); color: var(--lv-ready); font-size: 11px; font-weight: 500; transition: box-shadow .3s; }
-.is-low .bt-auto-pill { box-shadow: 0 0 0 3px color-mix(in srgb, var(--lv-ready) 18%, transparent); }
+.bt-auto-pill { color: #9E4700; font-size: 13px; font-weight: 500; }
+html.dark .bt-auto-pill { color: #FF9217; }
 .bt-auto-hero { display: flex; align-items: baseline; gap: 6px; margin-top: 14px; }
 .bt-auto-free { font-size: 24px; font-weight: 600; letter-spacing: -0.3px; font-variant-numeric: tabular-nums; }
 .bt-auto-sec { color: rgb(var(--fg) / 0.5); }
-.bt-auto-ticks { display: flex; gap: 2px; margin: 12px 0 16px; }
+.bt-auto-ticks { display: flex; gap: 2px; margin: 12px 0 0; }
 .bt-auto-ticks i { flex: 1; height: 18px; border-radius: 1.5px; background: var(--lv-free); transition: background-color .3s; }
 .bt-auto-ticks i.is-sys { background: #FFD60A; }
 .bt-auto-ticks i.is-data { background: #FF453A; }
