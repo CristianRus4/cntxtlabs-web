@@ -11,12 +11,12 @@
 	// price (priceURL) replaces it once it loads. It rises $5 every 10 licences, $4.99 to $49.99.
 	var LEVO = {
 		price: "$4.99",
-		priceURL: "https://levo-price.cristianrus.workers.dev/levo/price.json",
+		priceURL: "https://levo-price-live.cristianrus.workers.dev/levo/price.json",
 		tiers: { first: 4.99, step: 5, last: 49.99, every: 10 },
 		left: null, // "N left at $4.99" once the Worker gives the count and the owner wants it shown
 		term: "once",
 		download: "[DOWNLOAD LINK]",
-		buy: "[BUY LINK]",
+		buy: "https://buy.polar.sh/polar_cl_ACu47aORELy2GDDlJLR8s8ygIUCYfSlPLDwVu0696R3",
 		agents: "https://cntxtlabs.co/levo/agents.md",
 		privacy: "[PRIVACY LINK]",
 		terms: "[TERMS LINK]",
