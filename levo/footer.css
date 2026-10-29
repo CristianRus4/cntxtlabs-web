@@ -34,8 +34,8 @@
 .lf-copy { margin-left: auto; }
 
 /* The scene: its floor is the page's bottom edge; the page still scrolls over its empty parts. */
-.lf-stage { position: relative; height: 460px; overflow: hidden; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
-.lf-word { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.lf-stage { position: relative; height: clamp(460px, 32vw, 620px); overflow: hidden; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+.lf-word { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
 .lf-word .f { fill: rgb(var(--ink) / 0.07); }
 .lf-word .s { fill: none; stroke: rgb(var(--ink) / 0.07); }
 html.dark .lf-word .f { fill: rgb(var(--ink) / 0.09); }

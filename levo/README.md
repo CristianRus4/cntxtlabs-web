@@ -253,15 +253,23 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
 - Auto mode is told with the product's own UI: the popover's bar fills day by
   day, Levo cleans at the limit, and a notification says what it freed.
 - The footer runs on Matter.js 0.20.0 (cdnjs, pinned with its integrity hash,
-  loaded only near the footer). "Levo" is solid, drawn in SVG from the same
-  geometry as its colliders: L as two bars, e and o as circles, v as a
-  trapezoid. The full Trash stands on the L, wobbles, tips over and spills its
-  files onto "evo". Every body is its real rectangle; low static friction lets
-  things roll off the round letters, and a gentle settle tips anything at rest
-  onto its nearest flat side (giving up if something holds it). Drag and throw
-  with mouse or touch; carried, the bin stands up; a double-click stands it up;
-  a file dropped into the upright bin goes in and the bin turns full; tip it
-  and they spill again. Reduced motion: no physics, the bin on its side in the
-  L, the files on "evo".
+  loaded only near the footer). "Levo" is set in the rounded heavy face
+  (ui-rounded, with the page's fallbacks), huge, its lower part under the
+  page's bottom edge. Each letter is SVG text, and its collider is the convex
+  hull of that same glyph rasterised at the same size and position, so the
+  drawing and the colliders can't drift apart; both rebuild on resize
+  (ResizeObserver) and once the fonts load. The SVG has pixel width and height,
+  and the levo assets carry ?v= so a cached mix can't return.
+- The full Trash stands centred on the L's round top, wobbles for a moment,
+  then tips right and falls. Files in the bin aren't bodies: past about 70
+  degrees of tilt they come out at the rim one at a time with the bin's own
+  velocity, quicker the further it turns over, and only into open space, so
+  some may stay in. Their speed is capped just after leaving; restitution is
+  low. A file dropped into the upright bin goes in, and the bin turns full.
+- Everything is grabbed at the exact point under the pointer (a soft spring
+  with a little damping), so things hang and swing; mouse and touch alike. A
+  gentle settle tips anything at rest onto its nearest flat side. Double-click
+  stands the bin up. Reduced motion: no physics, the bin on its side on the L,
+  files on "evo".
 - The page has no visible scrollbar (html only; the simulator's own scroll
   areas are untouched).
