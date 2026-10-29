@@ -102,7 +102,6 @@ html.dark {
 /* The disk: tips walk its sections. */
 
 .bt-disk .lv-disk { padding-bottom: 16px; }
-.bt-disk .lv-topclean { pointer-events: none; }
 .bt-disk .lv-tick { transition: background-color .15s, opacity .15s; }
 
 /* The list: five rows of Ready to free. */

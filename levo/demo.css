@@ -1135,9 +1135,8 @@ html.dark .lv-bsheet { box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 -4px 16px r
 /* A word just clicked shows no hover look until the pointer leaves it. */
 .lv-chip.is-quiet:hover:not([data-lit])::before { background: transparent; }
 
-/* The name row's button (round 16): a Liquid Glass capsule, translucent with a light rim, tinted
-   blue for Clean up and orange for Auto mode; disabled, the same shape dimmed. Its tooltip names the
-   shortcut, or Auto mode's limit and scope. */
+/* The name row's end (round 16): empty while Auto mode is off; while it's on, "Auto mode" as a
+   Liquid Glass capsule, translucent with a light rim, tinted orange, its limit and scope on hover. */
 .lv-scene .lv-topclean, .lv-kit .lv-topclean {
 	--tint: var(--accent);
 	position: relative;
@@ -1159,6 +1158,7 @@ html.dark .lv-bsheet { box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 -4px 16px r
 	white-space: nowrap;
 }
 .lv-scene .lv-topclean.is-auto, .lv-kit .lv-topclean.is-auto { --tint: #FF9500; }
+.lv-scene .lv-topclean[hidden] { display: none; }
 html.dark .lv-scene .lv-topclean.is-auto, html.dark .lv-kit .lv-topclean.is-auto { --tint: #FF9F0A; }
 .lv-scene .lv-topclean:hover:not(:disabled) { filter: brightness(1.06); }
 .lv-scene .lv-topclean:active:not(:disabled) { filter: brightness(.94); }

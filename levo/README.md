@@ -234,3 +234,25 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
 - The footer: support, Privacy, Terms and Cntxt Labs, small, over a huge faint
   "Levo" the page's bottom edge clips. Privacy and Terms are placeholders in
   levo.js until their pages exist.
+
+## Website round 9
+
+- The popover follows the app's round 16: nothing at the name row's end while
+  Auto mode is off (Clean up lives in the action bar, with the Command K
+  panel's keycaps); while it's on, "Auto mode" as an orange Liquid Glass
+  capsule with its limit and scope on hover. Gauge ticks take their own colour
+  along the arc, set as each line's stroke.
+- "Click here": a hand-drawn arrow above the simulator, placed by levo.js over
+  Levo's menubar icon; it draws on, bobs, and fades once the icon is clicked.
+  Phones have no simulator, so no arrow.
+- The installer is a normal desktop window (LevoMenus.window "custom", id
+  levo-dmg): front on a click, resizable, dragged by its title bar, working
+  lights; the disk image or Finder in the dock reopens it where it was.
+- Text files open in TextEdit; TextEdit joins the dock with its running dot
+  while a text window is open, and names the menubar while in front.
+- Auto mode is told with the product's own UI: the popover's bar fills day by
+  day, Levo cleans at the limit, and a notification says what it freed.
+- The footer: an emptied Trash on its side with macOS's file icons spilled out.
+  footer.js is a small physics loop (gravity, floor, walls, ceiling, the bin as
+  a box); drag and throw with mouse or touch; it sleeps at rest. Reduced
+  motion: the files lie still.

@@ -311,7 +311,7 @@
 		return '' +
 		'<div class="lv-pop" role="dialog" aria-label="Levo" tabindex="-1">' +
 			'<div class="lv-dhead lv-namerow"><span class="lv-sec" data-devsym>' + sym("desktopcomputer", 14) + '</span><b data-devname>Mac</b><span class="lv-flex"></span>' +
-				'<button type="button" class="lv-topclean" data-act="topclean" data-topclean data-tipkeys="\u2318\u232b">Clean up</button></div>' +
+				'<button type="button" class="lv-topclean is-auto" data-act="topclean" data-topclean hidden>Auto mode</button></div>' +
 			'<div class="lv-sep"></div>' +
 			'<section class="lv-gauges">' + gaugeHTML("memory", "Memory") + gaugeHTML("cpu", "CPU") + gaugeHTML("gpu", "GPU") + '</section>' +
 			'<div class="lv-freed" data-freed hidden></div>' +
@@ -694,13 +694,13 @@
 	}
 	function renderActions() {
 		var p = primary(), btn = $('[data-act="primary"]'), top = $("[data-topclean]");
-		// The name row's button (round 16): "Clean up", tinted blue; while Auto mode is on, "Auto mode",
-		// tinted orange, its limit and scope on hover.
+		// The name row's end: nothing while Auto mode is off (Clean up lives in the action bar); while
+		// it's on, "Auto mode" as an orange capsule, its limit and scope on hover.
 		if (top) {
-			top.textContent = S.auto ? "Auto mode" : "Clean up";
-			top.classList.toggle("is-auto", !!S.auto);
-			top.disabled = !S.auto && tickedGB() <= 0;
-			top.setAttribute("data-tipkeys", S.auto ? gb(S.disk.alert) + " \u00b7 " + autoGroups().map(function (g) { return g.title; }).join(", ") : "\u2318\u232b");
+			top.hidden = !S.auto;
+			top.textContent = "Auto mode";
+			top.classList.add("is-auto");
+			top.setAttribute("data-tipkeys", gb(S.disk.alert) + " \u00b7 " + autoGroups().map(function (g) { return g.title; }).join(", "));
 		}
 		$("[data-plabel]").textContent = p.label;
 		$("[data-pcaps]").innerHTML = caps(p.keys, "lv-cap-sm");
@@ -1796,7 +1796,7 @@
 			case "freedx": $("[data-freed]").hidden = true; break;
 			case "sumall": e.stopPropagation(); toggleAll(); break;
 			case "automode": case "automode-open": e.stopPropagation(); togglePanel(); break;
-			case "topclean": if (S.auto) togglePanel(); else askClean(); break;
+			case "topclean": togglePanel(); break;
 			case "sumspace": toggleAll(); break;
 			case "chip": e.stopPropagation(); S.openChips[id] = !S.openChips[id]; if (S.openChips[id]) S.open[id] = true; renderSummary(); break;
 			case "levelword": e.stopPropagation(); levelWordMenu(t); return;
@@ -2216,8 +2216,7 @@
 	var PARTS_API = {
 		disk: function () {
 			var owners = allocate(segments(), TICKS), t = tickedGB();
-			return '<div class="lv-dhead lv-namerow"><span class="lv-sec">' + sym("laptopcomputer", 14) + '</span><b>MacBook Pro</b><span class="lv-flex"></span>' +
-				'<span class="lv-topclean" aria-hidden="true">Clean up</span></div>' +
+			return '<div class="lv-dhead lv-namerow"><span class="lv-sec">' + sym("laptopcomputer", 14) + '</span><b>MacBook Pro</b><span class="lv-flex"></span></div>' +
 				'<div class="lv-sep"></div>' +
 				'<section class="lv-disk"><div class="lv-hero"><span class="lv-free lv-num">' + gb(S.disk.free) + '</span><span class="lv-sec">free</span><span class="lv-flex"></span>' +
 				'<span class="lv-can lv-num"><b>' + gb(t) + "</b>\u2009ready</span></div>" +
