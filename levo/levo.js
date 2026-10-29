@@ -37,7 +37,7 @@
 	all("[data-buy]").forEach(function (a) { a.href = LEVO.buy; if (placeholder(LEVO.buy)) a.setAttribute("data-placeholder", ""); });
 
 	// The price and everything that names it: the big price, the Buy buttons, the Levo window in
-	// the demo, and the tiers (ten bars, the current one lit with its price above, the ends under).
+	// the demo, and the tiers (ten steps on a line, those passed and the current one filled, its price above, the ends under).
 	function money(n) { return "$" + n.toFixed(2); }
 	function showPrice() {
 		var T = LEVO.tiers, now = parseFloat(LEVO.price.replace(/[^0-9.]/g, ""));
@@ -47,10 +47,10 @@
 		all("[data-tiers-bar]").forEach(function (bar) {
 			var html = "";
 			for (var i = 0; i <= steps; i++) {
-				html += '<i style="--i:' + i + ";height:" + Math.round(22 + i / steps * 62) + 'px"' + (i < at ? ' class="is-past"' : i === at ? ' class="is-now"' : "") + ">" +
-					(i === at ? "<b>" + LEVO.price + "</b>" : "") + "</i>";
+				if (i < steps) html += '<i class="tiers-seg' + (i < at ? " is-on" : "") + '" style="--i:' + i + ";left:calc(" + (i / steps * 100) + "% + 9px);width:calc(" + (100 / steps) + '% - 18px)"></i>';
+				html += '<i class="tiers-dot' + (i < at ? " is-past" : i === at ? " is-now" : "") + '" style="--i:' + i + ";left:" + (i / steps * 100) + '%">' + (i === at ? "<b>" + LEVO.price + "</b>" : "") + "</i>";
 			}
-			bar.innerHTML = '<span class="tiers-steps">' + html + '</span><span class="tiers-ends"><span>' + money(T.first) + "</span><span>" + money(T.last) + "</span></span>";
+			bar.innerHTML = '<span class="tiers-track">' + html + '</span><span class="tiers-ends"><span>' + money(T.first) + "</span><span>" + money(T.last) + "</span></span>";
 			bar.setAttribute("aria-label", "The price rises from " + money(T.first) + " to " + money(T.last) + ". It is " + LEVO.price + " now.");
 		});
 		var next = at < steps ? money(T.first + (at + 1) * T.step) : null;
@@ -134,10 +134,10 @@
 	// once the visitor clicks that icon.
 	var cue = document.querySelector("[data-cue]");
 	function placeCue() {
-		var icon = document.querySelector(".lv-mb-levo"), first = cue && cue.parentNode, scene = document.querySelector(".lv-scene");
+		var icon = document.querySelector(".lv-mb-levo .lv-mb-mark") || document.querySelector(".lv-mb-levo"), first = cue && cue.parentNode, scene = document.querySelector(".lv-scene");
 		if (!cue || !icon || !scene || cue.classList.contains("is-done") || scene.dataset.mode !== "desk") return;
 		var f = first.getBoundingClientRect(), r = icon.getBoundingClientRect(), sc = scene.getBoundingClientRect();
-		var tipX = 100, tipY = 98; // the arrow's tip in the cue's own box (index.html's SVG)
+		var tipX = 108, tipY = 96; // the arrow's tip in the cue's own box (index.html's SVG)
 		cue.style.left = Math.round(r.left + r.width / 2 - f.left - tipX) + "px";
 		cue.style.top = Math.round(sc.top - f.top - tipY - 4) + "px";
 		cue.classList.add("is-placed");

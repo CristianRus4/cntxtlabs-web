@@ -146,21 +146,26 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 .price b { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
 .price > span:last-child { font-size: 17px; font-weight: 600; color: var(--muted); }
 
-/* The price rises: ten steps from the first price to the last, the current one lit with its price
-   above it, the ends under the bar. levo.js builds the bars from the live price. */
+/* The price rises: ten steps on a thin line from the first price to the last. The steps passed and
+   the current one are filled, the line filled up to it; later steps are outlined on a faint line.
+   levo.js builds the track from the live price; on arrival the fill draws along the line. */
 .tiers { margin: 26px auto 0; max-width: 320px; text-align: center; }
 .tiers-line { margin: 0; font-size: 15px; color: var(--muted); }
-.tiers-bar { margin: 46px auto 0; width: 100%; }
-.tiers-steps { display: flex; align-items: flex-end; gap: 6px; height: 84px; }
-.tiers-steps i { position: relative; flex: 1; font-style: normal; border-radius: 5px; background: rgb(var(--ink) / 0.08); transform-origin: 50% 100%; transition: transform .6s cubic-bezier(.22, 1, .36, 1) calc(.25s + var(--i) * 45ms); }
-.tiers-steps i.is-past { background: rgb(var(--ink) / 0.22); }
-.tiers-steps i.is-now { background: var(--lit); }
-.tiers-steps b { position: absolute; left: 50%; bottom: calc(100% + 8px); translate: -50% 0; font-size: 13px; font-weight: 700; color: var(--lit); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.tiers-ends { margin-top: 8px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tiers-bar { margin: 44px auto 0; width: 100%; }
+.tiers-track { position: relative; display: block; height: 14px; margin: 0 7px; }
+.tiers-track i { position: absolute; top: 50%; font-style: normal; }
+.tiers-seg { height: 2px; margin-top: -1px; border-radius: 1px; background: rgb(var(--ink) / 0.12); }
+.tiers-seg.is-on { background: var(--lit); transform-origin: 0 50%; transition: transform .16s linear calc(.3s + var(--i) * 160ms); }
+.tiers-dot { width: 10px; height: 10px; translate: -50% -50%; border-radius: 50%; box-shadow: inset 0 0 0 2px rgb(var(--ink) / 0.22); transition: background-color .12s, box-shadow .12s; transition-delay: calc(.3s + var(--i) * 160ms - 20ms); }
+.tiers-dot.is-past { background: var(--lit); box-shadow: inset 0 0 0 2px var(--lit); }
+.tiers-dot.is-now { width: 14px; height: 14px; background: var(--lit); box-shadow: inset 0 0 0 2px var(--lit), 0 0 0 4px color-mix(in srgb, var(--lit) 22%, transparent); }
+.tiers-dot b { position: absolute; left: 50%; bottom: calc(100% + 9px); translate: -50% 0; font-size: 13px; font-weight: 700; color: var(--lit); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tiers-ends { margin-top: 10px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
 .tiers-next { margin: 20px 0 0; font-size: 15px; color: var(--muted); }
 .tiers-next b { font-weight: 600; color: var(--text); }
 .tiers-left { margin: 6px 0 0; font-size: 15px; color: var(--muted); }
-.js .tiers:not(.in):not(.is-in) .tiers-steps i { transform: scaleY(0.15); }
+.js .tiers:not(.in):not(.is-in) .tiers-seg.is-on { transform: scaleX(0); }
+.js .tiers:not(.in):not(.is-in) .tiers-dot.is-past, .js .tiers:not(.in):not(.is-in) .tiers-dot.is-now { background-color: transparent; }
 
 .foot { max-width: 1080px; margin: 110px auto 0; padding: 26px 20px 44px; display: flex; gap: 22px; justify-content: center; border-top: 1px solid var(--rim); font-size: 14px; color: var(--muted); }
 .foot a:hover { color: var(--text); }
@@ -187,7 +192,8 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 @media (prefers-reduced-motion: reduce) {
 	html { scroll-behavior: auto; }
 	.circled.drawn path { animation: none; stroke-dashoffset: 0; }
-	.js .tiers .tiers-steps i { transform: none; transition: none; }
+	.js .tiers .tiers-seg, .js .tiers .tiers-dot { transform: none; transition: none; }
+	.js .tiers .tiers-dot.is-past, .js .tiers .tiers-dot.is-now { background-color: var(--lit); }
 	.js .rv { opacity: 1; transform: none; transition: opacity .3s; }
 	.btn:hover, .btn:active { transform: none; }
 	.lv-sym { animation: none !important; }
@@ -278,33 +284,29 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 /* Clear space between the navbar and the framed Mac. */
 .first { padding-top: 104px; }
 
-/* "Click here": "click" over "here" in handwriting, a few rays around it, and a short soft arc from
-   under the words to Levo in the simulator's menubar. It draws on, bobs gently, and fades once the
-   visitor has clicked Levo. levo.js places the arrow's tip over the icon. */
-.cue { position: absolute; z-index: 5; top: 6px; left: 0; width: 140px; height: 100px; pointer-events: none; opacity: 0; transition: opacity .5s ease; }
+/* "Click here": "click" over "here" in handwriting, turned a little anticlockwise, a few rays
+   around it in the same ink, and a short soft arc from just under "here" to Levo in the simulator's
+   menubar. Words, rays and arrow draw on together, then pulse together; it fades once the visitor
+   has clicked Levo. levo.js places the arrow's tip over the icon. */
+.cue { position: absolute; z-index: 5; top: 6px; left: 0; width: 130px; height: 100px; pointer-events: none; opacity: 0; transition: opacity .5s ease; transform-origin: 40% 40%; }
 .cue.is-placed { opacity: 1; }
 .cue.is-done { opacity: 0; transition-duration: .4s; }
-.cue-t { position: absolute; left: 0; top: 0; width: 140px; text-align: center; font-family: "Bradley Hand", "Marker Felt", "Segoe Print", "Comic Sans MS", cursive; font-size: 22px; font-weight: 700; line-height: 21px; letter-spacing: .01em; color: var(--text); transform: rotate(-3deg); white-space: nowrap; }
-.cue-svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
-.cue-svg path { fill: none; stroke: var(--text); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
-.cue.is-placed .cue-line { animation: cue-draw .8s cubic-bezier(.55, 0, .3, 1) .4s forwards; }
-.cue.is-placed .cue-head { animation: cue-draw .3s ease-out 1.15s forwards; }
-.cue.is-placed .cue-rays path { animation: cue-draw .18s ease-out forwards; }
-.cue.is-placed .cue-rays path:nth-child(1) { animation-delay: 1.5s; }
-.cue.is-placed .cue-rays path:nth-child(4) { animation-delay: 1.56s; }
-.cue.is-placed .cue-rays path:nth-child(2) { animation-delay: 1.62s; }
-.cue.is-placed .cue-rays path:nth-child(5) { animation-delay: 1.68s; }
-.cue.is-placed .cue-rays path:nth-child(3) { animation-delay: 1.74s; }
-.cue.is-placed .cue-rays path:nth-child(6) { animation-delay: 1.8s; }
-.cue-rays { transform-origin: 70px 21px; transform-box: view-box; }
-.cue.is-placed .cue-rays { animation: cue-pulse 3.2s ease-in-out 2s infinite; }
-.cue.is-placed { animation: cue-bob 3.2s ease-in-out 2s infinite; }
+.cue-word { position: absolute; left: 0; top: 0; width: 100px; height: 42px; transform: rotate(-10deg); }
+.cue-t { position: absolute; left: 0; top: 0; width: 100px; text-align: center; font-family: "Bradley Hand", "Marker Felt", "Segoe Print", "Comic Sans MS", cursive; font-size: 22px; font-weight: 700; line-height: 21px; letter-spacing: .01em; color: var(--text); white-space: nowrap; }
+.cue-svg, .cue-rays { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
+.cue-svg path, .cue-rays path { fill: none; stroke: var(--text); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+/* One stroke of the pen: everything draws on over the same moment. */
+.cue.is-placed .cue-svg path, .cue.is-placed .cue-rays path { animation: cue-draw .9s cubic-bezier(.55, 0, .3, 1) .4s forwards; }
+.cue-t { clip-path: inset(0 100% 0 0); }
+.cue.is-placed .cue-t { animation: cue-write .9s cubic-bezier(.55, 0, .3, 1) .4s forwards; }
+.cue.is-placed { animation: cue-pulse 3.2s ease-in-out 1.6s infinite; }
 @keyframes cue-draw { to { stroke-dashoffset: 0; } }
-@keyframes cue-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 6px; } }
-@keyframes cue-pulse { 0%, 100% { scale: 1; opacity: 1; } 50% { scale: 1.08; opacity: .55; } }
+@keyframes cue-write { to { clip-path: inset(0 0 0 0); } }
+@keyframes cue-pulse { 0%, 100% { translate: 0 0; scale: 1; } 50% { translate: 0 5px; scale: 1.05; } }
 @media (prefers-reduced-motion: reduce) {
-	.cue-svg path { stroke-dashoffset: 0; animation: none !important; }
-	.cue.is-placed, .cue.is-placed .cue-rays { animation: none; }
+	.cue-svg path, .cue-rays path { stroke-dashoffset: 0; animation: none !important; }
+	.cue-t { clip-path: none; animation: none !important; }
+	.cue.is-placed { animation: none; }
 }
 @media (max-width: 760px) { .cue { display: none; } }
 

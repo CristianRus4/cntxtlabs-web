@@ -711,8 +711,9 @@
 	}
 
 	function renderMenubar() {
+		// As the app: while the disk is low the mark is filled with the free space beside it, from the start.
 		var b = $(".lv-mb-levo"), state = "normal";
-		if (S.alerted && low()) state = "alert";
+		if (low()) state = "alert";
 		else if (S.alerted && readyGB() > 0) state = "ready";
 		b.dataset.state = state;
 		$("[data-mbnum]").textContent = state === "alert" ? gb(S.disk.free) : "";

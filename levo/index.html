@@ -36,22 +36,22 @@
 	<link rel="apple-touch-icon" href="../apple-touch-icon.png">
 	<script>(function (r) { if (document.referrer.indexOf(location.origin + "/") === 0) r.classList.add("within"); try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") r.setAttribute("data-theme", t); } catch (e) {} })(document.documentElement);</script>
 	<script>(function (r) { r.removeAttribute("data-theme"); r.classList.add("js"); if (matchMedia("(prefers-color-scheme: dark)").matches) r.classList.add("dark"); })(document.documentElement);</script>
-	<link rel="stylesheet" href="levo.css?v=14">
-	<link rel="stylesheet" href="demo.css?v=14">
-	<link rel="stylesheet" href="desk.css?v=14">
-	<link rel="stylesheet" href="menus.css?v=14">
-	<link rel="stylesheet" href="settings.css?v=14">
-	<link rel="stylesheet" href="mobile.css?v=14">
-	<link rel="stylesheet" href="bento.css?v=14">
-	<link rel="stylesheet" href="footer.css?v=14">
-	<script src="img/symbols/symbols.js?v=14" defer></script>
-	<script src="demo.js?v=14" defer></script>
-	<script src="menus.js?v=14" defer></script>
-	<script src="settings.js?v=14" defer></script>
-	<script src="levo.js?v=14" defer></script>
-	<script src="mobile.js?v=14" defer></script>
-	<script src="bento.js?v=14" defer></script>
-	<script src="footer.js?v=14" defer></script>
+	<link rel="stylesheet" href="levo.css?v=16">
+	<link rel="stylesheet" href="demo.css?v=16">
+	<link rel="stylesheet" href="desk.css?v=16">
+	<link rel="stylesheet" href="menus.css?v=16">
+	<link rel="stylesheet" href="settings.css?v=16">
+	<link rel="stylesheet" href="mobile.css?v=16">
+	<link rel="stylesheet" href="bento.css?v=16">
+	<link rel="stylesheet" href="footer.css?v=16">
+	<script src="img/symbols/symbols.js?v=16" defer></script>
+	<script src="demo.js?v=16" defer></script>
+	<script src="menus.js?v=16" defer></script>
+	<script src="settings.js?v=16" defer></script>
+	<script src="levo.js?v=16" defer></script>
+	<script src="mobile.js?v=16" defer></script>
+	<script src="bento.js?v=16" defer></script>
+	<script src="footer.js?v=16" defer></script>
 	<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Levo","description":"Levo is a Mac menubar app that watches disk, memory, CPU and GPU. Your own coding agent works out what is safe to clean or quit, and Levo cleans only what you tick.","url":"https://cntxtlabs.co/levo","applicationCategory":"UtilitiesApplication","operatingSystem":"macOS 26 or later","publisher":{"@type":"Organization","name":"Cntxt Labs","url":"https://cntxtlabs.co/"}}</script>
 </head>
 <body>
@@ -106,11 +106,11 @@
 
 		<section class="first" aria-label="Levo">
 			<div class="cue" data-cue aria-hidden="true">
-				<span class="cue-t">click<br>here</span>
-				<svg class="cue-svg" viewBox="0 0 140 100" width="140" height="100">
-					<g class="cue-rays"><path pathLength="1" d="M34 10 L25 5"/><path pathLength="1" d="M30 21 L19 22"/><path pathLength="1" d="M34 32 L26 37"/><path pathLength="1" d="M106 9 L116 5"/><path pathLength="1" d="M110 20 L121 19"/><path pathLength="1" d="M106 32 L114 36"/></g>
-					<path class="cue-line" pathLength="1" d="M70 48 Q 94 58, 100 98"/><path class="cue-head" pathLength="1" d="M90 88 L100 99 L107 85"/>
-				</svg>
+				<div class="cue-word">
+					<span class="cue-t">click<br>here</span>
+					<svg class="cue-rays" viewBox="0 0 100 42" width="100" height="42"><path pathLength="1" d="M14 10 L5 5"/><path pathLength="1" d="M10 21 L-1 22"/><path pathLength="1" d="M14 32 L6 37"/><path pathLength="1" d="M86 9 L96 5"/><path pathLength="1" d="M90 20 L101 19"/><path pathLength="1" d="M86 32 L94 36"/></svg>
+				</div>
+				<svg class="cue-svg" viewBox="0 0 130 100" width="130" height="100"><path class="cue-line" pathLength="1" d="M56 48 Q 98 52, 108 96"/><path class="cue-head" pathLength="1" d="M98 87 L108 97 L113 83"/></svg>
 			</div>
 			<div id="levo-demo" class="demo"></div>
 		</section>

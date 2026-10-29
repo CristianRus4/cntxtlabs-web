@@ -129,8 +129,10 @@ the checkout link. The Levo window, the Buy and Download buttons and the agents'
 install prompt all read from it. The live price comes from `priceURL` (the
 price Worker's price.json, CORS open); `price` is the fallback if it fails. The
 price section shows the price with "once", "Lifetime licence for 2 Macs. No
-subscription.", a bar of the ten tiers ($4.99 to $49.99, step $5, from
-`tiers`) with the current one lit, "Then" the next tier, and "Up $5 every 10
+subscription.", a track of the ten tiers ($4.99 to $49.99, step $5, from
+`tiers`): circles on a thin line, those passed and the current one filled
+(the current a touch larger, its price above), the line filled up to it and
+drawn along on arrival, the ends' prices under it; "Then" the next tier, and "Up $5 every 10
 licences." (the owner's call, 2026-10-30). How many licences are left is not
 shown: the Worker doesn't give it. `left` and the hidden `[data-left]` line are
 ready for "N left at $4.99" if the owner wants it.
@@ -248,10 +250,13 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   panel's keycaps); while it's on, "Auto mode" as an orange Liquid Glass
   capsule with its limit and scope on hover. Gauge ticks take their own colour
   along the arc, set as each line's stroke.
-- "Click here": "click" over "here" in handwriting above the simulator, three
-  short rays on each side, and a short soft arc from under the words to Levo's
-  menubar icon (levo.js places the tip). The arrow and rays draw on, the cue
-  bobs while the rays pulse, and it fades once the icon is clicked.
+- "Click here": "click" over "here" in handwriting above the simulator, turned
+  about 10 degrees anticlockwise, three short rays on each side in the same ink,
+  and a short soft arc from just under "here" to Levo's menubar mark (levo.js
+  places the tip). Words, rays and arrow draw on together and pulse together;
+  it fades once the icon is clicked.
+- The simulator's Levo menubar item is the filled mark with the free space
+  ("16 GB") from the start, as the app shows while the disk is low.
   Phones have no simulator, so no arrow.
 - The installer is a normal desktop window (LevoMenus.window "custom", id
   levo-dmg): front on a click, resizable, dragged by its title bar, working
