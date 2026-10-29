@@ -150,8 +150,9 @@ the Mac's name (with "Auto mode" in plain orange at its end while it's on), a
 divider, the gauges, a divider, free space, "to clean up" and the five-part
 disk bar (macOS's order and palette as the app since round 14: Your Data red,
 Apps orange, System Data yellow, Ready to free green, Free faint; only the
-green fills), a
-divider, then "A balanced clean up frees 33 GB: Xcode build data, Simulators and
+green fills). The green amount and the bar's green are everything Levo can
+clean, the sum of every listed group, as the app since f39f443; ticking
+changes only the sentence's amount. Then a divider, then "A balanced clean up frees 33 GB: Xcode build data, Simulators and
 4 more.", then the status line and the action bar. The status line counts up while it
 works ("Scanning disk… 62%", then "Analysing… 40%"), and "Checked just now"
 analyses on a click. The menubar mark is 17 pt wide, as the app's. The level word is a menu (Careful, Balanced, Aggressive, Everything);

@@ -423,7 +423,7 @@
 
 	function renderDisk(free) {
 		$("[data-free]").textContent = gb(free);
-		var t = tickedGB();
+		var t = readyGB();
 		$("[data-can]").innerHTML = t > 0 ? "<b>" + gb(t) + "</b>\u2009ready" : "";
 		$("[data-ready]").innerHTML = S.analysing ? '<i class="lv-spin"></i>Analysing' : "";
 		$("[data-levellabel]").textContent = LEVO_DEMO.levels.indexOf(S.level) >= 0 ? "Smartly" : S.level;
@@ -433,18 +433,18 @@
 	// size with at least one tick for every category present (the app's rule):
 	// what's in use, then what a clean would free, in green, then free space.
 	// The app's five parts in its order (Gauges.swift DiskPart, round 15): Your Data, System Data,
-	// Apps, Ready to free (what's ticked, in green) and Free. Unticked findings stay Your Data.
+	// Apps, Ready to free (everything Levo can clean, in green, whatever is ticked) and Free.
 	// macOS's own storage palette, without its grey: System Data yellow, Your Data red, Apps orange.
 	var PARTS = { system: ["#F2B800", "#FFD60A"], yourData: ["#FF3B30", "#FF453A"], apps: ["#FF9500", "#FF9F0A"] };
 	function segments() {
-		var unticked = readyGB() - tickedGB(), d = dark() ? 1 : 0;
+		var d = dark() ? 1 : 0;
 		var part = function (id) { return sum(S.disk.used.filter(function (u) { return (u.id === "system" ? "system" : u.id === "apps" ? "apps" : "yourData") === id; }), function (u) { return u.gb; }); };
 		var segs = [
-			{ id: "yourData", label: "Your Data", gb: part("yourData") + unticked, color: PARTS.yourData[d] },
+			{ id: "yourData", label: "Your Data", gb: part("yourData"), color: PARTS.yourData[d] },
 			{ id: "system", label: "System Data", gb: part("system"), color: PARTS.system[d] },
 			{ id: "apps", label: "Apps", gb: part("apps"), color: PARTS.apps[d] }
 		];
-		var t = tickedGB();
+		var t = readyGB();
 		if (t > 0) segs.push({ id: "can", label: "Ready to free", gb: t, color: "var(--lv-ready)" });
 		segs.push({ id: "free", label: "Free", gb: Math.max(0, S.disk.total - sum(segs, function (s) { return s.gb; })), color: "" });
 		return segs;
@@ -988,7 +988,7 @@
 		renderMenubar();
 		layout();
 		placeDmg();
-		if (!S.popOpen) showNote(fill(LEVO_DEMO.notification.title, { alert: gb(S.disk.alert) }), fill(LEVO_DEMO.notification.body, { free: gb(S.disk.free), ready: gb(tickedGB()) }));
+		if (!S.popOpen) showNote(fill(LEVO_DEMO.notification.title, { alert: gb(S.disk.alert) }), fill(LEVO_DEMO.notification.body, { free: gb(S.disk.free), ready: gb(readyGB()) }));
 	}
 	// Load: the desk comes in (CSS, while .is-intro), the alert arrives, then the popover opens on its own.
 	function start() {
@@ -1155,13 +1155,13 @@
 		if (item != null) g.items[item].on = !g.items[item].on;
 		else { var on = gState(g) !== "on"; g.items.forEach(function (it) { it.on = on; }); }
 		S.level = "Selected";
-		renderGroups(); renderDisk(S.freeShown); renderBar(true); renderActions();
+		renderGroups(); renderDisk(S.freeShown); renderActions();
 	}
 	function chooseLevel(level) {
 		S.level = level;
 		if (LEVO_DEMO.levels.indexOf(level) >= 0) S.lastLevel = level;
 		applyLevel(S.groups, level);
-		renderGroups(); renderDisk(S.freeShown); renderBar(true); renderActions();
+		renderGroups(); renderDisk(S.freeShown); renderActions();
 	}
 
 	// Clean up: the app's confirm, inside the popover. The first time, the
@@ -2224,7 +2224,7 @@
 	// (crisp at any scale) rather than a picture. Call after mount.
 	var PARTS_API = {
 		disk: function () {
-			var owners = allocate(segments(), TICKS), t = tickedGB();
+			var owners = allocate(segments(), TICKS), t = readyGB();
 			return '<div class="lv-dhead lv-namerow"><span class="lv-sec">' + sym("laptopcomputer", 14) + '</span><b>MacBook Pro</b><span class="lv-flex"></span></div>' +
 				'<div class="lv-sep"></div>' +
 				'<section class="lv-disk"><div class="lv-hero"><span class="lv-free lv-num">' + gb(S.disk.free) + '</span><span class="lv-sec">free</span><span class="lv-flex"></span>' +
