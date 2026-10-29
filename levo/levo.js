@@ -5,6 +5,9 @@
 (function () {
 	"use strict";
 
+	// The price, in one place. When it rises, change amount and nothing else.
+	var PRICE = { amount: "$5", term: "Lifetime" };
+
 	var root = document.documentElement;
 	var D = window.LevoDemo;
 	var media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -24,6 +27,11 @@
 		try { if (stored) localStorage.setItem("theme", stored); else localStorage.removeItem("theme"); } catch (e) {}
 		applyTheme();
 	});
+
+	Array.prototype.forEach.call(document.querySelectorAll("[data-buy]"), function (a) { a.textContent = "Buy for " + PRICE.amount; });
+	Array.prototype.forEach.call(document.querySelectorAll("[data-price]"), function (el) { el.textContent = PRICE.amount; });
+	Array.prototype.forEach.call(document.querySelectorAll("[data-term]"), function (el) { el.textContent = PRICE.term; });
+	Array.prototype.forEach.call(document.querySelectorAll("[data-price-line]"), function (el) { el.hidden = false; });
 
 	// Download and Buy are placeholders until the links exist.
 	document.addEventListener("click", function (e) {

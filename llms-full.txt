@@ -145,7 +145,7 @@ How it works. Levo watches disk, memory, CPU and GPU, against limits you set. Yo
 
 Levo works with any agent. It starts the CLI you already use, in the background, on your own plan or key: claude, codex, gemini, cursor-agent, copilot, opencode, qwen, kimi, grok, or any other CLI. Every number in Settings is yours: thresholds, check interval, agent limits and protected folders.
 
-There is no Levo account and no Levo server. Only the licence check leaves your Mac. The agent runs in a sandbox and can't delete anything, and protected folders stay hidden from it. Levo is free to watch and suggest; a licence unlocks cleaning.
+There is no Levo account and no Levo server. Only the licence check leaves your Mac. The agent runs in a sandbox and can't delete anything, and protected folders stay hidden from it. Levo is free to watch and suggest; a lifetime licence unlocks cleaning.
 
 - Page: https://cntxtlabs.co/levo
 - Platforms: Mac, macOS 26 or later

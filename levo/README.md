@@ -31,7 +31,14 @@ browser.
 Below 760px wide the scene switches to a compact layout: the menubar and the
 popover, without the widgets.
 
+## Price
+
+Levo is a lifetime licence. Its price lives in one place, `PRICE` at the top of
+`levo.js`; the Buy buttons and the price line read from it. When the price
+rises, change `amount` there and nothing else. The page never says when or by
+how much the price rises, or how many licences are left at a price.
+
 ## Placeholders
 
-`[DOWNLOAD LINK]`, `[BUY LINK]` and `[PRICE]` in `index.html` wait for the real
-download, checkout and price. Until then the buttons do nothing.
+`[DOWNLOAD LINK]` and `[BUY LINK]` in `index.html` wait for the real download and
+the Lemon Squeezy checkout. Until then the buttons do nothing.
