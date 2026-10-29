@@ -201,7 +201,7 @@
 	var names = {
 		left: "left/", txtpod: "txtpod/", safeplate: "safeplate/", camping: "camping/",
 		aussie: "aussiecamps/", nosnus: "nosnus/", ftnss: "ftnss/", bites: "bites/",
-		notsobusy: "notsobusy/", about: "about/", contact: "contact/", home: ""
+		notsobusy: "notsobusy/", levo: "levo/", about: "about/", contact: "contact/", home: ""
 	};
 
 	document.addEventListener("keydown", function (e) {
@@ -540,6 +540,7 @@
 			{ name: "AussieCamps", hint: "Australia", find: "camping", run: go("aussiecamps/") },
 			{ name: "txtpod", hint: "iPhone, iPad, web", find: "podcast audio", run: go("txtpod/") },
 			{ name: "NoSnus", hint: "iPhone, iPad", find: "quit pouches", run: go("nosnus/") },
+			{ name: "Levo", hint: "Mac", find: "disk clean memory menubar agent", run: go("levo/") },
 			{ name: "Contact", hint: "Page", find: "email support press", run: go("contact/") },
 			{ name: "Write an email", hint: EMAIL, find: "mail contact", run: function () { window.location.href = "mailto:" + EMAIL; } }
 		];

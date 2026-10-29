@@ -137,6 +137,20 @@ There is no account, no email and no feed. NoSnus supports a behavioural plan an
 - App Store: https://apps.apple.com/us/app/quit-zyn-velo-snus-nosnus/id6791343296
 - Platforms: iPhone, iPad
 
+### Levo
+
+Levo watches disk, memory, CPU and GPU from the menubar. When one runs high, your own agent has already worked out what's safe to clean.
+
+How it works. Levo watches disk, memory, CPU and GPU, against limits you set. Your agent looks first: before the alert, it reads what's filling your Mac, read-only and in a sandbox. You tick what's safe to clean or quit, with sizes and reasons. Levo cleans only what you ticked, and anything that can't be rebuilt goes to the Trash.
+
+Levo works with any agent. It starts the CLI you already use, in the background, on your own plan or key: claude, codex, gemini, cursor-agent, copilot, opencode, qwen, kimi, grok, or any other CLI. Every number in Settings is yours: thresholds, check interval, agent limits and protected folders.
+
+There is no Levo account and no Levo server. Only the licence check leaves your Mac. The agent runs in a sandbox and can't delete anything, and protected folders stay hidden from it. Levo is free to watch and suggest; a licence unlocks cleaning.
+
+- Page: https://cntxtlabs.co/levo
+- Platforms: Mac, macOS 26 or later
+- Needs: an agent CLI for suggestions; Full Disk Access is recommended
+
 ### More iOS apps
 
 A few smaller apps, each made for one everyday job in health, habits or time. They run on iPhone, they don't need an account, and they try to stay out of your way.

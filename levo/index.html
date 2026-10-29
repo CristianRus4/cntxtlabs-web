@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title>Levo · Cntxt Labs</title>
+	<meta name="description" content="Levo is a Mac menubar app that watches disk, memory, CPU and GPU. Your own coding agent works out what is safe to clean or quit, and Levo cleans only what you tick.">
+	<meta name="keywords" content="Levo, Mac cleaner, free up disk space Mac, menubar system monitor, Mac memory monitor, Claude Code, Codex, Gemini CLI, coding agent, macOS 26">
+	<meta name="author" content="Cntxt Labs">
+	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+	<link rel="canonical" href="https://cntxtlabs.co/levo">
+	<meta name="theme-color" content="#F7F7F7" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#070707" media="(prefers-color-scheme: dark)">
+
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="Cntxt Labs">
+	<meta property="og:locale" content="en_NZ">
+	<meta property="og:url" content="https://cntxtlabs.co/levo">
+	<meta property="og:title" content="Levo">
+	<meta property="og:description" content="Levo is a Mac menubar app that watches disk, memory, CPU and GPU. Your own coding agent works out what is safe to clean or quit, and Levo cleans only what you tick.">
+	<meta property="og:image" content="https://cntxtlabs.co/og.png">
+	<meta property="og:image:type" content="image/png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta property="og:image:alt" content="Cntxt Labs, with its cube mark">
+
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Levo">
+	<meta name="twitter:description" content="Levo is a Mac menubar app that watches disk, memory, CPU and GPU. Your own coding agent works out what is safe to clean or quit, and Levo cleans only what you tick.">
+	<meta name="twitter:image" content="https://cntxtlabs.co/og.png">
+	<meta name="twitter:image:alt" content="Cntxt Labs, with its cube mark">
+
+	<link rel="alternate" type="text/markdown" href="https://cntxtlabs.co/llms.txt" title="llms.txt: this site in one file, for language models">
+	<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+	<link rel="icon" href="../favicon.png" sizes="32x32">
+	<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+	<script>(function (r) { if (document.referrer.indexOf(location.origin + "/") === 0) r.classList.add("within"); try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") r.setAttribute("data-theme", t); } catch (e) {} })(document.documentElement);</script>
+	<script>(function (r) { var t = r.getAttribute("data-theme"); r.classList.add("js"); if (t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) r.classList.add("dark"); })(document.documentElement);</script>
+	<link rel="stylesheet" href="levo.css">
+	<link rel="stylesheet" href="demo.css">
+	<script src="demo.js" defer></script>
+	<script src="levo.js" defer></script>
+	<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Levo","description":"Levo is a Mac menubar app that watches disk, memory, CPU and GPU. Your own coding agent works out what is safe to clean or quit, and Levo cleans only what you tick.","url":"https://cntxtlabs.co/levo","applicationCategory":"UtilitiesApplication","operatingSystem":"macOS 26 or later","publisher":{"@type":"Organization","name":"Cntxt Labs","url":"https://cntxtlabs.co/"}}</script>
+</head>
+<body>
+
+	<header class="nav">
+		<div class="nav-in">
+			<a class="brand" href="./" aria-label="Levo"><img src="img/icon-96.png" width="28" height="28" alt="">Levo</a>
+			<nav class="nav-links" aria-label="Levo">
+				<a href="#how">How it works</a>
+				<a href="#agents">Agents</a>
+				<a href="#privacy">Privacy</a>
+			</nav>
+			<div class="nav-end">
+				<button type="button" class="theme" data-theme-toggle aria-label="Switch appearance"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor" stroke="none"/></svg></button>
+				<!-- PLACEHOLDER: replace [DOWNLOAD LINK] with the real download URL. -->
+				<a class="btn btn-sm" href="[DOWNLOAD LINK]" data-placeholder>Download</a>
+			</div>
+		</div>
+	</header>
+
+	<main>
+
+		<section class="hero">
+			<h1 class="rv">Your Mac, lighter.</h1>
+			<p class="lede rv">Levo watches disk, memory, CPU and GPU from the menubar. When one runs high, your own agent has already worked out what&rsquo;s safe to clean.</p>
+			<div class="ctas rv">
+				<a class="btn" href="[DOWNLOAD LINK]" data-placeholder>Download</a>
+				<!-- PLACEHOLDER: replace [BUY LINK] with the checkout URL and [PRICE] with the price. -->
+				<a class="btn btn-quiet" href="[BUY LINK]" data-placeholder>Buy for [PRICE]</a>
+			</div>
+			<div class="stage rv">
+				<div class="glow" aria-hidden="true"></div>
+				<div id="levo-demo" class="demo"></div>
+			</div>
+		</section>
+
+		<section class="sect" id="how">
+			<h2 class="rv">How it works</h2>
+			<ol class="steps">
+				<li class="rv" data-tile="indigo" data-icon="speed"><b>Watches</b><p>Disk, memory, CPU and GPU, against limits you set.</p></li>
+				<li class="rv" data-tile="purple" data-icon="terminal"><b>Your agent looks first</b><p>Before the alert, it reads what&rsquo;s filling your Mac. Read-only, in a sandbox.</p></li>
+				<li class="rv" data-tile="green" data-icon="checkCircle"><b>You tick</b><p>What&rsquo;s safe to clean or quit, with sizes and reasons.</p></li>
+				<li class="rv" data-tile="orange" data-icon="trash"><b>Levo cleans</b><p>Only what you ticked. Anything that can&rsquo;t be rebuilt goes to the Trash.</p></li>
+			</ol>
+		</section>
+
+		<section class="sect" id="agents">
+			<h2 class="rv">Works with any agent</h2>
+			<p class="lede rv">Levo starts the CLI you already use, in the background, on your own plan or key.</p>
+			<ul class="chips rv">
+				<li>claude</li>
+				<li>codex</li>
+				<li>gemini</li>
+				<li>cursor-agent</li>
+				<li>copilot</li>
+				<li>opencode</li>
+				<li>qwen</li>
+				<li>kimi</li>
+				<li>grok</li>
+				<li class="chip-any">any CLI</li>
+			</ul>
+		</section>
+
+		<section class="sect" id="settings">
+			<h2 class="rv">Every number is yours</h2>
+			<div class="settings rv" id="levo-settings"></div>
+		</section>
+
+		<section class="sect" id="privacy">
+			<h2 class="rv">No account. No server.</h2>
+			<ul class="facts">
+				<li class="rv" data-icon="user"><b>No Levo account</b><p>Nothing to sign up for.</p></li>
+				<li class="rv" data-icon="cloudOff"><b>Stays on your Mac</b><p>Only the licence check leaves it.</p></li>
+				<li class="rv" data-icon="shield"><b>Read-only agent</b><p>It runs in a sandbox and can&rsquo;t delete. Protected folders stay hidden from it.</p></li>
+			</ul>
+		</section>
+
+		<section class="sect get" id="get">
+			<img class="get-icon rv" src="img/icon-256.png" width="128" height="128" alt="">
+			<h2 class="rv">Levo</h2>
+			<p class="lede rv">Free to watch and suggest. A licence unlocks cleaning.</p>
+			<div class="ctas rv">
+				<a class="btn" href="[DOWNLOAD LINK]" data-placeholder>Download</a>
+				<a class="btn btn-quiet" href="[BUY LINK]" data-placeholder>Buy for [PRICE]</a>
+			</div>
+			<ul class="reqs rv">
+				<li>macOS 26 or later</li>
+				<li>An agent CLI, for suggestions</li>
+				<li>Full Disk Access, recommended</li>
+			</ul>
+		</section>
+
+	</main>
+
+	<footer class="foot">
+		<a href="../">Cntxt Labs</a>
+		<a href="../contact/">Contact</a>
+	</footer>
+
+</body>
+</html>
