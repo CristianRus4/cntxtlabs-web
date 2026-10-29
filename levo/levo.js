@@ -37,7 +37,7 @@
 	all("[data-buy]").forEach(function (a) { a.href = LEVO.buy; if (placeholder(LEVO.buy)) a.setAttribute("data-placeholder", ""); });
 
 	// The price and everything that names it: the big price, the Buy buttons, the Levo window in
-	// the demo, and the tiers (ten steps on a line, those passed and the current one filled, its price above, the ends under).
+	// the demo, and the tiers (one bar of ten steps, filled to the current one, its price above, the ends under).
 	function money(n) { return "$" + n.toFixed(2); }
 	function showPrice() {
 		var T = LEVO.tiers, now = parseFloat(LEVO.price.replace(/[^0-9.]/g, ""));
@@ -45,11 +45,9 @@
 		all("[data-price], [data-lprice]").forEach(function (el) { el.textContent = LEVO.price; });
 		all("[data-buy], [data-lbuy]").forEach(function (a) { a.textContent = "Buy for " + LEVO.price; });
 		all("[data-tiers-bar]").forEach(function (bar) {
-			var html = "";
-			for (var i = 0; i <= steps; i++) {
-				if (i < steps) html += '<i class="tiers-seg' + (i < at ? " is-on" : "") + '" style="--i:' + i + ";left:calc(" + (i / steps * 100) + "% + 9px);width:calc(" + (100 / steps) + '% - 18px)"></i>';
-				html += '<i class="tiers-dot' + (i < at ? " is-past" : i === at ? " is-now" : "") + '" style="--i:' + i + ";left:" + (i / steps * 100) + '%">' + (i === at ? "<b>" + LEVO.price + "</b>" : "") + "</i>";
-			}
+			var fill = (at + 1) / (steps + 1) * 100, html = '<i class="tiers-fill" style="--w:' + fill + '%"></i>';
+			for (var i = 1; i <= steps; i++) html += '<i class="tiers-notch' + (i <= at ? " is-on" : "") + '" style="left:' + (i / (steps + 1) * 100) + '%"></i>';
+			html += '<b class="tiers-now" style="left:clamp(20px, ' + fill + '%, calc(100% - 20px))">' + LEVO.price + "</b>";
 			bar.innerHTML = '<span class="tiers-track">' + html + '</span><span class="tiers-ends"><span>' + money(T.first) + "</span><span>" + money(T.last) + "</span></span>";
 			bar.setAttribute("aria-label", "The price rises from " + money(T.first) + " to " + money(T.last) + ". It is " + LEVO.price + " now.");
 		});

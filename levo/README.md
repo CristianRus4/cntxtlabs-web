@@ -130,9 +130,9 @@ install prompt all read from it. The live price comes from `priceURL` (the
 price Worker's price.json, CORS open); `price` is the fallback if it fails. The
 price section shows the price with "once", "Lifetime licence for 2 Macs. No
 subscription.", a track of the ten tiers ($4.99 to $49.99, step $5, from
-`tiers`): circles on a thin line, those passed and the current one filled
-(the current a touch larger, its price above), the line filled up to it and
-drawn along on arrival, the ends' prices under it; "Then" the next tier, and "Up $5 every 10
+`tiers`): one capsule bar, never broken, filled from the left to the current
+step with hairline notches at each step, the current price above the fill's
+end, the ends' prices under it, the fill growing in on arrival; "Then" the next tier, and "Up $5 every 10
 licences." (the owner's call, 2026-10-30). How many licences are left is not
 shown: the Worker doesn't give it. `left` and the hidden `[data-left]` line are
 ready for "N left at $4.99" if the owner wants it.
