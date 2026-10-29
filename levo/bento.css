@@ -1,88 +1,28 @@
 /*
- * The bento below the Mac (bento.js draws the tiles). Each replica uses the app's
- * round 7 values at 1 pt = 1 px (Design/Raycast.swift, CntxtUI's tokens,
- * Popover/*.swift); bento.js zooms each panel to its tile. Light by default;
- * html.dark switches every token.
+ * The bento below the Mac (bento.js builds the tiles). Each tile is a close-up cut
+ * from the real app's renders (img/tiles, light and dark), in a frame that keeps
+ * the crop's own shape. Light by default; html.dark swaps every picture at once.
  */
 
 :root {
 	--bt-tile: #FFFFFF;
 	--bt-tile-rim: rgba(0, 0, 0, 0.06);
 	--bt-rise: cubic-bezier(.22, 1, .36, 1);
+	/* The popover's fill where the disk bar sits (sampled from the renders). */
+	--bt-panel: #F4F4F4;
+	--bt-frame-shadow: 0 0 0 1px rgba(0, 0, 0, 0.07), 0 12px 32px -16px rgba(0, 0, 0, 0.22);
 }
 html.dark {
 	--bt-tile: #0F0F10;
 	--bt-tile-rim: rgba(255, 255, 255, 0.08);
+	--bt-panel: #202020;
+	--bt-frame-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09), 0 12px 32px -16px rgba(0, 0, 0, 0.7);
 }
 
 .bento {
-	/* RC (Raycast.swift), light */
-	--fg: 0 0 0;
-	--sec: rgb(0 0 0 / 0.6);
-	--sep: rgb(0 0 0 / 0.1);
-	--border: rgb(0 0 0 / 0.2);
-	--keycap: rgb(0 0 0 / 0.1);
-	--bar: rgba(0, 0, 0, 0.03);
-	--win-top: #F7F7F7;
-	--win-bot: #F0F0F0;
-	--panel: #FFFFFF;
-	--scrim: rgba(0, 0, 0, 0.12);
-	--sheet-shadow: rgba(0, 0, 0, 0.12);
-	--tick-off: rgba(0, 0, 0, 0.1);
-	--ready: #008A66;
-	/* CntxtUI: SurfaceFill.rest is secondary (black 50 %) at 4.5 % */
-	--surface: rgba(0, 0, 0, 0.0225);
-	--pop-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.05), 0 12px 40px -12px rgba(0, 0, 0, 0.16), 0 24px 64px -24px rgba(0, 0, 0, 0.2);
-	/* IconTile colours (RC and GroupIcon) */
-	--t-blue: #138AF2;
-	--t-orange: #C75D07;
-	--t-gray: #6E6E73;
-	--t-sysgray: #8E8E93;
-	/* DiskPalette (Gauges.swift) */
-	--dk-apps: #1F7AE0;
-	--dk-yourData: #6A3DEC;
-	--dk-developer: #6A3DEC;
-	--dk-other: #9C2FB8;
-	--dk-media: #C2307E;
-	--dk-documents: #D99A00;
-	--dk-system: #C2307E;
-	--dk-ready: var(--ready);
-	--dk-free: rgba(0, 0, 0, 0.09);
-
-	--spring: cubic-bezier(.34, 1.56, .64, 1);
-	--snappy: cubic-bezier(.2, .85, .25, 1);
-
 	display: block;
 	padding: 120px 20px 0;
 	text-align: left;
-}
-html.dark .bento {
-	--fg: 255 255 255;
-	--sec: rgb(255 255 255 / 0.6);
-	--sep: rgb(255 255 255 / 0.1);
-	--border: rgb(255 255 255 / 0.2);
-	--keycap: rgb(255 255 255 / 0.1);
-	--bar: rgba(255, 255, 255, 0.05);
-	--win-top: #232323;
-	--win-bot: #1B1B1B;
-	--panel: #2A2A2A;
-	--scrim: rgba(0, 0, 0, 0.35);
-	--sheet-shadow: rgba(0, 0, 0, 0.35);
-	--tick-off: rgba(255, 255, 255, 0.12);
-	--ready: #59D499;
-	--surface: rgba(255, 255, 255, 0.025);
-	--pop-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 12px 40px -12px rgba(0, 0, 0, 0.6), 0 24px 64px -24px rgba(0, 0, 0, 0.7);
-	--t-blue: #56C2FF;
-	--t-orange: #FF9217;
-	--t-sysgray: #98989D;
-	--dk-apps: #4FA3F8;
-	--dk-yourData: #A485FF;
-	--dk-developer: #A485FF;
-	--dk-other: #D06BE6;
-	--dk-media: #EC5FA8;
-	--dk-documents: #FFC531;
-	--dk-system: #EC5FA8;
-	--dk-free: rgba(255, 255, 255, 0.1);
 }
 
 /* ------------------------------------------------------------ The grid */
@@ -92,26 +32,24 @@ html.dark .bento {
 	margin: 0 auto;
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
-	grid-auto-rows: 320px;
+	grid-auto-rows: 272px;
 	gap: 16px;
 	grid-template-areas:
 		"disk    disk    gauges  gauges"
-		"summary summary acc     agents"
-		"sheet   sheet   hold    hold"
-		"sheet   sheet   trash   trash"
-		"licence macos   levels  levels";
+		"list    list    confirm confirm"
+		"list    list    confirm confirm"
+		"agents  agents  actions actions"
+		"levels  levels  actions actions";
 }
 .bt-tile[data-tile="disk"] { grid-area: disk; }
 .bt-tile[data-tile="gauges"] { grid-area: gauges; }
-.bt-tile[data-tile="summary"] { grid-area: summary; }
-.bt-tile[data-fact-tile="accounts"] { grid-area: acc; }
-.bt-tile[data-fact-tile="agents"] { grid-area: agents; }
-.bt-tile[data-tile="sheet"] { grid-area: sheet; }
-.bt-tile[data-tile="hold"] { grid-area: hold; }
-.bt-tile[data-tile="trash"] { grid-area: trash; }
-.bt-tile[data-fact-tile="licence"] { grid-area: licence; }
-.bt-tile[data-fact-tile="macos"] { grid-area: macos; }
+.bt-tile[data-tile="list"] { grid-area: list; }
+.bt-tile[data-tile="confirm"] { grid-area: confirm; }
+.bt-tile[data-tile="agents"] { grid-area: agents; }
+.bt-tile[data-tile="actions"] { grid-area: actions; }
 .bt-tile[data-tile="levels"] { grid-area: levels; }
+/* Before bento.js swaps in the pictures, the page's own markup stays out of sight. */
+.bt-grid > :not(.bt-shot) { display: none; }
 
 .bt-tile {
 	position: relative;
@@ -138,33 +76,39 @@ html.dark .bento {
 }
 .bt-stage {
 	position: absolute;
-	inset: 56px 0 0;
+	inset: 60px 24px 24px;
 	display: flex;
 	justify-content: center;
-	align-items: flex-end;
-	overflow: hidden;
+	align-items: center;
+	container-type: size;
 	pointer-events: none;
 	-webkit-user-select: none;
 	user-select: none;
-	transition: opacity .3s ease;
 }
-.bt-tile[data-tile="summary"] .bt-stage { padding-bottom: 26px; }
-.bt-tile[data-tile="levels"] .bt-stage { align-items: center; padding-bottom: 16px; }
-.bt-tile[data-tile="sheet"] .bt-stage { align-items: center; padding-bottom: 16px; }
 
-/* A fact: its label, then the number as type. */
-.bt-num {
-	position: absolute;
-	left: 20px;
-	bottom: 10px;
-	font-family: var(--round);
-	font-size: 136px;
-	font-weight: 700;
-	letter-spacing: -0.05em;
-	line-height: 1;
-	font-variant-numeric: tabular-nums;
-	color: var(--text);
+/* The picture's frame: the crop's own shape, as large as the stage allows. */
+.bt-frame {
+	position: relative;
+	flex: none;
+	width: min(100cqw, 100cqh * var(--w) / var(--h));
+	/* One scale for every crop (0.7 px a render pixel), so the app's type matches from tile to tile. */
+	max-width: calc(var(--w) * 0.7px);
+	aspect-ratio: var(--w) / var(--h);
+	overflow: hidden;
+	border-radius: 14px;
+	background: var(--bt-panel);
+	box-shadow: var(--bt-frame-shadow);
+	transform: translateZ(0);
 }
+.bt-zoom, .bt-layer { position: absolute; inset: 0; }
+.bt-layer img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+html.dark .bt-light, html:not(.dark) .bt-dark { display: none; }
+
+/* A slow close-up that settles as the tile plays. */
+.bt-zoom { transform: scale(1.06); transform-origin: 50% 0; }
+.bt-tile[data-tile="gauges"] .bt-zoom { transform-origin: 50% 50%; }
+.bt-tile[data-tile="levels"] .bt-zoom { transform-origin: 50% 50%; }
+.is-play .bt-zoom { transform: none; transition: transform 2.6s var(--bt-rise); }
 
 /* Arrival (getleft-web): rise 24px and fade, eased out; tiles arriving together stagger. */
 .js .bento .bt-tile {
@@ -174,256 +118,57 @@ html.dark .bento {
 }
 .js .bento .bt-tile.is-in { opacity: 1; transform: none; }
 
-/* ------------------------------------------------------------ The app's pieces (1 pt = 1 px) */
-
-.bt-pop {
-	position: relative;
-	flex: none;
-	width: 360px;
-	overflow: hidden;
-	border-radius: 18px;
-	background: linear-gradient(180deg, var(--win-top), var(--win-bot));
-	box-shadow: var(--pop-shadow);
-	color: rgb(var(--fg));
-	font-family: var(--round);
-	font-size: 13px;
-	line-height: 1.2;
-	text-align: left;
-	-webkit-font-smoothing: antialiased;
-}
-.bt-pop .lv-sym { display: block; flex-shrink: 0; overflow: visible; }
-/* Cropped: the panel runs on past the tile's bottom edge. */
-.bt-cut-bottom { border-bottom-left-radius: 0; border-bottom-right-radius: 0; padding-bottom: 40px; margin-bottom: -16px; }
-.bt-sec { color: var(--sec); }
-.bt-flex { flex: 1; min-width: 6px; }
-.bt-sep { height: 1px; background: var(--sep); }
-.bt-q { display: inline-flex; align-items: center; padding: 3px 6px; border-radius: 14px; }
-
-/* IconTile */
-.bt-ic {
-	flex: none;
-	width: var(--s);
-	height: var(--s);
-	border-radius: calc(var(--s) / 4);
-	background: linear-gradient(180deg, color-mix(in srgb, var(--c), #fff 8%), var(--c));
-	box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.15);
-	color: #fff;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-}
-
-/* RCCheckbox */
-.bt-cb {
-	position: relative;
-	flex: none;
-	width: 14px;
-	height: 14px;
-	border-radius: 4px;
-	background-color: rgb(var(--fg) / 0.1);
-	color: #fff;
-	transition: background-color .15s ease var(--cd, 0ms);
-}
-.bt-cb i { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(.4); }
-.bt-cb[data-start="on"], .bt-cb[data-start="mixed"],
-.is-play .bt-cb[data-end="on"], .is-play .bt-cb[data-end="mixed"] { background-color: var(--accent, #138AF2); }
-.bt-cb[data-start="on"] .bt-cb-on, .bt-cb[data-start="mixed"] .bt-cb-mix { opacity: 1; transform: none; }
-.is-play .bt-cb[data-start="off"][data-end="on"] .bt-cb-on,
-.is-play .bt-cb[data-start="off"][data-end="mixed"] .bt-cb-mix {
-	opacity: 1;
-	transform: none;
-	transition: opacity .15s ease var(--cd, 0ms), transform .3s var(--spring) var(--cd, 0ms);
-}
-
-/* Keycaps */
-.bt-caps { display: inline-flex; gap: 2px; }
-.bt-cap { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 0 4px; font-weight: 500; line-height: 1; }
-.bt-cap-sm { min-width: 18px; height: 18px; border-radius: 5px; font-size: 10px; background: var(--keycap); }
-.bt-cap-md { min-width: 20px; height: 20px; border-radius: 6px; font-size: 11.5px; background: var(--keycap); }
-.bt-cap-fr { min-width: 20px; height: 20px; border-radius: 6px; font-size: 11.5px; box-shadow: inset 0 0 0 1px var(--border); color: var(--sec); }
-
-/* The action bar */
-.bt-bar { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 10px; background: var(--bar); box-shadow: inset 0 1px 0 var(--sep); }
-.bt-status { font-size: 12px; color: var(--sec); white-space: nowrap; }
-.bt-act { gap: 6px; }
-.bt-act b { font-size: 12px; font-weight: 600; white-space: nowrap; }
-
-/* The disk */
-.bt-disk { padding: 14px 16px; }
-.bt-dhead { display: flex; align-items: center; gap: 8px; }
-.bt-dhead b { font-weight: 500; }
-.bt-hero { display: flex; align-items: baseline; gap: 6px; margin-top: 8px; white-space: nowrap; }
-.bt-free { font-size: 24px; font-weight: 600; letter-spacing: -0.3px; font-variant-numeric: tabular-nums; line-height: 1.15; }
-.bt-can { display: inline-flex; align-items: baseline; gap: 4px; color: var(--ready); }
-.bt-can b { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.bt-ticks { display: flex; gap: 2px; margin-top: 12px; }
-.bt-ticks i { flex: 1; height: 18px; border-radius: 1.5px; background-color: var(--dk-free); transition: background-color .3s ease var(--d); }
-.is-play .bt-ticks i, .bt-ticks.is-full i { background-color: var(--c); }
-
-/* The gauges */
-.bt-gauges { display: flex; padding: 10px 8px; }
-.bt-gauge { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 0; }
-.bt-vsep { flex: none; width: 1px; background: var(--sep); }
-.bt-dial { position: relative; width: 64px; height: 64px; }
-.bt-dial svg { display: block; width: 64px; height: 64px; overflow: visible; }
-.bt-dial line { stroke: var(--tick-off); stroke-width: 2.2857; stroke-linecap: round; }
-.bt-dial line.on { stroke: var(--on); }
-.bt-dnum { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-.bt-dn { line-height: 1; letter-spacing: -0.2px; white-space: nowrap; }
-.bt-dn span { font-size: 17.92px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.bt-dn small { margin-left: 1px; font-size: 12.16px; color: var(--sec); }
-.bt-glabel { font-size: 12px; font-weight: 500; color: rgb(var(--fg) / 0.85); }
-
-/* Summary */
-.bt-sumwrap { padding: 0 8px 8px; }
-.bt-sum { display: flex; flex-direction: column; gap: 10px; padding: 14px 8px 6px; }
-.bt-flow { display: flex; flex-wrap: wrap; align-items: center; column-gap: 4px; row-gap: 6px; }
-.bt-w { color: rgb(var(--fg) / 0.85); line-height: 16px; white-space: nowrap; }
-.bt-strong { color: rgb(var(--fg)); font-weight: 500; font-variant-numeric: tabular-nums; }
-.bt-glue { display: inline-flex; align-items: center; white-space: nowrap; }
-.bt-punct { color: rgb(var(--fg) / 0.85); }
-.bt-chip { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px 0 4px; box-sizing: border-box; border-radius: 11px; background: var(--surface); white-space: nowrap; }
-.bt-chip-bare { padding-left: 8px; }
-.bt-chip b { font-weight: 500; }
-.bt-chip .bt-sec { font-variant-numeric: tabular-nums; }
-.bt-showall { margin: 0 0 4px 2px; font-size: 12px; color: var(--sec); }
-
-/* Lists (Ready to free) */
-.bt-list { position: relative; padding: 0 8px 8px; }
-.bt-head { display: flex; align-items: center; gap: 8px; height: 33px; padding: 12px 8px 6px; box-sizing: border-box; font-size: 12px; font-weight: 500; color: var(--sec); }
-.bt-quiet { display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 6px; font-size: 12px; font-weight: 400; }
-.bt-grow { display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 8px; border-radius: 14px; }
-.bt-gtext { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.bt-gname, .bt-fname { font-size: 13px; line-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.bt-gsub { font-size: 11px; line-height: 13px; color: var(--sec); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.bt-size { font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.bt-chev { flex: none; display: inline-flex; width: 16px; height: 16px; align-items: center; justify-content: center; color: var(--sec); transition: transform .2s var(--snappy); }
-.bt-chev.is-open { transform: rotate(90deg); }
-.bt-chev-room { flex: none; width: 16px; }
-.bt-mid { display: flex; }
-.bt-mid > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-.bt-mid > span:last-child { flex: none; }
-.bt-frow { display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 8px 0 33px; border-radius: 14px; }
-/* RCTag, neutral: 20 tall, 12 / 500, fg 10 % */
-.bt-tag { flex: none; display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 6px; background: rgb(var(--fg) / 0.1); font-size: 12px; font-weight: 500; white-space: nowrap; }
-
-/* Settings card (SettingsKit): fill fg 2.5 %, an fg 5 % rim, radius 12; the row 12 inside, 46 tall at least. */
-.bt-win { width: 392px; padding: 16px; box-sizing: border-box; }
-.bt-card { border-radius: 12px; background: rgb(var(--fg) / 0.025); box-shadow: inset 0 0 0 1px rgb(var(--fg) / 0.05); }
-.bt-srow { display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 12px; box-sizing: border-box; }
-.bt-slabel { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
-.bt-info { padding: 2px; color: var(--sec); }
-/* RCSegmented: segments 2 apart, 10 inside, 12 / 500; the chosen one on white (fg 10 % dark) in the control shape. */
-.bt-seg { position: relative; flex: none; display: flex; gap: 2px; height: 28px; }
-.bt-segi { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 0 10px; font-size: 12px; font-weight: 500; color: var(--sec); white-space: nowrap; transition: color .3s ease; }
-.bt-segi[data-i="0"] { width: 62px; }
-.bt-segi[data-i="1"] { width: 72px; }
-.bt-segi[data-i="2"] { width: 84px; }
-.bt-thumb { position: absolute; top: 0; bottom: 0; left: 0; width: 62px; border-radius: 14px; background: #fff; box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.15), 0 0 0 0.5px rgba(0, 0, 0, 0.04); transition: transform .5s var(--bt-rise), width .5s var(--bt-rise); }
-html.dark .bt-thumb { background: rgb(255 255 255 / 0.1); box-shadow: none; }
-.bt-seg[data-level="0"] .bt-thumb { transform: none; width: 62px; }
-.bt-seg[data-level="1"] .bt-thumb { transform: translateX(64px); width: 72px; }
-.bt-seg[data-level="2"] .bt-thumb { transform: translateX(138px); width: 84px; }
-.bt-seg[data-level="0"] [data-i="0"], .bt-seg[data-level="1"] [data-i="1"], .bt-seg[data-level="2"] [data-i="2"] { color: rgb(var(--fg)); }
-
 /* ------------------------------------------------------------ What plays */
 
-/* 3. Summary: words in, then each chip pops in on a spring. */
-.bt-tile[data-tile="summary"] .bt-w,
-.bt-tile[data-tile="summary"] .bt-showall { opacity: 0; transform: translateY(3px); transition: opacity .3s ease calc(var(--i) * 45ms), transform .4s var(--bt-rise) calc(var(--i) * 45ms); }
-.bt-tile[data-tile="summary"] .bt-glue { opacity: 0; transform: scale(.72); transition: opacity .2s ease calc(var(--i) * 45ms), transform .45s var(--spring) calc(var(--i) * 45ms); }
-.bt-tile[data-tile="summary"].is-play .bt-w,
-.bt-tile[data-tile="summary"].is-play .bt-showall,
-.bt-tile[data-tile="summary"].is-play .bt-glue { opacity: 1; transform: none; }
+/* A second render of the same view crossfades in (the disk's hover tip, a tick changing). */
+.bt-l-alt { opacity: 0; transition: opacity .5s ease; }
+.is-alt .bt-l-alt { opacity: 1; }
 
-/* 4. A hold: the group opens, its items come in and tick, and the held one shows who uses it. */
-.bt-tile[data-tile="hold"] .bt-chev.is-open { transform: none; }
-.bt-tile[data-tile="hold"].is-play .bt-chev.is-open { transform: rotate(90deg); transition-delay: .1s; }
-.bt-tile[data-tile="hold"] .bt-frow { opacity: 0; transform: translateY(-4px); transition: opacity .25s ease calc(260ms + var(--i) * 70ms), transform .4s var(--bt-rise) calc(260ms + var(--i) * 70ms); }
-.bt-tile[data-tile="hold"].is-play .bt-frow { opacity: 1; transform: none; }
-.bt-tile[data-tile="hold"] .bt-tag { opacity: 0; transform: scale(.8); transition: opacity .2s ease 1.15s, transform .45s var(--spring) 1.15s; }
-.bt-tile[data-tile="hold"].is-play .bt-tag { opacity: 1; transform: none; }
-
-/* 5. The Trash: the item lifts off its row (the row closes) and lands in the Trash, which bumps. */
-.bt-collapse { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .34s var(--bt-rise), opacity .15s ease; }
-.bt-collapse > * { min-height: 0; overflow: hidden; }
-.bt-collapse.is-gone { grid-template-rows: 0fr; opacity: 0; }
-.bt-ghost { position: absolute; z-index: 3; top: 71px; left: 8px; right: 8px; background: var(--panel); box-shadow: 0 0 0 0.5px var(--sep), 0 8px 20px rgba(0, 0, 0, 0.16); transform-origin: 55px 14px; }
-.bt-bin.is-bump .bt-ic { animation: bt-bump .45s var(--spring); }
-.bt-tile[data-tile="trash"].is-rewind .bt-stage { opacity: 0; }
-@keyframes bt-bump { 40% { transform: scale(1.16); } }
-
-/* 7. The sheet rises from the popover's bottom edge; what's under it dims. */
-.bt-scrim { position: absolute; inset: 0; background: var(--scrim); opacity: 0; transition: opacity .3s ease; }
-.bt-sheet {
+/* The disk bar wipes in from the left: a strip of the popover's fill slides off it. */
+.bt-wipe { position: absolute; left: 0; right: 0; top: 64.6465%; height: 26.2626%; overflow: hidden; }
+.bt-wipe i {
 	position: absolute;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	border: 1px solid var(--sep);
-	border-bottom: 0;
-	border-radius: 18px 18px 0 0;
-	background: linear-gradient(180deg, var(--win-top), var(--win-bot));
-	box-shadow: 0 -4px 32px var(--sheet-shadow);
-	transform: translateY(calc(100% + 32px));
-	transition: transform .5s var(--bt-rise);
+	inset: 0 0 0 -48px;
+	background: linear-gradient(90deg, transparent, var(--bt-panel) 48px);
 }
-.is-open .bt-scrim { opacity: 1; }
-.is-open .bt-sheet { transform: none; }
-.bt-shead { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px 12px; }
-.bt-shead > b { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bt-parts { display: flex; gap: 12px; font-size: 12px; }
-.bt-part { display: inline-flex; gap: 4px; white-space: nowrap; }
-.bt-part b { font-weight: 500; font-variant-numeric: tabular-nums; }
-.bt-slist { padding: 8px; }
-.bt-srow2 { display: flex; align-items: center; gap: 8px; min-height: 30px; padding: 0 8px; }
-.bt-ssize { font-size: 13px; font-variant-numeric: tabular-nums; color: rgb(var(--fg) / 0.8); white-space: nowrap; }
-.bt-bar-sheet { gap: 4px; padding: 0 8px; }
-.bt-cancel { gap: 6px; font-size: 12px; font-weight: 500; color: var(--sec); }
+.is-wiped .bt-wipe i { transform: translateX(100%); transition: transform 1.2s cubic-bezier(.45, 0, .2, 1) .3s; }
+
+/* The actions sheet rises from the popover's bottom edge over its dimmed top. */
+.bt-l-dim { opacity: 0; transition: opacity .3s ease; }
+.bt-l-sheet { transform: translateY(100%); transition: transform .55s var(--bt-rise); }
+.is-open .bt-l-dim { opacity: 1; }
+.is-open .bt-l-sheet { transform: none; }
+
+/* The agents pan past, from Claude Code to Custom and back. */
+.bt-pan { width: 100%; height: 100%; max-width: none; aspect-ratio: auto; }
+.bt-pan .bt-zoom { transform: none; }
+.bt-pan .bt-layer { right: auto; width: auto; height: 100%; }
+.bt-pan .bt-layer img { position: static; width: auto; height: 100%; }
+.is-panning .bt-pan .bt-layer { animation: bt-pan 12s ease-in-out .6s infinite alternate; }
+@keyframes bt-pan { to { transform: translateX(var(--pan, 0px)); } }
 
 /* Resetting a tile between plays: no transitions. */
 .bt-still, .bt-still * { transition: none !important; animation: none !important; }
 
-/* ------------------------------------------------------------ Narrower */
+/* ------------------------------------------------------------ Phones: one column of full-width cards */
 
-@media (max-width: 1000px) {
-	.bt-num { font-size: 112px; }
-}
-
-/* Phones: one column of full-width cards; the facts two to a row. */
 @media (max-width: 760px) {
 	.bento { padding: 64px 20px 0; }
-	.bt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: none; grid-auto-rows: auto; gap: 12px; }
-	.bt-grid > .bt-tile { grid-area: auto; grid-column: span 2; }
-	.bt-grid > .bt-fact { grid-column: span 1; height: 168px; }
+	.bt-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: none; grid-auto-rows: auto; gap: 12px; }
+	.bt-grid > .bt-tile { grid-area: auto; }
 	.bt-tile { border-radius: 24px; }
-	.bt-label { position: static; padding: 18px 20px 0; font-size: 15px; }
-	.bt-fact .bt-label { position: absolute; padding: 0; top: 18px; left: 20px; }
-	.bt-stage { position: relative; inset: auto; padding-top: 16px; }
-	.bt-tile[data-tile="summary"] .bt-stage,
-	.bt-tile[data-tile="levels"] .bt-stage,
-	.bt-tile[data-tile="sheet"] .bt-stage { padding-bottom: 20px; }
-	.bt-tile[data-tile="levels"] .bt-stage { padding-top: 8px; }
-	.bt-num { left: 16px; bottom: 6px; font-size: 84px; }
+	.bt-label { position: static; padding: 18px 20px 0; }
+	.bt-stage { position: relative; inset: auto; display: block; container-type: normal; padding: 14px 16px 16px; }
+	.bt-frame { width: 100%; margin: 0 auto; border-radius: 12px; }
+	.bt-pan { height: auto; aspect-ratio: 2.1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
 	/* Fades only: nothing moves, every tile shows its end state. */
 	.js .bento .bt-tile { transform: none; transition: opacity .4s ease-out; }
-	.bento .bt-tile *,
-	.bento .bt-tile *::before { transition-property: opacity, background-color, color, stroke !important; animation: none !important; }
-	.bt-tile[data-tile="summary"] .bt-w,
-	.bt-tile[data-tile="summary"] .bt-showall,
-	.bt-tile[data-tile="summary"] .bt-glue,
-	.bt-tile[data-tile="hold"] .bt-frow,
-	.bt-tile[data-tile="hold"] .bt-tag { transform: none; }
-	.bt-cb i { transform: none; }
-	.bt-ticks i { transition-delay: 0s !important; }
-	.bt-tile[data-tile="hold"] .bt-chev.is-open { transform: rotate(90deg); }
-	.bt-sheet { transform: none; opacity: 0; transition: opacity .3s ease !important; }
-	.is-open .bt-sheet { opacity: 1; }
+	.bt-zoom, .is-play .bt-zoom, .bt-l-sheet { transform: none; transition: none; }
+	.bt-wipe { display: none; }
+	.bt-l-sheet { opacity: 0; transition: opacity .3s ease; }
+	.is-open .bt-l-sheet { opacity: 1; }
+	.is-panning .bt-pan .bt-layer { animation: none; }
 }
-
-/* The app's accent, for the filled checkboxes. */
-.bento { --accent: #138AF2; }
-html.dark .bento { --accent: #4FA3F8; }
