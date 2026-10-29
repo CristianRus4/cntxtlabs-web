@@ -238,9 +238,12 @@ html.dark .lv-ic-name { color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); 
 .lv-dock {
 	position: absolute;
 	z-index: 4;
-	left: 50%;
+	/* Centred by margins, not a transform, so its labels stay on whole pixels. */
+	left: 0;
+	right: 0;
+	width: max-content;
+	margin: 0 auto;
 	bottom: 8px;
-	transform: translateX(-50%);
 	height: 66px;
 	padding: 0 7px;
 	display: flex;
@@ -283,8 +286,11 @@ html.dark .lv-ic-name { color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); 
 .lv-dk-label {
 	position: absolute;
 	bottom: calc(100% + 6px);
-	left: 50%;
-	transform: translateX(-50%) scale(.9);
+	left: -120px;
+	right: -120px;
+	width: max-content;
+	margin: 0 auto;
+	transform: scale(.9);
 	transform-origin: 50% 100%;
 	padding: 4px 10px;
 	border-radius: 7px;
@@ -299,7 +305,7 @@ html.dark .lv-ic-name { color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); 
 	transition: opacity .2s, transform .2s;
 }
 html:not(.dark) .lv-dk-label { background: rgba(246, 246, 246, 0.9); color: #1d1d1f; box-shadow: 0 0 0 0.5px rgba(0,0,0,.15), 0 4px 12px rgba(0,0,0,.12); }
-.lv-dk:hover .lv-dk-label { opacity: 1; transform: translateX(-50%) scale(1); }
+.lv-dk:hover .lv-dk-label { opacity: 1; transform: none; }
 .lv-dk.is-dragging .lv-dk-label { opacity: 0; }
 .lv-dk-dot { position: absolute; bottom: 1px; width: 4px; height: 4px; border-radius: 50%; background: rgb(var(--fg) / 0.7); opacity: 0; transition: opacity .3s; }
 .lv-dk.is-running .lv-dk-dot { opacity: 1; }
@@ -379,7 +385,7 @@ html:not(.dark) .lv-lock { color: #fff; background: rgba(60, 70, 110, 0.18); }
 .lv-scene:not(.is-locked) .lv-lock { opacity: 0; visibility: hidden; transform: scale(1.06); pointer-events: none; }
 .is-locked .lv-wall { filter: saturate(1.1); }
 .is-locked .lv-mb-left, .is-locked .lv-mb-levo, .is-locked .lv-mb-clock { opacity: 0; pointer-events: none; }
-.is-locked .lv-dock { transform: translate(-50%, 110px); opacity: 0; }
+.is-locked .lv-dock { transform: translateY(110px); opacity: 0; }
 .is-locked .lv-widgets, .is-locked .lv-icons { opacity: 0; transform: translateY(10px); }
 .lv-icons { transition: opacity .5s .15s, transform .5s var(--ease-out) .15s; }
 .is-unlocking .lv-widgets { transition-delay: .1s; }
@@ -433,7 +439,6 @@ html:not(.dark) .lv-lock { color: #fff; background: rgba(60, 70, 110, 0.18); }
 .lv-tip {
 	position: absolute;
 	bottom: calc(100% + 6px);
-	transform: translateX(-50%);
 	padding: 5px 8px;
 	border-radius: 8px;
 	background: var(--panel);
@@ -692,7 +697,7 @@ html.dark .lv-sheet { background: rgba(0, 0, 0, 0.4); }
 	z-index: 3;
 	left: 420px;
 	top: 160px;
-	width: 480px;
+	width: 400px;
 	border-radius: 22px;
 	background: var(--panel);
 	box-shadow: inset 0 0 0 0.5px rgb(var(--fg) / 0.12), 0 30px 80px -24px rgba(0, 0, 0, 0.45), 0 10px 24px -12px rgba(0, 0, 0, 0.25);
@@ -702,17 +707,20 @@ html.dark .lv-lwin { background: #262628; box-shadow: inset 0 0 0 0.5px rgba(255
 .lv-lwin-bar { position: relative; height: 44px; display: flex; align-items: center; justify-content: center; cursor: default; touch-action: none; }
 .lv-lwin-bar b { font-size: 13px; font-weight: 600; color: rgb(var(--fg) / 0.85); }
 .lv-lights { position: absolute; left: 18px; top: 16px; display: flex; gap: 8px; }
-.lv-lwin-body { height: 208px; display: flex; align-items: center; justify-content: center; gap: 22px; padding: 0 30px; }
-.lv-lwin-app, .lv-lwin-apps { width: 128px; padding: 0; border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; touch-action: none; }
-.lv-lwin-app img { display: block; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.25)); -webkit-user-drag: none; }
+.lv-lwin-body { height: 196px; display: flex; align-items: center; justify-content: center; gap: 18px; padding: 0 24px; }
+.lv-lwin-app, .lv-lwin-apps { width: 112px; padding: 0; border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; touch-action: none; }
+/* A real DMG window: both icons at one size (96 pt), macOS's own renders with their own margins. */
+.lv-lwin-ic { display: block; width: 96px; height: 96px; }
+.lv-lwin-ic img { width: 96px; height: 96px; -webkit-user-drag: none; }
+.lv-lwin-app img { filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18)); }
 .lv-lwin-app.is-dragging { transition: none; position: relative; z-index: 2; cursor: grabbing; }
 .lv-lwin-app.is-dragging span { opacity: 0; }
 .lv-lwin-app.is-snap { transition: transform .45s cubic-bezier(.2, 1.4, .4, 1); }
-.lv-lwin-arrow { width: 96px; height: 20px; flex-shrink: 0; overflow: visible; }
+.lv-lwin-arrow { width: 64px; height: 20px; flex-shrink: 0; overflow: visible; }
 .lv-lwin-arrow path { fill: none; stroke: rgb(var(--fg) / 0.28); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 9; }
 .lv-lwin-arrow path + path { stroke-dasharray: none; }
 /* macOS's own Applications folder (img/desk/applications.png). */
-.lv-lwin-folder { display: block; width: 104px; height: 104px; transition: transform .2s var(--spring); }
+.lv-lwin-folder { display: block; transition: transform .2s var(--spring); }
 .lv-lwin-apps.is-target .lv-lwin-folder { transform: scale(1.1); filter: brightness(1.08); }
 .lv-lwin-foot { height: 60px; padding: 0 14px 0 22px; display: flex; align-items: center; gap: 8px; border-top: 1px solid rgb(var(--fg) / 0.08); }
 .lv-lwin-price { display: inline-flex; align-items: baseline; gap: 8px; }
@@ -745,7 +753,7 @@ html:not(.dark) .lv-hint { color: rgba(0, 0, 0, 0.45); }
 .is-intro .lv-hint { animation: lv-fade .5s ease 1.3s both; }
 @keyframes lv-drop { from { transform: translateY(-100%); } }
 @keyframes lv-rise { from { opacity: 0; transform: translateY(20px); } }
-@keyframes lv-dock { from { opacity: 0; transform: translate(-50%, 110px); } to { transform: translate(-50%, 0); } }
+@keyframes lv-dock { from { opacity: 0; transform: translateY(110px); } to { transform: none; } }
 @keyframes lv-win { from { opacity: 0; transform: translateY(24px) scale(.95); } }
 
 /* ------------------------------------------------------------ The app's own sizes (Popover/*.swift, Raycast.swift, text scale 1; 1 pt = 1 px) */
@@ -920,7 +928,7 @@ html.dark .lv-dk-d { display: block !important; }
 .lv-scene[data-mode="compact"] .lv-lwin-bar { display: none; }
 .lv-scene[data-mode="compact"] .lv-lwin { position: relative; left: auto !important; top: auto !important; width: 100%; max-width: 400px; order: 0; animation: lv-rise .5s ease both; }
 .lv-scene[data-mode="compact"] .lv-lwin-body { height: auto; padding: 22px 16px 10px; }
-.lv-scene[data-mode="compact"] .lv-lwin-app img { width: 88px; height: 88px; }
+.lv-scene[data-mode="compact"] .lv-lwin-ic, .lv-scene[data-mode="compact"] .lv-lwin-ic img { width: 88px; height: 88px; }
 .lv-scene[data-mode="compact"] .lv-lwin-app span { font-size: 17px; font-weight: 700; }
 .lv-scene[data-mode="compact"] .lv-popwrap { order: 1; width: 100%; max-width: 400px; animation: lv-rise .5s ease .15s both; }
 .lv-scene[data-mode="compact"] .lv-pop { width: 100%; }
@@ -944,7 +952,6 @@ html.dark .lv-dk-d { display: block !important; }
 @media (prefers-reduced-motion: reduce) {
 	.lv-scene *, .lv-scene *::before, .lv-scene *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-delay: 0ms !important; }
 	.lv-scene .lv-pop, .lv-scene .lv-note, .lv-scene .lv-lock, .lv-scene .lv-dock, .lv-scene .lv-ic, .lv-scene .lv-row, .lv-scene .lv-mb-levo, .lv-scene .lv-widgets, .lv-scene .lv-icons { transform: none !important; transition-property: opacity, visibility, background-color !important; transition-duration: .2s !important; }
-	.lv-scene .lv-dock { transform: translateX(-50%) !important; }
 	.lv-scene .lv-dk-art { transition: none !important; }
 }
 
@@ -1054,12 +1061,22 @@ html.dark .lv-bsheet { box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 -4px 16px r
 
 /* ------------------------------------------------------------ The Mac in a frame (desktop) */
 
+/* Ruled by the viewport's height (round 8): about 90 % of it, less the navbar and the gap above, so
+   the whole screen fits a short laptop window; 16:10, capped at 1440 px wide. Laid out at its final
+   pixel size (no transform), so its text renders as crisply as the page's. */
 .lv-scene[data-mode="desk"] {
-	height: clamp(640px, calc(100svh - 64px - 56px), 900px);
+	--lv-h: min(90svh, calc(100svh - 64px - 40px - 16px));
+	width: min(100%, 1440px, calc(var(--lv-h) * 1.6));
+	height: auto;
+	aspect-ratio: 16 / 10;
 	min-height: 0;
+	margin: 0 auto;
 	border-radius: 28px;
 	box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 40px 100px -40px rgba(0, 0, 0, 0.45), 0 14px 30px -18px rgba(0, 0, 0, 0.25);
-	transform: translateZ(0);
+	font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
 }
 
 /* "Working…" is the gauge's word, as text only. */
@@ -1116,3 +1133,66 @@ html.dark .lv-scene .lv-auto { color: #FF9217; }
 
 /* "Checked just now" analyses on a click, with no other look (round 12). */
 .lv-scene .lv-checked { padding: 0; border: 0; background: none; font: inherit; font-size: 12px; color: inherit; cursor: pointer; }
+
+/* ------------------------------------------------------------ Round 15 */
+
+/* A word just clicked shows no hover look until the pointer leaves it. */
+.lv-chip.is-quiet:hover:not([data-lit])::before { background: transparent; }
+
+/* Clean up at the name row's end while Auto mode is off: icon only, prominent, with its tooltip. */
+.lv-scene .lv-topclean {
+	position: relative;
+	flex-shrink: 0;
+	width: 26px;
+	height: 22px;
+	margin: -2px -4px -2px 0;
+	padding: 0;
+	border: 0;
+	border-radius: 7px;
+	background: var(--accent);
+	color: #fff;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+.lv-scene .lv-topclean[hidden] { display: none; }
+.lv-scene .lv-topclean:hover:not(:disabled) { filter: brightness(1.08); }
+.lv-scene .lv-topclean:active:not(:disabled) { filter: brightness(.92); }
+.lv-scene .lv-topclean:disabled { background: rgb(var(--fg) / 0.08); color: rgb(var(--fg) / 0.3); box-shadow: none; cursor: default; }
+.lv-topclean .lv-sym { width: 13px; height: auto; }
+.lv-topclean::after {
+	content: attr(data-tipkeys);
+	position: absolute;
+	top: calc(100% + 8px);
+	right: -4px;
+	padding: 4px 8px;
+	border-radius: 7px;
+	background: var(--panel);
+	box-shadow: var(--shadow);
+	color: rgb(var(--fg));
+	font-size: 12px;
+	font-weight: 500;
+	white-space: nowrap;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity .12s;
+	z-index: 4;
+}
+.lv-topclean:hover:not(:disabled)::after { opacity: 1; transition-delay: .5s; }
+
+/* The action bar's keycap buttons, quieter: secondary text, no strong fill. */
+.lv-actions:not(.lv-cbar) .lv-primary { color: rgb(var(--fg) / 0.6) !important; font-weight: 500 !important; }
+.lv-actions:not(.lv-cbar) .lv-primary .lv-cap-sm { background: rgb(var(--fg) / 0.05); color: rgb(var(--fg) / 0.55); }
+.lv-actions:not(.lv-cbar) .lv-primary:hover:not(:disabled) { color: rgb(var(--fg) / 0.85) !important; }
+
+/* The disk tip glides between sections; inside one it holds still. */
+.lv-tip.is-moving { transition: left .18s var(--ease-out); }
+
+/* A small screen: a smaller installer window, and only the files that matter on the desktop. */
+.lv-scene.is-small .lv-lwin { width: 352px; }
+.lv-scene.is-small .lv-lwin-body { height: 170px; gap: 12px; padding: 0 18px; }
+.lv-scene.is-small .lv-lwin-app, .lv-scene.is-small .lv-lwin-apps { width: 100px; }
+.lv-scene.is-small .lv-lwin-ic, .lv-scene.is-small .lv-lwin-ic img { width: 80px; height: 80px; }
+.lv-scene.is-small .lv-lwin-arrow { width: 44px; }
+.lv-scene.is-small .lv-ic.is-roomy { display: none; }

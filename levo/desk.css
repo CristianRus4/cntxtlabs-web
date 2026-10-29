@@ -105,7 +105,7 @@ html.dark .lv-widget {
 	width: 344px;
 	padding: 11px 14px 11px 11px;
 	gap: 10px;
-	border-radius: 24px;
+	border-radius: 18px;
 	background: var(--glass);
 	box-shadow: var(--glass-lit), 0 0 0 0.5px rgba(0, 0, 0, 0.07), 0 12px 34px -12px rgba(0, 0, 0, 0.3);
 	-webkit-backdrop-filter: blur(30px) saturate(2) brightness(1.06);
@@ -122,6 +122,31 @@ html.dark .lv-note:hover { background: rgba(44, 44, 48, 0.5); }
 .lv-note-text { font-size: 13px; line-height: 16px; gap: 1px; }
 .lv-note-top b { font-weight: 700; }
 .lv-note-when { font-size: 12px; color: rgb(var(--fg) / 0.5); }
+.lv-note { cursor: default; overflow: visible; }
+/* macOS's close button: a small round x at the top-leading corner, on hover. */
+.lv-scene .lv-note-x {
+	position: absolute;
+	left: -6px;
+	top: -6px;
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(246, 246, 246, 0.92);
+	color: rgb(0 0 0 / 0.6);
+	box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.18);
+	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(20px);
+	opacity: 0;
+	transition: opacity .15s;
+}
+html.dark .lv-scene .lv-note-x { background: rgba(60, 60, 64, 0.92); color: rgb(255 255 255 / 0.75); box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.14), 0 1px 3px rgba(0, 0, 0, 0.4); }
+.lv-note:hover .lv-note-x, .lv-note:focus-within .lv-note-x { opacity: 1; }
+.lv-note-x .lv-sym { width: 8px; height: auto; }
 
 /* Phones keep demo.css's compact cards. */
 .lv-scene[data-mode="compact"] .lv-note { width: auto; }

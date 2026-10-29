@@ -720,8 +720,6 @@ html.dark .lvm-cap { background: rgba(255, 255, 255, 0.09); box-shadow: inset 0 
 .lvm-fi-name { margin-top: 2px; font-size: 12px; line-height: 15px; border-radius: 5px; padding: 0 5px; }
 .lvm-fw-status { height: 28px; border-top: 0; color: rgb(var(--fg) / 0.45); }
 
-/* Levo's Auto mode control. */
-.lvm-cc-auto { grid-column: 1 / -1; }
 
 /* ------------------------------------------------------------ Finder, from finder-light.png and finder-dark.png */
 
@@ -800,3 +798,87 @@ html.dark .lvm-w-finder .lvm-fi-size { color: #4DA3FF; }
 .lvm-about-img img { display: block; width: 128px; height: 128px; }
 .lvm-goto-f { flex: none; }
 .lvm-alert-ic img { display: block; width: 52px; height: 52px; }
+
+/* ------------------------------------------------------------ macOS 26 menus (round 8)
+ * Measured from the 2x screenshots in Levo/design/refs/macos-menus: 12 pt corners, 5 pt padding,
+ * 24 pt rows with 8 pt hover corners inset 5 pt, text 15 pt from the edge (an icon's own 16 pt
+ * box and 7 pt gap push only its row's text), separators inset to the text, shortcuts one glyph
+ * per modifier in secondary colour. Light: pale glass, dark text. Dark, as the screenshots show
+ * over a dark desktop: mid-grey glass with dark text and a thin light rim.
+ */
+.lvm-layer {
+	--lvm-sys-bg: rgba(242, 242, 244, 0.78);
+	--lvm-sys-ink: rgba(0, 0, 0, 0.86);
+	--lvm-sys-dim: rgba(0, 0, 0, 0.26);
+	--lvm-sys-keys: rgba(0, 0, 0, 0.42);
+	--lvm-sys-sep: rgba(0, 0, 0, 0.1);
+	--lvm-sys-rim: inset 0 0 0 0.5px rgba(255, 255, 255, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+	--lvm-sys-shadow: 0 2px 6px rgba(0, 0, 0, 0.06), 0 14px 36px -10px rgba(0, 0, 0, 0.28);
+	--lvm-sys-hi: #0A84FF;
+}
+html.dark .lvm-layer {
+	--lvm-sys-bg: rgba(150, 150, 152, 0.62);
+	--lvm-sys-ink: rgba(0, 0, 0, 0.87);
+	--lvm-sys-dim: rgba(0, 0, 0, 0.4);
+	--lvm-sys-keys: rgba(0, 0, 0, 0.5);
+	--lvm-sys-sep: rgba(255, 255, 255, 0.13);
+	--lvm-sys-rim: inset 0 0 0 0.5px rgba(255, 255, 255, 0.26), 0 0 0 0.5px rgba(0, 0, 0, 0.5);
+	--lvm-sys-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), 0 16px 40px -10px rgba(0, 0, 0, 0.6);
+	--lvm-sys-hi: #0A84FF;
+}
+.lvm-menu:not(.lvm-soft) {
+	top: 32px;
+	min-width: 200px;
+	padding: 5px;
+	border-radius: 12px;
+	background: var(--lvm-sys-bg);
+	-webkit-backdrop-filter: blur(30px) saturate(1.7);
+	backdrop-filter: blur(30px) saturate(1.7);
+	box-shadow: var(--lvm-sys-rim), var(--lvm-sys-shadow);
+	color: var(--lvm-sys-ink);
+	font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+	font-size: 13px;
+	line-height: 16px;
+	letter-spacing: 0;
+	-webkit-font-smoothing: antialiased;
+}
+html.dark .lvm-menu:not(.lvm-soft) { color: var(--lvm-sys-ink); -webkit-backdrop-filter: blur(30px) saturate(1.4); backdrop-filter: blur(30px) saturate(1.4); }
+.lvm-menu:not(.lvm-soft) .lvm-item { height: 24px; gap: 0; padding: 0 14px 0 10px; border-radius: 8px; }
+.lvm-menu:not(.lvm-soft) .lvm-check { position: static; width: 16px; margin-right: 4px; flex: none; }
+.lvm-menu:not(.lvm-soft) .lvm-mic { width: 16px; margin: 0 7px 0 0; flex: none; color: inherit; }
+.lvm-menu:not(.lvm-soft) .lvm-mi svg, .lvm-menu:not(.lvm-soft) .lvm-mi { width: 14px; height: 14px; }
+.lvm-menu:not(.lvm-soft) .lvm-mi .lv-sym { width: 14px !important; height: 14px !important; }
+.lvm-menu:not(.lvm-soft) .lvm-appic { display: block; width: 16px; height: 16px; }
+.lvm-menu:not(.lvm-soft) .lvm-item.is-hi { background: var(--lvm-sys-hi); color: #fff; }
+.lvm-menu:not(.lvm-soft) .lvm-item.is-off, .lvm-menu:not(.lvm-soft) .lvm-item.is-off.is-hi { background: transparent; color: var(--lvm-sys-dim); }
+.lvm-menu:not(.lvm-soft) .lvm-keys { margin-left: 28px; display: inline-flex; align-items: center; gap: 2px; color: var(--lvm-sys-keys); }
+.lvm-menu:not(.lvm-soft) .lvm-mod { display: inline-block; min-width: 11px; text-align: center; }
+.lvm-menu:not(.lvm-soft) .lvm-key { min-width: 12px; padding-left: 1px; text-align: center; }
+.lvm-menu:not(.lvm-soft) .lvm-key.is-word { min-width: 0; }
+.lvm-menu:not(.lvm-soft) .lvm-kglobe svg { width: 11px; height: 11px; }
+.lvm-menu:not(.lvm-soft) .lvm-item.is-hi .lvm-keys { color: rgba(255, 255, 255, 0.85); }
+.lvm-menu:not(.lvm-soft) .lvm-item.is-off .lvm-keys { color: var(--lvm-sys-dim); }
+.lvm-menu:not(.lvm-soft) .lvm-chev { margin: 0 -4px 0 28px; opacity: 1; }
+.lvm-menu:not(.lvm-soft) .lvm-sep { height: 1px; margin: 5px 15px; background: var(--lvm-sys-sep); }
+.lvm-menu:not(.lvm-soft) .lvm-head { padding: 5px 15px 3px; font-size: 11px; font-weight: 600; color: var(--lvm-sys-keys); }
+.lvm-menu:not(.lvm-soft) .lvm-path { color: var(--lvm-sys-keys); }
+.lvm-menu:not(.lvm-soft) .lvm-item.is-hi .lvm-path { color: rgba(255, 255, 255, 0.8); }
+.lvm-menu:not(.lvm-soft) .lvm-none { padding: 4px 15px; color: var(--lvm-sys-dim); }
+
+/* Help: a rounded search field on top. */
+.lvm-m-help { min-width: 340px; }
+.lvm-m-help .lvm-hsearch { padding: 4px 5px 6px; display: block; }
+.lvm-m-help .lvm-field { height: 26px; padding: 0 10px; gap: 7px; border-radius: 13px; background: rgba(255, 255, 255, 0.86); box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.08); color: rgba(0, 0, 0, 0.5); }
+.lvm-m-help .lvm-field input { font-size: 13px; color: rgba(0, 0, 0, 0.86); }
+.lvm-m-help .lvm-field input::placeholder { color: rgba(0, 0, 0, 0.42); }
+
+/* The open menu's title: a capsule in the menubar. */
+.lv-menubar [data-menu].lvm-on { border-radius: 12px; background: rgb(var(--fg) / 0.1); }
+html.dark .lv-menubar [data-menu].lvm-on { background: rgba(255, 255, 255, 0.17); }
+
+/* Finder windows: View's sidebar, toolbar and status bar can be hidden. */
+.lvm-w.no-side .lvm-side { display: none; }
+.lvm-w.no-side .lvm-wtb { padding-left: 84px; }
+.lvm-w.no-side .lvm-wmain { border-radius: var(--lvm-wr); }
+.lvm-w.no-toolbar .lvm-ftb > :not(.lvm-wtitle) { visibility: hidden; }
+.lvm-w.no-status .lvm-fw-status { display: none; }

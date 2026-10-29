@@ -32,7 +32,7 @@
 	var LANG = (navigator.languages && navigator.languages[0]) || navigator.language || "en-NZ";
 	var SUB_DELAY = 150;
 	function REDUCED() { return !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); }
-	var ORDER = "⌃⌥⇧⌘";
+	var ORDER = "⌃\u0001⌥⇧⌘";
 
 	// Placeholders on a 16 grid, used only until demo.js passes hooks.symbol.
 	var FALLBACK = {
@@ -212,14 +212,17 @@
 	// Shortcut glyphs, modifiers in macOS order (⌃⌥⇧⌘), the key in its own column.
 	function keysHTML(k) {
 		if (!k) return "";
+		k = k.replace(/\uD83C\uDF10/g, "\u0001");
 		var fn = false, mods = [], rest = k;
 		if (/^fn\s*/.test(rest)) { fn = true; rest = rest.replace(/^fn\s*/, ""); }
 		while (rest.length > 1 && ORDER.indexOf(rest.charAt(0)) >= 0) { mods.push(rest.charAt(0)); rest = rest.slice(1); }
 		rest = rest.replace(/^\s+/, "");
 		if (/^fn\s+/.test(rest)) { fn = true; rest = rest.replace(/^fn\s+/, ""); }
 		mods.sort(function (a, b) { return ORDER.indexOf(a) - ORDER.indexOf(b); });
+		var globe = function (c) { return c === "\u0001" ? sym("globe", 11, "lvm-kglobe") : esc(c); };
 		return '<span class="lvm-keys">' + (fn ? '<span class="lvm-fn">fn</span>' : "") +
-			'<span class="lvm-mods">' + mods.join("") + '</span><span class="lvm-key' + (rest.length > 1 ? " is-word" : "") + '">' + esc(rest) + "</span></span>";
+			mods.map(function (m) { return '<span class="lvm-mod">' + globe(m) + "</span>"; }).join("") +
+			(rest ? '<span class="lvm-key' + (rest.length > 1 && rest !== "\u0001" ? " is-word" : "") + '">' + globe(rest) + "</span>" : "") + "</span>";
 	}
 
 	// ---------------------------------------------------------------- Menu definitions
@@ -241,177 +244,238 @@
 		return D(label, keys, { checked: st[key], act: function () { st[key] = !st[key]; } });
 	}
 
-	// macOS 26 menus show an SF Symbol beside most standard items, in a column of
-	// its own after the checkmark. Each entry lists the symbol Tahoe uses first,
-	// then a stand-in from img/symbols while the first isn't exported; a missing
-	// symbol leaves the column empty, as Tahoe does for items without one.
-	// ["flip"] mirrors the symbol (Redo is Undo's arrow, mirrored).
-	var MENU_ICONS = {
-		"System Settings…": ["gearshape"], "App Store…": ["app.badge"], "Recent items": ["clock", "clock.arrow.circlepath"],
-		"Force quit…": ["xmark.octagon", "xmark.circle"], "Sleep": ["moon", "moon.fill"], "Restart…": ["restart", "arrow.clockwise"],
-		"Shut down…": ["power"], "Lock screen": ["lock"], "Log out…": ["rectangle.portrait.and.arrow.right", "person.crop.circle"],
-		"About Finder": ["info.circle"], "Settings…": ["gearshape"], "Empty Trash…": ["trash"], "Hide Finder": ["eye.slash"],
-		"New Finder window": ["macwindow.badge.plus", "macwindow"], "New folder": ["folder.badge.plus", "folder"], "New tab": ["plus.square.on.square"],
-		"Open": ["arrow.up.forward.app"], "Close window": ["xmark"], "Get info": ["info.circle"], "Rename": ["pencil"],
-		"Compress": ["archivebox"], "Duplicate": ["plus.square.on.square"], "Quick Look": ["eye"], "Move to Trash": ["trash"],
-		"Find": ["magnifyingglass"], "Tags…": ["tag"],
-		"Undo": ["arrow.uturn.backward"], "Redo": ["arrow.uturn.forward", "flip:arrow.uturn.backward"], "Cut": ["scissors"],
-		"Copy": ["doc.on.doc"], "Paste": ["document.on.clipboard", "doc.on.clipboard"], "Select all": ["checkmark.circle"],
-		"Start dictation…": ["mic"], "Emoji & symbols": ["face.smiling"],
-		"as icons": ["square.grid.2x2"], "as list": ["list.bullet"], "as columns": ["rectangle.split.3x1"], "as gallery": ["rectangle.grid.1x2"],
-		"Show sidebar": ["sidebar.left"], "Hide sidebar": ["sidebar.left"], "Enter full screen": ["arrow.up.left.and.arrow.down.right"],
-		"Back": ["chevron.left"], "Forward": ["chevron.right"], "Enclosing folder": ["arrow.up.left"],
-		"Recents": ["clock", "clock.arrow.circlepath"], "Documents": ["doc"], "Desktop": ["menubar.dock.rectangle", "dock.rectangle"],
-		"Downloads": ["arrow.down.circle"], "Home": ["house"], "Computer": ["desktopcomputer"], "AirDrop": ["dot.radiowaves.left.and.right"],
-		"Network": ["network", "globe"], "iCloud Drive": ["icloud"], "Applications": ["square.grid.2x2"], "Utilities": ["hammer", "hammer.fill"],
-		"Go to folder…": ["folder"], "Connect to server…": ["server.rack"],
-		"Minimise": ["minus.rectangle", "minus"], "Bring all to front": ["macwindow.on.rectangle", "macwindow"]
+	// macOS 26 menus (Levo/design/refs/macos-menus): Apple's own words in Title Case, and an
+	// SF Symbol only where macOS shows one. A row's icon pushes its own text right; rows without
+	// one start where the icons start. A menu with checkable rows keeps a column for the tick.
+	var DEMO_USER = "Alex Rivers";
+	var GLYPHS = {
+		// The App Store "A", for App Store and Applications.
+		apps: '<svg class="lv-sym" width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M7.4 3.2 13.6 14"/><path d="M10.6 3.2 4.4 14"/><path d="M2.8 11h12.4"/></svg>',
+		// AirDrop's rings.
+		airdrop: '<svg class="lv-sym" width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5.2 13.6a5.4 5.4 0 1 1 7.6 0"/><path d="M6.9 11.8a3 3 0 1 1 4.2 0"/><circle cx="9" cy="9.7" r=".9" fill="currentColor" stroke="none"/><path d="M3.4 15.4a7.9 7.9 0 1 1 11.2 0"/></svg>'
 	};
-	function menuIcon(label) {
-		var list = MENU_ICONS[label];
-		if (!list) return "";
-		var html = "";
-		for (var i = 0; i < list.length && html.indexOf("<svg") < 0; i++) {
-			var flip = list[i].indexOf("flip:") === 0;
-			html = sym(flip ? list[i].slice(5) : list[i], 13, "lvm-mi" + (flip ? " is-flip" : ""));
-		}
-		return html.indexOf("<svg") < 0 ? "" : html;
+	function icon(name) {
+		if (!name) return "";
+		if (GLYPHS[name]) return '<span class="lvm-sym lvm-mi">' + GLYPHS[name] + "</span>";
+		if (name.charAt(0) === "<") return name;
+		var h = sym(name, 14, "lvm-mi");
+		return h.indexOf("<svg") < 0 ? "" : h;
 	}
+	function macSym() { var d = device(); return d === DEVICES.mini ? "macmini" : d === DEVICES.imac ? "desktopcomputer" : "laptopcomputer"; }
+	function I(name, label, keys, extra) { var d = D(label, keys, extra); d.icon = name; return d; }
+
+	// The front simulated window, when one of them has the focus.
+	function frontWin() { var id = gFocus && gOrder[0]; return id && gwins[id] ? { id: id, g: gwins[id] } : null; }
+	function frontFinder() { var f = frontWin(); return f && f.g.kind === "finder" ? f : null; }
+	function onFront(fn) { return function () { var f = frontWin(); if (f) fn(f); }; }
+
+	// Go's places open Finder windows with plausible contents.
+	var PLACES = {
+		Recents: [{ name: "Invoice-2026-10.pdf", kind: "doc", size: 0.0002 }, { name: "Screenshot 2026-10-12 at 9.41.22 am.png", kind: "image", size: 0.004 }, { name: "notes (3).txt", kind: "txt", size: 0.000004 }, { name: "project-final-v2.zip", kind: "zip", size: 1.1 }],
+		Documents: [{ name: "Receipts", kind: "folder" }, { name: "Letters", kind: "folder" }, { name: "Lease.pdf", kind: "doc", size: 0.0009 }, { name: "Budget 2026.numbers", kind: "doc", size: 0.0004 }],
+		Desktop: [{ name: "Old Installers", kind: "folder" }, { name: "project-final-v2.zip", kind: "zip", size: 1.1 }, { name: "notes (3).txt", kind: "txt", size: 0.000004 }, { name: "prices_Levo.txt", kind: "txt", size: 0.000001 }, { name: "features_Levo.txt", kind: "txt", size: 0.000002 }],
+		Downloads: [{ name: "Setup.dmg", kind: "dmg", size: 0.8 }, { name: "Invoice-2026-10.pdf", kind: "doc", size: 0.0002 }, { name: "project-final-v2.zip", kind: "zip", size: 1.1 }],
+		Home: [{ name: "Desktop", kind: "folder" }, { name: "Documents", kind: "folder" }, { name: "Downloads", kind: "folder" }, { name: "Movies", kind: "folder" }, { name: "Music", kind: "folder" }, { name: "Pictures", kind: "folder" }, { name: "Projects", kind: "folder" }, { name: "Public", kind: "folder" }],
+		Library: [{ name: "Application Support", kind: "folder" }, { name: "Caches", kind: "folder" }, { name: "Containers", kind: "folder" }, { name: "Developer", kind: "folder" }, { name: "Logs", kind: "folder" }, { name: "Preferences", kind: "folder" }],
+		Computer: [{ name: "Macintosh HD", kind: "folder" }, { name: "Network", kind: "folder" }],
+		AirDrop: [], Network: [], Shared: [],
+		"iCloud Drive": [{ name: "Desktop", kind: "folder" }, { name: "Documents", kind: "folder" }, { name: "Shortcuts", kind: "folder" }],
+		Applications: [{ name: "App Store.app", kind: "app" }, { name: "Calendar.app", kind: "app" }, { name: "Levo.app", kind: "app" }, { name: "Mail.app", kind: "app" }, { name: "Music.app", kind: "app" }, { name: "Notes.app", kind: "app" }, { name: "Photos.app", kind: "app" }, { name: "Safari.app", kind: "app" }, { name: "System Settings.app", kind: "app" }, { name: "Utilities", kind: "folder" }],
+		Utilities: [{ name: "Activity Monitor.app", kind: "app" }, { name: "Console.app", kind: "app" }, { name: "Disk Utility.app", kind: "app" }, { name: "Terminal.app", kind: "app" }]
+	};
+	function place(name) { return function () { openWindow("finder", { id: "go-" + name.toLowerCase().replace(/\s+/g, "-"), title: name, items: (PLACES[name] || []).slice(), sidebar: name }); }; }
 
 	var MENUS = {
 		apple: function () {
 			return [
-				D("About this Mac", "", { act: openAbout }),
+				I(macSym(), "About This Mac", "", { act: openAbout }),
 				SEP,
-				D("System Settings…", "", { act: function () { openWindow("settings", { id: "settings" }); } }),
-				D("App Store…"),
+				I("gearshape", "System Settings…", "", { act: function () { openWindow("settings", { id: "settings" }); } }),
+				I("apps", "App Store"),
 				SEP,
-				D("Recent items", "", { sub: recentItems }),
+				D("Recent Items", "", { sub: recentItems }),
 				SEP,
-				D("Force quit…", "⌥⌘⎋", { act: openForceQuit }),
+				D("Force Quit Finder", "⌥⇧⌘⎋", { act: openForceQuit }),
 				SEP,
 				D("Sleep", "", { act: function () { blackout(); } }),
 				D("Restart…", "", { act: function () { power("restart"); } }),
-				D("Shut down…", "", { act: function () { power("shutdown"); } }),
+				D("Shut Down…", "", { act: function () { power("shutdown"); } }),
 				SEP,
-				D("Lock screen", "⌃⌘Q", { act: function () { if (hook("lock")) call("lock"); else dim(); } }),
-				D("Log out…", "⇧⌘Q", { act: function () { power("logout"); } })
+				D("Lock Screen", "⌃⌘Q", { act: function () { if (hook("lock")) call("lock"); else dim(); } }),
+				D("Log Out " + DEMO_USER + "…", "⇧⌘Q", { act: function () { power("logout"); } })
 			];
 		},
 		app: function () {
 			return [
 				D("About Finder"),
 				SEP,
-				D("Settings…", "⌘,"),
+				I("gearshape", "Settings…", "⌘,"),
 				SEP,
-				D("Empty Trash…", "⇧⌘⌫", { act: askEmptyTrash }),
+				I("trash", "Empty Trash…", "⇧⌘⌫", { act: askEmptyTrash }),
 				SEP,
-				D("Services", "", { sub: function () { return [off("No services apply"), D("Services settings…")]; } }),
+				D("Services", "", { sub: function () { return [off("No Services Apply"), SEP, D("Services Settings…", "", { act: function () { openWindow("settings", { id: "settings" }); } })]; } }),
 				SEP,
 				D("Hide Finder", "⌘H"),
-				D("Hide others", "⌥⌘H"),
-				off("Show all")
+				D("Hide Others", "⌥⌘H"),
+				off("Show All")
 			];
 		},
 		file: function () {
+			var f = frontFinder(), sel = f && f.g.el.querySelector(".lvm-fi.is-sel");
 			return [
-				D("New Finder window", "⌘N"),
-				D("New folder", "⇧⌘N"),
-				off("New folder with selection", "⌃⌘N"),
-				D("New smart folder", "⌥⌘N"),
-				D("New tab", "⌘T"),
-				off("Open", "⌘O"),
-				off("Open with", "", { sub: function () { return []; } }),
-				D("Close window", "⌘W"),
+				I("macwindow.badge.plus", "New Finder Window", "⌘N", { act: place("Recents") }),
+				I("folder.badge.plus", "New Folder", "⇧⌘N"),
+				off("New Folder with Selection", "⌃⌘N"),
+				D("New Smart Folder", "⌥⌘N"),
+				I("plus.square.on.square", "New Tab", "⌘T"),
+				(sel ? D : off)("Open", "⌘O", sel ? { act: function () { openItem(sel); } } : null),
+				off("Open With", "", { sub: function () { return []; } }),
+				(f ? D : off)("Close Window", "⌘W", f ? { act: function () { closeWindow(f.id, "close"); } } : null),
 				SEP,
-				D("Get info", "⌘I"),
-				off("Rename"),
-				off("Compress"),
-				off("Duplicate", "⌘D"),
-				off("Make alias", "⌃⌘A"),
-				off("Quick Look", "⌘Y"),
+				I("info.circle", "Get Info", "⌘I"),
+				I("pencil", "Rename", "", { disabled: true }),
+				I("archivebox", "Compress", "", { disabled: true }),
+				I("plus.square.on.square", "Duplicate", "⌘D", { disabled: true }),
+				off("Make Alias", "⌃⌘A"),
+				I("eye", "Quick Look", "⌘Y", { disabled: true }),
+				I("printer", "Print", "⌘P", { disabled: true }),
 				SEP,
-				off("Move to Trash", "⌘⌫"),
+				I("square.and.arrow.up", "Share…", "", { disabled: true }),
 				SEP,
-				D("Find", "⌘F"),
-				D("Tags…")
+				off("Show Original", "⌘R"),
+				off("Add to Sidebar", "⌃⌘T"),
+				SEP,
+				I("trash", "Move to Trash", "⌘⌫", sel ? { act: function () { trashFi(sel); } } : { disabled: true }),
+				I("eject", "Eject", "⌘E", { disabled: true }),
+				SEP,
+				I("magnifyingglass", "Find", "⌘F"),
+				SEP,
+				I("tag", "Tags…")
 			];
 		},
 		edit: function () {
+			var undo = call("undoLabel");
 			return [
-				off("Undo", "⌘Z"),
+				undo ? D("Undo " + undo, "⌘Z", { act: function () { call("undo"); } }) : off("Undo", "⌘Z"),
 				off("Redo", "⇧⌘Z"),
 				SEP,
 				off("Cut", "⌘X"),
 				off("Copy", "⌘C"),
-				off("Paste", "⌘V"),
-				D("Select all", "⌘A"),
+				D("Paste Item", "⌘V"),
+				D("Select All", "⌘A"),
 				SEP,
-				D("Show clipboard"),
+				D("Show Clipboard"),
 				SEP,
-				D("Start dictation…"),
-				D("Emoji & symbols", "fn E")
+				I("magnifyingglass", "Search", "⌘F"),
+				SEP,
+				D("Writing Tools", "", { sub: function () {
+					return [off("Proofread"), off("Rewrite"), SEP, off("Make Friendly"), off("Make Professional"), off("Make Concise"), SEP, off("Summarise"), off("Create Key Points"), off("Make List"), off("Make Table"), SEP, D("Show Writing Tools")];
+				} }),
+				SEP,
+				I("rectangle.and.pencil.and.ellipsis", "AutoFill", "", { sub: function () { return [D("Contact…"), D("Passwords…")]; } }),
+				I("mic", "Start Dictation…"),
+				I("face.smiling", "Emoji & Symbols", "🌐")
 			];
 		},
 		view: function () {
+			// The window items wake when one of the Finder windows is in front.
+			var f = frontFinder(), w = f ? D : off, o = f ? f.g.o : {};
+			var view = function (name, label, keys, v) {
+				var d = I(name, label, keys, f ? { checked: (o.view || "icons") === v, act: function () { o.view = v; } } : { disabled: true });
+				return d;
+			};
+			var tog = function (flag, hide, show, keys) {
+				if (!f) return off(hide, keys);
+				var hidden = f.g.el.classList.contains("no-" + flag);
+				return D(hidden ? show : hide, keys, { act: function () { f.g.el.classList.toggle("no-" + flag, !hidden); } });
+			};
 			return [
-				radio("view", "icons", "as icons", "⌘1"),
-				radio("view", "list", "as list", "⌘2"),
-				radio("view", "columns", "as columns", "⌘3"),
-				radio("view", "gallery", "as gallery", "⌘4"),
+				view("square.grid.2x2", "as Icons", "⌘1", "icons"),
+				view("list.bullet", "as List", "⌘2", "list"),
+				view("rectangle.split.3x1", "as Columns", "⌘3", "columns"),
+				view("squares.below.rectangle", "as Gallery", "⌘4", "gallery"),
 				SEP,
-				check("stacks", "Use stacks", "⌃⌘0"),
-				D("Sort by", "", { sub: sortBy }),
-				D("Clean up"),
+				D("Use Stacks", "⌃⌘0", { act: function () { st.stacks = !st.stacks; } }),
+				D("Sort By", "", { sub: sortBy }),
+				D("Clean Up"),
+				D("Clean Up By", "", { sub: function () { return [D("Name"), D("Kind"), D("Date Modified"), D("Date Created"), D("Size"), D("Tags")]; } }),
 				SEP,
-				toggle("sidebar", "Hide sidebar", "Show sidebar", "⌃⌘S"),
-				toggle("preview", "Hide preview", "Show preview", "⇧⌘P"),
+				w("Hide Tab Bar", "⇧⌘T"),
+				off("Show All Tabs", "⇧⌘\\"),
 				SEP,
-				toggle("toolbar", "Hide toolbar", "Show toolbar", "⌥⌘T"),
-				toggle("pathbar", "Hide path bar", "Show path bar", "⌥⌘P"),
-				toggle("statusbar", "Hide status bar", "Show status bar", "⌘/"),
+				tog("side", "Hide Sidebar", "Show Sidebar", "⌃⌘S"),
+				w("Hide Preview", "⇧⌘P"),
 				SEP,
-				D("Enter full screen", "⌃⌘F")
+				tog("toolbar", "Hide Toolbar", "Show Toolbar", "⌥⌘T"),
+				w("Hide Path Bar", "⌥⌘P"),
+				tog("status", "Hide Status Bar", "Show Status Bar", "⌘/"),
+				SEP,
+				w("Customize Toolbar…"),
+				SEP,
+				D("Show View Options", "⌘J"),
+				w("Show Preview Options"),
+				SEP,
+				f ? D("Enter Full Screen", "🌐F", { act: function () { zoomWin(f.id); } }) : off("Enter Full Screen", "🌐F")
 			];
 		},
 		go: function () {
 			return [
 				off("Back", "⌘["),
 				off("Forward", "⌘]"),
-				off("Enclosing folder", "⌘↑"),
+				D("Select Startup Disk", "⇧⌘▲", { act: place("Computer") }),
 				SEP,
-				D("Recents", "⇧⌘F"),
-				D("Documents", "⇧⌘O"),
-				D("Desktop", "⇧⌘D"),
-				D("Downloads", "⌥⌘L"),
-				D("Home", "⇧⌘H"),
-				D("Computer", "⇧⌘C"),
-				D("AirDrop", "⇧⌘R"),
-				D("Network", "⇧⌘K"),
-				D("iCloud Drive", "⇧⌘I"),
-				D("Applications", "⇧⌘A"),
-				D("Utilities", "⇧⌘U"),
+				I("clock", "Recents", "⇧⌘F", { act: place("Recents") }),
+				I("doc", "Documents", "⇧⌘O", { act: place("Documents") }),
+				I("menubar.dock.rectangle", "Desktop", "⇧⌘D", { act: place("Desktop") }),
+				I("arrow.down.circle", "Downloads", "⌥⌘L", { act: place("Downloads") }),
+				I("house", "Home", "⇧⌘H", { act: place("Home") }),
+				I("building.columns", "Library", "⇧⌘L", { act: place("Library") }),
+				I(macSym(), "Computer", "⇧⌘C", { act: place("Computer") }),
+				I("airdrop", "AirDrop", "⇧⌘R", { act: place("AirDrop") }),
+				I("network", "Network", "⇧⌘K", { act: place("Network") }),
+				I("icloud", "iCloud Drive", "⇧⌘I", { act: place("iCloud Drive") }),
+				I("person.2", "Shared", "⇧⌘S", { act: place("Shared") }),
+				I("apps", "Applications", "⇧⌘A", { act: place("Applications") }),
+				I("wrench.and.screwdriver", "Utilities", "⇧⌘U", { act: place("Utilities") }),
 				SEP,
-				D("Recent folders", "", { sub: function () {
-					return [D("Downloads"), D("Developer"), D("Caches"), SEP, D("Clear menu")];
+				D("Recent Folders", "", { sub: function () {
+					return [I("arrow.down.circle", "Downloads", "", { act: place("Downloads") }), I("doc", "Documents", "", { act: place("Documents") }), I("house", "Home", "", { act: place("Home") }), SEP, D("Clear Menu")];
 				} }),
 				SEP,
-				D("Go to folder…", "⇧⌘G", { act: openGoTo }),
-				D("Connect to server…", "⌘K")
+				D("Go to Folder…", "⇧⌘G", { act: openGoTo }),
+				D("Connect to Server…", "⌘K")
 			];
 		},
 		window: function () {
-			return [
-				off("Minimise", "⌘M"),
-				off("Zoom"),
-				off("Move & resize", "", { sub: function () { return []; } }),
-				off("Fill", "fn⌃F"),
-				off("Center"),
+			var f = frontWin(), on = function (label, keys, fn) { return f ? D(label, keys, { act: onFront(fn) }) : off(label, keys); };
+			var d = [
+				on("Minimize", "⌘M", function (x) { closeWindow(x.id, "minimise"); }),
+				on("Zoom", "", function (x) { zoomWin(x.id); }),
+				on("Fill", "⌃🌐F", function (x) { if (!x.g.zoomed) zoomWin(x.id); }),
+				on("Center", "⌃🌐C", function (x) { var w = x.g.el; w.style.left = Math.round((W() - w.offsetWidth) / 2) + "px"; w.style.top = Math.round(Math.max(38, (Hh() - w.offsetHeight) / 2)) + "px"; }),
 				SEP,
-				D("Cycle through windows", "⌘`"),
+				I("rectangle.leftthird.inset.filled", "Move & Resize", "", f ? { sub: function () {
+					return [on("Left", "", function (x) { tile(x, 0, 0.5); }), on("Right", "", function (x) { tile(x, 0.5, 0.5); }), SEP, on("Top", "", function (x) { tile(x, 0, 1, 0, 0.5); }), on("Bottom", "", function (x) { tile(x, 0, 1, 0.5, 0.5); }), SEP, on("Return to Previous Size", "", function (x) { if (x.g.zoomed) zoomWin(x.id); })];
+				} } : { sub: function () { return []; }, disabled: true }),
+				I("rectangle.split.2x1", "Full Screen Tile", "", { sub: function () { return []; }, disabled: true }),
 				SEP,
-				D("Bring all to front")
+				D("Bring All to Front"),
+				D("Cycle Through Windows", "⌘`", { act: function () { if (gOrder.length > 1) { focusWin(gOrder[gOrder.length - 1]); gFocus = true; } } }),
+				off("Remove Window from Set"),
+				SEP,
+				off("Show Previous Tab", "⌃⇧⇥"),
+				off("Show Next Tab", "⌃⇥"),
+				off("Move Tab to New Window"),
+				off("Merge All Windows"),
+				SEP,
+				off("Show Progress Window")
 			];
+			var list = gOrder.slice().reverse().filter(function (id) { return gwins[id].kind === "finder"; });
+			if (list.length) {
+				d.push(SEP);
+				list.forEach(function (id) { d.push(I("macwindow", gwins[id].o.title || "Untitled", "", { checked: id === gOrder[0] && gFocus ? true : undefined, act: function () { focusWin(id); gFocus = true; } })); });
+			}
+			return d;
 		},
 		help: helpMenu,
 		wifi: wifiMenu,
@@ -421,25 +485,39 @@
 	};
 	var NAMES = { apple: "Apple", app: "Finder", file: "File", edit: "Edit", view: "View", go: "Go", window: "Window", help: "Help" };
 	var SOFT = { wifi: 1, battery: 1, clock: 1, control: 1 };
+	// Move & Resize: a share of the usable screen (fractions of width and height).
+	function tile(x, left, width, top, height) {
+		var w = x.g.el, bottom = Hh() - 8, dock = scene.querySelector(".lv-dock");
+		if (dock && dock.offsetWidth) bottom = Math.min(bottom, offsetIn(dock).y - 8);
+		var area = { x: 8, y: 38, w: W() - 16, h: bottom - 38 };
+		if (!x.g.zoomed) x.g.zoomed = [w.offsetLeft, w.offsetTop, w.offsetWidth, w.offsetHeight];
+		top = top || 0; height = height || 1;
+		w.style.left = Math.round(area.x + area.w * left) + "px";
+		w.style.top = Math.round(area.y + area.h * top) + "px";
+		w.style.width = Math.round(area.w * width - (width < 1 ? 4 : 0)) + "px";
+		w.style.height = Math.round(area.h * height - (height < 1 ? 4 : 0)) + "px";
+		w.classList.toggle("is-narrow", parseInt(w.style.width, 10) < 520);
+	}
 
 	function recentItems() {
 		return [
-			{ header: "Applications" }, D("Xcode"), D("Terminal"), D("System Settings"),
-			{ header: "Documents" }, D("Project Plan.pages"), D("Invoice 0412.pdf"), D("Screenshot 2026-10-28 at 9.41.12 am.png"),
-			SEP, D("Clear menu")
+			{ header: "Applications" }, I("<img class=\"lvm-appic\" src=\"img/dock/terminal.png\" alt=\"\">", "Terminal"), I("<img class=\"lvm-appic\" src=\"img/dock/settings.png\" alt=\"\">", "System Settings"), I("<img class=\"lvm-appic\" src=\"img/dock/levo.png\" alt=\"\">", "Levo", "", { act: function () { call("openLevo"); } }),
+			SEP,
+			{ header: "Documents" }, I("<img class=\"lvm-appic\" src=\"img/desk/pdf.png\" alt=\"\">", "Invoice-2026-10.pdf"), I("<img class=\"lvm-appic\" src=\"img/desk/txt.png\" alt=\"\">", "notes (3).txt"), I("<img class=\"lvm-appic\" src=\"img/desk/png.png\" alt=\"\">", "Screenshot 2026-10-12 at 9.41.22 am.png"),
+			SEP, D("Clear Menu")
 		];
 	}
 	function sortBy() {
 		return [
 			radio("sort", "none", "None", "⌃⌥⌘0"),
-			check("snap", "Snap to grid"),
+			check("snap", "Snap to Grid"),
 			SEP,
 			radio("sort", "name", "Name", "⌃⌥⌘1"),
 			radio("sort", "kind", "Kind", "⌃⌥⌘2"),
-			radio("sort", "opened", "Date last opened", "⌃⌥⌘3"),
-			radio("sort", "added", "Date added", "⌃⌥⌘4"),
-			radio("sort", "modified", "Date modified", "⌃⌥⌘5"),
-			radio("sort", "created", "Date created"),
+			radio("sort", "opened", "Date Last Opened", "⌃⌥⌘3"),
+			radio("sort", "added", "Date Added", "⌃⌥⌘4"),
+			radio("sort", "modified", "Date Modified", "⌃⌥⌘5"),
+			radio("sort", "created", "Date Created"),
 			radio("sort", "size", "Size", "⌃⌥⌘6"),
 			radio("sort", "tags", "Tags", "⌃⌥⌘7")
 		];
@@ -448,8 +526,8 @@
 	// Help: a search field over the menu definitions above, as macOS does.
 	function helpMenu() {
 		return {
-			head: '<div class="lvm-hsearch"><span>Search</span><label class="lvm-field">' + sym("magnifyingglass", 12, "lvm-field-glass") +
-				'<input type="text" data-lvm-help spellcheck="false" autocomplete="off" aria-label="Search help"></label></div>',
+			head: '<div class="lvm-hsearch"><label class="lvm-field">' + sym("magnifyingglass", 13, "lvm-field-glass") +
+				'<input type="text" data-lvm-help spellcheck="false" autocomplete="off" placeholder="Search" aria-label="Search"></label></div>',
 			defs: helpDefs("")
 		};
 	}
@@ -488,7 +566,7 @@
 			if (!hits.length && !topics.length) d.push({ block: '<div class="lvm-none">No results</div>' });
 			d.push(SEP);
 		}
-		d.push(D("macOS Help"), D("Tips for your Mac"), D("New to Mac"), D("See what’s new in macOS Tahoe"));
+		d.push(I("exclamationmark.bubble", "Send Finder Feedback"), SEP, I("book.pages", "Mac User Guide"), I("lightbulb", "Tips for Your Mac"));
 		return d;
 	}
 
@@ -571,13 +649,14 @@
 
 	// ---------------------------------------------------------------- Rendering menus
 
-	function itemHTML(d, i, soft) {
+	function itemHTML(d, i, soft, checks) {
 		var cls = "lvm-item" + (d.disabled ? " is-off" : "") + (d.sub ? " lvm-has-sub" : "") + (d.cls ? " " + d.cls : "") + (d.levo ? " lvm-levo" : "");
 		var inner;
 		if (d.html) inner = d.html;
 		else {
-			inner = (soft ? "" : '<span class="lvm-check">' + (d.checked ? sym("checkmark", 11) : "") + "</span>") +
-				(d.icon || (soft ? "" : '<span class="lvm-mic">' + menuIcon(d.label) + "</span>")) +
+			// The tick column only in menus with checkable rows; an icon only where macOS has one.
+			inner = (checks ? '<span class="lvm-check">' + (d.checked ? sym("checkmark", 11) : "") + "</span>" : "") +
+				(d.icon ? '<span class="lvm-mic">' + icon(d.icon) + "</span>" : "") +
 				'<span class="lvm-label">' + esc(d.label) + "</span>" +
 				(d.after || "") +
 				(d.sub ? sym("chevron.right", 10, "lvm-chev") : keysHTML(d.keys));
@@ -586,12 +665,13 @@
 	}
 	function fillLevel(L, defs) {
 		L.defs = defs;
+		var checks = !L.soft && defs.some(function (d) { return d && d.checked !== undefined && d.checked !== null && "checked" in d; });
 		var html = "", n = 0, items = [];
 		defs.forEach(function (d) {
 			if (d.sep) html += '<div class="lvm-sep" role="separator"></div>';
 			else if (d.header) html += '<div class="lvm-head' + (d.dim ? " is-off" : "") + '">' + esc(d.header) + "</div>";
 			else if (d.block) html += '<div class="lvm-block">' + d.block + "</div>";
-			else { html += itemHTML(d, n, L.soft); items.push(d); n++; }
+			else { html += itemHTML(d, n, L.soft, checks); items.push(d); n++; }
 		});
 		L.body.innerHTML = html;
 		L.items = items.map(function (d, i) { return { def: d, el: L.body.querySelector('[data-i="' + i + '"]') }; });
@@ -1081,12 +1161,9 @@
 				'<div class="lvm-cc-mod lvm-cc-wide"><b>Display</b>' + slider("bright", "sun.max.fill", "Display brightness") + "</div>" +
 				'<div class="lvm-cc-mod lvm-cc-wide"><b>Sound</b><div class="lvm-cc-sound">' + slider("vol", "speaker.wave.2.fill", "Volume") +
 					'<span class="lvm-cc-air">' + sym("airplayaudio", 14) + "</span></div></div>" +
-				(hook("auto") ? '<button type="button" class="lvm-cc-mod lvm-cc-tile lvm-cc-auto" data-lvm-cc="auto" aria-pressed="' + !!call("auto") + '">' +
-					'<span class="lvm-cc-btn' + (call("auto") ? " is-on" : "") + '">' + sym("arrow.triangle.2.circlepath", 15) + '</span><span class="lvm-cc-txt"><b>Auto mode</b><small>' + (call("auto") ? "On" : "Off") + "</small></span></button>" : "") +
 			"</div>";
 	}
 	function ccToggle(key) {
-		if (key === "auto") { call("setAuto", !call("auto")); drawCC(); return; }
 		if (key === "wifi") { toggleWifi(); drawCC(); return; }
 		if (key === "dark") {
 			st.spin = true;
@@ -1606,7 +1683,7 @@
 		if (!h || busy) return;
 		var L = h.L, i = h.i, idx = levels.indexOf(L);
 		if (L.hi === i) return;
-		setHi(L, enabled(L, i) || L.items[i].def.sub ? i : -1);
+		setHi(L, enabled(L, i) ? i : -1);
 		clearTimeout(subTimer);
 		subOwner = idx;
 		var d = L.items[i].def;
@@ -1708,7 +1785,7 @@
 			lastWin = null;
 			focusWin(gw.dataset.lvmGw);
 			if (t.closest("[data-lvm-drag]") && !t.closest("button, input, textarea, select, a, [contenteditable], .lvm-fi, [data-lvm-nodrag]") && e.button === 0) startDrag(e, gw);
-		} else if (!inLayer) gFocus = false;
+		} else if (!inLayer && !(t.closest && t.closest(".lv-menubar"))) gFocus = false;
 	}
 	function onClickCapture(e) {
 		if (!swallow) return;

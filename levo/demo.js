@@ -91,10 +91,10 @@
 		],
 		// Desktop icons, in a column from the top left (below the widgets when they show).
 		desktop: [
-			{ id: "shot", kind: "shot", name: "Screenshot 2026-10-12 at 9.41.22 am.png", col: 0, row: 0 },
+			{ id: "shot", kind: "shot", name: "Screenshot 2026-10-12 at 9.41.22 am.png", col: 0, row: 0, roomy: true },
 			{ id: "installers", kind: "folder", name: "Old Installers", col: 1, row: 0 },
 			{ id: "zip", kind: "zip", name: "project-final-v2.zip", col: 0, row: 1 },
-			{ id: "notes", kind: "doc", name: "notes (3).txt", col: 1, row: 1 },
+			{ id: "notes", kind: "doc", name: "notes (3).txt", col: 1, row: 1, roomy: true },
 			{ id: "prices", kind: "doc", name: "prices_Levo.txt", col: 0, row: 3 },
 			{ id: "features", kind: "doc", name: "features_Levo.txt", col: 1, row: 3 },
 			{ id: "unzipped", kind: "folder", name: "project-final-v2", col: 0, row: 2, later: true },
@@ -271,10 +271,11 @@
 					'<button type="button" class="lv-mb-btn lv-mb-item lv-mb-clock" data-menu="clock"><span class="lv-mb-day" data-day></span><span data-time></span></button>' +
 				'</div>' +
 			'</div>' +
-			'<button type="button" class="lv-note" data-act="note" aria-live="polite">' +
+			'<div class="lv-note" data-act="note" role="button" tabindex="0" aria-live="polite">' +
+				'<button type="button" class="lv-note-x" data-act="noteclose" aria-label="Close">' + sym("xmark", 8) + "</button>" +
 				'<img class="lv-note-icon" src="img/icon-96.png" width="38" height="38" alt="">' +
 				'<span class="lv-note-text"><span class="lv-note-top"><b data-ntitle></b><span class="lv-note-when">now</span></span><span data-nbody></span></span>' +
-			'</button>' +
+			'</div>' +
 			'<div class="lv-popwrap">' + popHTML() + '</div>' +
 			'<span class="lv-quip" data-quip hidden></span>' +
 			'<div class="lv-lock" data-act="unlock" aria-hidden="true">' +
@@ -307,7 +308,8 @@
 		return '' +
 		'<div class="lv-pop" role="dialog" aria-label="Levo" tabindex="-1">' +
 			'<div class="lv-dhead lv-namerow"><span class="lv-sec" data-devsym>' + sym("desktopcomputer", 14) + '</span><b data-devname>Mac</b><span class="lv-flex"></span>' +
-				'<button type="button" class="lv-auto" data-act="automode" data-autopill hidden>Auto mode</button></div>' +
+				'<button type="button" class="lv-auto" data-act="automode" data-autopill hidden>Auto mode</button>' +
+				'<button type="button" class="lv-topclean" data-act="topclean" data-topclean aria-label="Clean up" data-tipkeys="Clean up \u2318\u232b">' + sym("trash", 13) + '</button></div>' +
 			'<div class="lv-sep"></div>' +
 			'<section class="lv-gauges">' + gaugeHTML("memory", "Memory") + gaugeHTML("cpu", "CPU") + gaugeHTML("gpu", "GPU") + '</section>' +
 			'<div class="lv-freed" data-freed hidden></div>' +
@@ -350,7 +352,7 @@
 		if (DESK_ICONS[ic.kind]) art = '<span class="lv-ic-real"><img src="img/desk/' + DESK_ICONS[ic.kind] + '.png" width="64" height="64" alt="" draggable="false"></span>';
 		else if (ic.kind === "volume") art = '<span class="lv-ic-vol"><img class="lv-dk-l" src="img/desk/levo-volume.png" width="64" height="64" alt="" draggable="false"><img class="lv-dk-d" src="img/desk/levo-volume-dark.png" width="64" height="64" alt="" draggable="false"></span>';
 		else art = '<span class="lv-ic-shot"><i></i></span>';
-		return '<button type="button" class="lv-ic' + (ic.later ? " is-hidden" : "") + '" data-icon="' + ic.id + '" style="--col:' + ic.col + ";--row:" + ic.row + '">' + art + '<span class="lv-ic-name">' + esc(ic.name) + "</span></button>";
+		return '<button type="button" class="lv-ic' + (ic.later ? " is-hidden" : "") + (ic.roomy ? " is-roomy" : "") + '" data-icon="' + ic.id + '" style="--col:' + ic.col + ";--row:" + ic.row + '">' + art + '<span class="lv-ic-name">' + esc(ic.name) + "</span></button>";
 	}
 	// The Levo window on the desktop: the app, Applications, the price and Download.
 	// A disk image window, as a Mac app arrives. On a phone it is a plain card.
@@ -358,9 +360,9 @@
 		return '<div class="lv-lwin" data-lwin role="dialog" aria-label="Levo">' +
 			'<div class="lv-lwin-bar"><span class="lv-lights"><button type="button" data-act="lwinclose" aria-label="Close">' + sym("xmark", 7) + '</button><button type="button" data-act="lwinmin" aria-label="Minimise">' + sym("minus", 7) + '</button><button type="button" tabindex="-1" aria-hidden="true">' + sym("plus", 7) + '</button></span><b>Levo</b></div>' +
 			'<div class="lv-lwin-body">' +
-				'<button type="button" class="lv-lwin-app" data-act="lwinapp" aria-label="Levo"><img src="img/icon-256.png" width="104" height="104" alt="" draggable="false"><span>Levo</span></button>' +
+				'<button type="button" class="lv-lwin-app" data-act="lwinapp" aria-label="Levo"><span class="lv-lwin-ic"><img class="lv-dk-l" src="img/dock/levo.png" width="96" height="96" alt="" draggable="false"><img class="lv-dk-d" src="img/dock/levo-dark.png" width="96" height="96" alt="" draggable="false"></span><span>Levo</span></button>' +
 				'<svg class="lv-lwin-arrow" viewBox="0 0 120 24" aria-hidden="true"><path d="M4 12h98"/><path d="M98 4l10 8-10 8"/></svg>' +
-				'<span class="lv-lwin-apps" data-lwinapps><img class="lv-lwin-folder" src="img/desk/applications.png" width="104" height="104" alt="" draggable="false"><span>Applications</span></span>' +
+				'<span class="lv-lwin-apps" data-lwinapps><span class="lv-lwin-ic"><img class="lv-lwin-folder" src="img/desk/applications.png" width="96" height="96" alt="" draggable="false"></span><span>Applications</span></span>' +
 			'</div>' +
 			'<div class="lv-lwin-foot"><span class="lv-lwin-price"><b data-lprice></b><span data-lterm></span></span><span class="lv-flex"></span>' +
 				'<a class="lv-lbtn" data-lbuy href="#">Buy</a><a class="lv-lbtn lv-lbtn-primary" data-ldownload href="#">Download</a></div>' +
@@ -397,7 +399,7 @@
 	function renderDisk(free) {
 		$("[data-free]").textContent = gb(free);
 		var t = tickedGB();
-		$("[data-can]").innerHTML = t > 0 ? "<b>" + gb(t) + "</b>\u2009to clean up" : "";
+		$("[data-can]").innerHTML = t > 0 ? "<b>" + gb(t) + "</b>\u2009ready" : "";
 		$("[data-ready]").innerHTML = S.analysing ? '<i class="lv-spin"></i>Analysing' : "";
 		$("[data-levellabel]").textContent = LEVO_DEMO.levels.indexOf(S.level) >= 0 ? "Smartly" : S.level;
 	}
@@ -405,8 +407,8 @@
 	// The disk in ticks. Each tick is wholly one category's colour, shared out by
 	// size with at least one tick for every category present (the app's rule):
 	// what's in use, then what a clean would free, in green, then free space.
-	// The app's five parts in macOS's order (Gauges.swift DiskPart, round 14): Your Data, Apps,
-	// System Data, Ready to free (what's ticked, in green) and Free. Unticked findings stay Your Data.
+	// The app's five parts in its order (Gauges.swift DiskPart, round 15): Your Data, System Data,
+	// Apps, Ready to free (what's ticked, in green) and Free. Unticked findings stay Your Data.
 	// macOS's own storage palette, without its grey: System Data yellow, Your Data red, Apps orange.
 	var PARTS = { system: ["#F2B800", "#FFD60A"], yourData: ["#FF3B30", "#FF453A"], apps: ["#FF9500", "#FF9F0A"] };
 	function segments() {
@@ -414,8 +416,8 @@
 		var part = function (id) { return sum(S.disk.used.filter(function (u) { return (u.id === "system" ? "system" : u.id === "apps" ? "apps" : "yourData") === id; }), function (u) { return u.gb; }); };
 		var segs = [
 			{ id: "yourData", label: "Your Data", gb: part("yourData") + unticked, color: PARTS.yourData[d] },
-			{ id: "apps", label: "Apps", gb: part("apps"), color: PARTS.apps[d] },
-			{ id: "system", label: "System Data", gb: part("system"), color: PARTS.system[d] }
+			{ id: "system", label: "System Data", gb: part("system"), color: PARTS.system[d] },
+			{ id: "apps", label: "Apps", gb: part("apps"), color: PARTS.apps[d] }
 		];
 		var t = tickedGB();
 		if (t > 0) segs.push({ id: "can", label: "Ready to free", gb: t, color: "var(--lv-ready)" });
@@ -522,8 +524,13 @@
 		return { lead: lead, level: S.level, groups: shown.map(function (x) { return x.g.id; }), unnamed: unnamed, moreChip: moreChip, moreChoices: !moreChip && unnamed > 0 };
 	}
 	function w(text) { return text.split(" ").map(function (x) { return '<span class="lv-w">' + esc(x) + "</span>"; }).join(""); }
+	// After a click a word shows no hover look until the pointer leaves it (round 15); quietKey names it
+	// across the sentence's redraw.
+	var quietKey = null;
+	function chipKey(act, extra) { var m = /data-id="([^"]*)"/.exec(extra || ""); return act + ":" + (m ? m[1] : ""); }
 	function chip(act, label, extra, icon) {
-		return '<button type="button" class="lv-chip" data-act="' + act + '"' + (extra || "") + ">" + (icon || "") + "<span>" + esc(label) + "</span></button>";
+		var key = chipKey(act, extra);
+		return '<button type="button" class="lv-chip' + (key === quietKey ? " is-quiet" : "") + '" data-act="' + act + '" data-key="' + key + '"' + (extra || "") + ">" + (icon || "") + "<span>" + esc(label) + "</span></button>";
 	}
 	function renderSummary() {
 		var el = $("[data-summary]");
@@ -594,6 +601,7 @@
 		S.auto = !!on;
 		var pill = $("[data-autopill]");
 		if (pill) pill.hidden = !S.auto;
+		renderActions();
 		renderSummary();
 		if (window.LevoMenus && LevoMenus.refresh) LevoMenus.refresh();
 		toast("info", S.auto ? "Auto mode on" : "Auto mode off");
@@ -664,7 +672,9 @@
 		return { label: "Clean up", keys: ["⌘", "⌫"], act: t > 0 ? "clean" : null };
 	}
 	function renderActions() {
-		var p = primary(), btn = $('[data-act="primary"]');
+		var p = primary(), btn = $('[data-act="primary"]'), top = $("[data-topclean]");
+		// Clean up sits at the name row's end while Auto mode is off (round 15).
+		if (top) { top.hidden = !!S.auto; top.disabled = tickedGB() <= 0; }
 		$("[data-plabel]").textContent = p.label;
 		$("[data-pcaps]").innerHTML = caps(p.keys, "lv-cap-sm");
 		btn.disabled = !p.act;
@@ -688,7 +698,7 @@
 		var owned = {};
 		LEVO_DEMO.groups.forEach(function (g) { g.items.forEach(function (it) { if (it.desk) owned[it.desk] = true; }); });
 		var dock = $("[data-dock]"), trash = $('[data-dock="trash"]');
-		var tx = dock.offsetLeft - dock.offsetWidth / 2 + (trash ? trash.offsetLeft + trash.offsetWidth / 2 : 0), ty = dock.offsetTop + 30;
+		var tx = dock.offsetLeft + (trash ? trash.offsetLeft + trash.offsetWidth / 2 : 0), ty = dock.offsetTop + 30;
 		$$("[data-icon]").forEach(function (el) {
 			var id = el.dataset.icon;
 			el.style.setProperty("--tx", (tx - el.offsetLeft - 46) + "px");
@@ -800,9 +810,12 @@
 		scene.classList.toggle("no-widgets", !widgets);
 		if (widgets) fitTime($("[data-wtime]"));
 		// The Levo window sits in the open space between the icons and the popover.
-		var win = $("[data-lwin]"), left = widgets ? 380 : 236, right = popLeft - 28;
+		// On a small screen the window is smaller and sits further left, so it clears the popover.
+		var small = W < 1100;
+		scene.classList.toggle("is-small", small);
+		var win = $("[data-lwin]"), left = widgets ? 380 : small ? 214 : 236, right = popLeft - 20;
 		var ww = win.offsetWidth, wh = win.offsetHeight;
-		var x = Math.round(Math.max(left, left + (right - left - ww) / 2));
+		var x = Math.round(Math.max(Math.min(left, right - ww), left + (right - left - ww) / 2));
 		var y = Math.round(Math.max(64, Math.min(H - wh - 190, (H - wh) / 2 - 40)));
 		if (!S.lwinMoved) { win.style.left = x + "px"; win.style.top = y + "px"; }
 		var hint = null;
@@ -825,7 +838,7 @@
 		if (!except || except.dataset.icon !== "dmg") out.push({ x: pw.offsetLeft, y: pw.offsetTop, w: pw.offsetWidth, h: $(".lv-pop").offsetHeight });
 		out.push(rectOf($("[data-lwin]")));
 		out.push({ x: 0, y: $("[data-dock]").offsetTop - 50, w: scene.offsetWidth, h: 200 });
-		$$(".lv-ic").forEach(function (el) { if (el !== except && !el.classList.contains("is-hidden") && el.style.left) out.push({ x: el.offsetLeft, y: el.offsetTop, w: IC_W, h: IC_H }); });
+		$$(".lv-ic").forEach(function (el) { if (el !== except && el.offsetWidth && !el.classList.contains("is-hidden") && el.style.left) out.push({ x: el.offsetLeft, y: el.offsetTop, w: IC_W, h: IC_H }); });
 		return out.filter(Boolean);
 	}
 	function freeSpot(el, x0, y0) {
@@ -853,7 +866,7 @@
 		var top = widgets ? 236 : 44, bottom = $("[data-dock]").offsetTop - 64 - IC_H;
 		var right = Math.max(220, Math.min((win ? win.x : W / 2) - IC_W - 10, popLeft - IC_W - 20));
 		$$(".lv-ic").forEach(function (el) {
-			if (el === dmg) return;
+			if (el === dmg || !el.offsetWidth) return;
 			var best = null;
 			for (var tries = 0; tries < 60 && !best; tries++) {
 				var x = Math.round(16 + Math.random() * Math.max(10, right - 16));
@@ -1562,16 +1575,26 @@
 		var el = $('[data-icon="' + id + '"]');
 		if (!el || id === "dmg" || el.classList.contains("is-gone")) return false;
 		var info = LEVO_DEMO.desktop.filter(function (d) { return d.id === id; })[0];
-		var gbs = DESK_GB[id] || 0;
-		S.groups.forEach(function (g) { g.items = g.items.filter(function (it) { if (it.desk === id) { gbs += it.gb; return false; } return true; }); });
+		var gbs = DESK_GB[id] || 0, removed = [];
+		S.groups.forEach(function (g) { g.items = g.items.filter(function (it) { if (it.desk === id) { gbs += it.gb; removed.push({ g: JSON.parse(JSON.stringify(g)), it: it }); return false; } return true; }); });
 		S.groups = S.groups.filter(function (g) { return g.items.length || g.id === "trash"; });
 		if (id === "installers" && S.installers) gbs = Math.max(gbs, sum(S.installers, function (x) { return x.size || 0; }));
 		S.binned[id] = true;
 		renderIcons();
 		if (id === "installers" || id === "unzipped") { var M = window.LevoMenus; if (M && M.closeWindow) M.closeWindow(id); }
 		later(function () {
-			S.trash.push({ name: info.name, kind: info.kind === "doc" ? "txt" : info.kind === "shot" ? "image" : info.kind, gb: Math.round(gbs * 1e6) / 1e6, desk: id });
+			var entry = { name: info.name, kind: info.kind === "doc" ? "txt" : info.kind === "shot" ? "image" : info.kind, gb: Math.round(gbs * 1e6) / 1e6, desk: id };
+			S.trash.push(entry);
 			syncTrash(true);
+			lastMove(entry, function () {
+				S.binned[id] = false;
+				removed.forEach(function (r) {
+					var g = group(r.g.id);
+					if (!g) { g = r.g; g.items = []; S.groups.push(g); }
+					g.items.push(r.it);
+				});
+				renderIcons();
+			});
 		}, REDUCED ? 0 : 560);
 		return true;
 	}
@@ -1594,9 +1617,26 @@
 		});
 		S.groups = S.groups.filter(function (g) { return g.items.length || g.id === "trash"; });
 		flyArc(src, a, trashPoint(), { lift: 60, dur: 520, shrink: 0.6 }, function () {
-			S.trash.push({ name: info.item.name, kind: info.item.kind, gb: gbs });
+			var entry = { name: info.item.name, kind: info.item.kind, gb: gbs };
+			S.trash.push(entry);
 			syncTrash(true);
+			lastMove(entry, function () {
+				list.splice(Math.min(i, list.length), 0, info.item);
+				if (window.LevoMenus) LevoMenus.updateWindow(info.window, { items: list });
+				if (info.window === "installers") S.groups.forEach(function (g) { g.items.forEach(function (it) { if (it.desk === "installers") it.gb = Math.round((it.gb + gbs) * 1000) / 1000; }); });
+			});
 		});
+	}
+	// Edit › Undo puts the last move to the Trash back, as Finder does ("Undo Move of “notes (3).txt”").
+	var undoMove = null;
+	function lastMove(entry, putBack) {
+		undoMove = { label: "Move of \u201c" + entry.name + "\u201d", run: function () {
+			var i = S.trash.indexOf(entry);
+			if (i < 0) return;
+			S.trash.splice(i, 1);
+			putBack();
+			syncTrash();
+		} };
 	}
 	// Emptying: the Trash window's icons shrink away, the dock's Trash goes back to empty and the space comes back.
 	function emptyTrash() {
@@ -1680,6 +1720,7 @@
 	function onClick(e) {
 		var t = e.target.closest("[data-act], [data-dock], [data-icon]");
 		if (!t || !root.contains(t)) return;
+		if (t.classList.contains("lv-chip")) { quietKey = t.dataset.key; t.classList.add("is-quiet"); }
 		S.touched = true;
 		if (S.dragged) return;
 		if (t.dataset.dock) { dockClick(t); return; }
@@ -1696,6 +1737,7 @@
 			case "lwinclose": lwin(false, "close"); break;
 			case "lwinmin": lwin(false, "min"); break;
 			case "note": openPop(); break;
+			case "noteclose": e.stopPropagation(); hideNote(); break;
 			case "unlock": unlock(); break;
 			case "fanitem": var fi = S.downloads[+t.dataset.n]; closeFan(); if (fi && fi.levo) lwin(true); break;
 			case "fanfinder": closeFan(); openFile("installers"); break;
@@ -1715,6 +1757,7 @@
 			case "freedx": $("[data-freed]").hidden = true; break;
 			case "sumall": e.stopPropagation(); toggleAll(); break;
 			case "automode": case "automode-open": e.stopPropagation(); togglePanel(); break;
+			case "topclean": askClean(); break;
 			case "sumspace": toggleAll(); break;
 			case "chip": e.stopPropagation(); S.openChips[id] = !S.openChips[id]; if (S.openChips[id]) S.open[id] = true; renderSummary(); break;
 			case "levelword": e.stopPropagation(); levelWordMenu(t); return;
@@ -1761,6 +1804,7 @@
 		if (id === "settings") later(function () { M.window("settings", { id: "settings" }); }, 500);
 		if (id === "finder") later(function () { if (S.lwinClosed) lwin(true); else openFile("installers"); }, 400);
 		if (id === "notes") later(function () { openFile("notes"); }, 500);
+		if (id === "mail") later(function () { window.location.href = "mailto:support@cntxtlabs.co?subject=Levo%20support%20%26%20feedback"; }, 400);
 		if (id === "terminal") later(function () { var a = document.getElementById("agents"); if (a) a.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); }, 500);
 	}
 
@@ -1880,16 +1924,27 @@
 		}
 	}
 
+	// The tip follows sections, not ticks (round 15): it stays put across one section's ticks and
+	// changes only when the pointer enters another, centred over that section.
+	var tipSeg = null;
 	function onHoverBar(e) {
 		var tk = e.target.closest && e.target.closest(".lv-tick"), tip = $("[data-tip]");
+		var id = tk ? tk.dataset.seg : null;
+		if (!tk && e.target.closest && e.target.closest("[data-dbar]") && tipSeg && e.type !== "mouseleave") return;
+		if (id === tipSeg) return;
+		tipSeg = id;
 		if (!tk) { tip.hidden = true; $$(".lv-tick").forEach(function (x) { x.classList.remove("is-dim"); }); return; }
-		var id = tk.dataset.seg, s = segments().filter(function (x) { return x.id === id; })[0];
+		var s = segments().filter(function (x) { return x.id === id; })[0];
 		if (!s) return;
-		$$(".lv-tick").forEach(function (x) { x.classList.toggle("is-dim", x.dataset.seg !== id); });
+		var mine = $$(".lv-tick").filter(function (x) { x.classList.toggle("is-dim", x.dataset.seg !== id); return x.dataset.seg === id; });
 		tip.innerHTML = "<b>" + esc(s.label) + "</b> " + gb(s.gb);
+		var bar = $("[data-dbar]"), first = mine[0], last = mine[mine.length - 1];
+		var x = (first.offsetLeft + last.offsetLeft + last.offsetWidth) / 2;
+		var fresh = tip.hidden;
 		tip.hidden = false;
-		var bar = $("[data-dbar]"), x = tk.offsetLeft + tk.offsetWidth / 2;
-		tip.style.left = Math.max(tip.offsetWidth / 2, Math.min(bar.offsetWidth - tip.offsetWidth / 2, x)) + "px";
+		// Whole pixels, no centring transform, so the text stays crisp.
+		tip.style.left = Math.round(Math.max(0, Math.min(bar.offsetWidth - tip.offsetWidth, x - tip.offsetWidth / 2))) + "px";
+		tip.classList.toggle("is-moving", !fresh);
 	}
 
 	// ---------------------------------------------------------------- Public
@@ -1919,6 +1974,11 @@
 		root.addEventListener("contextmenu", onContext);
 		document.addEventListener("keydown", onKey);
 		var bubbleTimer = null;
+		pop.addEventListener("pointerout", function (ev) {
+			if (!quietKey) return;
+			var from = ev.target.closest && ev.target.closest(".lv-chip.is-quiet");
+			if (from && !(ev.relatedTarget && from.contains(ev.relatedTarget))) { from.classList.remove("is-quiet"); quietKey = null; }
+		});
 		pop.addEventListener("pointerover", function (ev) {
 			var b = ev.target.closest && ev.target.closest("[data-bubble]");
 			if (b && ev.pointerType === "mouse") { clearTimeout(bubbleTimer); bubble(b); }
@@ -1930,7 +1990,7 @@
 		$(".lv-scroll").addEventListener("scroll", hideBubble, { passive: true });
 		var bar = $("[data-dbar]");
 		bar.addEventListener("mousemove", onHoverBar);
-		bar.addEventListener("mouseleave", function () { onHoverBar({ target: bar }); });
+		bar.addEventListener("mouseleave", function () { onHoverBar({ target: bar, type: "mouseleave" }); });
 		var dock = $("[data-dock]");
 		dock.addEventListener("mousemove", onDockMove);
 		dock.addEventListener("mouseleave", onDockLeave);
@@ -1950,13 +2010,13 @@
 		} else { inView = true; start(); }
 		if (window.LevoMenus) LevoMenus.attach({ scene: scene, hooks: {
 			battery: function () { return batt; },
-			device: deviceFamily,
+			device: function () { return power === "desktop" ? "Mac mini" : power === "laptop" ? "MacBook Pro" : deviceFamily(); },
 			disk: function () { return { name: S.disk.name, total: S.disk.total, free: S.disk.free }; },
 			closeLevo: closePop,
 			openLevo: function () { S.touched = true; openPop(); },
-			auto: function () { return S.auto; },
-			setAuto: function (on) { setAuto(on); },
-			emptyTrash: emptyTrash,
+			emptyTrash: function () { undoMove = null; return emptyTrash(); },
+			undoLabel: function () { return undoMove && S.trash.length ? undoMove.label : null; },
+			undo: function () { var u = undoMove; undoMove = null; if (u) u.run(); },
 			trashItem: function (info) { trashWinItem(info); },
 			dragItem: function (d) { overTrash(d.over ? d : null); },
 			dropItem: function (d) { var on = overTrash(d); overTrash(null); if (on) trashWinItem(d, d.ghost); return on; },

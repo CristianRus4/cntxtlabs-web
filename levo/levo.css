@@ -262,4 +262,4 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 @media (prefers-reduced-motion: reduce) { .ag-prompt.in { animation: none; } }
 
 /* Clear space between the navbar and the framed Mac. */
-.first { padding-top: 20px; }
+.first { padding-top: 40px; }
