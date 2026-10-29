@@ -147,14 +147,16 @@ carries names, labels, numbers and the price only.
 
 The demo shows the app's Summary layout in round 12's order (PopoverView.swift):
 the Mac's name, the gauges, then free space, "to clean up" and the five-part
-disk bar (System Data, Your Data, Apps, Ready to free, Free; only the green
-fills), then "A balanced clean up frees 33 GB: Xcode build data, Simulators and
+disk bar (System Data brown, Your Data orange, Apps blue, Ready to free green,
+Free grey, as the app; only the green fills), then "A balanced clean up frees 33 GB: Xcode build data, Simulators and
 4 more." The level word is a menu (Careful, Balanced, Aggressive, Everything);
 the amount, "4 more" and the empty space open the full breakdown, and the
 sentence holds still while ticking there. The Command K panel and every confirm
 are bottom sheets that grow the popover if needed. The Expanded lists are still
 in the code (the breakdown). The phone stills in img/shots are element
-screenshots of the popover at 3x, corners masked; re-render them when it changes.
+screenshots of the popover at 3x, corners masked; re-render them when it changes. The disk, disk-tip and actions-base tiles had
+their bars recoloured in place to the app's new colours (by hue, keeping each
+pixel's blend with the panel), since they are crops of older renders.
 
 ## Auto mode
 

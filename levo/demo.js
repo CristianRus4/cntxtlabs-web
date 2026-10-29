@@ -406,7 +406,7 @@
 	// what's in use, then what a clean would free, in green, then free space.
 	// The app's five parts (Gauges.swift DiskPart): System Data, Your Data, Apps,
 	// Ready to free (what's ticked, in green) and Free. Unticked findings stay Your Data.
-	var PARTS = { system: ["#C2307E", "#EC5FA8"], yourData: ["#6A3DEC", "#A485FF"], apps: ["#1F7AE0", "#4FA3F8"] };
+	var PARTS = { system: ["#A2845E", "#B89874"], yourData: ["#E8780C", "#FF9F0A"], apps: ["#1F7AE0", "#4FA3F8"] };
 	function segments() {
 		var unticked = readyGB() - tickedGB(), d = dark() ? 1 : 0;
 		var part = function (id) { return sum(S.disk.used.filter(function (u) { return (u.id === "system" ? "system" : u.id === "apps" ? "apps" : "yourData") === id; }), function (u) { return u.gb; }); };
