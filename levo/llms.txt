@@ -5,7 +5,7 @@
 - Needs macOS 26 or later. No Levo account and no Levo server.
 - Works with the agent CLI you already use: Claude Code, Codex, Gemini CLI, Cursor, Copilot, opencode, Qwen Code, Kimi CLI, Grok CLI, or a custom command.
 - The agent can only read. Nothing it says can delete a file, quit an app or change a setting.
-- Free to watch and suggest. A lifetime licence, currently US$5, unlocks cleaning.
+- Free to watch and suggest. A lifetime licence, currently US$4.99, unlocks cleaning.
 - Signed and notarised by Cntxt Labs (team ID 5X94H5ZCD4).
 
 ## Links

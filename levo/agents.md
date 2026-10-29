@@ -54,7 +54,7 @@ Privacy:
 
 ## Price
 
-A lifetime licence, currently US$5, bought through Lemon Squeezy.
+A lifetime licence, currently US$4.99, bought through Lemon Squeezy.
 
 ## Install (for an agent)
 

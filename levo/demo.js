@@ -118,7 +118,9 @@
 			{ id: "textedit", name: "TextEdit", img: "img/dock/textedit.png", transient: true },
 			{ id: "trash", name: "Trash", img: "img/dock/trash-empty.png", full: "img/dock/trash-full.png" }
 		],
-		notification: { title: "Disk below {alert}", body: "{ready} ready to clean up" },
+		// The app's own words (round 17).
+		notification: { title: "Your Mac is almost full", body: "{free} left. Levo can safely clean {ready}." },
+		autoCleaned: { title: "Auto mode freed {freed}", body: "Cleaned {what}. {free} free now." },
 		cleaned: { title: "Freed {freed}", body: "{free} free on {disk}" },
 		quip: "Still here.",
 		timing: { notify: 1500, open: 2700 }
@@ -986,7 +988,7 @@
 		renderMenubar();
 		layout();
 		placeDmg();
-		if (!S.popOpen) showNote(fill(LEVO_DEMO.notification.title, { alert: gb(S.disk.alert) }), fill(LEVO_DEMO.notification.body, { ready: gb(tickedGB()) }));
+		if (!S.popOpen) showNote(fill(LEVO_DEMO.notification.title, { alert: gb(S.disk.alert) }), fill(LEVO_DEMO.notification.body, { free: gb(S.disk.free), ready: gb(tickedGB()) }));
 	}
 	// Load: the desk comes in (CSS, while .is-intro), the alert arrives, then the popover opens on its own.
 	function start() {
@@ -1243,6 +1245,9 @@
 		pick = pick || function (g, it) { return it.on; };
 		var freed = Math.round(sum(S.groups, function (g) { return sum(g.items, function (it) { return pick(g, it) ? it.gb : 0; }); }) * 10) / 10;
 		if (freed <= 0) return;
+		// What went, as the app names it: two groups, or one and "N more".
+		var gone = S.groups.filter(function (g) { return g.items.some(function (it) { return pick(g, it); }); }).map(function (g) { return g.title; });
+		var what = gone.length <= 2 ? gone.join(" and ") : gone[0] + " and " + (gone.length - 1) + " more";
 		S.undo = snapshot();
 		$$(".lv-grow").forEach(function (r) { var g = group(r.dataset.id); if (g && g.items.every(function (it) { return pick(g, it); })) r.classList.add("is-going"); });
 		if (!said) $$(".lv-items, .lv-detail").forEach(function (r) { r.classList.add("is-going"); });
@@ -1269,7 +1274,11 @@
 			renderMenubar();
 			renderIcons();
 			toast("good", (said || "Freed") + " " + gb(freed), { act: "undo", label: "Undo" });
-			S.cleanedNote = [fill(LEVO_DEMO.cleaned.title, { freed: gb(freed) }), fill(LEVO_DEMO.cleaned.body, { free: gb(S.disk.free), disk: S.disk.name })];
+			S.cleanedNote = said
+				? [fill(LEVO_DEMO.autoCleaned.title, { freed: gb(freed) }), fill(LEVO_DEMO.autoCleaned.body, { what: what, free: gb(S.disk.free) })]
+				: [fill(LEVO_DEMO.cleaned.title, { freed: gb(freed) }), fill(LEVO_DEMO.cleaned.body, { free: gb(S.disk.free), disk: S.disk.name })];
+			// Auto mode works with the popover shut: its banner comes in at once.
+			if (said && !S.popOpen) { var an = S.cleanedNote; S.cleanedNote = null; later(function () { showNote(an[0], an[1], 5200); }, 300); }
 		}, 380);
 	}
 
@@ -1860,7 +1869,7 @@
 			return { title: "prices_Levo.txt", text: [
 				"Levo price",
 				"",
-				"- " + (OPTS.price || "$5") + " right now",
+				"- " + OPTS.price + " right now",
 				"- Lifetime licence, one payment",
 				"- Scan and suggestions are free",
 				"- Cleaning needs the licence",

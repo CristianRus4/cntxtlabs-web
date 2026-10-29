@@ -1159,6 +1159,14 @@ html.dark .lv-bsheet { box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 -4px 16px r
 }
 .lv-scene .lv-topclean.is-auto, .lv-kit .lv-topclean.is-auto { --tint: #FF9500; }
 .lv-scene .lv-topclean[hidden] { display: none; }
+/* "Auto mode" as the app draws it: a soft orange tint, orange text and a subtle rim (no solid fill). */
+.lv-scene .lv-topclean.is-auto, .lv-kit .lv-topclean.is-auto {
+	background: color-mix(in srgb, var(--tint) 16%, transparent);
+	box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--tint) 38%, transparent), inset 0 0.5px 0 rgba(255, 255, 255, 0.35);
+	color: #9E4700;
+	font-weight: 500;
+}
+html.dark .lv-scene .lv-topclean.is-auto, html.dark .lv-kit .lv-topclean.is-auto { color: #FF9217; box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--tint) 40%, transparent), inset 0 0.5px 0 rgba(255, 255, 255, 0.12); }
 html.dark .lv-scene .lv-topclean.is-auto, html.dark .lv-kit .lv-topclean.is-auto { --tint: #FF9F0A; }
 .lv-scene .lv-topclean:hover:not(:disabled) { filter: brightness(1.06); }
 .lv-scene .lv-topclean:active:not(:disabled) { filter: brightness(.94); }

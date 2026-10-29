@@ -63,7 +63,7 @@
 			'<div class="bt-auto-screen"><div class="lv-kit bt-kit"><div class="bt-auto-menubar"><span class="bt-auto-mark">' + (D.mark ? D.mark("bt-auto-m") : "") + "</span>" +
 				'<b data-automb>' + gbText(AUTO.free) + "</b></div>" +
 				'<div class="lv-note bt-auto-note" data-autonote><img class="lv-note-icon" src="img/icon-96.png" width="38" height="38" alt="">' +
-					'<span class="lv-note-text"><span class="lv-note-top"><b>Auto mode</b><span class="lv-note-when">now</span></span><span data-autonotebody>Freed 12 GB</span></span></div>' +
+					'<span class="lv-note-text"><span class="lv-note-top"><b data-autonotetitle>Auto mode freed 12 GB</b><span class="lv-note-when">now</span></span><span data-autonotebody></span></span></div>' +
 			"</div></div>";
 	}
 	// The bar's ticks in the app's order: Your Data, System Data, Apps, Ready, Free.
@@ -82,6 +82,13 @@
 		el.querySelector("[data-autoready]").innerHTML = st.ready >= 0.5 ? "<b>" + gbText(st.ready) + "</b>\u2009ready" : "";
 		el.querySelector("[data-autoday]").textContent = DAYNAMES[st.day % 7];
 	}
+	// The app's banner (round 17): "Auto mode freed 12 GB", "Cleaned Xcode build data and 2 more. 45 GB free now."
+	function autoNote(el, freed, free) {
+		var groups = ((D.data && D.data.groups) || []).filter(function (g) { return g.items.every(function (it) { return it.level === 1; }); }).map(function (g) { return g.title; });
+		var what = groups.length <= 2 ? groups.join(" and ") : groups[0] + " and " + (groups.length - 1) + " more";
+		el.querySelector("[data-autonotetitle]").textContent = "Auto mode freed " + gbText(freed);
+		el.querySelector("[data-autonotebody]").textContent = "Cleaned " + what + ". " + gbText(free) + " free now.";
+	}
 	function autoPlay(t) {
 		var el = t.el, note = el.querySelector("[data-autonote]");
 		var st = { free: AUTO.free, ready: AUTO.ready, day: 0 };
@@ -90,7 +97,7 @@
 			// The moment after a clean: the green cleared, the notification in.
 			st = { free: AUTO.limit + 12, ready: 0.6, day: 4 };
 			autoShow(el, st);
-			el.querySelector("[data-autonotebody]").textContent = "Freed 12 GB";
+			autoNote(el, 12, st.free);
 			note.classList.add("is-in");
 			return;
 		}
@@ -116,7 +123,7 @@
 					var before = { free: st.free, ready: st.ready, day: st.day };
 					st.free += freed; st.ready = 0;
 					tween(before, st, 1000);
-					el.querySelector("[data-autonotebody]").textContent = "Freed " + gbText(freed);
+					autoNote(el, freed, st.free);
 					note.classList.add("is-in");
 					t.later(function () { note.classList.remove("is-in"); }, 3600);
 				}, 1100);

@@ -6,10 +6,11 @@
 (function () {
 	"use strict";
 
-	// Price and links, in one place. The buttons, the Levo window and the agents'
-	// install prompt all read from here. When the price rises, change price only.
+	// Price and links, in one place. The buttons, the Levo window, the desktop notes and
+	// the agents' install prompt all read from here. The price is the one constant;
+	// payments will later set it from the live price.
 	var LEVO = {
-		price: "$5",
+		price: "$4.99",
 		term: "Lifetime",
 		download: "[DOWNLOAD LINK]",
 		buy: "[BUY LINK]",
