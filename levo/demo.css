@@ -1196,3 +1196,66 @@ html.dark .lv-scene .lv-auto { color: #FF9217; }
 .lv-scene.is-small .lv-lwin-ic, .lv-scene.is-small .lv-lwin-ic img { width: 80px; height: 80px; }
 .lv-scene.is-small .lv-lwin-arrow { width: 44px; }
 .lv-scene.is-small .lv-ic.is-roomy { display: none; }
+
+/* ------------------------------------------------------------ The kit: the popover's tokens outside the scene
+ * The tiles below the Mac (bento.js) are built from the popover's own components, so they wear
+ * the same tokens. Generated from the .lv-scene blocks above; keep them in step. */
+.lv-kit {
+	--fg: 0 0 0;
+	--sel: 0 0 0;
+	--accent: #138AF2;
+	--red: #B12424;
+	--red-fill: rgba(177, 36, 36, 0.12);
+	--orange: #C75D07;
+	--yellow-text: #8A5A00;
+	--yellow-fill: rgba(248, 163, 0, 0.16);
+	--green: #006B4F;
+	--green-fill: rgba(0, 138, 102, 0.12);
+	--lv-ready: #008A66;
+	--lv-free: rgb(0 0 0 / 0.1);
+	--pop-bg: linear-gradient(180deg, #F8F8F8 0%, #F0F0F0 70%);
+	--pop-rim: rgba(0, 0, 0, 0.1);
+	--panel: #FFFFFF;
+	--bar-bg: rgba(0, 0, 0, 0.03);
+	--mb-ink: #000;
+	--mb-bg: rgba(255, 255, 255, 0.32);
+	--glass: rgba(255, 255, 255, 0.58);
+	--glass-rim: rgba(255, 255, 255, 0.7);
+	--shadow: 0 1px 1px -1px rgba(0,0,0,.05), 0 4px 2px -3px rgba(0,0,0,.05), 0 8px 4px -6px rgba(0,0,0,.05), 0 12px 40px -12px rgba(0,0,0,.12), 0 24px 64px -24px rgba(0,0,0,.22);
+	--rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+	--ease-out: cubic-bezier(.2, .85, .25, 1);
+	--spring: cubic-bezier(.34, 1.56, .64, 1);
+	color: rgb(var(--fg));
+	font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+	font-size: 13px;
+	line-height: 1.25;
+	-webkit-font-smoothing: antialiased;
+	-webkit-user-select: none;
+	user-select: none;
+	text-align: left;
+}
+html.dark .lv-kit {
+	--fg: 255 255 255;
+	--sel: 255 255 255;
+	--accent: #4FA3F8;
+	--red: #FF6363;
+	--red-fill: rgba(255, 99, 99, 0.15);
+	--orange: #FF9217;
+	--yellow-text: #FFC531;
+	--yellow-fill: rgba(255, 197, 49, 0.15);
+	--green: #59D499;
+	--green-fill: rgba(89, 212, 153, 0.15);
+	--lv-ready: #59D499;
+	--lv-free: rgb(255 255 255 / 0.1);
+	--pop-bg: linear-gradient(180deg, #232323 0%, #1B1B1B 70%);
+	--pop-rim: rgba(255, 255, 255, 0.12);
+	--panel: #2A2A2A;
+	--bar-bg: rgba(255, 255, 255, 0.05);
+	--mb-ink: #fff;
+	--mb-bg: rgba(0, 0, 0, 0.22);
+	--glass: rgba(34, 34, 38, 0.52);
+	--glass-rim: rgba(255, 255, 255, 0.1);
+	--shadow: 0 0 0 1px rgba(255,255,255,.1), 0 1px 1px -1px rgba(0,0,0,.2), 0 12px 40px -12px rgba(0,0,0,.5), 0 24px 64px -24px rgba(0,0,0,.6);
+}
+.lv-kit button { font: inherit; color: inherit; margin: 0; cursor: default; -webkit-tap-highlight-color: transparent; }
+.lv-kit .lv-pop { position: relative; opacity: 1; visibility: visible; transform: none; transition: none; max-height: none; }

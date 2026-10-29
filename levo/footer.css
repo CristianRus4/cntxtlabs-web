@@ -1,98 +1,61 @@
 /*
- * The footer: a slim menubar (the links on the left as menus, Levo's mark with a
- * fake Mac's free space and the clock on the right), a mini dock, and the ©.
- * footer.js ticks the free space; overrides levo.css's and mobile.css's .foot.
+ * The footer: a few small links, then a huge, faint "Levo" clipped by the page's bottom
+ * edge, which rises a little into place as the end of the page comes into view.
+ * Overrides levo.css's and mobile.css's .foot.
  */
 
 .foot.lf {
-	--lf-green: #30B158;
 	display: block;
-	max-width: 1080px;
-	margin: 110px auto 0;
-	padding: 0 20px calc(40px + env(safe-area-inset-bottom));
+	position: relative;
+	max-width: none;
+	margin: 140px 0 0;
+	padding: 0;
 	border-top: 0;
-	font-size: 13px;
+	overflow: hidden;
 	color: var(--text);
+	text-align: left;
 }
-html.dark .foot.lf { --lf-green: #32D74B; }
-
-/* The menubar */
-.lf-bar {
+.lf-links {
+	position: relative;
+	z-index: 1;
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 0 24px;
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
-	justify-content: space-between;
-	gap: 16px;
-	height: 30px;
-	padding: 0 14px 0 6px;
-	border-radius: 11px;
-	background: rgb(var(--ink) / 0.035);
-	box-shadow: inset 0 0 0 1px var(--rim), 0 1px 0 rgb(255 255 255 / 0.5);
-	-webkit-backdrop-filter: blur(20px) saturate(1.6);
-	backdrop-filter: blur(20px) saturate(1.6);
-	font-family: var(--sans);
-	font-weight: 500;
+	gap: 8px 24px;
+	font-size: 13px;
+	color: var(--muted);
+}
+.lf-links a { color: inherit; text-decoration: none; transition: color .15s; }
+.lf-links a:hover { color: var(--text); }
+.lf-copy { margin-left: auto; }
+.lf-word {
+	margin: 8px 0 0;
+	padding: 0 2vw;
+	font-size: clamp(160px, 31vw, 520px);
+	font-weight: 800;
+	letter-spacing: -0.055em;
+	line-height: .78;
+	text-align: center;
 	white-space: nowrap;
-	font-variant-numeric: tabular-nums;
+	color: rgb(var(--ink) / 0.055);
+	/* Clipped by the page's bottom edge: about a third of the letters stay below it. */
+	margin-bottom: -0.2em;
+	-webkit-user-select: none;
+	user-select: none;
+	transition: transform 1.1s cubic-bezier(.22, 1, .36, 1), color 1.1s ease;
 }
-html.dark .lf-bar { box-shadow: inset 0 0 0 1px var(--rim), inset 0 1px 0 rgb(255 255 255 / 0.04); }
-
-.lf-menus { display: flex; align-items: center; min-width: 0; }
-.lf-menus a { padding: 3px 9px; border-radius: 6px; color: rgb(var(--ink) / 0.78); transition: background-color .12s, color .12s; }
-.lf-menus a.lf-app { font-weight: 700; color: var(--text); }
-.lf-menus a:hover { background: rgb(var(--ink) / 0.07); color: var(--text); }
-.lf-menus a:focus-visible { border-radius: 6px; outline-offset: 0; }
-
-.lf-status { display: flex; align-items: center; gap: 14px; color: rgb(var(--ink) / 0.82); }
-.lf-levo { display: inline-flex; align-items: center; gap: 6px; transition: color .5s ease; }
-.lf-mark { display: block; width: 18px; height: 12px; overflow: visible; }
-.lf-mark path { fill: rgb(var(--ink) / 0); stroke: currentColor; stroke-width: 1.35px; stroke-linejoin: round; transition: fill .5s ease; }
-.lf-levo b { font-weight: 500; min-width: 6.2ch; text-align: right; }
-.lf-clock:empty { display: none; }
-
-/* Levo just cleaned: a quick green, then back to the template colour. */
-.lf-levo.is-clean { color: var(--lf-green); transition-duration: .12s; }
-.lf-levo.is-clean .lf-mark path { fill: color-mix(in srgb, var(--lf-green) 28%, transparent); transition-duration: .12s; }
-
-/* The mini dock */
-.lf-dock {
-	display: flex;
-	align-items: flex-end;
-	gap: 4px;
-	width: max-content;
-	height: 56px;
-	margin: 40px auto 0;
-	padding: 6px 8px;
-	border-radius: 18px;
-	background: rgb(var(--ink) / 0.035);
-	box-shadow: inset 0 0 0 1px var(--rim);
-}
-.lf-tile { position: relative; display: block; width: 40px; height: 40px; transform-origin: 50% 100%; transition: transform .22s cubic-bezier(.2, .8, .25, 1); }
-.lf-tile img { position: absolute; inset: 0; width: 40px; height: 40px; display: block; -webkit-user-drag: none; user-select: none; }
-.lf-tile .lf-d, html.dark .lf-tile .lf-l { display: none; }
-html.dark .lf-tile .lf-d { display: block; }
-.lf-on::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: rgb(var(--ink) / 0.55); }
-.lf-sep { align-self: center; width: 1px; height: 32px; margin: 0 4px; background: var(--rim); }
-.lf-trash .lf-empty { opacity: 0; transition: opacity .3s; }
-.lf-trash .lf-full { transition: opacity .3s; }
-.lf-trash.is-empty .lf-empty { opacity: 1; }
-.lf-trash.is-empty .lf-full { opacity: 0; }
-
-@media (hover: hover) {
-	.lf-tile:hover { transform: translateY(-6px) scale(1.4); }
-	.lf-tile:has(+ .lf-tile:hover), .lf-tile:hover + .lf-tile,
-	.lf-tile:has(+ .lf-sep + .lf-tile:hover), .lf-tile:hover + .lf-sep + .lf-tile { transform: translateY(-2px) scale(1.16); }
-}
-
-.lf-copy { margin-top: 26px; text-align: center; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+html.dark .lf-word { color: rgb(var(--ink) / 0.07); }
+.js .lf:not(.is-in) .lf-word { transform: translateY(18%); color: rgb(var(--ink) / 0.02); }
 
 @media (max-width: 760px) {
-	.foot.lf { margin-top: 80px; padding-left: 16px; padding-right: 16px; }
-	.lf-bar { padding-right: 12px; gap: 10px; }
-	.lf-menus a { padding: 3px 7px; }
-	.lf-status { gap: 10px; }
-	.lf-dock { margin-top: 32px; }
+	.foot.lf { margin-top: 96px; padding-bottom: env(safe-area-inset-bottom); }
+	.lf-links { padding: 0 20px; gap: 8px 18px; }
+	.lf-copy { margin-left: 0; width: 100%; }
 }
-
 @media (prefers-reduced-motion: reduce) {
-	.lf-tile, .lf-levo, .lf-mark path, .lf-trash img { transition: none; }
+	.lf-word { transition: color .6s ease; }
+	.js .lf:not(.is-in) .lf-word { transform: none; }
 }

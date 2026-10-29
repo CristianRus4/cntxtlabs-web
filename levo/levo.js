@@ -14,6 +14,8 @@
 		download: "[DOWNLOAD LINK]",
 		buy: "[BUY LINK]",
 		agents: "https://cntxtlabs.co/levo/agents.md",
+		privacy: "[PRIVACY LINK]",
+		terms: "[TERMS LINK]",
 		team: "5X94H5ZCD4"
 	};
 
@@ -31,6 +33,8 @@
 	all("[data-term]").forEach(function (el) { el.textContent = LEVO.term; });
 	all("[data-buy]").forEach(function (a) { a.textContent = "Buy for " + LEVO.price; a.href = LEVO.buy; if (placeholder(LEVO.buy)) a.setAttribute("data-placeholder", ""); });
 	all("[data-download]").forEach(function (a) { a.href = LEVO.download; if (placeholder(LEVO.download)) a.setAttribute("data-placeholder", ""); else a.setAttribute("download", ""); });
+	all("[data-privacy]").forEach(function (a) { a.href = LEVO.privacy; if (placeholder(LEVO.privacy)) a.setAttribute("data-placeholder", ""); });
+	all("[data-terms]").forEach(function (a) { a.href = LEVO.terms; if (placeholder(LEVO.terms)) a.setAttribute("data-placeholder", ""); });
 	all("[data-sym]").forEach(function (el) { el.innerHTML = sym(el.dataset.sym, +el.dataset.size || 16); });
 
 	// Appearance follows the system. The one switch is an easter egg (Control
@@ -126,11 +130,8 @@
 	function drawAgents() {
 		var el = document.getElementById("levo-agents");
 		if (!el) return;
-		// Three steps as labels, then the chips; a click copies the prompt and shows it.
-		el.innerHTML = '<ol class="ag-steps">' + ["Click your agent", "Paste the prompt", "It installs Levo"].map(function (t, i) {
-			return '<li><span class="ag-n">' + (i + 1) + "</span>" + t + "</li>";
-		}).join("") + "</ol>" +
-			'<ul class="chips">' + CLIS.map(function (a, i) {
+		// The chips; a click copies the prompt and shows it.
+		el.innerHTML = '<ul class="chips">' + CLIS.map(function (a, i) {
 			return '<li><button type="button" class="chip' + (a.any ? " chip-any" : "") + '" data-ag="' + i + '" title="' + esc(a.name) + '"><span class="chip-p" aria-hidden="true">\u276f</span>' + esc(a.cli === "your-agent" ? "any CLI" : a.cli) + "</button></li>";
 		}).join("") + '</ul><div class="toast" data-toast role="status" aria-live="polite" hidden></div>' +
 			'<figure class="ag-prompt" data-prompt hidden><figcaption data-prompt-for></figcaption><pre data-prompt-text></pre></figure>';

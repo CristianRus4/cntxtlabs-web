@@ -857,22 +857,32 @@
 	// the screen (fresh each load), and the mounted disk image at the top right,
 	// where macOS puts volumes, or just left of the popover when it would be covered.
 	function placeIcons(widgets) {
-		if (S.iconsPlaced) return;
-		S.iconsPlaced = true;
 		var W = scene.offsetWidth, H = scene.offsetHeight, win = rectOf($("[data-lwin]"));
+		// Once per screen size: a resize of more than a little places them afresh.
+		if (S.iconsPlaced && Math.abs(S.iconsW - W) < 40 && Math.abs(S.iconsH - H) < 40) return;
+		S.iconsPlaced = true; S.iconsW = W; S.iconsH = H;
 		var pw = $(".lv-popwrap"), popLeft = pw.offsetLeft;
 		$$(".lv-ic").forEach(function (el) { el.style.left = ""; });
 		var dmg = placeDmg();
-		var top = widgets ? 236 : 44, bottom = $("[data-dock]").offsetTop - 64 - IC_H;
+		var top = widgets ? 236 : 44, bottom = $("[data-dock]").offsetTop - (scene.classList.contains("is-small") ? 16 : 64) - IC_H;
 		var right = Math.max(220, Math.min((win ? win.x : W / 2) - IC_W - 10, popLeft - IC_W - 20));
+		// A small screen has no room to scatter: a loose grid down the left, as Finder's Clean Up does.
+		var small = scene.classList.contains("is-small");
 		$$(".lv-ic").forEach(function (el) {
 			if (el === dmg || !el.offsetWidth) return;
 			var best = null;
-			for (var tries = 0; tries < 60 && !best; tries++) {
+			for (var tries = 0; tries < (small ? 0 : 60) && !best; tries++) {
 				var x = Math.round(16 + Math.random() * Math.max(10, right - 16));
 				var y = Math.round(top + Math.random() * Math.max(10, bottom - top));
 				var me = { x: x, y: y, w: IC_W, h: IC_H };
 				if (!blockers(el).some(function (b) { return hits(me, b, 18); })) best = { x: x, y: y };
+			}
+			// No room at random: the first free slot of a loose grid from the top left, as Finder's Clean Up does.
+			for (var gx = small ? 6 : 16; !best && gx + IC_W <= W - 8; gx += small ? 92 : 100) {
+				for (var gy = top; !best && gy <= Math.max(top, bottom); gy += 108) {
+					var slot = { x: gx, y: gy, w: IC_W, h: IC_H };
+					if (!blockers(el).some(function (b) { return hits(slot, b, 4); })) best = { x: gx, y: gy };
+				}
 			}
 			if (!best) best = freeSpot(el, 30, top);
 			el.style.left = best.x + "px";
@@ -2178,7 +2188,64 @@
 		});
 	}
 
+	// ---------------------------------------------------------------- Parts, for the tiles below the Mac
+	// The popover's own markup, built from the demo's state, so each tile is the real component
+	// (crisp at any scale) rather than a picture. Call after mount.
+	var PARTS_API = {
+		disk: function () {
+			var owners = allocate(segments(), TICKS), t = tickedGB();
+			return '<div class="lv-dhead lv-namerow"><span class="lv-sec">' + sym("laptopcomputer", 14) + '</span><b>MacBook Pro</b><span class="lv-flex"></span>' +
+				'<span class="lv-topclean" aria-hidden="true">' + sym("trash", 13) + "</span></div>" +
+				'<div class="lv-sep"></div>' +
+				'<section class="lv-disk"><div class="lv-hero"><span class="lv-free lv-num">' + gb(S.disk.free) + '</span><span class="lv-sec">free</span><span class="lv-flex"></span>' +
+				'<span class="lv-can lv-num"><b>' + gb(t) + "</b>\u2009ready</span></div>" +
+				'<div class="lv-dbar"><div class="lv-ticks">' + owners.map(function (o) {
+					return '<i class="lv-tick" data-seg="' + o.id + '" style="background-color:' + (o.id === "can" ? "var(--lv-ready)" : o.color) + '"></i>';
+				}).join("") + '</div><span class="lv-tip" hidden></span></div></section>';
+		},
+		// The sections the tip names, in the bar's order.
+		sections: function () { return segments().map(function (x) { return { id: x.id, label: x.label, size: gb(x.gb) }; }); },
+		gauges: function () {
+			var vals = { memory: memUsed() / S.mem.total * 100, cpu: cpuPct(), gpu: gpuPct() };
+			return '<section class="lv-gauges">' + [["memory", "Memory"], ["cpu", "CPU"], ["gpu", "GPU"]].map(function (g) {
+				var on = Math.round(vals[g[0]] / 100 * 26), k = 0;
+				return gaugeHTML(g[0], g[1]).replace(/<line /g, function () { return k++ < on ? '<line class="on" ' : "<line "; })
+					.replace("<span data-gnum></span>", "<span data-gnum>" + num0.format(Math.round(vals[g[0]])) + "</span>");
+			}).join("") + "</section>";
+		},
+		list: function (n) {
+			return '<div class="lv-sh"><span>Ready to free</span><span class="lv-sh-r"><span class="lv-dd">Smartly' + sym("chevron.down", 9, "lv-sec") + "</span></span></div>" +
+				'<div class="lv-list">' + S.groups.slice(0, n || 5).map(groupHTML).join("") + "</div>";
+		},
+		checkbox: function (on) { return checkbox(on ? "on" : "off", "", ""); },
+		confirm: function () {
+			var rows = [];
+			S.groups.forEach(function (g) { g.items.forEach(function (it) {
+				if (it.on && rows.length < 7) rows.push('<div class="lv-crow">' + tile(g.tile, g.symbol, "sm") + '<span class="lv-cname">' + esc(it.name) + '</span><span class="lv-flex"></span>' + (g.trash ? sym("trash", 11, "lv-sec") : "") + '<span class="lv-size lv-num">' + gb(it.gb) + "</span></div>");
+			}); });
+			return '<div class="lv-chead"><b>Clean up ' + gb(tickedGB()) + '?</b></div><div class="lv-sep"></div><div class="lv-clist">' + rows.join("") + "</div>" + confirmBar("Clean up", true, ["\u2318", "\u232b"]);
+		},
+		panel: function () {
+			var items = panelItems().items, n = -1;
+			while (items.length && items[items.length - 1] === null) items.pop();
+			return '<div class="lv-ph-gap"></div><div class="lv-pitems">' + items.map(function (it) {
+				if (!it) return '<div class="lv-psep"></div>';
+				n++;
+				return '<span class="lv-pitem' + (n === 0 ? " is-sel" : "") + '"' + (it.disabled ? " disabled" : "") + "><span>" + esc(it.label) + "</span>" + (it.detail ? '<span class="lv-pdetail">' + esc(it.detail) + "</span>" : "") +
+					'<span class="lv-flex"></span>' + (it.sub ? sym("chevron.right", 9, "lv-sec") : it.keys ? caps(it.keys, "lv-cap-sm") : "") + "</span>";
+			}).join("") + '</div><div class="lv-psearch"><span class="lv-psearch-ph">Search for actions\u2026</span></div>';
+		},
+		summary: function () {
+			var el = document.createElement("div"), saved = $("[data-summary]");
+			return saved ? saved.innerHTML : el.innerHTML;
+		},
+		actionBar: function () {
+			return '<div class="lv-act-left"><span class="lv-checked">Checked just now</span></div><div class="lv-act-right"><span class="lv-primary"><span>Clean up</span>' + caps(["\u2318", "\u232b"], "lv-cap-sm") + '</span><span class="lv-kbtn">' + sym("switch.2", 13, "lv-sec") + "</span></div>";
+		}
+	};
+
 	window.LevoDemo = {
+		parts: PARTS_API,
 		download: function (from) { download(from); },
 		data: LEVO_DEMO,
 		sym: sym,

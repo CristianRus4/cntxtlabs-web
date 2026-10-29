@@ -1,21 +1,17 @@
 /*
- * The bento below the Mac (bento.js builds the tiles). Each tile is a close-up cut
- * from the real app's renders (img/tiles, light and dark), in a frame that keeps
- * the crop's own shape. Light by default; html.dark swaps every picture at once.
+ * The bento below the Mac (bento.js builds the tiles). Every tile is the popover's own
+ * component in its tokens (.lv-kit, demo.css), at its real size; html.dark flips them.
  */
 
 :root {
 	--bt-tile: #FFFFFF;
 	--bt-tile-rim: rgba(0, 0, 0, 0.06);
 	--bt-rise: cubic-bezier(.22, 1, .36, 1);
-	/* The popover's fill where the disk bar sits (sampled from the renders). */
-	--bt-panel: #F4F4F4;
 	--bt-frame-shadow: 0 0 0 1px rgba(0, 0, 0, 0.07), 0 12px 32px -16px rgba(0, 0, 0, 0.22);
 }
 html.dark {
 	--bt-tile: #0F0F10;
 	--bt-tile-rim: rgba(255, 255, 255, 0.08);
-	--bt-panel: #202020;
 	--bt-frame-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09), 0 12px 32px -16px rgba(0, 0, 0, 0.7);
 }
 
@@ -32,13 +28,12 @@ html.dark {
 	margin: 0 auto;
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
-	grid-template-rows: 360px;
+	grid-template-rows: 380px;
 	grid-auto-rows: 272px;
 	gap: 16px;
 	grid-template-areas:
 		"automode automode automode automode"
 		"disk    disk    gauges  gauges"
-		"list    list    confirm confirm"
 		"list    list    confirm confirm"
 		"agents  agents  actions actions"
 		"levels  levels  actions actions";
@@ -51,7 +46,7 @@ html.dark {
 .bt-tile[data-tile="agents"] { grid-area: agents; }
 .bt-tile[data-tile="actions"] { grid-area: actions; }
 .bt-tile[data-tile="levels"] { grid-area: levels; }
-/* Before bento.js swaps in the pictures, the page's own markup stays out of sight. */
+/* Before bento.js builds the tiles, the page's own markup stays out of sight. */
 .bt-grid > :not(.bt-shot) { display: none; }
 
 .bt-tile {
@@ -83,35 +78,58 @@ html.dark {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	container-type: size;
 	pointer-events: none;
-	-webkit-user-select: none;
-	user-select: none;
 }
 
-/* The picture's frame: the crop's own shape, as large as the stage allows. */
-.bt-frame {
-	position: relative;
+/* The popover's components at their real size, in a frame like the popover's. */
+.bt-kit { display: contents; }
+.bt-pop {
+	width: 360px;
+	max-width: 100%;
 	flex: none;
-	width: min(100cqw, 100cqh * var(--w) / var(--h));
-	/* One scale for every crop (0.7 px a render pixel), so the app's type matches from tile to tile. */
-	max-width: calc(var(--w) * 0.7px);
-	aspect-ratio: var(--w) / var(--h);
-	overflow: hidden;
-	border-radius: 14px;
-	background: var(--bt-panel);
-	box-shadow: var(--bt-frame-shadow);
-	transform: translateZ(0);
+	border-radius: 16px;
+	box-shadow: inset 0 0 0 1px var(--pop-rim), var(--bt-frame-shadow);
 }
-.bt-zoom, .bt-layer { position: absolute; inset: 0; }
-.bt-layer img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
-html.dark .bt-light, html:not(.dark) .bt-dark { display: none; }
+.bt-pop .lv-scroll { overflow: hidden; }
 
-/* A slow close-up that settles as the tile plays. */
-.bt-zoom { transform: scale(1.06); transform-origin: 50% 0; }
-.bt-tile[data-tile="gauges"] .bt-zoom { transform-origin: 50% 50%; }
-.bt-tile[data-tile="levels"] .bt-zoom { transform-origin: 50% 50%; }
-.is-play .bt-zoom { transform: none; transition: transform 2.6s var(--bt-rise); }
+/* The disk: tips walk its sections. */
+
+.bt-disk .lv-disk { padding-bottom: 16px; }
+.bt-disk .lv-topclean { pointer-events: none; }
+.bt-disk .lv-tick { transition: background-color .15s, opacity .15s; }
+
+/* The list: five rows of Ready to free. */
+.bt-list .lv-scroll { padding: 8px 8px 10px; }
+
+/* Confirm: the sheet on its own, in place. */
+.bt-confirm { background: var(--pop-bg); }
+.bt-sheet.lv-bsheet { position: relative; inset: auto; transform: none; border-radius: 16px; box-shadow: none; }
+
+/* Keyboard first: the actions sheet rises over the dimmed popover. */
+.bt-actions { display: flex; flex-direction: column; overflow: hidden; }
+.bt-actions .lv-scroll { flex: 1; }
+.bt-actions .lv-actions { flex: none; }
+.bt-scrim { position: absolute; inset: 0; z-index: 9; background: rgba(0, 0, 0, 0.16); opacity: 0; transition: opacity .3s; }
+html.dark .bt-scrim { background: rgba(0, 0, 0, 0.35); }
+.bt-panel.lv-bsheet { transition: transform .55s var(--bt-rise); }
+.is-open .bt-scrim { opacity: 1; }
+.is-open .bt-panel.lv-bsheet { transform: none; }
+.bt-panel .lv-psearch-ph { display: block; padding: 10px 16px 12px; color: rgb(var(--fg) / 0.4); }
+
+/* The cleanup levels and what each frees. */
+.bt-levels { width: auto; padding: 20px 20px 18px; }
+.bt-levels-in { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.bt-levels .lv-seg button { transition: background-color .2s, color .2s; }
+
+/* The agents: cards, one chosen. */
+.bt-agents { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; width: 100%; max-width: 520px; }
+.bt-agent { position: relative; display: flex; align-items: center; gap: 10px; min-width: 0; padding: 10px; border-radius: 14px; background: var(--pop-bg); box-shadow: inset 0 0 0 1px var(--pop-rim); transition: box-shadow .25s; }
+.bt-agent-t { display: flex; flex-direction: column; min-width: 0; }
+.bt-agent-t b { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bt-agent-t small { font-size: 11px; color: rgb(var(--fg) / 0.55); white-space: nowrap; }
+.bt-agent-r { position: absolute; top: 6px; right: 6px; color: var(--accent); opacity: 0; transition: opacity .25s; }
+.bt-agent.is-on { box-shadow: inset 0 0 0 2px var(--accent); }
+.bt-agent.is-on .bt-agent-r { opacity: 1; }
 
 /* Arrival (getleft-web): rise 24px and fade, eased out; tiles arriving together stagger. */
 .js .bento .bt-tile {
@@ -121,117 +139,61 @@ html.dark .bt-light, html:not(.dark) .bt-dark { display: none; }
 }
 .js .bento .bt-tile.is-in { opacity: 1; transform: none; }
 
-/* ------------------------------------------------------------ What plays */
-
-/* A second render of the same view crossfades in (the disk's hover tip, a tick changing). */
-.bt-l-alt { opacity: 0; transition: opacity .5s ease; }
-.is-alt .bt-l-alt { opacity: 1; }
-
-/* The disk bar wipes in from the left: a strip of the popover's fill slides off it. */
-.bt-wipe { position: absolute; left: 0; right: 0; top: 64.6465%; height: 26.2626%; overflow: hidden; }
-.bt-wipe i {
-	position: absolute;
-	inset: 0 0 0 -48px;
-	background: linear-gradient(90deg, transparent, var(--bt-panel) 48px);
-}
-.is-wiped .bt-wipe i { transform: translateX(100%); transition: transform 1.2s cubic-bezier(.45, 0, .2, 1) .3s; }
-
-/* The actions sheet rises from the popover's bottom edge over its dimmed top. */
-.bt-l-dim { opacity: 0; transition: opacity .3s ease; }
-.bt-l-sheet { transform: translateY(100%); transition: transform .55s var(--bt-rise); }
-.is-open .bt-l-dim { opacity: 1; }
-.is-open .bt-l-sheet { transform: none; }
-
-/* The agents pan past, from Claude Code to Custom and back. */
-.bt-pan { width: 100%; height: 100%; max-width: none; aspect-ratio: auto; }
-.bt-pan .bt-zoom { transform: none; }
-.bt-pan .bt-layer { right: auto; width: auto; height: 100%; }
-.bt-pan .bt-layer img { position: static; width: auto; height: 100%; }
-.is-panning .bt-pan .bt-layer { animation: bt-pan 12s ease-in-out .6s infinite alternate; }
-@keyframes bt-pan { to { transform: translateX(var(--pan, 0px)); } }
-
 /* Resetting a tile between plays: no transitions. */
 .bt-still, .bt-still * { transition: none !important; animation: none !important; }
 
-/* ------------------------------------------------------------ Auto mode, live in the popover's look */
+/* ------------------------------------------------------------ Auto mode */
 
-.bt-auto {
-	--fg: 0 0 0;
-	--lv-ready: #008A66;
-	--lv-free: rgb(0 0 0 / 0.1);
-	--rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-	gap: 40px;
-	align-items: stretch;
-	font-family: var(--rounded);
-	color: rgb(var(--fg));
-}
-html.dark .bt-auto { --fg: 255 255 255; --lv-ready: #59D499; --lv-free: rgb(255 255 255 / 0.1); }
-.bt-auto-pop {
-	flex: 0 0 360px;
-	align-self: center;
-	box-sizing: border-box;
-	padding: 12px 16px 16px;
-	border-radius: 18px;
-	background: linear-gradient(180deg, #F8F8F8 0%, #F0F0F0 70%);
-	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08), var(--bt-frame-shadow);
-	font-size: 13px;
-}
-html.dark .bt-auto-pop { background: linear-gradient(180deg, #232323 0%, #1B1B1B 70%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), var(--bt-frame-shadow); }
-.bt-auto .lv-gl .lv-p { margin-left: -1px; }
-.bt-auto-name { display: flex; align-items: center; gap: 8px; }
-.bt-auto-sep { display: block; height: 1px; margin: 10px -16px 0; background: rgb(var(--fg) / 0.08); }
-.bt-auto-ticks + .bt-auto-sep { margin: 14px -16px 14px; }
-.bt-auto-name .lv-sym { color: rgb(var(--fg) / 0.5); }
-.bt-auto-name b { font-weight: 500; }
-.bt-auto-flex { flex: 1; }
-.bt-auto-pill { color: #9E4700; font-size: 13px; font-weight: 500; }
-html.dark .bt-auto-pill { color: #FF9217; }
-.bt-auto-hero { display: flex; align-items: baseline; gap: 6px; margin-top: 14px; }
-.bt-auto-free { font-size: 24px; font-weight: 600; letter-spacing: -0.3px; font-variant-numeric: tabular-nums; }
-.bt-auto-sec { color: rgb(var(--fg) / 0.5); }
-.bt-auto-ticks { display: flex; gap: 2px; margin: 12px 0 0; }
-.bt-auto-ticks i { flex: 1; height: 18px; border-radius: 1.5px; background: var(--lv-free); transition: background-color .3s; }
-.bt-auto-ticks i.is-sys { background: #FFD60A; }
-.bt-auto-ticks i.is-data { background: #FF453A; }
-.bt-auto-ticks i.is-apps { background: #FF9F0A; }
-html:not(.dark) .bt-auto-ticks i.is-sys { background: #F2B800; }
-html:not(.dark) .bt-auto-ticks i.is-data { background: #FF3B30; }
-html:not(.dark) .bt-auto-ticks i.is-apps { background: #FF9500; }
-.bt-auto-ticks i.is-free { background: rgb(var(--fg) / 0.14); }
+.bt-auto { gap: 40px; align-items: center; }
+.bt-auto-card { flex: none; }
+.bt-auto-pop { width: 360px; }
+.bt-auto-on { font-size: 13px; font-weight: 500; color: #9E4700; }
+html.dark .bt-auto-on { color: #FF9217; }
+.bt-auto-ticks i { flex: 1; height: 18px; border-radius: 1.5px; background: rgb(var(--fg) / 0.12); transition: background-color .25s; }
+.bt-auto-ticks i.is-data { background: #FF3B30; }
+.bt-auto-ticks i.is-sys { background: #F2B800; }
+.bt-auto-ticks i.is-apps { background: #FF9500; }
+html.dark .bt-auto-ticks i.is-data { background: #FF453A; }
+html.dark .bt-auto-ticks i.is-sys { background: #FFD60A; }
+html.dark .bt-auto-ticks i.is-apps { background: #FF9F0A; }
+.bt-auto-ticks i.is-free { background: rgb(var(--fg) / 0.12); }
+.bt-auto .lv-disk { padding-bottom: 14px; }
 
-.bt-auto-chart { position: relative; flex: 1; min-width: 0; margin: 18px 40px 14px 0; }
+.bt-auto-chart { position: relative; align-self: stretch; flex: 1; min-width: 0; margin: 26px 44px 40px 0; color: var(--text); }
 .bt-auto-chart svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.bt-auto-line { fill: none; stroke: rgb(var(--fg) / 0.78); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
-.bt-auto-limit { stroke: rgb(var(--fg) / 0.28); stroke-width: 1; stroke-dasharray: 4 5; }
-.bt-auto-lim { position: absolute; right: -40px; transform: translateY(-50%); font-size: 12px; font-weight: 500; color: rgb(var(--fg) / 0.5); font-variant-numeric: tabular-nums; }
-.bt-auto-dot { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: rgb(var(--fg)); box-shadow: 0 0 0 4px var(--bt-tile); opacity: 0; }
+.bt-auto-line { fill: none; stroke: currentColor; stroke-opacity: .78; stroke-width: 2.25; stroke-linejoin: round; stroke-linecap: round; }
+.bt-auto-limit { stroke: currentColor; stroke-opacity: .28; stroke-width: 1; stroke-dasharray: 4 5; }
+.bt-auto-lim { position: absolute; right: -44px; transform: translateY(-50%); font-size: 12px; font-weight: 500; opacity: .55; font-variant-numeric: tabular-nums; }
+.bt-auto-dot { position: absolute; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px var(--bt-tile); opacity: 0; transition: background-color .3s; }
 .is-play .bt-auto-dot { opacity: 1; }
-.is-freed .bt-auto-dot { background: var(--lv-ready); }
-.bt-auto-freed { position: absolute; transform: translate(8px, -130%); padding: 2px 8px; border-radius: 9px; background: color-mix(in srgb, var(--lv-ready) 15%, transparent); color: var(--lv-ready); font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; transition: opacity .3s; }
+.bt-auto.is-freed .bt-auto-dot, .is-freed .bt-auto-dot { background: #008A66; }
+html.dark .is-freed .bt-auto-dot { background: #59D499; }
+.bt-auto-freed { position: absolute; transform: translate(10px, -150%); padding: 2px 8px; border-radius: 9px; background: rgba(0, 138, 102, 0.12); color: #006B4F; font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; transition: opacity .5s ease; }
+html.dark .bt-auto-freed { background: rgba(89, 212, 153, 0.15); color: #59D499; }
 .is-freed .bt-auto-freed { opacity: 1; }
+.bt-auto-days { position: absolute; left: 0; right: 0; top: calc(100% + 12px); display: flex; justify-content: space-between; font-size: 12px; opacity: .45; }
 
 /* ------------------------------------------------------------ Phones: one column of full-width cards */
 
+@media (max-width: 1020px) {
+	.bt-auto { flex-direction: column; gap: 18px; align-items: center; }
+	.bt-grid { grid-template-rows: auto; }
+	.bt-tile[data-tile="auto"] .bt-stage { position: relative; inset: auto; padding: 60px 24px 24px; }
+	.bt-auto-chart { flex: none; width: calc(100% - 44px); align-self: flex-start; height: 160px; margin: 8px 44px 32px 0; }
+}
 @media (max-width: 760px) {
 	.bento { padding: 64px 20px 0; }
 	.bt-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: none; grid-template-rows: none; grid-auto-rows: auto; gap: 12px; }
 	.bt-grid > .bt-tile { grid-area: auto; }
 	.bt-tile { border-radius: 24px; }
 	.bt-label { position: static; padding: 18px 20px 0; }
-	.bt-stage { position: relative; inset: auto; display: block; container-type: normal; padding: 14px 16px 16px; }
-	.bt-frame { width: 100%; margin: 0 auto; border-radius: 12px; }
-	.bt-pan { height: auto; aspect-ratio: 2.1; }
-	.bt-auto { display: flex; flex-direction: column; gap: 18px; }
-	.bt-auto-pop { flex: none; width: 100%; max-width: 360px; align-self: center; }
-	.bt-auto-chart { flex: none; height: 150px; margin: 18px 40px 4px 0; }
+	.bt-stage, .bt-tile[data-tile="auto"] .bt-stage { position: relative; inset: auto; display: flex; padding: 14px 12px 16px; }
+	.bt-pop, .bt-auto-pop, .bt-auto-card { width: 100%; max-width: 360px; }
+	.bt-agents { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
 	/* Fades only: nothing moves, every tile shows its end state. */
 	.js .bento .bt-tile { transform: none; transition: opacity .4s ease-out; }
-	.bt-zoom, .is-play .bt-zoom, .bt-l-sheet { transform: none; transition: none; }
-	.bt-wipe { display: none; }
-	.bt-l-sheet { opacity: 0; transition: opacity .3s ease; }
-	.is-open .bt-l-sheet { opacity: 1; }
-	.is-panning .bt-pan .bt-layer { animation: none; }
+	.bt-panel.lv-bsheet { transition: none; }
 }

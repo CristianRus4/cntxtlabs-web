@@ -1,185 +1,245 @@
 /*
- * The bento below the Mac: tiles that each show one piece of the real app, cut from
- * its own renders (Levo/design/renders, rounds 9 and 10; web copies in img/tiles,
- * light and dark, switched by html.dark). Nothing is redrawn and nothing is clickable.
+ * The bento below the Mac. Every tile is the popover's own component, built by demo.js
+ * (LevoDemo.parts) in the popover's tokens (.lv-kit), laid out at its real size, so it is
+ * crisp at any scale. Only real app icons are pictures. Nothing here is clickable.
  *
  * Each tile rises in as it scrolls into view (getleft-web's reveal: 24px, 400ms fade,
- * 70ms stagger), then its picture plays with transforms and opacity only: a slow zoom
- * settles, the disk bar wipes in, a hover tip fades in, a tick changes, the actions
- * sheet rises, the agents pan past. Leaving the view resets a tile, so it plays again.
+ * 70ms stagger), then plays a little: the green ticks fill and the tip walks the bar's
+ * sections, the gauges sweep round, a tick changes, the actions sheet rises, the cleanup
+ * level moves, the agent changes. Leaving the view resets a tile, so it plays again.
  * Less motion: the end state at once, fades only.
  *
- * The first tile, Auto mode, is drawn live in the popover's look: free space falls to
- * the limit and Levo brings it back up with no click, again and again.
+ * The first tile, Auto mode: free space over a few days drifts down to the limit; when it
+ * touches it, Levo cleans and the line steps back up. It plays once each time it comes into view.
  */
 (function () {
 	"use strict";
 
 	var root = document.getElementById("bento");
 	var grid = root && root.querySelector(".bt-grid");
-	if (!grid) return;
+	var D = window.LevoDemo || {};
+	var P = D.parts;
+	if (!grid || !P) return;
 
 	var REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	var sym = D.sym, tile = D.tile;
+	function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+	function kit(cls, html) { return '<div class="lv-kit bt-kit"><div class="lv-pop bt-pop ' + cls + '">' + html + "</div></div>"; }
+	function words(t) { return t.split(" ").map(function (x) { return '<span class="lv-w">' + esc(x) + "</span>"; }).join(""); }
+	function chip(inner) { return '<span class="lv-chip">' + inner + "</span>"; }
 
-	// Every crop, at its @2x size. Each has a -light and a -dark copy.
-	var IMG = {
-		"disk": [704, 198], "disk-tip": [704, 198],
-		"gauges": [704, 216],
-		"list": [704, 570], "list-ticked": [704, 570],
-		"confirm": [700, 720],
-		"actions-base": [704, 628], "actions-dim": [704, 68], "actions-sheet": [704, 560],
-		"agents": [1260, 266],
-		"levels": [492, 112]
-	};
-	function pics(name) {
-		var s = IMG[name];
-		return ["light", "dark"].map(function (m) {
-			return '<img class="bt-' + m + '" src="img/tiles/' + name + "-" + m + '.webp" width="' + s[0] + '" height="' + s[1] +
-				'" alt="" loading="lazy" decoding="async" draggable="false">';
-		}).join("");
-	}
-	// A layer of the frame: a whole crop, or a strip of one placed at its own row (top, in px of the base).
-	function layer(name, cls, base, top) {
-		var style = "";
-		if (base) {
-			var b = IMG[base], s = IMG[name];
-			style = ' style="top:' + (top / b[1] * 100).toFixed(4) + "%;height:" + (s[1] / b[1] * 100).toFixed(4) + '%"';
-		}
-		return '<div class="bt-layer ' + cls + '"' + style + ">" + pics(name) + "</div>";
-	}
+	// ---------------------------------------------------------------- Auto mode
 
-	// ---------------------------------------------------------------- Auto mode (live)
-
-	var D = window.LevoDemo || {};
-	var AUTO = { limit: (D.data && D.data.disk && D.data.disk.alert) || 20, top: 34, end: 30, total: 245, ticks: 60 };
-	function gbText(v) { return Math.round(v) + " GB"; }
-	// Free space over one loop (0 to 1): down to the limit, Levo cleans, then a slow fall again.
-	var DROP = 0.58, BACK = 0.64;
-	function freeAt(x) {
-		var ease = function (u) { return u * u * (3 - 2 * u); };
-		if (x <= DROP) { var u = x / DROP; return AUTO.top - (AUTO.top - AUTO.limit) * (0.15 * u + 0.85 * ease(u)) + Math.sin(u * Math.PI * 5) * 0.7 * Math.sin(u * Math.PI); }
-		if (x <= BACK) return AUTO.limit + (AUTO.top - AUTO.limit) * ease((x - DROP) / (BACK - DROP));
-		return AUTO.top - (AUTO.top - AUTO.end) * ((x - BACK) / (1 - BACK));
+	var AUTO = { limit: (D.data && D.data.disk && D.data.disk.alert) || 20, start: 31, back: 32, days: 5, hit: 3.35, step: 0.12 };
+	var DAYS = (function () {
+		var out = [], d = new Date();
+		var f = new Intl.DateTimeFormat("en-NZ", { weekday: "short" });
+		for (var i = AUTO.days - 1; i >= 0; i--) out.push(f.format(new Date(d.getTime() - i * 864e5)));
+		return out;
+	})();
+	function ease(u) { return u * u * (3 - 2 * u); }
+	// Free space (GB) at t days: a slow drift down with a daily rhythm, Levo's step at the limit, then the drift again.
+	function freeAt(t) {
+		var wob = function (x) { return Math.sin(x * Math.PI * 2) * 0.55; };
+		if (t <= AUTO.hit) return AUTO.limit + (AUTO.start - AUTO.limit) * (1 - t / AUTO.hit) + wob(t) * (1 - t / AUTO.hit);
+		if (t <= AUTO.hit + AUTO.step) return AUTO.limit + (AUTO.back - AUTO.limit) * ease((t - AUTO.hit) / AUTO.step);
+		var u = (t - AUTO.hit - AUTO.step) / (AUTO.days - AUTO.hit - AUTO.step);
+		return AUTO.back - 2.6 * u + wob(t) * 0.6 * u;
 	}
-	var CW = 600, CH = 220, LO = 12, HI = 40;
+	var CW = 600, CH = 200, LO = 14, HI = 36;
+	function cx(t) { return t / AUTO.days * CW; }
 	function cy(v) { return CH - (v - LO) / (HI - LO) * CH; }
-	function chartPath() {
+	function path() {
 		var d = "";
-		for (var i = 0; i <= 160; i++) { var x = i / 160; d += (i ? "L" : "M") + (x * CW).toFixed(1) + " " + cy(freeAt(x)).toFixed(1); }
+		for (var i = 0; i <= 240; i++) { var t = i / 240 * AUTO.days; d += (i ? "L" : "M") + cx(t).toFixed(1) + " " + cy(freeAt(t)).toFixed(1); }
 		return d;
 	}
+	function gbText(v) { return Math.round(v) + " GB"; }
 	function autoHTML() {
 		var groups = ((D.data && D.data.groups) || []).filter(function (g) { return g.items.every(function (it) { return it.level === 1; }); });
-		// As the app's sentence: two groups by name, or one and "N more".
 		var shown = groups.length <= 2 ? groups : groups.slice(0, 1), more = groups.length - shown.length;
-		var chip = function (inner) { return '<span class="lv-chip">' + inner + "</span>"; };
 		var chips = shown.map(function (g, i) {
-			return chip((D.tile ? D.tile(g.tile, g.symbol, "chip") : "") + "<span>" + g.title + "</span>") + (i === shown.length + (more ? 1 : 0) - 2 ? '<span class="lv-w">and</span>' : "");
+			return chip(tile(g.tile, g.symbol, "chip") + "<span>" + esc(g.title) + "</span>") + (i === shown.length + (more ? 1 : 0) - 2 ? words("and") : "");
 		}).join("") + (more ? chip("<span>" + more + " more</span>") : "");
-		var words = function (t) { return t.split(" ").map(function (x) { return '<span class="lv-w">' + x + "</span>"; }).join(""); };
 		var ticks = "";
-		for (var i = 0; i < AUTO.ticks; i++) ticks += "<i></i>";
-		var limitY = cy(AUTO.limit), dropX = DROP * CW;
-		return '<div class="bt-auto-pop">' +
-				'<div class="bt-auto-name">' + (D.sym ? D.sym("laptopcomputer", 14) : "") + "<b>MacBook Pro</b><span class=\"bt-auto-flex\"></span><span class=\"bt-auto-pill\">Auto mode</span></div><i class=\"bt-auto-sep\"></i>" +
-				'<div class="bt-auto-hero"><span class="bt-auto-free" data-autofree>' + gbText(AUTO.top) + '</span><span class="bt-auto-sec">free</span></div>' +
-				'<div class="bt-auto-ticks" data-autoticks>' + ticks + '</div><i class="bt-auto-sep"></i>' +
-				'<p class="lv-sline">' + chip("<span>Auto mode</span>") + words("keeps") + chip("<span>" + gbText(AUTO.limit) + "</span>") + words("free: it cleans") + chips + words("on its own.") + "</p>" +
+		for (var i = 0; i < 60; i++) ticks += "<i></i>";
+		var limY = cy(AUTO.limit), hitX = cx(AUTO.hit + AUTO.step);
+		return '<div class="bt-auto-card">' +
+				kit("bt-auto-pop",
+					'<div class="lv-dhead lv-namerow"><span class="lv-sec">' + sym("laptopcomputer", 14) + '</span><b>MacBook Pro</b><span class="lv-flex"></span><span class="bt-auto-on">Auto mode</span></div>' +
+					'<div class="lv-sep"></div>' +
+					'<section class="lv-disk"><div class="lv-hero"><span class="lv-free lv-num" data-autofree>' + gbText(AUTO.start) + '</span><span class="lv-sec">free</span></div>' +
+					'<div class="lv-dbar"><div class="lv-ticks bt-auto-ticks" data-autoticks>' + ticks + "</div></div></section>" +
+					'<div class="lv-sep"></div>' +
+					'<div class="lv-sum"><p class="lv-sline">' + chip("<span>Auto mode</span>") + words("keeps") + chip("<span>" + gbText(AUTO.limit) + "</span>") + words("free: it cleans") + chips + words("on its own.") + "</p></div>") +
 			"</div>" +
 			'<div class="bt-auto-chart">' +
-				'<svg viewBox="0 0 ' + CW + " " + CH + '" preserveAspectRatio="none">' +
-					'<defs><clipPath id="bt-auto-clip"><rect data-autoclip x="0" y="-10" width="' + CW + '" height="' + (CH + 20) + '"/></clipPath></defs>' +
-					'<line class="bt-auto-limit" x1="0" x2="' + CW + '" y1="' + limitY + '" y2="' + limitY + '" vector-effect="non-scaling-stroke"/>' +
-					'<path class="bt-auto-line" clip-path="url(#bt-auto-clip)" d="' + chartPath() + '" vector-effect="non-scaling-stroke"/>' +
+				'<svg viewBox="0 0 ' + CW + " " + CH + '" preserveAspectRatio="none" aria-hidden="true">' +
+					'<defs><clipPath id="bt-auto-clip"><rect data-autoclip x="-4" y="-20" width="0" height="' + (CH + 40) + '"/></clipPath></defs>' +
+					'<line class="bt-auto-limit" x1="0" x2="' + CW + '" y1="' + limY.toFixed(1) + '" y2="' + limY.toFixed(1) + '" vector-effect="non-scaling-stroke"/>' +
+					'<path class="bt-auto-line" clip-path="url(#bt-auto-clip)" d="' + path() + '" vector-effect="non-scaling-stroke"/>' +
 				"</svg>" +
 				'<span class="bt-auto-dot" data-autodot></span>' +
-				'<span class="bt-auto-lim" style="top:' + (limitY / CH * 100).toFixed(2) + '%">' + gbText(AUTO.limit) + "</span>" +
-				'<span class="bt-auto-freed" data-autofreed style="left:' + (dropX / CW * 100).toFixed(2) + '%;top:' + (cy(AUTO.top) / CH * 100).toFixed(2) + '%">Freed ' + gbText(AUTO.top - AUTO.limit) + "</span>" +
+				'<span class="bt-auto-lim" style="top:' + (limY / CH * 100).toFixed(2) + '%">' + gbText(AUTO.limit) + "</span>" +
+				'<span class="bt-auto-freed" data-autofreed style="left:' + (hitX / CW * 100).toFixed(2) + "%;top:" + (cy(AUTO.back) / CH * 100).toFixed(2) + '%">Freed ' + gbText(AUTO.back - AUTO.limit) + "</span>" +
+				'<div class="bt-auto-days">' + DAYS.map(function (d) { return "<span>" + esc(d) + "</span>"; }).join("") + "</div>" +
 			"</div>";
 	}
-	// One frame of the loop at x (0 to 1): the line so far, its dot, the free number and the bar.
-	function autoFrame(el, x) {
-		var v = freeAt(x), free = Math.round(v);
-		el.querySelector("[data-autoclip]").setAttribute("width", (x * CW).toFixed(1));
+	// The line drawn up to t days, its dot, the free number and the bar's free ticks.
+	function autoFrame(el, t) {
+		var v = freeAt(t);
+		el.querySelector("[data-autoclip]").setAttribute("width", (cx(t) + 4).toFixed(1));
 		var dot = el.querySelector("[data-autodot]");
-		dot.style.left = (x * 100).toFixed(2) + "%";
+		dot.style.left = (cx(t) / CW * 100).toFixed(2) + "%";
 		dot.style.top = (cy(v) / CH * 100).toFixed(2) + "%";
-		el.querySelector("[data-autofree]").textContent = gbText(free);
-		el.classList.toggle("is-freed", x >= DROP);
-		el.classList.toggle("is-low", x < DROP && v < AUTO.limit + 2);
-		var n = Math.round((v / AUTO.total) * AUTO.ticks * 2.4), ticks = el.querySelectorAll("[data-autoticks] i");
-		for (var i = 0; i < ticks.length; i++) ticks[i].className = i >= ticks.length - n ? "is-free" : i < 22 ? "is-data" : i < 30 ? "is-apps" : "is-sys";
+		el.querySelector("[data-autofree]").textContent = gbText(v);
+		el.classList.toggle("is-freed", t >= AUTO.hit + AUTO.step * 0.5);
+		var ticks = el.querySelectorAll("[data-autoticks] i"), free = Math.round(v / 245 * 60 * 2.2);
+		for (var i = 0; i < ticks.length; i++) ticks[i].className = i >= ticks.length - free ? "is-free" : i < 30 ? "is-data" : i < 38 ? "is-sys" : "is-apps";
 	}
 	function autoPlay(t) {
-		var el = t.el, gen = t.gen, LOOP = 7600, HOLD = 1600;
-		if (REDUCED) { autoFrame(el, 1); el.classList.add("is-still"); return; }
-		var t0 = performance.now();
+		var el = t.el;
+		if (REDUCED) { autoFrame(el, AUTO.days); el.classList.add("is-done"); return; }
+		autoFrame(el, 0);
+		var dur = 5200, t0 = null, gen = t.gen;
+		// Calm: an ease-in-out over the whole run, slower while the line drifts.
 		(function step(now) {
 			if (gen !== t.gen) return;
-			var ms = (now - t0) % (LOOP + HOLD);
-			autoFrame(el, Math.min(1, ms / LOOP));
-			requestAnimationFrame(step);
-		})(t0);
+			if (t0 === null) t0 = now;
+			var u = Math.min(1, (now - t0) / dur);
+			autoFrame(el, AUTO.days * (u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2));
+			if (u < 1) requestAnimationFrame(step); else el.classList.add("is-done");
+		})(performance.now());
+	}
+
+	// ---------------------------------------------------------------- The other tiles
+
+	// The disk: the green ticks fill, then the tip walks the bar's sections.
+	function diskPlay(t) {
+		var el = t.el, tip = el.querySelector(".lv-tip"), ticks = Array.prototype.slice.call(el.querySelectorAll(".lv-tick"));
+		var greens = ticks.filter(function (x) { return x.dataset.seg === "can"; });
+		var secs = P.sections().filter(function (s) { return s.id !== "free"; });
+		var show = function (k) {
+			var s = secs[k % secs.length], mine = ticks.filter(function (x) { x.classList.toggle("is-dim", x.dataset.seg !== s.id); return x.dataset.seg === s.id; });
+			if (!mine.length) return;
+			tip.innerHTML = "<b>" + esc(s.label) + "</b> " + esc(s.size);
+			var was = tip.hidden;
+			tip.hidden = false;
+			var bar = tip.parentNode, x = (mine[0].offsetLeft + mine[mine.length - 1].offsetLeft + mine[mine.length - 1].offsetWidth) / 2;
+			tip.style.left = Math.round(Math.max(0, Math.min(bar.offsetWidth - tip.offsetWidth, x - tip.offsetWidth / 2))) + "px";
+			tip.classList.toggle("is-moving", !was);
+		};
+		if (REDUCED) { show(0); return; }
+		greens.forEach(function (x) { x.style.backgroundColor = ""; x.dataset.seg = "free"; });
+		greens.forEach(function (x, k) { t.later(function () { x.dataset.seg = "can"; x.style.backgroundColor = "var(--lv-ready)"; }, 400 + k * 40); });
+		var k = 0;
+		t.every(function () { show(k++); }, 2400, 1300);
+	}
+	function diskReset(el) {
+		var tip = el.querySelector(".lv-tip");
+		tip.hidden = true;
+		Array.prototype.forEach.call(el.querySelectorAll(".lv-tick"), function (x) { x.classList.remove("is-dim"); });
+	}
+	// The gauges sweep round to their values.
+	function gaugesPlay(t) {
+		if (REDUCED) return;
+		Array.prototype.forEach.call(t.el.querySelectorAll(".lv-gauge"), function (g) {
+			var lines = Array.prototype.slice.call(g.querySelectorAll("line.on"));
+			lines.forEach(function (l) { l.classList.remove("on"); });
+			lines.forEach(function (l, i) { t.later(function () { l.classList.add("on"); }, 200 + i * 34); });
+		});
+	}
+	// A row's tick changes, and back.
+	function listPlay(t) {
+		var rows = t.el.querySelectorAll(".lv-grow"), row = rows[2] || rows[0];
+		if (!row || REDUCED) return;
+		var box = row.querySelector(".lv-cb"), was = box.outerHTML;
+		var flip = function (on) {
+			var tmp = document.createElement("div");
+			tmp.innerHTML = P.checkbox(on);
+			box.replaceWith(tmp.firstChild);
+			box = row.querySelector(".lv-cb");
+		};
+		var on = box.getAttribute("aria-checked") === "true";
+		t.every(function () { on = !on; flip(on); }, 2600, 1400);
+		t.onReset = function () { var tmp = document.createElement("div"); tmp.innerHTML = was; box.replaceWith(tmp.firstChild); };
+	}
+	// The actions sheet rises over the dimmed popover, and settles back.
+	function actionsPlay(t) {
+		var el = t.el;
+		if (REDUCED) { el.classList.add("is-open"); return; }
+		t.later(function () { el.classList.add("is-open"); }, 900);
+		t.every(function () {
+			el.classList.remove("is-open");
+			t.later(function () { el.classList.add("is-open"); }, 1200);
+		}, 6400, 5300);
+	}
+	// The cleanup level moves along, and the sentence follows.
+	var LEVELS = [["Careful", "A careful"], ["Balanced", "A balanced"], ["Aggressive", "An aggressive"], ["Everything", "Everything"]];
+	function levelAmounts() {
+		var groups = (D.data && D.data.groups) || [];
+		return LEVELS.map(function (l, n) {
+			var cap = n === 3 ? 4 : n + 1, sum = 0;
+			groups.forEach(function (g) { g.items.forEach(function (it) { if (it.level > 0 && it.level <= cap) sum += it.gb; }); });
+			return Math.round(sum) + " GB";
+		});
+	}
+	function levelsHTML() {
+		var amounts = levelAmounts();
+		return kit("bt-levels",
+			'<div class="bt-levels-in"><span class="lv-seg">' + LEVELS.map(function (l, i) { return '<button type="button" tabindex="-1" class="' + (i === 1 ? "is-on" : "") + '">' + l[0] + "</button>"; }).join("") + "</span>" +
+			'<p class="lv-sline" data-levelline>' + levelLine(1, amounts) + "</p></div>");
+	}
+	function levelLine(i, amounts) {
+		return LEVELS[i][0] === "Everything" ? chip("<span>Everything</span>") + words("frees") + chip("<span>" + amounts[i] + "</span>")
+			: words(LEVELS[i][1].split(" ")[0]) + chip("<span>" + LEVELS[i][1].split(" ")[1] + "</span>") + words("clean up frees") + chip("<span>" + amounts[i] + "</span>");
+	}
+	function levelsPlay(t) {
+		if (REDUCED) return;
+		var btns = t.el.querySelectorAll(".lv-seg button"), line = t.el.querySelector("[data-levelline]"), amounts = levelAmounts(), i = 1;
+		t.every(function () {
+			i = (i + 1) % LEVELS.length;
+			Array.prototype.forEach.call(btns, function (b, k) { b.classList.toggle("is-on", k === i); });
+			line.innerHTML = levelLine(i, amounts);
+		}, 2200, 1500);
+	}
+	// The agents Levo works with, one chosen; the choice moves along.
+	var AGENTS = [["Claude Code", "orange", "Signed in"], ["Codex", "blue", "Signed in"], ["Gemini CLI", "indigo", "Not signed in"], ["Cursor CLI", "dark", "Signed in"], ["opencode", "grey", "Not installed"], ["Custom", "grey", ""]];
+	function agentsHTML() {
+		return '<div class="lv-kit bt-kit"><div class="bt-agents">' + AGENTS.map(function (a, i) {
+			return '<div class="bt-agent' + (i === 0 ? " is-on" : "") + '">' + tile(a[1], a[0] === "Custom" ? "terminal" : "apple.terminal.fill", "lg") +
+				'<span class="bt-agent-t"><b>' + esc(a[0]) + "</b>" + (a[2] ? "<small>" + esc(a[2]) + "</small>" : "") + "</span>" +
+				'<span class="bt-agent-r">' + sym("checkmark.circle.fill", 15) + "</span></div>";
+		}).join("") + "</div></div>";
+	}
+	function agentsPlay(t) {
+		if (REDUCED) return;
+		var cards = t.el.querySelectorAll(".bt-agent"), order = [0, 1, 3], k = 0;
+		t.every(function () {
+			k = (k + 1) % order.length;
+			Array.prototype.forEach.call(cards, function (c, i) { c.classList.toggle("is-on", i === order[k]); });
+		}, 2600, 1800);
 	}
 
 	var TILES = [
-		{ id: "auto", label: "Auto mode", live: true, inner: autoHTML, play: autoPlay },
-		// Round 9's popover top (R9 summary) with its hover tip (R9 disk tip): the bar wipes in, then the tip shows.
-		{ id: "disk", label: "Disk by category", base: "disk",
-			inner: function () { return layer("disk", "bt-l-base") + '<div class="bt-wipe"><i></i></div>' + layer("disk-tip", "bt-l-alt"); },
-			play: function (t) {
-				t.el.classList.add("is-wiped");
-				if (REDUCED) return;
-				t.every(function () {
-					t.el.classList.add("is-alt");
-					t.later(function () { t.el.classList.remove("is-alt"); }, 2600);
-				}, 6000, 1700);
-			} },
-		// Round 10's gauges (R10 metrics).
-		{ id: "gauges", label: "Memory, CPU, GPU", base: "gauges",
-			inner: function () { return layer("gauges", "bt-l-base"); } },
-		// Round 10's Summary over Ready to free: Smartly's picks (R10 breakdown before), then one unticked (ticking).
-		{ id: "list", label: "What can go", base: "list",
-			inner: function () { return layer("list", "bt-l-base") + layer("list-ticked", "bt-l-alt"); },
-			play: function (t) {
-				if (REDUCED) { t.el.classList.add("is-alt"); return; }
-				t.every(function () {
-					t.el.classList.add("is-alt");
-					t.later(function () { t.el.classList.remove("is-alt"); }, 2800);
-				}, 5600, 1400);
-			} },
-		// Round 9's confirm sheet (R9 confirm grown).
-		{ id: "confirm", label: "Confirm first", base: "confirm",
-			inner: function () { return layer("confirm", "bt-l-base"); } },
-		// Round 10's popover (R10 breakdown closed), then its actions sheet rising over it (R10 actions summary).
-		{ id: "actions", label: "Keyboard first", base: "actions-base",
-			inner: function () {
-				return layer("actions-base", "bt-l-base") + layer("actions-dim", "bt-l-dim", "actions-base", 0) + layer("actions-sheet", "bt-l-sheet", "actions-base", 68);
-			},
-			play: function (t) {
-				if (REDUCED) { t.el.classList.add("is-open"); return; }
-				t.later(function () { t.el.classList.add("is-open"); }, 900);
-				t.every(function () {
-					t.el.classList.remove("is-open");
-					t.later(function () { t.el.classList.add("is-open"); }, 1300);
-				}, 6400, 900 + 4400);
-			} },
-		// Round 10's Settings, Agent: the agent cards, panned from Claude Code to Custom.
-		{ id: "agents", label: "Your own agent", base: "agents", pan: true,
-			inner: function () { return layer("agents", "bt-l-base"); },
-			play: function (t) { if (!REDUCED) t.el.classList.add("is-panning"); } },
-		// Round 10's Settings, Agent: the cleanup level.
-		{ id: "levels", label: "Cleanup levels", base: "levels",
-			inner: function () { return layer("levels", "bt-l-base"); } }
+		{ id: "auto", label: "Auto mode", cls: "bt-auto", inner: autoHTML, play: autoPlay },
+		{ id: "disk", label: "Disk by category", inner: function () { return kit("bt-disk", P.disk()); }, play: diskPlay, reset: diskReset },
+		{ id: "gauges", label: "Memory, CPU, GPU", inner: function () { return kit("bt-gauges", P.gauges()); }, play: gaugesPlay },
+		{ id: "list", label: "What can go", inner: function () { return kit("bt-list", '<div class="lv-scroll">' + P.list(5) + "</div>"); }, play: listPlay },
+		{ id: "confirm", label: "Confirm first", inner: function () { return kit("bt-confirm", '<div class="lv-sheet lv-bsheet lv-confirm is-in bt-sheet">' + P.confirm() + "</div>"); } },
+		{ id: "actions", label: "Keyboard first", inner: function () {
+			// The whole popover, as the app's: name, gauges, disk, the sentence and the action bar.
+			var top = P.disk().replace('<div class="lv-sep"></div>', '<div class="lv-sep"></div>' + P.gauges() + '<div class="lv-sep"></div>') + '<div class="lv-sep"></div>';
+			return kit("bt-actions", top + '<div class="lv-scroll"><div class="lv-sum">' + P.summary() + '</div></div><div class="lv-actions">' + P.actionBar() + "</div>" +
+				'<div class="lv-scrim bt-scrim"></div><div class="lv-panel lv-bsheet bt-panel">' + P.panel() + "</div>");
+		}, play: actionsPlay },
+		{ id: "agents", label: "Your own agent", inner: agentsHTML, play: agentsPlay },
+		{ id: "levels", label: "Cleanup levels", inner: levelsHTML, play: levelsPlay }
 	];
 
 	grid.innerHTML = TILES.map(function (k) {
-		if (k.live) return '<article class="bt-tile bt-shot bt-live" data-tile="' + k.id + '"><h3 class="bt-label">' + k.label + "</h3>" +
-			'<div class="bt-stage bt-' + k.id + '" aria-hidden="true">' + k.inner() + "</div></article>";
-		var s = IMG[k.base];
 		return '<article class="bt-tile bt-shot" data-tile="' + k.id + '"><h3 class="bt-label">' + k.label + "</h3>" +
-			'<div class="bt-stage" aria-hidden="true"><div class="bt-frame' + (k.pan ? " bt-pan" : "") + '" style="--w:' + s[0] + ";--h:" + s[1] + '">' +
-			'<div class="bt-zoom">' + k.inner() + "</div></div></div></article>";
+			'<div class="bt-stage' + (k.cls ? " " + k.cls : "") + '" aria-hidden="true">' + k.inner() + "</div></article>";
 	}).join("");
 	var byId = {};
 	TILES.forEach(function (k) { byId[k.id] = k; });
@@ -214,28 +274,17 @@
 		this.gen++;
 		this.timers.forEach(clearTimeout);
 		this.timers = [];
+		if (this.onReset) { this.onReset(); this.onReset = null; }
+		if (this.kind.reset) this.kind.reset(this.el);
 		var el = this.el;
 		el.classList.add("bt-still");
-		el.classList.remove("is-play", "is-alt", "is-open", "is-wiped", "is-panning", "is-freed", "is-low");
+		el.classList.remove("is-play", "is-open", "is-freed", "is-done");
 		void el.offsetWidth;
 		el.classList.remove("bt-still");
 	};
 
-	// The agents pan by the picture's overflow: its width at the frame's height, less the frame's width.
-	function measurePan(t) {
-		var frame = t.el.querySelector(".bt-pan");
-		if (!frame) return;
-		var s = IMG[t.kind.base], w = frame.clientHeight * s[0] / s[1];
-		frame.style.setProperty("--pan", Math.min(0, frame.clientWidth - w).toFixed(1) + "px");
-	}
-
 	var tiles = Array.prototype.map.call(grid.querySelectorAll(".bt-tile"), function (el) { return new Tile(el); });
 	var byEl = new Map(tiles.map(function (t) { return [t.el, t]; }));
-	tiles.forEach(measurePan);
-	if (window.ResizeObserver) {
-		var ro = new ResizeObserver(function () { tiles.forEach(measurePan); });
-		tiles.forEach(function (t) { var f = t.el.querySelector(".bt-pan"); if (f) ro.observe(f); });
-	}
 	root.classList.add("is-ready");
 
 	if (REDUCED) tiles.forEach(function (t) { t.play(); });
@@ -255,7 +304,7 @@
 		});
 	}, { rootMargin: "0px 0px -10% 0px", threshold: 0.05 });
 
-	// The picture plays once a tile is well in view, and resets when it has left, to play again on the way back.
+	// A tile plays once it is well in view, and resets when it has left, to play again on the way back.
 	var stageIn = new IntersectionObserver(function (es) {
 		es.forEach(function (en) {
 			var t = byEl.get(en.target);

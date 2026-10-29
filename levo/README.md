@@ -14,7 +14,7 @@ demo.css                 the full-screen desk, the Levo window, dock, lock scree
 demo.js                  the menubar demo, and the one data object it plays from
 menus.css, menus.js      the menubar menus, Control Centre, and the desktop windows (Finder, TextEdit, System Settings), resizable
 settings.css, settings.js the app's Settings window, at the app's own sizes, as LevoSettings.mount(el, opts)
-bento.css, bento.js       the tiles below the Mac: close-ups of the app (disk bar, gauges, Summary, holds, Trash, levels, the confirm sheet) and big-number facts, animated as they scroll in
+bento.css, bento.js       the tiles below the Mac, each the popover's own component built by demo.js (LevoDemo.parts) in its tokens (.lv-kit), so crisp at any scale: Auto mode's chart, the disk, gauges, the list, the confirm sheet, the actions sheet, the agents and the cleanup levels
 mobile.css, mobile.js     the phone page (760 px and narrower): .m-top (the hero, a menubar slice with the popover) and .m-end (agents, price); #bento sits between
 img/shots/               the popover and Settings as still images for phones, rendered from the demo, light and dark
 agents.md                for an agent: what Levo is, why it's safe, and how to install it
@@ -159,23 +159,21 @@ the amount, "4 more" and the empty space open the full breakdown, and the
 sentence holds still while ticking there. The Command K panel and every confirm
 are bottom sheets that grow the popover if needed. The Expanded lists are still
 in the code (the breakdown). The phone stills in img/shots are element
-screenshots of the popover at 3x, corners masked; re-render them when it changes. The disk, disk-tip and actions-base tiles had
-their bars rebuilt in place in the app's new order and colours (each tick strip
-moved whole, so dimmed ticks stay dimmed, then recoloured by hue keeping each
-pixel's blend with the panel), since they are crops of older renders.
+screenshots of the popover at 3x, corners masked; re-render them when it changes.
 
 ## Auto mode
 
 Auto mode (the app's name; it used to be auto-clean) keeps free space above the
-limit on its own. In the demo, Control Centre's Auto mode control or "Turn on
-Auto mode" in the Command K panel switch it: the "Auto mode" pill shows beside
+limit on its own. In the demo, "Turn on Auto mode" in the Command K panel
+switches it: the "Auto mode" pill shows beside
 the Mac's name, and "Auto mode keeps 20 GB free: it cleans Xcode build data
 and 2 more on its own." takes the cleanup sentence's place (as the app: two
 groups by name, or one and "N more"); if free space is
 under the limit Levo cleans those groups with no click. The groups are the ones
-whose every item is level 1. The first bento tile (bento.js, drawn live, not a
-render) shows the same pill and sentence beside free space falling to the limit
-and coming back up. agents.md, llms.txt and features_Levo.txt on the demo's
+whose every item is level 1. The first bento tile shows the same name row and
+sentence beside a few days of free space drifting down to the limit, where
+Levo cleans and the line steps back up ("Freed 12 GB"), once each time it
+comes into view. agents.md, llms.txt and features_Levo.txt on the demo's
 desktop say Auto mode too.
 
 ## macOS realism
@@ -212,3 +210,27 @@ with Empty; emptying asks first, the icons shrink away, the space comes back
 and the icon empties. A clean's Trash-bound items show there too, already
 counted as freed. LevoMenus has updateWindow(id, patch) and
 contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
+
+## Website round 8
+
+- The simulated screen is sized by the viewport's height (about 90 %, less the
+  navbar and the gap above), 16:10, at most 1440 px wide, so a 1280 × 720
+  window shows all of it. It is laid out at its final pixel size: no transform
+  on the screen, the dock, labels or tips, and the system font with
+  antialiasing, so its text is as crisp as the page's. Below 1100 px wide the
+  installer window is smaller and the desktop drops its two least useful files.
+- The popover follows the app's round 15: the bar runs Your Data, System Data,
+  Apps, Ready, Free; the tip moves by section; a clicked word shows no hover
+  look until the pointer leaves; Clean up is an icon-only button at the name
+  row's end while Auto mode is off ("Clean up ⌘⌫" on hover), and the action
+  bar's keycap buttons are quieter; "33 GB ready".
+- The menus follow macOS 26 (Levo/design/refs/macos-menus, git-ignored):
+  Apple's words in Title Case, icons only where macOS shows them, 24 pt rows,
+  12 pt corners, inset separators, one glyph per modifier. View, Window and File
+  wake for the front Finder window; Go's places open Finder windows; Edit ›
+  Undo puts the last move to the Trash back. The demo's user is Alex Rivers.
+- The notification has 18 px corners and macOS's round close button on hover.
+  Control Centre has no Auto mode. Mail in the dock writes to support.
+- The footer: support, Privacy, Terms and Cntxt Labs, small, over a huge faint
+  "Levo" the page's bottom edge clips. Privacy and Terms are placeholders in
+  levo.js until their pages exist.
