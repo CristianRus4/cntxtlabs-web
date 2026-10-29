@@ -69,13 +69,15 @@
 		],
 		processes: [
 			// Rows Levo won't quit are dimmed; why sits behind the ⓘ on hover.
-			{ id: "node", name: "node", symbol: "terminal.fill", tile: "green", why: "An idle build server, running for 3 hours. Safe to quit.", safe: true, cpu: 84, gpu: 0, mem: 1.9 },
-			{ id: "xcode", name: "Xcode", symbol: "hammer.fill", tile: "blue", why: "Open with your projects. Quitting closes them.", cpu: 31, gpu: 1, mem: 3.2 },
-			{ id: "vm", name: "VirtualMachine", symbol: "cube.fill", tile: "grey", why: "macOS needs it, so Levo won\u2019t quit it.", system: true, cpu: 3, gpu: 0, mem: 1.2 },
-			{ id: "windowserver", name: "WindowServer", symbol: "macwindow", tile: "dark", why: "macOS needs it, so Levo won\u2019t quit it.", system: true, cpu: 12, gpu: 4, mem: 0.8 },
-			{ id: "slack", name: "Slack", symbol: "number", tile: "magenta", why: "A chat app with no windows open.", cpu: 6, gpu: 1, mem: 0.9 },
-			{ id: "safari", name: "Safari", img: "img/dock/safari.png", why: "Open with four tabs.", cpu: 5, gpu: 2, mem: 2.6 },
-			{ id: "simulator", name: "Simulator", symbol: "iphone", tile: "grey", why: "Running a test device.", cpu: 4, gpu: 0, mem: 2.1 }
+			// Apps show their own icon (img/apps/, rendered from the installed app, light and dark);
+			// processes with no app get the neutral tile, as Levo shows them.
+			{ id: "node", name: "node", symbol: "terminal", tile: "grey", why: "An idle build server, running for 3 hours. Safe to quit.", safe: true, cpu: 84, gpu: 0, mem: 1.9 },
+			{ id: "xcode", name: "Xcode", app: "xcode", why: "Open with your projects. Quitting closes them.", cpu: 31, gpu: 1, mem: 3.2 },
+			{ id: "vm", name: "VirtualMachine", symbol: "terminal", tile: "grey", why: "macOS needs it, so Levo won\u2019t quit it.", system: true, cpu: 3, gpu: 0, mem: 1.2 },
+			{ id: "windowserver", name: "WindowServer", symbol: "terminal", tile: "grey", why: "macOS needs it, so Levo won\u2019t quit it.", system: true, cpu: 12, gpu: 4, mem: 0.8 },
+			{ id: "claude", name: "Claude", app: "claude", why: "Open with one window.", cpu: 6, gpu: 1, mem: 0.9 },
+			{ id: "safari", name: "Safari", app: "safari", why: "Open with four tabs.", cpu: 5, gpu: 2, mem: 2.6 },
+			{ id: "cursor", name: "Cursor", app: "cursor", why: "An editor with two projects open.", cpu: 4, gpu: 0, mem: 2.1 }
 		],
 		// Desktop icons, in a column from the top left (below the widgets when they show).
 		desktop: [
@@ -250,7 +252,7 @@
 				'<div class="lv-mb-right">' +
 					'<button type="button" class="lv-mb-levo" data-act="toggle" aria-label="Levo" aria-expanded="false">' + mark("lv-mb-mark") + '<span class="lv-mb-num" data-mbnum></span></button>' +
 					'<button type="button" class="lv-mb-btn lv-mb-item" data-menu="wifi" aria-label="Wi-Fi"><span data-wifi>' + sym("wifi", 15) + '</span></button>' +
-					'<button type="button" class="lv-mb-btn lv-mb-item lv-mb-batt" data-menu="battery" aria-label="Battery" hidden><span class="lv-mb-pct" data-battpct></span><span class="lv-batt">' + sym("battery.0percent", 17) + '<i data-battfill></i><span class="lv-batt-bolt" data-battbolt hidden>' + sym("bolt.fill", 8) + '</span></span></button>' +
+					'<button type="button" class="lv-mb-btn lv-mb-item lv-mb-batt" data-menu="battery" aria-label="Battery" hidden><span class="lv-mb-pct" data-battpct></span><span class="lv-batt" data-battsym>' + sym("battery.100percent", 15) + '</span></button>' +
 					'<button type="button" class="lv-mb-btn lv-mb-item" data-menu="control" aria-label="Control Centre">' + sym("switch.2", 14) + '</button>' +
 					'<button type="button" class="lv-mb-btn lv-mb-item lv-mb-clock" data-menu="clock"><span class="lv-mb-day" data-day></span><span data-time></span></button>' +
 				'</div>' +
@@ -326,7 +328,7 @@
 		if (ic.kind === "folder") art = '<span class="lv-ic-folder">' + sym("folder.fill", 54) + "</span>";
 		else if (ic.kind === "zip") art = '<span class="lv-ic-page lv-ic-zip"><i></i><b>ZIP</b></span>';
 		else if (ic.kind === "doc") art = '<span class="lv-ic-page lv-ic-txt"><i></i><em></em><em></em><em></em><b>TXT</b></span>';
-		else if (ic.kind === "volume") art = '<span class="lv-ic-vol"><i></i><b></b></span>';
+		else if (ic.kind === "volume") art = '<span class="lv-ic-vol"><img class="lv-dk-l" src="img/desk/levo-volume.png" width="64" height="64" alt="" draggable="false"><img class="lv-dk-d" src="img/desk/levo-volume-dark.png" width="64" height="64" alt="" draggable="false"></span>';
 		else art = '<span class="lv-ic-shot"><i></i></span>';
 		return '<button type="button" class="lv-ic' + (ic.later ? " is-hidden" : "") + '" data-icon="' + ic.id + '" style="--col:' + ic.col + ";--row:" + ic.row + '">' + art + '<span class="lv-ic-name">' + esc(ic.name) + "</span></button>";
 	}
@@ -468,7 +470,7 @@
 		$("[data-procs]").innerHTML = list.map(function (p) {
 			var sel = S.sel && S.sel.type === "proc" && S.sel.id === p.id;
 			var v = key === "mem" ? gb(p.mem) : pct(p[key]);
-			var art = p.img ? '<img class="lv-picon" src="' + p.img + '" width="22" height="22" alt="">' : tile(p.tile, p.symbol);
+			var art = p.app ? '<span class="lv-picon"><img class="lv-dk-l" src="img/apps/' + p.app + '.png" width="20" height="20" alt=""><img class="lv-dk-d" src="img/apps/' + p.app + '-dark.png" width="20" height="20" alt=""></span>' : tile(p.tile, p.symbol);
 			return '<div class="lv-row lv-prow' + (sel ? " is-sel" : "") + (p.system ? " is-dim" : "") + (p.isNew ? " is-new" : "") + '" data-act="prow" data-id="' + p.id + '">' + art +
 				'<span class="lv-title">' + esc(p.name) + '</span><span class="lv-flex"></span>' +
 				'<button type="button" class="lv-info" data-act="info" data-bubble="p:' + p.id + '" aria-label="Info">' + sym("info.circle", 13) + "</button>" +
@@ -553,9 +555,10 @@
 			batt = desk ? null : { level: b.level, charging: b.charging };
 			if (!desk) {
 				var pc = Math.round(b.level * 100);
-				$("[data-battfill]").style.setProperty("--l", b.level.toFixed(2));
+				// The menubar battery is the real SF Symbol for the level, with the bolt only while charging.
+				var steps = [0, 25, 50, 75, 100], step = steps.reduce(function (best, v) { return Math.abs(v - b.level * 100) < Math.abs(best - b.level * 100) ? v : best; }, 100);
+				$("[data-battsym]").innerHTML = sym(b.charging ? "battery.100percent.bolt" : "battery." + step + "percent", 15);
 				$("[data-battpct]").textContent = pc + " %";
-				$("[data-battbolt]").hidden = !b.charging;
 				$("[data-level]").textContent = pc + " %";
 				$("[data-ringfg]").style.strokeDashoffset = (169.6 * (1 - b.level)).toFixed(1);
 				$("[data-ringglyph]").innerHTML = b.charging ? sym("bolt.fill", 16) : sym("laptopcomputer", 18);
@@ -610,6 +613,7 @@
 		hint.style.left = (W / 2) + "px";
 		hint.style.top = (dock.offsetTop - 34) + "px";
 		placeIcons(widgets);
+		placeDmg();
 		renderIcons();
 	}
 
@@ -640,24 +644,50 @@
 		}
 		return { x: x0, y: y0 };
 	}
+	// A real messy desktop: files scattered at uneven spots over the left part of
+	// the screen (fresh each load), and the mounted disk image at the top right,
+	// where macOS puts volumes, or just left of the popover when it would be covered.
 	function placeIcons(widgets) {
 		if (S.iconsPlaced) return;
 		S.iconsPlaced = true;
+		var W = scene.offsetWidth, H = scene.offsetHeight, win = rectOf($("[data-lwin]"));
+		var pw = $(".lv-popwrap"), popLeft = pw.offsetLeft;
 		$$(".lv-ic").forEach(function (el) { el.style.left = ""; });
+		var dmg = placeDmg();
+		var top = widgets ? 236 : 44, bottom = $("[data-dock]").offsetTop - 64 - IC_H;
+		var right = Math.max(220, Math.min((win ? win.x : W / 2) - IC_W - 10, popLeft - IC_W - 20));
 		$$(".lv-ic").forEach(function (el) {
-			var col = +el.style.getPropertyValue("--col"), row = +el.style.getPropertyValue("--row");
-			var jx = Math.round((Math.random() - 0.5) * 40), jy = Math.round((Math.random() - 0.5) * 26);
-			var p = freeSpot(el, 28 + col * 108 + jx, (widgets ? 250 : 50) + row * 122 + jy);
-			el.style.left = p.x + "px";
-			el.style.top = p.y + "px";
+			if (el === dmg) return;
+			var best = null;
+			for (var tries = 0; tries < 60 && !best; tries++) {
+				var x = Math.round(16 + Math.random() * Math.max(10, right - 16));
+				var y = Math.round(top + Math.random() * Math.max(10, bottom - top));
+				var me = { x: x, y: y, w: IC_W, h: IC_H };
+				if (!blockers(el).some(function (b) { return hits(me, b, 18); })) best = { x: x, y: y };
+			}
+			if (!best) best = freeSpot(el, 30, top);
+			el.style.left = best.x + "px";
+			el.style.top = best.y + "px";
 		});
+	}
+	// The mounted disk image: top right under the menubar, or just left of the
+	// popover's column when the popover would cover it. Follows the popover until dragged.
+	function placeDmg() {
+		var dmg = $('[data-icon="dmg"]');
+		if (!dmg || S.dmgMoved) return dmg;
+		var W = scene.offsetWidth, popLeft = $(".lv-popwrap").offsetLeft;
+		var dx = W - IC_W - 14;
+		if (dx + IC_W > popLeft - 8) dx = popLeft - IC_W - 14;
+		dmg.style.left = dx + "px";
+		dmg.style.top = "40px";
+		return dmg;
 	}
 	function dragIcon(el, e) {
 		var x0 = e.clientX, y0 = e.clientY, l0 = el.offsetLeft, t0 = el.offsetTop, moved = false;
 		var mv = function (ev) {
 			var dx = ev.clientX - x0, dy = ev.clientY - y0;
 			if (!moved && Math.abs(dx) + Math.abs(dy) < 5) return;
-			if (!moved) { moved = true; S.dragged = true; el.classList.add("is-dragging"); $$(".lv-ic").forEach(function (x) { x.classList.toggle("is-sel", x === el); }); }
+			if (!moved) { moved = true; S.dragged = true; if (el.dataset.icon === "dmg") S.dmgMoved = true; el.classList.add("is-dragging"); $$(".lv-ic").forEach(function (x) { x.classList.toggle("is-sel", x === el); }); }
 			el.style.left = (l0 + dx) + "px";
 			el.style.top = (t0 + dy) + "px";
 		};
@@ -699,6 +729,7 @@
 		S.alerted = true;
 		renderMenubar();
 		layout();
+		placeDmg();
 		if (!S.popOpen) showNote(fill(LEVO_DEMO.notification.title, { alert: gb(S.disk.alert) }), fill(LEVO_DEMO.notification.body, { ready: gb(tickedGB()) }));
 	}
 	// Load: the desk comes in (CSS, while .is-intro), the alert arrives, then the popover opens on its own.
