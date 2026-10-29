@@ -28,8 +28,7 @@ html.dark {
 	margin: 0 auto;
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
-	grid-template-rows: 380px;
-	grid-auto-rows: 272px;
+	grid-auto-rows: auto;
 	gap: 16px;
 	grid-template-areas:
 		"automode automode automode automode"
@@ -58,6 +57,8 @@ html.dark {
 	background: var(--bt-tile);
 	box-shadow: inset 0 0 0 1px var(--bt-tile-rim);
 	isolation: isolate;
+	display: flex;
+	flex-direction: column;
 }
 .bt-label {
 	position: absolute;
@@ -72,9 +73,13 @@ html.dark {
 	line-height: 20px;
 	color: var(--text);
 }
+/* Each tile sizes to its component, under its label. */
 .bt-stage {
-	position: absolute;
-	inset: 60px 24px 24px;
+	position: relative;
+	flex: 1;
+	min-height: 180px;
+	box-sizing: border-box;
+	padding: 64px 24px 28px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -90,7 +95,9 @@ html.dark {
 	border-radius: 16px;
 	box-shadow: inset 0 0 0 1px var(--pop-rim), var(--bt-frame-shadow);
 }
-.bt-pop .lv-scroll { overflow: hidden; }
+/* Nothing scrolls in a tile: every part keeps its full height, so the tile sizes to it. */
+.bt-pop .lv-scroll, .bt-pop .lv-clist, .bt-pop .lv-bsheet { flex: none; min-height: auto; max-height: none; overflow: hidden; }
+.bt-actions .lv-panel.lv-bsheet { position: absolute; }
 
 /* The disk: tips walk its sections. */
 
@@ -107,7 +114,6 @@ html.dark {
 
 /* Keyboard first: the actions sheet rises over the dimmed popover. */
 .bt-actions { display: flex; flex-direction: column; overflow: hidden; }
-.bt-actions .lv-scroll { flex: 1; }
 .bt-actions .lv-actions { flex: none; }
 .bt-scrim { position: absolute; inset: 0; z-index: 9; background: rgba(0, 0, 0, 0.16); opacity: 0; transition: opacity .3s; }
 html.dark .bt-scrim { background: rgba(0, 0, 0, 0.35); }
@@ -144,7 +150,7 @@ html.dark .bt-scrim { background: rgba(0, 0, 0, 0.35); }
 
 /* ------------------------------------------------------------ Auto mode */
 
-.bt-auto { gap: 40px; align-items: center; }
+.bt-auto { gap: 40px; align-items: center; min-height: 340px; }
 .bt-auto-card { flex: none; }
 .bt-auto-pop { width: 360px; }
 .bt-auto-on { font-size: 13px; font-weight: 500; color: #9E4700; }
@@ -177,8 +183,6 @@ html.dark .bt-auto-freed { background: rgba(89, 212, 153, 0.15); color: #59D499;
 
 @media (max-width: 1020px) {
 	.bt-auto { flex-direction: column; gap: 18px; align-items: center; }
-	.bt-grid { grid-template-rows: auto; }
-	.bt-tile[data-tile="auto"] .bt-stage { position: relative; inset: auto; padding: 60px 24px 24px; }
 	.bt-auto-chart { flex: none; width: calc(100% - 44px); align-self: flex-start; height: 160px; margin: 8px 44px 32px 0; }
 }
 @media (max-width: 760px) {
@@ -187,7 +191,7 @@ html.dark .bt-auto-freed { background: rgba(89, 212, 153, 0.15); color: #59D499;
 	.bt-grid > .bt-tile { grid-area: auto; }
 	.bt-tile { border-radius: 24px; }
 	.bt-label { position: static; padding: 18px 20px 0; }
-	.bt-stage, .bt-tile[data-tile="auto"] .bt-stage { position: relative; inset: auto; display: flex; padding: 14px 12px 16px; }
+	.bt-stage { min-height: 0; padding: 14px 12px 16px; }
 	.bt-pop, .bt-auto-pop, .bt-auto-card { width: 100%; max-width: 360px; }
 	.bt-agents { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
