@@ -120,7 +120,7 @@
 		],
 		// The app's own words (round 17).
 		notification: { title: "Your Mac is almost full", body: "{free} left. Levo can safely clean {ready}." },
-		autoCleaned: { title: "Auto mode freed {freed}", body: "Cleaned {what}. {free} free now." },
+		autoCleaned: { title: "Levo\u2019s Auto mode freed {freed}", body: "Cleaned {what}. {free} free now." },
 		cleaned: { title: "Freed {freed}", body: "{free} free on {disk}" },
 		quip: "Still here.",
 		timing: { notify: 1500, open: 2700 }

@@ -33,7 +33,7 @@
 	// ticks grow; when free space reaches the limit, Levo cleans, the green clears, free space grows
 	// back and a macOS notification slides in. Then the days go on, calmly, while it's in view.
 
-	var AUTO = { limit: (D.data && D.data.disk && D.data.disk.alert) || 20, total: 245, sys: 32, apps: 46, free: 31, ready: 4, perDay: 2.3, grow: 1.7, day: 1500 };
+	var AUTO = { limit: (D.data && D.data.disk && D.data.disk.alert) || 20, total: 245, sys: 32, apps: 46, free: 31, ready: 4, perDay: 3.4, grow: 2, day: 900 };
 	var DAYNAMES = (function () {
 		var f = new Intl.DateTimeFormat("en-NZ", { weekday: "short" }), out = [], d = new Date(2026, 9, 26);
 		for (var i = 0; i < 7; i++) out.push(f.format(new Date(d.getTime() + i * 864e5)));
@@ -63,7 +63,7 @@
 			'<div class="bt-auto-screen"><div class="lv-kit bt-kit"><div class="bt-auto-menubar"><span class="bt-auto-mark">' + (D.mark ? D.mark("bt-auto-m") : "") + "</span>" +
 				'<b data-automb>' + gbText(AUTO.free) + "</b></div>" +
 				'<div class="lv-note bt-auto-note" data-autonote><img class="lv-note-icon" src="img/icon-96.png" width="38" height="38" alt="">' +
-					'<span class="lv-note-text"><span class="lv-note-top"><b data-autonotetitle>Auto mode freed 12 GB</b><span class="lv-note-when">now</span></span><span data-autonotebody></span></span></div>' +
+					'<span class="lv-note-text"><span class="lv-note-top"><b data-autonotetitle>Levo\u2019s Auto mode freed 12 GB</b><span class="lv-note-when">now</span></span><span data-autonotebody></span></span></div>' +
 			"</div></div>";
 	}
 	// The bar's ticks in the app's order: Your Data, System Data, Apps, Ready, Free.
@@ -82,11 +82,12 @@
 		el.querySelector("[data-autoready]").innerHTML = st.ready >= 0.5 ? "<b>" + gbText(st.ready) + "</b>\u2009ready" : "";
 		el.querySelector("[data-autoday]").textContent = DAYNAMES[st.day % 7];
 	}
-	// The app's banner (round 17): "Auto mode freed 12 GB", "Cleaned Xcode build data and 2 more. 45 GB free now."
+	// The banner: "Levo's Auto mode freed 12 GB", "Cleaned Xcode build data and 2 more. 45 GB free now."
+	// It names Levo for a visitor (in macOS the banner shows Levo's icon, so the app says just "Auto mode").
 	function autoNote(el, freed, free) {
 		var groups = ((D.data && D.data.groups) || []).filter(function (g) { return g.items.every(function (it) { return it.level === 1; }); }).map(function (g) { return g.title; });
 		var what = groups.length <= 2 ? groups.join(" and ") : groups[0] + " and " + (groups.length - 1) + " more";
-		el.querySelector("[data-autonotetitle]").textContent = "Auto mode freed " + gbText(freed);
+		el.querySelector("[data-autonotetitle]").textContent = "Levo\u2019s Auto mode freed " + gbText(freed);
 		el.querySelector("[data-autonotebody]").textContent = "Cleaned " + what + ". " + gbText(free) + " free now.";
 	}
 	function autoPlay(t) {
@@ -117,7 +118,7 @@
 			if (st.free - AUTO.perDay <= AUTO.limit) {
 				// The limit: down to it, then Levo cleans what Auto mode may clean.
 				st.free = AUTO.limit; st.ready += AUTO.grow;
-				tween(from, st, 900);
+				tween(from, st, 620);
 				var freed = st.ready;
 				t.later(function () {
 					var before = { free: st.free, ready: st.ready, day: st.day };
@@ -127,14 +128,14 @@
 					note.classList.add("is-in");
 					t.later(function () { note.classList.remove("is-in"); }, 3600);
 				}, 1100);
-				t.later(day, AUTO.day + 4200);
+				t.later(day, AUTO.day + 3400);
 				return;
 			}
 			st.free -= AUTO.perDay; st.ready += AUTO.grow;
-			tween(from, st, 900);
+			tween(from, st, 620);
 			t.later(day, AUTO.day);
 		};
-		t.later(day, 900);
+		t.later(day, 600);
 	}
 	function autoReset(el) {
 		el.querySelector("[data-autonote]").classList.remove("is-in");

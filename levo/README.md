@@ -252,7 +252,16 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   while a text window is open, and names the menubar while in front.
 - Auto mode is told with the product's own UI: the popover's bar fills day by
   day, Levo cleans at the limit, and a notification says what it freed.
-- The footer: an emptied Trash on its side with macOS's file icons spilled out.
-  footer.js is a small physics loop (gravity, floor, walls, ceiling, the bin as
-  a box); drag and throw with mouse or touch; it sleeps at rest. Reduced
-  motion: the files lie still.
+- The footer runs on Matter.js 0.20.0 (cdnjs, pinned with its integrity hash,
+  loaded only near the footer). "Levo" is solid, drawn in SVG from the same
+  geometry as its colliders: L as two bars, e and o as circles, v as a
+  trapezoid. The full Trash stands on the L, wobbles, tips over and spills its
+  files onto "evo". Every body is its real rectangle; low static friction lets
+  things roll off the round letters, and a gentle settle tips anything at rest
+  onto its nearest flat side (giving up if something holds it). Drag and throw
+  with mouse or touch; carried, the bin stands up; a double-click stands it up;
+  a file dropped into the upright bin goes in and the bin turns full; tip it
+  and they spill again. Reduced motion: no physics, the bin on its side in the
+  L, the files on "evo".
+- The page has no visible scrollbar (html only; the simulator's own scroll
+  areas are untouched).

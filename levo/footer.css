@@ -1,8 +1,8 @@
 /*
- * The footer: a few small links, then an emptied Trash lying on its side with macOS's own file
- * and folder icons spilled out of it, over a huge faint "Levo" the page's bottom edge clips.
- * footer.js gives the spill gravity, a floor and walls: drag them, throw them, they bounce and
- * settle. Reduced motion: they lie still. Overrides levo.css's and mobile.css's .foot.
+ * The footer: a few small links, then the scene. "Levo" is a solid wordmark (L as two bars, e and
+ * o round, v as two slanted bars) that the Trash and its files land on; footer.js runs it with
+ * Matter.js. Reduced motion: the bin lies on the L and the files rest on "evo", still.
+ * Overrides levo.css's and mobile.css's .foot.
  */
 
 .foot.lf {
@@ -33,44 +33,33 @@
 .lf-links a:hover { color: var(--text); }
 .lf-copy { margin-left: auto; }
 
-/* The scene: its floor is the page's bottom edge. */
-.lf-stage { position: relative; height: 320px; margin-top: 0; overflow: hidden; -webkit-user-select: none; user-select: none; }
-.lf-word {
-	position: absolute;
-	left: 0;
-	right: 0;
-	bottom: -0.2em;
-	font-size: clamp(160px, 28vw, 460px);
-	font-weight: 800;
-	letter-spacing: -0.055em;
-	line-height: .78;
-	text-align: center;
-	white-space: nowrap;
-	color: rgb(var(--ink) / 0.05);
-	pointer-events: none;
-}
-html.dark .lf-word { color: rgb(var(--ink) / 0.065); }
-.lf-bin { position: absolute; z-index: 1; left: 0; top: 0; width: 168px; height: 168px; pointer-events: none; transform-origin: 50% 50%; }
-.lf-item {
+/* The scene: its floor is the page's bottom edge; the page still scrolls over its empty parts. */
+.lf-stage { position: relative; height: 460px; overflow: hidden; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+.lf-word { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.lf-word .f { fill: rgb(var(--ink) / 0.07); }
+.lf-word .s { fill: none; stroke: rgb(var(--ink) / 0.07); }
+html.dark .lf-word .f { fill: rgb(var(--ink) / 0.09); }
+html.dark .lf-word .s { stroke: rgb(var(--ink) / 0.09); }
+.lf-bin, .lf-item {
 	position: absolute;
 	z-index: 1;
 	left: 0;
 	top: 0;
-	width: 64px;
-	height: 64px;
 	cursor: grab;
 	touch-action: none;
 	-webkit-user-drag: none;
-	filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.12));
+	transform-origin: 50% 50%;
+	will-change: transform;
 }
-.lf-item.is-held { cursor: grabbing; z-index: 3; filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.22)); }
-.lf-still .lf-item { cursor: default; }
+.lf-bin { z-index: 2; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.14)); }
+.lf-item { filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.12)); }
+.lf-item.is-in { opacity: 0; transition: opacity .18s; pointer-events: none; }
+.lf-held { cursor: grabbing; z-index: 3; }
+.lf-still .lf-bin, .lf-still .lf-item { cursor: default; will-change: auto; }
 
 @media (max-width: 760px) {
 	.foot.lf { margin-top: 96px; padding-bottom: env(safe-area-inset-bottom); }
 	.lf-links { padding: 0 20px; gap: 8px 18px; }
 	.lf-copy { margin-left: 0; width: 100%; }
-	.lf-stage { height: 280px; }
-	.lf-bin { width: 120px; height: 120px; }
-	.lf-item { width: 52px; height: 52px; }
+	.lf-stage { height: 340px; }
 }
