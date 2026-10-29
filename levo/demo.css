@@ -919,7 +919,7 @@ html.dark .lv-dk-d { display: block !important; }
 .lv-w-clock { padding: 16px; }
 .lv-w-city { margin-top: 0; font-size: 13px; font-weight: 600; color: rgb(var(--fg) / 0.6); }
 .lv-w-date { margin-top: 2px; font-size: 13px; font-weight: 500; color: rgb(var(--fg) / 0.6); }
-.lv-w-time { margin-top: auto; }
+.lv-w-time { margin-top: auto; display: block; max-width: 100%; overflow: hidden; letter-spacing: -0.5px; line-height: 1.1; }
 
 /* ------------------------------------------------------------ Compact (phones) */
 

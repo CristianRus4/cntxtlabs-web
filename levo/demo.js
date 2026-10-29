@@ -528,7 +528,8 @@
 		var time = fTime.format(now);
 		$("[data-day]").textContent = fDay.format(now).replace(/,/g, "");
 		$("[data-time]").textContent = time;
-		$("[data-wtime]").textContent = time;
+		var wt = $("[data-wtime]");
+		if (wt.textContent !== time) { wt.textContent = time; fitTime(wt); }
 		$("[data-wdate]").textContent = fWidget.format(now).replace(/,/g, "");
 		$("[data-ltime]").textContent = time.replace(/\s?[AaPp]\.?[Mm]\.?$/, "");
 		$("[data-ldate]").textContent = fLong.format(now);
@@ -537,6 +538,22 @@
 	// with no battery shows no battery item, and the widget becomes a calendar.
 	// Browsers report a desktop Mac as 100 % and charging with no charge time.
 	var power = "unknown";
+	// The widget's time always fits inside the card's padding: the widest time of
+	// this length ("12:58 PM" in tabular figures) sets the size, so it doesn't jump.
+	function fitTime(el) {
+		var box = el.parentNode, cs = getComputedStyle(box);
+		var room = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+		if (room <= 0) return;
+		var widest = fTime.format(new Date(2026, 0, 1, 12, 58));
+		var probe = el.cloneNode();
+		probe.textContent = widest.length >= el.textContent.length ? widest : el.textContent;
+		probe.style.cssText = "position:absolute;visibility:hidden;font-size:100px;max-width:none;width:auto;margin:0";
+		box.appendChild(probe);
+		var w = probe.offsetWidth;
+		box.removeChild(probe);
+		if (w > 0) el.style.fontSize = Math.min(38, Math.floor(100 * room / w * 10) / 10) + "px";
+	}
+
 	function battery() {
 		var item = $(".lv-mb-batt"), wb = $("[data-wbatt]"), wc = $("[data-wcal]");
 		var device = function () {
@@ -602,6 +619,7 @@
 		wrap.style.left = popLeft + "px";
 		var widgets = W >= 1180;
 		scene.classList.toggle("no-widgets", !widgets);
+		if (widgets) fitTime($("[data-wtime]"));
 		// The Levo window sits in the open space between the icons and the popover.
 		var win = $("[data-lwin]"), left = widgets ? 380 : 236, right = popLeft - 28;
 		var ww = win.offsetWidth, wh = win.offsetHeight;
