@@ -49,8 +49,8 @@ city from the time zone, the language, the battery where the browser allows it,
 the appearance and the device family. It asks for nothing, and nothing leaves the
 browser.
 
-The first screen is the Mac: the desk fills the viewport, its menubar runs
-across the top of the page, and the Levo window (the app, Applications, the
+The first screen is the Mac in a rounded frame under a sticky navbar (Levo,
+Agents, Price, Download), its own menubar along the frame's top edge, and the Levo window (the app, Applications, the
 price and Download) sits on the desktop. Closed, it comes back from the mounted
 "Levo" disk image on the desktop. Desktop icons sit loosely and can be dragged;
 they never land on the widgets, the windows, the popover or each other, and
@@ -105,8 +105,10 @@ recording), then re-created, not copied:
   `cubic-bezier(.34,1.56,.64,1)`.
 - **Hand-drawn circle** (around the price): `stroke-dasharray` 500, drawn to 0 over
   800ms `ease-in` after 500ms, each time it scrolls into view.
-- **Hint:** "Psst…" in 13px bold at 45% ink under the Levo window; its arrow nudges 4px
-  every 4 seconds.
+- **Ghost cursor:** after the load a macOS pointer selects a file, drags the Levo
+  window a little and clicks the notification, which opens Levo. Eased curved moves,
+  a press on each click. The visitor's first move, touch or key hands over: it
+  fades out for the visit. With less motion there is no ghost; the popover is open.
 - **First screen:** the wallpaper fades in, the menubar drops in at 150ms, the
   widgets and icons rise at 350 to 450ms, the dock rises at 550ms (400ms
   ease-out, as Alcove's unlock), the Levo window springs in at 750ms; the alert
@@ -140,3 +142,15 @@ Clicking an agent's chip copies a short prompt that has that agent read
 ID `5X94H5ZCD4`), move it to /Applications, open it, and leave the welcome window
 to the person. `agents.md` holds the full plain explanation; the page itself
 carries names, labels, numbers and the price only.
+
+## The popover
+
+The demo shows the app's Summary layout (round 10, SummarySection.swift): the
+five-part disk bar (System Data, Your Data, Apps, Ready to free, Free; only the
+green fills), the gauges, then "A balanced clean up frees 33.7 GB: Xcode build
+data, Simulators and emulators and 5 more." The level word is a menu (Careful,
+Balanced, Aggressive, Everything); the amount, "5 more" and the empty space open
+the full breakdown, and the sentence holds still while ticking there. A metric
+past its limit adds "Free up GPU, it's at 88%." The Command K panel and every
+confirm are bottom sheets that grow the popover if needed. The Expanded lists
+are still in the code (the breakdown).

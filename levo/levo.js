@@ -1,6 +1,6 @@
 /*
  * The Levo page: the price, appearance, the load sequence and arrivals, the
- * feature symbols and their hovers, the hint, and the Settings preview. The
+ * feature symbols and their hovers, the navbar, and the Settings preview. The
  * menubar demo lives in demo.js, its menus in menus.js.
  */
 (function () {
@@ -47,6 +47,14 @@
 	function theme() { return root.getAttribute("data-theme") || "auto"; }
 	if (media.addEventListener) media.addEventListener("change", applyTheme);
 
+	// The navbar takes a material background once the page scrolls.
+	var nav = document.querySelector("[data-nav]");
+	if (nav) {
+		var onScroll = function () { nav.classList.toggle("is-scrolled", window.scrollY > 4); };
+		window.addEventListener("scroll", onScroll, { passive: true });
+		onScroll();
+	}
+
 	// Download and Buy are placeholders until the links exist.
 	document.addEventListener("click", function (e) {
 		var a = e.target.closest && e.target.closest("a[data-placeholder]");
@@ -72,7 +80,6 @@
 
 	D.mount(document.getElementById("levo-demo"), {
 		price: LEVO.price, term: LEVO.term, download: LEVO.download, buy: LEVO.buy,
-		hint: fine ? "Psst&hellip; everything here is clickable" : "",
 		setTheme: setTheme, theme: theme
 	});
 

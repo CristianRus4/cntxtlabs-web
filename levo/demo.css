@@ -962,3 +962,117 @@ html.dark .lv-dk-d { display: block !important; }
 	.lv-scene .lv-dock { transform: translateX(-50%) !important; }
 	.lv-scene .lv-dk-art { transition: none !important; }
 }
+
+/* ------------------------------------------------------------ Summary (round 10, SummarySection.swift) */
+
+.lv-sum { padding: 14px 8px 10px; cursor: default; }
+.lv-sline { margin: 0; display: flex; flex-wrap: wrap; align-items: center; column-gap: 4px; row-gap: 5px; font-size: 13px; line-height: 17px; }
+.lv-sline + .lv-sline { margin-top: 10px; }
+.lv-w { color: rgb(var(--fg) / 0.7); }
+.lv-p { margin-left: -4px; }
+.lv-gl { display: inline-flex; align-items: center; }
+.lv-chip {
+	position: relative;
+	height: 17px;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	background: transparent;
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 13px !important;
+	font-weight: 600 !important;
+	color: rgb(var(--fg)) !important;
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+	isolation: isolate;
+}
+/* The hover background reaches past the word (24 tall, 6 each side) without moving it. */
+.lv-chip::before { content: ""; position: absolute; z-index: -1; left: -6px; right: -6px; top: -3.5px; bottom: -3.5px; border-radius: 14px; background: transparent; transition: background-color .12s; }
+.lv-chip:hover::before { background: rgb(var(--fg) / 0.065); }
+.lv-chip:active::before { background: rgb(var(--fg) / 0.12); }
+.lv-chip[data-lit]::before { background: rgb(var(--fg) / 0.1); }
+.lv-chip[disabled] { cursor: default; opacity: .85; }
+.lv-tile-chip { width: 15px; height: 15px; border-radius: 3.75px; }
+.lv-tile-chip .lv-sym { width: 9px; height: auto; max-height: 9px; }
+.lv-chiprows { margin-top: 10px; }
+.lv-breakdown[hidden] { display: none; }
+.lv-breakdown { animation: lv-in .3s var(--ease-out); }
+
+/* ------------------------------------------------------------ The bottom sheet (PopoverSheet.swift): \2318K and every confirm */
+
+.lv-pop { transition: opacity .2s, transform .25s var(--ease-out), visibility 0s .25s, min-height .35s var(--ease-out); }
+.is-open .lv-pop { transition: opacity .2s, transform .3s var(--ease-out), visibility 0s, min-height .35s var(--ease-out); }
+.lv-scrim { position: absolute; inset: 0; z-index: 9; background: rgba(0, 0, 0, 0.12); opacity: 0; transition: opacity .3s; }
+html.dark .lv-scrim { background: rgba(0, 0, 0, 0.35); }
+.lv-scrim.is-in { opacity: 1; }
+.lv-scrim[hidden] { display: none; }
+.lv-bsheet, .lv-panel.lv-bsheet, .lv-sheet.lv-bsheet {
+	position: absolute;
+	z-index: 10;
+	left: 0; right: 0; bottom: 0; top: auto;
+	width: auto;
+	max-height: none;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: flex-start;
+	border-radius: 18px 18px 0 0;
+	background: var(--pop-bg) !important;
+	box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 -4px 16px rgba(0, 0, 0, 0.12);
+	overflow: hidden;
+	animation: none;
+	transform: translateY(100%);
+	transition: transform .35s cubic-bezier(.2, .85, .25, 1);
+	inset: auto 0 0 0;
+}
+html.dark .lv-bsheet { box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 -4px 16px rgba(0, 0, 0, 0.35); }
+.lv-bsheet.is-in { transform: none; }
+.lv-bsheet[hidden] { display: none; }
+.lv-panel .lv-ph { height: 28px; padding: 6px 16px 0; }
+.lv-ph-gap { height: 6px; }
+.lv-panel .lv-pitems { padding: 0 8px; max-height: none; }
+.lv-panel .lv-pitem { height: 32px; padding: 0 8px; gap: 8px; border-radius: 14px; }
+.lv-panel .lv-pitem:hover { background: transparent; }
+.lv-panel .lv-pitem.is-sel { background: rgb(var(--fg) / 0.1); }
+.lv-panel .lv-pitem[disabled] { opacity: .4; cursor: default; }
+.lv-pdetail { color: rgb(var(--fg) / 0.6); font-variant-numeric: tabular-nums; }
+.lv-panel .lv-psep { margin: 4px 0; }
+.lv-panel .lv-psearch { margin-top: 6px; border-top: 0.5px solid rgb(var(--fg) / 0.1); }
+.lv-confirm .lv-chead { padding: 16px 16px 12px; }
+.lv-confirm .lv-chead > b { font-size: 15px; font-weight: 600; }
+.lv-confirm .lv-clist { flex: none; max-height: 360px; }
+.lv-confirm .lv-gate { flex: none; }
+.lv-cbar { border-top: 1px solid rgb(var(--fg) / 0.1); }
+.lv-toast { font-size: 12px; color: rgb(var(--fg) / 0.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-flex; align-items: center; gap: 8px; }
+
+@media (prefers-reduced-motion: reduce) {
+	.lv-bsheet { transform: none !important; transition: opacity .2s !important; opacity: 0; }
+	.lv-bsheet.is-in { opacity: 1; }
+}
+
+.lv-gl .lv-p { margin-left: 1px; }
+
+/* ------------------------------------------------------------ The ghost cursor */
+
+.lv-ghost { position: absolute; z-index: 70; left: 0; top: 0; width: 24px; height: 24px; margin: -3px 0 0 -5px; pointer-events: none; opacity: 0; transition: opacity .35s; will-change: transform; filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.35)); }
+.lv-ghost svg { display: block; transform-origin: 5px 3px; transition: transform .12s ease-out; }
+.lv-ghost.is-in { opacity: 1; }
+.lv-ghost.is-out { opacity: 0; transition: opacity .45s; }
+.lv-ghost.is-down svg { transform: scale(.88); }
+.lv-ghost.is-click svg { animation: lv-gclick .26s ease-out; }
+.lv-ghost-ring { position: absolute; left: 5px; top: 3px; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; background: rgb(var(--fg) / 0.18); opacity: 0; transform: scale(.3); }
+.lv-ghost.is-click .lv-ghost-ring { animation: lv-gring .45s ease-out; }
+@keyframes lv-gclick { 40% { transform: scale(.84); } }
+@keyframes lv-gring { 0% { opacity: .9; transform: scale(.3); } 100% { opacity: 0; transform: scale(1.3); } }
+
+/* ------------------------------------------------------------ The Mac in a frame (desktop) */
+
+.lv-scene[data-mode="desk"] {
+	height: clamp(640px, calc(100svh - 64px - 40px), 900px);
+	min-height: 0;
+	border-radius: 28px;
+	box-shadow: 0 0 0 1px rgb(var(--fg) / 0.1), 0 40px 100px -40px rgba(0, 0, 0, 0.45), 0 14px 30px -18px rgba(0, 0, 0, 0.25);
+	transform: translateZ(0);
+}

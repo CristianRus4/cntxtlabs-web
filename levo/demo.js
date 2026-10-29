@@ -77,6 +77,7 @@
 			{ id: "windowserver", name: "WindowServer", symbol: "terminal", tile: "grey", why: "macOS needs it, so Levo won\u2019t quit it.", system: true, cpu: 12, gpu: 4, mem: 0.8 },
 			{ id: "claude", name: "Claude", app: "claude", why: "Open with one window.", cpu: 6, gpu: 1, mem: 0.9 },
 			{ id: "safari", name: "Safari", app: "safari", why: "Open with four tabs.", cpu: 5, gpu: 2, mem: 2.6 },
+			{ id: "ffmpeg", name: "ffmpeg", symbol: "terminal", tile: "grey", why: "A video export that finished an hour ago. Safe to quit.", safe: true, cpu: 6, gpu: 80, mem: 0.6 },
 			{ id: "cursor", name: "Cursor", app: "cursor", why: "An editor with two projects open.", cpu: 4, gpu: 0, mem: 2.1 }
 		],
 		// Desktop icons, in a column from the top left (below the widgets when they show).
@@ -195,7 +196,7 @@
 		var st = {
 			disk: d.disk, mem: d.memory, cpu: d.cpu, gpu: d.gpu,
 			groups: d.groups, procs: d.processes, level: d.level,
-			sort: "cpu", sel: { type: "group", id: d.groups[0].id },
+			sort: "cpu", sel: null, showAll: false, frozen: null, openChips: {}, working: null,
 			open: {}, info: {}, more: false,
 			freeShown: d.disk.free, alerted: false, popOpen: false, locked: false, unzipped: false,
 			panel: null, sheet: false, menu: false, undo: null, agent: S ? S.agent : d.agent,
@@ -302,6 +303,8 @@
 			'<div class="lv-freed" data-freed hidden></div>' +
 			'<div class="lv-sep"></div>' +
 			'<div class="lv-scroll">' +
+				'<div class="lv-sum" data-summary data-act="sumspace"></div>' +
+				'<div class="lv-breakdown" data-breakdown hidden>' +
 				'<div class="lv-sh"><span>Ready to free</span><span class="lv-sh-r"><span class="lv-sh-note" data-ready></span><button type="button" class="lv-dd" data-act="levelmenu" aria-haspopup="menu"><span data-levellabel></span>' + sym("chevron.down", 9, "lv-sec") + '</button></span></div>' +
 				'<div class="lv-list" data-groups></div>' +
 				'<div class="lv-sep lv-sep-in"></div>' +
@@ -309,6 +312,7 @@
 					['memory', 'cpu', 'gpu'].map(function (k) { return '<button type="button" role="tab" data-act="sort" data-sort="' + k + '">' + (k === "memory" ? "Memory" : k.toUpperCase()) + '</button>'; }).join("") +
 				'</span></div>' +
 				'<div class="lv-list" data-procs></div>' +
+				'</div>' +
 				'<div style="height:8px"></div>' +
 			'</div>' +
 			'<div class="lv-actions">' +
@@ -316,9 +320,10 @@
 				'<div class="lv-act-right"><button type="button" class="lv-primary" data-act="primary"><span data-plabel></span><span data-pcaps></span></button>' +
 				'<button type="button" class="lv-kbtn" data-act="panel" aria-label="Actions" title="Actions ⌘K">' + sym("switch.2", 13, "lv-sec") + '</button></div>' +
 			'</div>' +
-			'<div class="lv-panel" data-panel hidden></div>' +
+			'<div class="lv-scrim" data-act="scrim" hidden></div>' +
+			'<div class="lv-panel lv-bsheet" data-panel hidden></div>' +
 			'<div class="lv-menu" data-levels hidden></div>' +
-			'<div class="lv-sheet" data-sheet hidden></div>' +
+			'<div class="lv-sheet lv-bsheet" data-sheet hidden></div>' +
 			'<div class="lv-bubble" data-bubbletip hidden></div>' +
 		'</div>';
 	}
@@ -345,7 +350,7 @@
 			'<div class="lv-lwin-foot"><span class="lv-lwin-price"><b data-lprice></b><span data-lterm></span></span><span class="lv-flex"></span>' +
 				'<a class="lv-lbtn" data-lbuy href="#">Buy</a><a class="lv-lbtn lv-lbtn-primary" data-ldownload href="#">Download</a></div>' +
 		'</div>' +
-		'<p class="lv-hint" aria-hidden="true">' + sym("cursorarrow", 12, "lv-hint-arrow") + '<span data-hint></span></p>';
+		'';
 	}
 	function dockHTML() {
 		return '<div class="lv-dock-shelf"></div>' + LEVO_DEMO.dock.map(function (d) {
@@ -377,20 +382,26 @@
 		$("[data-free]").textContent = gb(free);
 		var t = tickedGB();
 		$("[data-can]").innerHTML = t > 0 ? "<b>" + gb(t) + "</b>\u2009to clean up" : "";
-		$("[data-ready]").innerHTML = S.analysing ? '<i class="lv-spin"></i>Analysing' : readyGB() > 0 ? gb(readyGB()) : "";
+		$("[data-ready]").innerHTML = S.analysing ? '<i class="lv-spin"></i>Analysing' : "";
 		$("[data-levellabel]").textContent = LEVO_DEMO.levels.indexOf(S.level) >= 0 ? "Smartly" : S.level;
 	}
 
 	// The disk in ticks. Each tick is wholly one category's colour, shared out by
 	// size with at least one tick for every category present (the app's rule):
 	// what's in use, then what a clean would free, in green, then free space.
+	// The app's five parts (Gauges.swift DiskPart): System Data, Your Data, Apps,
+	// Ready to free (what's ticked, in green) and Free. Unticked findings stay Your Data.
+	var PARTS = { system: ["#C2307E", "#EC5FA8"], yourData: ["#6A3DEC", "#A485FF"], apps: ["#1F7AE0", "#4FA3F8"] };
 	function segments() {
 		var unticked = readyGB() - tickedGB(), d = dark() ? 1 : 0;
-		var segs = S.disk.used.map(function (u) {
-			return { id: u.id, label: u.label, gb: u.gb + (u.id === "developer" ? unticked : 0), color: u.color[d] };
-		});
+		var part = function (id) { return sum(S.disk.used.filter(function (u) { return (u.id === "system" ? "system" : u.id === "apps" ? "apps" : "yourData") === id; }), function (u) { return u.gb; }); };
+		var segs = [
+			{ id: "system", label: "System Data", gb: part("system"), color: PARTS.system[d] },
+			{ id: "yourData", label: "Your Data", gb: part("yourData") + unticked, color: PARTS.yourData[d] },
+			{ id: "apps", label: "Apps", gb: part("apps"), color: PARTS.apps[d] }
+		];
 		var t = tickedGB();
-		if (t > 0) segs.push({ id: "can", label: "Can free", gb: t, color: "var(--lv-ready)" });
+		if (t > 0) segs.push({ id: "can", label: "Ready to free", gb: t, color: "var(--lv-ready)" });
 		segs.push({ id: "free", label: "Free", gb: Math.max(0, S.disk.total - sum(segs, function (s) { return s.gb; })), color: "" });
 		return segs;
 	}
@@ -407,14 +418,26 @@
 		present.forEach(function (s, i) { for (var j = 0; j < count[i]; j++) out.push(s); });
 		return out;
 	}
+	// Every tick shows at once; only the green fills, quickly, from its left (0.45 s).
 	function renderBar(sweep) {
-		var owners = allocate(segments(), TICKS);
-		$$(".lv-tick").forEach(function (el, i) {
-			var s = owners[i];
+		var owners = allocate(segments(), TICKS), ticks = $$(".lv-tick");
+		var greens = [];
+		owners.forEach(function (s, i) { if (s.id === "can") greens.push(i); });
+		ticks.forEach(function (el, i) {
+			var s = owners[i], green = s.id === "can";
 			el.dataset.seg = s.id;
-			el.style.transitionDelay = sweep ? Math.max(0, (i - 26) * 24) + "ms" : "0ms";
-			el.style.backgroundColor = s.color;
+			if (sweep && green && !REDUCED) { el.style.transition = "none"; el.style.backgroundColor = ""; }
+			else { el.style.transition = ""; el.style.transitionDelay = "0ms"; el.style.backgroundColor = s.color; }
 		});
+		if (sweep && greens.length && !REDUCED) {
+			void ticks[0].offsetWidth;
+			greens.forEach(function (i, k) {
+				var el = ticks[i];
+				el.style.transition = "background-color .12s ease-out";
+				el.style.transitionDelay = Math.round(k / greens.length * 450) + "ms";
+				el.style.backgroundColor = "var(--lv-ready)";
+			});
+		}
 	}
 
 	function setGauge(id, value) {
@@ -442,7 +465,12 @@
 			return;
 		}
 		var shown = S.more ? S.groups : S.groups.slice(0, 5);
-		el.innerHTML = shown.map(function (g) {
+		el.innerHTML = shown.map(groupHTML).join("") + (S.groups.length > 5 ? '<div class="lv-row lv-more" data-act="more"><span>' + (S.more ? "Show less" : "Show more") + "</span></div>" : "");
+		renderSummary();
+	}
+	// A group's row, and its items when open: the lists and the Summary's open chips share it.
+	function groupHTML(g) {
+		{
 			var sel = S.sel && S.sel.type === "group" && S.sel.id === g.id;
 			var h = '<div class="lv-row lv-grow' + (sel ? " is-sel" : "") + (S.open[g.id] ? " is-open" : "") + (g.isNew ? " is-new" : "") + '" data-act="grow" data-id="' + g.id + '">' +
 				checkbox(gState(g), "tick", g.id) + tile(g.tile, g.symbol) +
@@ -459,7 +487,97 @@
 				}).join("") + "</div>";
 			}
 			return h;
-		}).join("") + (S.groups.length > 5 ? '<div class="lv-row lv-more" data-act="more"><span>' + (S.more ? "Show less" : "Show more") + "</span></div>" : "");
+		}
+	}
+
+	// ---------------------------------------------------------------- Summary (round 10, SummarySection.swift)
+
+	// What the sentence says: how the ticks were chosen, what they free, the two
+	// biggest ticked groups by name (three when that is all), and how many more.
+	function sentence() {
+		var all = S.groups.map(function (g) { return { g: g, gb: sum(g.items, function (it) { return it.on ? it.gb : 0; }) }; })
+			.filter(function (x) { return x.gb > 0; }).sort(function (a, b) { return b.gb - a.gb; });
+		var shown = all.length <= 3 ? all : all.slice(0, 2);
+		var unnamed = Math.max(0, S.groups.length - shown.length), moreChip = all.length > shown.length;
+		var lead = !all.length ? "nothing" : S.level === "All" ? "everything" : LEVO_DEMO.levels.indexOf(S.level) >= 0 ? "level" : "yours";
+		return { lead: lead, level: S.level, groups: shown.map(function (x) { return x.g.id; }), unnamed: unnamed, moreChip: moreChip, moreChoices: !moreChip && unnamed > 0 };
+	}
+	function w(text) { return text.split(" ").map(function (x) { return '<span class="lv-w">' + esc(x) + "</span>"; }).join(""); }
+	function chip(act, label, extra, icon) {
+		return '<button type="button" class="lv-chip" data-act="' + act + '"' + (extra || "") + ">" + (icon || "") + "<span>" + esc(label) + "</span></button>";
+	}
+	function renderSummary() {
+		var el = $("[data-summary]");
+		if (!el) return;
+		// While the breakdown is open the sentence holds still; only the amount follows the ticks.
+		var live = sentence(), st = S.showAll && S.frozen ? S.frozen : live;
+		var h = '<p class="lv-sline">';
+		var amount = '<span class="lv-gl">' + chip("sumall", gb(tickedGB()), ' style="min-width:' + (S.showAll && S.amountW ? S.amountW + "px" : "0") + '"') + '<span class="lv-w lv-p">:</span></span>';
+		var level = function (word) { return chip("levelword", word, ' aria-haspopup="menu"'); };
+		if (st.lead === "nothing") {
+			h += S.groups.length ? level("Nothing") + w("to clean up.") : w(S.analysing ? "Looking for what can go." : "Nothing to clean up.");
+		} else if (st.lead === "level") {
+			h += w(st.level === "Aggressive" ? "An" : "A") + level(st.level.toLowerCase()) + w("clean up frees") + amount;
+		} else if (st.lead === "everything") {
+			h += level("Everything") + w("frees") + amount;
+		} else {
+			h += level("Your") + w("clean up frees") + amount;
+		}
+		if (st.lead !== "nothing") {
+			var count = st.groups.length + (st.moreChip ? 1 : 0);
+			st.groups.forEach(function (id, i) {
+				var g = group(id) || LEVO_DEMO.groups.filter(function (x) { return x.id === id; })[0];
+				var punct = i < count - 2 ? "," : i === count - 1 ? "." : "";
+				h += '<span class="lv-gl">' + chip("chip", g.title, ' data-id="' + id + '"' + (S.openChips[id] ? ' data-lit=""' : ""), tile(g.tile, g.symbol, "chip")) +
+					(punct ? '<span class="lv-w lv-p">' + punct + "</span>" : "") + "</span>";
+				if (i === count - 2) h += w("and");
+			});
+			if (st.moreChip) h += '<span class="lv-gl">' + chip("sumall", st.unnamed + " more", S.showAll ? ' data-lit=""' : "") + '<span class="lv-w lv-p">.</span></span>';
+		}
+		if (st.moreChoices) h += w("More") + chip("sumall", "to choose", S.showAll ? ' data-lit=""' : "") + w("from.");
+		h += "</p>";
+		// "Free up GPU, it's at 88%.": a metric past its limit; the phrase runs its free plan.
+		over().forEach(function (o) {
+			var working = S.working === o.metric;
+			h += '<p class="lv-sline">' + '<span class="lv-gl">' + chip("free", working ? "Working…" : "Free up " + (o.metric === "memory" ? "memory" : o.metric.toUpperCase()), ' data-metric="' + o.metric + '"' + (working ? " disabled" : "")) +
+				'<span class="lv-w lv-p">,</span></span>' + w("it’s at " + o.pct + "%.") + "</p>";
+		});
+		// Open chips show their rows in place, with their checkboxes.
+		var rows = st.lead === "nothing" ? [] : st.groups.filter(function (id) { return S.openChips[id] && group(id); });
+		if (rows.length && !S.showAll) h += '<div class="lv-chiprows">' + rows.map(function (id) { return groupHTML(group(id)); }).join("") + "</div>";
+		el.innerHTML = h;
+		var amt = $('[data-act="sumall"]', el);
+		if (amt && !S.showAll) S.amountW = amt.offsetWidth;
+		$("[data-breakdown]").hidden = !S.showAll;
+	}
+	// Memory, CPU or GPU past its limit (Settings › Memory, CPU, GPU), the fullest first.
+	function over() {
+		var out = [], m = Math.round(memUsed() / S.mem.total * 100), c = Math.round(cpuPct()), g = Math.round(gpuPct());
+		if (m >= 90) out.push({ metric: "memory", pct: m });
+		if (c >= 80) out.push({ metric: "cpu", pct: c });
+		if (g >= 80) out.push({ metric: "gpu", pct: g });
+		return out.sort(function (a, b) { return b.pct - a.pct; });
+	}
+	function toggleAll() {
+		S.showAll = !S.showAll;
+		S.frozen = S.showAll ? sentence() : null;
+		if (!S.showAll) S.amountW = 0;
+		renderGroups(); renderProcs();
+	}
+	function levelWordMenu(btn) {
+		var el = $("[data-levels]");
+		if (S.menu === "word") { S.menu = false; el.hidden = true; return; }
+		S.panel = null; $("[data-panel]").hidden = true;
+		S.menu = "word";
+		var b = btn.getBoundingClientRect(), pr = pop.getBoundingClientRect();
+		el.style.top = Math.round(b.bottom - pr.top + 4) + "px";
+		el.style.left = Math.max(8, Math.round(b.left - pr.left - 4)) + "px";
+		el.style.right = "auto";
+		el.innerHTML = LEVO_DEMO.levels.concat(["Everything"]).map(function (m) {
+			var on = m === "Everything" ? S.level === "All" : S.level === m;
+			return '<button type="button" class="lv-mitem" data-act="levelpick" data-level="' + (m === "Everything" ? "All" : m) + '"><span class="lv-mcheck">' + (on ? sym("checkmark", 10) : "") + "</span>" + m + "</button>";
+		}).join("");
+		el.hidden = false;
 	}
 	function detailRow(k, v) { return '<div class="lv-drow"><span>' + k + "</span><span>" + v + "</span></div>"; }
 
@@ -629,10 +747,9 @@
 		var x = Math.round(Math.max(left, left + (right - left - ww) / 2));
 		var y = Math.round(Math.max(64, Math.min(H - wh - 190, (H - wh) / 2 - 40)));
 		if (!S.lwinMoved) { win.style.left = x + "px"; win.style.top = y + "px"; }
-		var hint = $(".lv-hint");
+		var hint = null;
 		var dock = $("[data-dock]");
-		hint.style.left = (W / 2) + "px";
-		hint.style.top = (dock.offsetTop - 34) + "px";
+		pop.style.maxHeight = Math.max(320, H - 48) + "px";
 		placeIcons(widgets);
 		placeDmg();
 		renderIcons();
@@ -758,8 +875,112 @@
 		if (played) return;
 		played = true;
 		later(function () { scene.classList.remove("is-intro"); }, 1600);
+		if (REDUCED) { S.alerted = true; openPop(); return; }
+		if (scene.dataset.mode === "desk" && !S.touched) { later(runGhost, 1700); return; }
 		later(alertNow, LEVO_DEMO.timing.notify);
 		later(function () { if (!S.popOpen && !scene.dataset.menu) openPop(); }, LEVO_DEMO.timing.open);
+	}
+
+	// ---------------------------------------------------------------- The ghost cursor
+
+	// After the load a macOS pointer shows the desktop working: it selects a file,
+	// drags the Levo window a little, then clicks the notification, which opens
+	// Levo. The moment the visitor moves their own pointer, touches or types, it
+	// hands over: it fades out and doesn't come back this visit.
+	var ghost = null;
+	function runGhost() {
+		if (S.touched || S.popOpen) { if (!S.alerted) alertNow(); return; }
+		var g = document.createElement("div");
+		g.className = "lv-ghost";
+		g.setAttribute("aria-hidden", "true");
+		g.innerHTML = '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M5.2 2.6v17.1l4.1-4 2.6 6.1 3-1.3-2.6-6h5.7z" fill="#000" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg><i class="lv-ghost-ring"></i>';
+		scene.appendChild(g);
+		ghost = { el: g, x: scene.offsetWidth * 0.46, y: scene.offsetHeight * 0.78, timers: [], raf: 0, stopped: false, drag: null };
+		place();
+		requestAnimationFrame(function () { g.classList.add("is-in"); });
+		var first = null;
+		var handOver = function (e) {
+			if (!ghost || ghost.stopped) return;
+			if (e.type === "pointermove") {
+				if (e.pointerType !== "mouse" || !e.isTrusted) return;
+				if (!first) { first = [e.clientX, e.clientY]; return; }
+				if (Math.abs(e.clientX - first[0]) + Math.abs(e.clientY - first[1]) < 5) return;
+			}
+			stopGhost();
+		};
+		["pointermove", "pointerdown", "touchstart", "keydown"].forEach(function (t) { document.addEventListener(t, handOver, { passive: true, capture: true }); });
+		ghost.off = function () { ["pointermove", "pointerdown", "touchstart", "keydown"].forEach(function (t) { document.removeEventListener(t, handOver, { capture: true }); }); };
+
+		var ic = $('[data-icon="installers"]'), win = $("[data-lwin]");
+		var steps = [];
+		if (ic && !ic.classList.contains("is-gone") && !ic.classList.contains("is-hidden")) {
+			steps.push(function (next) { moveTo(ic.offsetLeft + 46, ic.offsetTop + 34, 900, next); });
+			steps.push(function (next) { wait(380, next); });
+			steps.push(function (next) { press(function () { $$(".lv-ic").forEach(function (x) { x.classList.toggle("is-sel", x === ic); }); }); wait(520, next); });
+		}
+		if (win && !win.hidden) {
+			steps.push(function (next) { moveTo(win.offsetLeft + win.offsetWidth * 0.66, win.offsetTop + 22, 850, next); });
+			steps.push(function (next) { wait(200, next); });
+			steps.push(function (next) {
+				ghost.el.classList.add("is-down");
+				ghost.drag = { win: win, l: win.offsetLeft, t: win.offsetTop, x: ghost.x, y: ghost.y };
+				S.lwinMoved = true;
+				wait(140, next);
+			});
+			steps.push(function (next) { moveTo(ghost.x - 64, ghost.y + 34, 760, next); });
+			steps.push(function (next) { ghost.el.classList.remove("is-down"); ghost.drag = null; wait(260, next); });
+		}
+		steps.push(function (next) { alertNow(); wait(950, next); });
+		steps.push(function (next) { moveTo(note.offsetLeft + note.offsetWidth * 0.42, note.offsetTop + note.offsetHeight * 0.55, 1000, next); });
+		steps.push(function (next) { wait(260, next); });
+		steps.push(function (next) { press(function () { S.alerted = true; openPop(); }); wait(900, next); });
+		steps.push(function (next) { moveTo(ghost.x - 46, ghost.y + 60, 520, next); });
+		steps.push(function () { stopGhost(true); });
+		var k = 0;
+		(function go() { if (!ghost || ghost.stopped) return; var f = steps[k++]; if (f) f(go); })();
+	}
+	function place() {
+		ghost.el.style.transform = "translate(" + ghost.x.toFixed(1) + "px," + ghost.y.toFixed(1) + "px)";
+		if (ghost.drag) {
+			var d = ghost.drag;
+			d.win.style.left = (d.l + ghost.x - d.x) + "px";
+			d.win.style.top = (d.t + ghost.y - d.y) + "px";
+		}
+	}
+	function wait(ms, next) { ghost.timers.push(setTimeout(next, ms)); }
+	// An eased move along a gentle curve, as a hand moves a mouse.
+	function moveTo(x, y, ms, next) {
+		var x0 = ghost.x, y0 = ghost.y, dx = x - x0, dy = y - y0, len = Math.hypot(dx, dy) || 1;
+		var cx = x0 + dx * 0.5 - dy / len * len * 0.12, cy = y0 + dy * 0.5 + dx / len * len * 0.12;
+		var t0 = performance.now();
+		var step = function (t) {
+			if (!ghost || ghost.stopped) return;
+			var k = Math.min(1, (t - t0) / ms), e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2, u = 1 - e;
+			ghost.x = u * u * x0 + 2 * u * e * cx + e * e * x;
+			ghost.y = u * u * y0 + 2 * u * e * cy + e * e * y;
+			place();
+			if (k < 1) ghost.raf = requestAnimationFrame(step); else next();
+		};
+		ghost.raf = requestAnimationFrame(step);
+	}
+	function press(fn) {
+		var el = ghost.el;
+		el.classList.remove("is-click"); void el.offsetWidth; el.classList.add("is-click");
+		ghost.timers.push(setTimeout(fn, 120));
+	}
+	function stopGhost(done) {
+		if (!ghost || ghost.stopped) return;
+		ghost.stopped = true;
+		cancelAnimationFrame(ghost.raf);
+		ghost.timers.forEach(clearTimeout);
+		ghost.drag = null;
+		ghost.off();
+		var el = ghost.el;
+		el.classList.remove("is-in", "is-down");
+		el.classList.add("is-out");
+		setTimeout(function () { el.remove(); }, 500);
+		// Handed over before the end: the notification waits for the visitor's own click.
+		if (!done && !S.popOpen && !S.alerted) alertNow();
 	}
 
 	function showNote(title, body, ms) {
@@ -793,15 +1014,15 @@
 	}
 	function closeOverlays() {
 		S.panel = null; S.menu = false; S.sheet = false;
-		$("[data-panel]").hidden = true;
+		hideSheets();
 		$("[data-levels]").hidden = true;
-		$("[data-sheet]").hidden = true;
 		hideBubble();
 	}
 
+	// The status line (ActivityLine.swift): always plain secondary text.
 	function toast(kind, title, action, ms) {
 		clearTimeout(toastTimer);
-		$("[data-actleft]").innerHTML = '<span class="lv-toast lv-toast-' + kind + '">' + sym(kind === "good" ? "checkmark.circle.fill" : "info.circle", 13, "lv-toast-sym") + "<b>" + esc(title) + "</b>" +
+		$("[data-actleft]").innerHTML = '<span class="lv-toast">' + esc(title) +
 			(action ? '<button type="button" class="lv-toast-btn" data-act="' + action.act + '">' + action.label + "</button>" : "") + "</span>";
 		toastTimer = setTimeout(function () { toastTimer = null; S.undo = null; renderActions(); }, ms || (action ? 9000 : 2600));
 	}
@@ -814,12 +1035,13 @@
 		if (item != null) g.items[item].on = !g.items[item].on;
 		else { var on = gState(g) !== "on"; g.items.forEach(function (it) { it.on = on; }); }
 		S.level = "Selected";
-		renderGroups(); renderDisk(S.freeShown); renderBar(); renderActions();
+		renderGroups(); renderDisk(S.freeShown); renderBar(true); renderActions();
 	}
 	function chooseLevel(level) {
 		S.level = level;
+		if (LEVO_DEMO.levels.indexOf(level) >= 0) S.lastLevel = level;
 		applyLevel(S.groups, level);
-		renderGroups(); renderDisk(S.freeShown); renderBar(); renderActions();
+		renderGroups(); renderDisk(S.freeShown); renderBar(true); renderActions();
 	}
 
 	// Clean up: the app's confirm, inside the popover. The first time, the
@@ -829,33 +1051,30 @@
 		if (tickedGB() <= 0) return;
 		closeOverlays();
 		var sh = $("[data-sheet]");
-		sh.className = "lv-sheet lv-confirm";
+		sh.className = "lv-sheet lv-bsheet lv-confirm";
 		if (!accepted) {
 			sh.innerHTML = '<div class="lv-gate">' +
 				'<img src="img/dock/trash-full.png" width="64" height="64" alt="">' +
 				"<b>You\u2019re in charge</b>" +
 				"<p>Levo never deletes anything without your permission. Take care, and check what\u2019s ticked before you clean. Your own files go to the Trash.</p>" +
 				'<label class="lv-gate-box"><button type="button" class="lv-cb" role="checkbox" aria-checked="false" data-act="accept-tick"></button><span>I understand, and accept that Levo isn\u2019t responsible for what I choose to delete.</span></label>' +
-			"</div>" + confirmBar("Accept", false);
+			"</div>" + confirmBar("Accept", false, ["\u21b5"]);
 		} else {
-			var rows = [], removed = 0, trashed = 0;
+			var rows = [];
 			S.groups.forEach(function (g) { g.items.forEach(function (it) {
 				if (!it.on) return;
-				if (g.trash) trashed += it.gb; else removed += it.gb;
 				rows.push('<div class="lv-crow">' + tile(g.tile, g.symbol, "sm") + '<span class="lv-cname">' + esc(it.name) + '</span><span class="lv-flex"></span>' + (g.trash ? sym("trash", 11, "lv-sec") : "") + '<span class="lv-size lv-num">' + gb(it.gb) + "</span></div>");
 			}); });
-			sh.innerHTML = '<div class="lv-chead"><b>Clean up ' + gb(tickedGB()) + "</b><span>" +
-				(removed > 0 ? '<span class="lv-sec">Removed</span> <b>' + gb(removed) + "</b>" : "") +
-				(trashed > 0 ? '<span class="lv-sec">To the Trash</span> <b>' + gb(trashed) + "</b>" : "") + "</span></div>" +
-				'<div class="lv-sep"></div><div class="lv-clist">' + rows.join("") + "</div>" + confirmBar("Clean", true);
+			sh.innerHTML = '<div class="lv-chead"><b>Clean up ' + gb(tickedGB()) + "?</b></div>" +
+				'<div class="lv-sep"></div><div class="lv-clist">' + rows.join("") + "</div>" + confirmBar("Clean up", true, ["\u2318", "\u232b"]);
 		}
-		sh.hidden = false;
 		S.sheet = true;
+		showSheet(sh);
 	}
-	function confirmBar(label, on) {
+	function confirmBar(label, on, keys) {
 		return '<div class="lv-actions lv-cbar"><span class="lv-flex"></span>' +
 			'<button type="button" class="lv-primary lv-cancel" data-act="cancel">Cancel' + caps(["esc"], "lv-cap-sm lv-cap-ring") + "</button>" +
-			'<button type="button" class="lv-primary" data-act="confirm"' + (on ? "" : " disabled") + ">" + label + caps(["\u21b5"], "lv-cap-sm") + "</button></div>";
+			'<button type="button" class="lv-primary" data-act="confirm"' + (on ? "" : " disabled") + ">" + label + caps(keys || ["\u21b5"], "lv-cap-sm") + "</button></div>";
 	}
 	function confirmNow() {
 		if (!S.sheet) return;
@@ -913,7 +1132,7 @@
 			S.groups = S.groups.filter(function (g) { return g.items.length; });
 			S.open = {}; S.info = {};
 			S.disk.free = Math.round((from + freed) * 10) / 10;
-			S.sel = S.groups[0] ? { type: "group", id: S.groups[0].id } : null;
+			S.sel = null; S.openChips = {};
 			if (trashed) { S.trashFull = true; renderTrash(true); }
 			if (!S.groups.some(function (g) { return g.items.some(function (it) { return it.desk === "installers"; }); }) && window.LevoMenus && LevoMenus.closeWindow) LevoMenus.closeWindow("installers");
 			renderGroups();
@@ -948,7 +1167,7 @@
 		S.undo = null;
 		clearTimeout(toastTimer);
 		toastTimer = 1;
-		$("[data-actleft]").innerHTML = '<span class="lv-toast lv-toast-busy"><i class="lv-spin"></i><b>Asking ' + esc(S.agent) + "…</b></span>";
+		$("[data-actleft]").innerHTML = '<span class="lv-toast">Asking ' + esc(S.agent) + "…</span>";
 		renderDisk(S.freeShown);
 		renderGroups();
 		later(regrow, 1700);
@@ -968,7 +1187,7 @@
 		S.analysing = false;
 		S.freed = null;
 		$("[data-freed]").hidden = true;
-		S.sel = { type: "group", id: S.groups[0].id };
+		S.sel = null; S.openChips = {};
 		toastTimer = null;
 		renderGroups();
 		renderProcs();
@@ -1014,25 +1233,27 @@
 	}
 
 	// A gauge's word frees it: quit what the agent marked safe for that metric.
+	// A metric's free plan (the gauge's word or the Summary's "Free up …"): Working…,
+	// then quit what the agent marked safe, and say so in the status line.
 	function freeMetric(metric) {
+		if (S.working) return;
 		var key = metric === "memory" ? "mem" : metric;
-		var g = $('[data-gauge="' + metric + '"]');
-		var spin = $(".lv-dial-spin", g);
+		var spin = $(".lv-dial-spin", $('[data-gauge="' + metric + '"]'));
+		S.working = metric;
 		spin.hidden = false;
+		renderSummary();
 		later(function () {
 			spin.hidden = true;
+			S.working = null;
 			var go = S.procs.filter(function (p) { return p.safe && p[key] > (key === "mem" ? 0.5 : 2); });
-			var line = $("[data-freed]");
-			if (!go.length) {
-				line.innerHTML = sym("checkmark.circle", 12, "lv-sec") + "<span>Nothing to quit</span>" + '<button type="button" class="lv-x" data-act="freedx" aria-label="Dismiss">' + sym("xmark", 8) + "</button>";
-			} else {
+			if (!go.length) toast("info", "Nothing to quit");
+			else {
 				var est = key === "mem" ? gb(sum(go, function (p) { return p.mem; })) : pct(sum(go, function (p) { return p[key]; }) / (key === "cpu" ? S.cpu.cores : 1)) + " " + metric.toUpperCase();
 				S.procs = S.procs.filter(function (p) { return go.indexOf(p) < 0; });
-				line.innerHTML = sym("checkmark.circle.fill", 12, "lv-good") + "<span>Quit " + esc(go.map(function (p) { return p.name; }).join(", ")) + " · about " + est + "</span>" + '<button type="button" class="lv-x" data-act="freedx" aria-label="Dismiss">' + sym("xmark", 8) + "</button>";
-				renderProcs(); renderGauges(); renderActions();
+				toast("good", "Quit " + go.map(function (p) { return p.name; }).join(", ") + " \u00b7 about " + est, null, 4200);
 			}
-			line.hidden = false;
-		}, 650);
+			renderProcs(); renderGauges(); renderSummary(); renderActions();
+		}, 900);
 	}
 
 	// Levo can't be removed: Quit, drag it out of the menubar, or drag the dock
@@ -1067,81 +1288,111 @@
 	}
 
 	// The ⌘K panel.
+	// \u2318K (ActionPanel.swift, final): a full-width bottom sheet; the selected row's
+	// actions under its name, then the shared ones, then the app's, then Close menu.
+	// Nothing is highlighted on opening; arrows or the pointer pick, typing filters.
 	function panelItems() {
-		var sel = S.sel, items = [], title;
+		var sel = S.sel, items = [], title = null;
 		if (sel && sel.type === "proc" && proc(sel.id)) {
 			var p = proc(sel.id);
 			title = p.name;
 			if (!p.system) {
-				items.push({ symbol: "xmark.circle", label: "Quit " + p.name, keys: ["↵"], run: function () { quit(p.id); } });
-				items.push({ symbol: "xmark.circle", label: "Force quit", keys: ["⌥", "⌘", "Q"], red: true, run: function () { quit(p.id); } });
+				items.push({ label: "Quit " + p.name, keys: ["\u21b5"], run: function () { quit(p.id); } });
+				items.push({ label: "Force quit", keys: ["\u2325", "\u2318", "Q"], red: true, run: function () { quit(p.id); } });
 			}
-			items.push({ symbol: "pin", label: "Always keep", keys: ["⌘", "D"], run: function () { p.verdict = "Keep"; p.safe = false; renderProcs(); toast("info", "Keeping " + p.name); } });
-			items.push({ symbol: "gauge.with.dots.needle.33percent", label: "Show in Activity Monitor", keys: ["⌘", "↵"], run: function () { toast("info", "Opens Activity Monitor"); } });
-		} else {
-			var g = sel && group(sel.id);
-			title = g ? g.title : "Levo";
-			if (tickedGB() > 0) items.push({ symbol: "trash", label: "Clean up " + gb(tickedGB()), keys: ["⌘", "⌫"], run: askClean });
-			if (g) {
-				items.push({ symbol: "folder", label: "Show in Finder", keys: ["⌘", "↵"], run: function () { toast("info", "Opens " + g.location.split(",")[0]); } });
-				items.push({ symbol: "pin", label: "Always keep", keys: ["⌘", "D"], run: function () { keep(g.id); } });
-			}
+			items.push({ label: "Always keep", keys: ["\u2318", "D"], run: function () { p.verdict = "Keep"; p.safe = false; renderProcs(); toast("info", "Keeping " + p.name); } });
+			items.push({ label: "Show in Activity Monitor", keys: ["\u2318", "\u21b5"], run: function () { toast("info", "Opens Activity Monitor"); } });
+			items.push(null);
+		} else if (sel && sel.type === "group" && group(sel.id)) {
+			var g = group(sel.id), t = sum(g.items, function (it) { return it.on ? it.gb : 0; });
+			title = g.title;
+			items.push({ label: "Clean " + g.title, detail: gb(t), disabled: t <= 0, keys: ["\u21b5"], run: askClean });
+			items.push({ label: "Show in Finder", keys: ["\u2318", "\u21b5"], run: function () { toast("info", "Opens " + g.location.split(",")[0]); } });
+			items.push({ label: "Always keep", keys: ["\u2318", "D"], run: function () { keep(g.id); } });
+			items.push(null);
 		}
+		if (S.groups.length) {
+			items.push({ label: "Clean up", detail: gb(tickedGB()), disabled: tickedGB() <= 0, keys: ["\u2318", "\u232b"], run: askClean });
+			items.push({ label: "Select", sub: true, run: function () { S.panel = "select"; panelAt = -1; drawPanel(); } });
+		}
+		items.push({ label: "Analyse now", keys: ["\u2318", "R"], run: analyse });
+		items.push(S.paused ? { label: "Resume alerts", keys: ["\u2318", "P"], run: function () { S.paused = false; toast("info", "Alerts resumed"); } }
+			: { label: "Pause alerts for 1 hour", keys: ["\u2318", "P"], run: function () { S.paused = true; toast("info", "Alerts paused for 1 hour"); } });
 		items.push(null);
-		items.push({ symbol: "checkmark.circle", label: "Select", sub: true, run: function () { S.panel = "select"; drawPanel(); } });
-		items.push({ symbol: "arrow.clockwise", label: "Analyse now", keys: ["⌘", "R"], run: analyse });
-		items.push({ symbol: "pause.circle", label: "Pause alerts for 1 hour", keys: ["⌘", "P"], run: function () { toast("info", "Alerts paused for 1 hour"); } });
+		items.push({ label: "Settings\u2026", keys: ["\u2318", ","], run: function () { closePop(); var a = document.getElementById("agents"); if (a) a.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); } });
+		items.push({ label: "Quit Levo", keys: ["\u2318", "Q"], run: quitLevo });
 		items.push(null);
-		items.push({ symbol: "gearshape", label: "Settings…", keys: ["⌘", ","], run: function () { closePop(); var s = document.getElementById("settings"); if (s) s.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); } });
-		items.push({ symbol: "power", label: "Quit Levo", keys: ["⌘", "Q"], run: quitLevo });
+		items.push({ label: "Close menu", keys: ["esc"], run: function () {} });
 		return { title: title, items: items };
 	}
-	// Select: Smartly (Careful, Balanced, Aggressive), All, None, Selected. As in the app.
+	// Select: Smartly, All, None, Selected (the modes), as in the app.
 	function selectItems() {
-		var smart = S.panel === "smartly";
-		var list = smart ? LEVO_DEMO.levels : ["Smartly", null, "All", "None", "Selected"];
-		return { title: smart ? "Smartly" : "Select", back: true, items: list.map(function (m) {
-			if (m === null) return null;
-			if (m === "Smartly") return { symbol: LEVO_DEMO.levels.indexOf(S.level) >= 0 ? "checkmark" : null, label: "Smartly", sub: true, run: function () { S.panel = "smartly"; panelAt = 0; drawPanel(); } };
-			return { symbol: S.level === m ? "checkmark" : null, label: m, disabled: m === "Selected" && S.level !== "Selected", run: function () { if (m !== "Selected") chooseLevel(m); } };
-		}) };
+		var smart = LEVO_DEMO.levels.indexOf(S.level) >= 0;
+		return { title: "Select", back: true, items: [
+			{ label: "Smartly", checked: smart, run: function () { chooseLevel(S.lastLevel || LEVO_DEMO.level); } },
+			{ label: "All", checked: S.level === "All", run: function () { chooseLevel("All"); } },
+			{ label: "None", checked: S.level === "None", run: function () { chooseLevel("None"); } },
+			{ label: "Selected", checked: S.level === "Selected", disabled: S.level !== "Selected", run: function () {} }
+		] };
 	}
-	var panelAt = 0, panelList = [];
+	var panelAt = -1, panelList = [];
 	function drawPanel(filter) {
 		var el = $("[data-panel]");
-		var data = S.panel === "select" || S.panel === "smartly" ? selectItems() : panelItems();
+		var data = S.panel === "select" ? selectItems() : panelItems();
 		var q = (filter || "").toLowerCase();
 		var list = data.items.filter(function (it) { return !q ? true : it && it.label.toLowerCase().indexOf(q) >= 0; });
 		while (list.length && list[0] === null) list.shift();
+		while (list.length && list[list.length - 1] === null) list.pop();
+		list = list.filter(function (it, k) { return it || list[k - 1]; });
 		panelList = list.filter(Boolean);
-		panelAt = Math.min(panelAt, Math.max(0, panelList.length - 1));
+		if (q && panelAt < 0) panelAt = Math.max(0, panelList.findIndex(function (it) { return !it.disabled && !it.red; }));
+		panelAt = Math.min(panelAt, panelList.length - 1);
 		var n = -1;
-		el.innerHTML = '<div class="lv-ph">' + (data.back ? '<button type="button" class="lv-back" data-act="pback" aria-label="Back">' + sym("chevron.left", 9) + "</button>" : "") + esc(data.title) + "</div>" +
+		el.innerHTML = (data.title ? '<div class="lv-ph">' + (data.back ? '<button type="button" class="lv-back" data-act="pback" aria-label="Back">' + sym("chevron.left", 9) + "</button>" : "") + esc(data.title) + "</div>" : '<div class="lv-ph-gap"></div>') +
 			'<div class="lv-pitems" role="menu">' + list.map(function (it) {
 				if (!it) return '<div class="lv-psep"></div>';
 				n++;
 				return '<button type="button" role="menuitem" class="lv-pitem' + (n === panelAt ? " is-sel" : "") + (it.red ? " is-red" : "") + '"' + (it.disabled ? " disabled" : "") + ' data-act="pitem" data-n="' + n + '">' +
-					'<span class="lv-pi-icon">' + (it.symbol ? sym(it.symbol, 13) : "") + "</span><span>" + esc(it.label) + '</span><span class="lv-flex"></span>' +
+					"<span>" + esc(it.label) + "</span>" + (it.detail ? '<span class="lv-pdetail">' + esc(it.detail) + "</span>" : "") + '<span class="lv-flex"></span>' +
+					(it.checked ? sym("checkmark", 11, "lv-sec") : "") +
 					(it.sub ? sym("chevron.right", 9, "lv-sec") : it.keys ? caps(it.keys, "lv-cap-sm") : "") + "</button>";
 			}).join("") + (panelList.length ? "" : '<div class="lv-pnone">No actions</div>') + "</div>" +
-			'<div class="lv-psearch"><input type="text" data-psearch placeholder="Search for actions…" aria-label="Search for actions" value="' + esc(filter || "") + '"></div>';
-		el.hidden = false;
+			'<div class="lv-psearch"><input type="text" data-psearch placeholder="Search for actions\u2026" aria-label="Search for actions" value="' + esc(filter || "") + '"></div>';
 		var input = $("[data-psearch]", el);
-		input.addEventListener("input", function () { panelAt = 0; drawPanel(input.value); });
+		input.addEventListener("input", function () { panelAt = -1; drawPanel(input.value); });
+		$$(".lv-pitem", el).forEach(function (b, k) { b.addEventListener("pointermove", function () { if (panelAt !== k) { panelAt = k; $$(".lv-pitem", el).forEach(function (x, m) { x.classList.toggle("is-sel", m === k); }); } }); });
+		showSheet(el);
 		if (inView) { input.focus({ preventScroll: true }); input.setSelectionRange(input.value.length, input.value.length); }
+	}
+	// The one bottom sheet (PopoverSheet.swift): it rises from the popover's bottom edge
+	// over a dimmed popover, which grows if the sheet needs more room.
+	function showSheet(el) {
+		var scrim = $('[data-act="scrim"]');
+		scrim.hidden = false;
+		var wasOpen = !el.hidden;
+		el.hidden = false;
+		var need = el.offsetHeight + 8;
+		pop.style.minHeight = Math.max(need, 0) + "px";
+		if (!wasOpen) { el.classList.remove("is-in"); void el.offsetWidth; el.classList.add("is-in"); scrim.classList.remove("is-in"); void scrim.offsetWidth; scrim.classList.add("is-in"); }
+	}
+	function hideSheets() {
+		var scrim = $('[data-act="scrim"]');
+		scrim.hidden = true; scrim.classList.remove("is-in");
+		$$(".lv-bsheet").forEach(function (x) { x.hidden = true; x.classList.remove("is-in"); });
+		pop.style.minHeight = "";
 	}
 	function togglePanel() {
 		if (S.sheet) return;
-		if (S.panel) { S.panel = null; $("[data-panel]").hidden = true; return; }
+		if (S.panel) { S.panel = null; hideSheets(); return; }
 		S.menu = false; $("[data-levels]").hidden = true;
-		S.panel = "main"; panelAt = 0;
+		S.panel = "main"; panelAt = -1;
 		drawPanel();
 	}
 	function runPanel(i) {
 		var it = panelList[i];
 		if (!it || it.disabled) return;
 		if (it.sub) { it.run(); return; }
-		S.panel = null; $("[data-panel]").hidden = true;
+		S.panel = null; hideSheets();
 		it.run();
 	}
 
@@ -1159,8 +1410,9 @@
 		if (S.menu) { S.menu = false; el.hidden = true; return; }
 		S.panel = null; $("[data-panel]").hidden = true;
 		S.menu = true;
-		var btn = $('[data-act="levelmenu"]');
-		el.style.top = (btn.offsetTop + btn.offsetHeight + 4 - $(".lv-scroll").scrollTop) + "px";
+		var btn = $('[data-act="levelmenu"]'), b = btn.getBoundingClientRect(), pr = pop.getBoundingClientRect();
+		el.style.top = Math.round(b.bottom - pr.top + 4) + "px";
+		el.style.left = ""; el.style.right = "";
 		var item = function (m, dis) {
 			return '<button type="button" class="lv-mitem"' + (dis ? " disabled" : "") + ' data-act="levelpick" data-level="' + m + '"><span class="lv-mcheck">' + (S.level === m ? sym("checkmark", 10) : "") + "</span>" + m + "</button>";
 		};
@@ -1257,8 +1509,8 @@
 			return;
 		}
 		var act = t.dataset.act, id = t.dataset.id;
-		if (act !== "panel" && act !== "pitem" && act !== "pback" && S.panel && !t.closest("[data-panel]")) { S.panel = null; $("[data-panel]").hidden = true; if (act === "grow" || act === "prow") return; }
-		if (act !== "levelmenu" && act !== "levelpick" && act !== "smartly" && S.menu) { S.menu = false; $("[data-levels]").hidden = true; }
+		if (act !== "panel" && act !== "pitem" && act !== "pback" && S.panel && !t.closest("[data-panel]")) { S.panel = null; hideSheets(); if (act !== "toggle") return; }
+		if (act !== "levelmenu" && act !== "levelpick" && act !== "smartly" && act !== "levelword" && S.menu) { S.menu = false; $("[data-levels]").hidden = true; }
 		switch (act) {
 			case "toggle": S.popOpen ? closePop() : openPop(); break;
 			case "lwinclose": lwin(false, "close"); break;
@@ -1279,10 +1531,15 @@
 			case "sort": S.sort = t.dataset.sort; renderProcs(); break;
 			case "free": freeMetric(t.dataset.metric); break;
 			case "freedx": $("[data-freed]").hidden = true; break;
+			case "sumall": e.stopPropagation(); toggleAll(); break;
+			case "sumspace": toggleAll(); break;
+			case "chip": e.stopPropagation(); S.openChips[id] = !S.openChips[id]; if (S.openChips[id]) S.open[id] = true; renderSummary(); break;
+			case "levelword": e.stopPropagation(); levelWordMenu(t); return;
+			case "scrim": closeOverlays(); break;
 			case "primary": var p = primary(); if (p.act === "clean") askClean(); else if (p.act === "quitSel") quit(S.sel.id); break;
 			case "panel": togglePanel(); break;
 			case "pitem": runPanel(+t.dataset.n); break;
-			case "pback": S.panel = S.panel === "smartly" ? "select" : "main"; panelAt = 0; drawPanel(); break;
+			case "pback": S.panel = "main"; panelAt = -1; drawPanel(); break;
 			case "levelmenu": levelMenu(); break;
 			case "smartly": e.stopPropagation(); t.parentNode.classList.toggle("is-open"); return;
 			case "levelpick": if (t.dataset.level === "Selected") { S.menu = false; $("[data-levels]").hidden = true; break; } S.menu = false; $("[data-levels]").hidden = true; chooseLevel(t.dataset.level); break;
@@ -1307,13 +1564,12 @@
 
 	// The Levo window closes or minimises like a Finder window; Finder in the dock brings it back.
 	function lwin(show, how) {
-		var w = $("[data-lwin]"), hint = $(".lv-hint");
+		var w = $("[data-lwin]");
 		S.lwinClosed = !show;
 		w.classList.remove("is-closing", "is-minimising", "is-opening");
 		if (show && !w.hidden && !w.classList.contains("is-closing")) { w.classList.remove("is-opening"); void w.offsetWidth; w.classList.add("is-opening"); return; }
 		if (show) { w.hidden = false; void w.offsetWidth; w.classList.add("is-opening"); later(function () { w.classList.remove("is-opening"); }, 500); return; }
 		w.classList.add(how === "min" ? "is-minimising" : "is-closing");
-		hint.style.opacity = "0";
 		later(function () { w.hidden = true; w.classList.remove("is-closing", "is-minimising"); }, how === "min" ? 420 : 200);
 	}
 
@@ -1367,13 +1623,13 @@
 		}
 		if (S.panel && (k === "ArrowDown" || k === "ArrowUp")) {
 			e.preventDefault();
-			panelAt = (panelAt + (k === "ArrowDown" ? 1 : -1) + panelList.length) % panelList.length;
+			panelAt = panelAt < 0 ? (k === "ArrowDown" ? 0 : panelList.length - 1) : (panelAt + (k === "ArrowDown" ? 1 : -1) + panelList.length) % panelList.length;
 			$$(".lv-pitem").forEach(function (b, i) { b.classList.toggle("is-sel", i === panelAt); });
 			return;
 		}
-		if (S.panel && k === "Enter") { e.preventDefault(); runPanel(panelAt); return; }
+		if (S.panel && k === "Enter") { e.preventDefault(); if (panelAt >= 0) runPanel(panelAt); return; }
 		if (inPanel) return;
-		if (S.sheet && k === "Enter") { e.preventDefault(); confirmNow(); return; }
+		if (S.sheet && (k === "Enter" || (mod && k === "Backspace"))) { e.preventDefault(); confirmNow(); return; }
 		if (mod && k === "Backspace" && !S.sheet) { e.preventDefault(); askClean(); return; }
 		var focusIn = root.contains(document.activeElement) || document.activeElement === document.body;
 		if (k === "Enter" && focusIn && !S.sheet && !mod) {
@@ -1487,7 +1743,6 @@
 		buy.href = OPTS.buy || "#";
 		buy.textContent = OPTS.price ? "Buy for " + OPTS.price : "Buy";
 		[dl, buy].forEach(function (a) { if (/^\[|^#$/.test(a.getAttribute("href"))) a.setAttribute("data-placeholder", ""); });
-		$("[data-hint]").innerHTML = OPTS.hint || "";
 		var app = $('[data-act="lwinapp"]'), apps = $("[data-lwinapps]");
 		app.addEventListener("dblclick", function () { S.touched = true; openPop(); });
 		app.addEventListener("pointerdown", function (e) {
@@ -1525,7 +1780,6 @@
 				S.lwinMoved = true;
 				win.style.left = Math.max(-200, Math.min(scene.offsetWidth - 120, l0 + ev.clientX - x0)) + "px";
 				win.style.top = Math.max(30, Math.min(scene.offsetHeight - 60, t0 + ev.clientY - y0)) + "px";
-				$(".lv-hint").style.opacity = "0";
 			};
 			var up = function () { document.removeEventListener("pointermove", mv); document.removeEventListener("pointerup", up); };
 			document.addEventListener("pointermove", mv);

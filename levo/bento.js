@@ -94,7 +94,8 @@
 	// The disk: 60 ticks, each wholly one category's colour (DiskCategoryBar.allocate: largest remainders, at least
 	// one tick each), in the breakdown's order: used, then what can be freed in green, then free in grey. Sizes from
 	// the demo above (460 GB, 16 GB free, 33.7 GB ticked at Balanced).
-	var DISK = [["developer", 107.1], ["apps", 96], ["documents", 70], ["system", 64], ["media", 44], ["other", 29], ["ready", 33.7], ["free", 16.2]];
+	// The app's five parts (Gauges.swift DiskPart): System Data, Your Data, Apps, Ready to free, Free.
+	var DISK = [["system", 64], ["yourData", 250.1], ["apps", 96], ["ready", 33.7], ["free", 16.2]];
 	var FREE_GB = 16, CAN_GB = 33.7;
 	function allocate(segs, n) {
 		var total = segs.reduce(function (s, x) { return s + x[1]; }, 0);
@@ -154,14 +155,13 @@
 				"<b>" + esc(title) + "</b>" + (gb != null ? '<span class="bt-sec" data-count="' + gb + '">' + (animated ? counter(gb)(0) : bytes(gb)) + "</span>" : "") + "</span>" +
 				(glue ? '<span class="bt-punct">' + glue + "</span>" : "") + "</span>";
 		}
-		var disk = words("Levo can clean up") +
-			chip("Xcode build data", 14.2, iconTile("hammer.fill", "blue", 15), ",") +
-			chip("Simulators and emulators", 9.8, iconTile("iphone", "gray", 15)) +
-			words("and") + chip("4 more", null, null, ".");
-		var quit = chip("node", null, iconTile("terminal", "sysgray", 15)) + words("can quit, freeing about") +
-			'<span class="bt-w bt-strong" style="--i:' + (i++) + '">' + bytes(1.9) + " of memory.</span>";
-		return '<div class="bt-sum"><div class="bt-flow">' + disk + '</div><div class="bt-flow">' + quit + "</div></div>" +
-			'<span class="bt-q bt-showall" style="--i:' + i + '">Show all</span>';
+		// Round 10: "A balanced clean up frees 34 GB: Xcode build data, Simulators and emulators and 5 more."
+		var disk = words("A") + chip("balanced", null, null) + words("clean up frees") + chip(bytes(33.7), null, null, ":") +
+			chip("Xcode build data", null, iconTile("hammer.fill", "blue", 15), ",") +
+			chip("Simulators and emulators", null, iconTile("iphone", "gray", 15)) +
+			words("and") + chip("5 more", null, null, ".");
+		var metric = chip("Free up GPU", null, null, ",") + words("it\u2019s at 88%.");
+		return '<div class="bt-sum"><div class="bt-flow">' + disk + '</div><div class="bt-flow">' + metric + "</div></div>";
 	}
 
 	// ---------------------------------------------------------------- Tiles

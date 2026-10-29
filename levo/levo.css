@@ -215,3 +215,33 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 	#get h2 { font-size: clamp(40px, 5vw, 56px); }
 	.foot { margin-top: 64px; }
 }
+
+/* ------------------------------------------------------------ The navbar */
+
+.nav { position: sticky; top: 0; z-index: 80; height: 64px; transition: background-color .25s, box-shadow .25s, -webkit-backdrop-filter .25s, backdrop-filter .25s; }
+.nav.is-scrolled {
+	background: color-mix(in srgb, var(--bg) 72%, transparent);
+	-webkit-backdrop-filter: blur(20px) saturate(1.6);
+	backdrop-filter: blur(20px) saturate(1.6);
+	box-shadow: 0 1px 0 var(--rim);
+}
+.nav-in { max-width: 1440px; height: 100%; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; gap: 28px; }
+.nav-brand { display: inline-flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+.nav-brand img { display: block; border-radius: 6px; }
+.nav-links { display: flex; gap: 24px; margin-left: auto; font-size: 15px; font-weight: 500; color: var(--muted); }
+.nav-links a { transition: color .15s; }
+.nav-links a:hover { color: var(--text); }
+.nav-dl { margin-left: 4px; }
+
+/* The framed Mac sits under the navbar with page margins. */
+.first { padding: 4px 24px 0; }
+.first .demo { max-width: 1440px; margin: 0 auto; }
+#agents, #get { scroll-margin-top: 80px; }
+
+@media (max-width: 760px) {
+	.nav { height: 56px; }
+	.nav-in { padding: 0 16px; }
+	.nav-links { display: none; }
+	.nav-dl { margin-left: auto; }
+	.m-bar { display: none !important; }
+}

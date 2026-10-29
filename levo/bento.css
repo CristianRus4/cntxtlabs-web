@@ -40,11 +40,12 @@ html.dark {
 	--t-sysgray: #8E8E93;
 	/* DiskPalette (Gauges.swift) */
 	--dk-apps: #1F7AE0;
+	--dk-yourData: #6A3DEC;
 	--dk-developer: #6A3DEC;
 	--dk-other: #9C2FB8;
 	--dk-media: #C2307E;
 	--dk-documents: #D99A00;
-	--dk-system: #8A5A33;
+	--dk-system: #C2307E;
 	--dk-ready: var(--ready);
 	--dk-free: rgba(0, 0, 0, 0.09);
 
@@ -75,11 +76,12 @@ html.dark .bento {
 	--t-orange: #FF9217;
 	--t-sysgray: #98989D;
 	--dk-apps: #4FA3F8;
+	--dk-yourData: #A485FF;
 	--dk-developer: #A485FF;
 	--dk-other: #D06BE6;
 	--dk-media: #EC5FA8;
 	--dk-documents: #FFC531;
-	--dk-system: #C09068;
+	--dk-system: #EC5FA8;
 	--dk-free: rgba(255, 255, 255, 0.1);
 }
 
