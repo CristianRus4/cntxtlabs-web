@@ -38,22 +38,25 @@
 	<script>(function (r) { var t = r.getAttribute("data-theme"); r.classList.add("js"); if (t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) r.classList.add("dark"); })(document.documentElement);</script>
 	<link rel="stylesheet" href="levo.css">
 	<link rel="stylesheet" href="demo.css">
+	<link rel="stylesheet" href="menus.css">
+	<script src="img/symbols/symbols.js" defer></script>
 	<script src="demo.js" defer></script>
+	<script src="menus.js" defer></script>
 	<script src="levo.js" defer></script>
 	<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Levo","description":"Levo is a Mac menubar app that watches disk, memory, CPU and GPU. Your own coding agent works out what is safe to clean or quit, and Levo cleans only what you tick.","url":"https://cntxtlabs.co/levo","applicationCategory":"UtilitiesApplication","operatingSystem":"macOS 26 or later","publisher":{"@type":"Organization","name":"Cntxt Labs","url":"https://cntxtlabs.co/"}}</script>
 </head>
 <body>
 
-	<header class="nav">
+	<header class="nav ld" style="--d:0">
 		<div class="nav-in">
 			<a class="brand" href="./" aria-label="Levo"><img src="img/icon-96.png" width="28" height="28" alt="">Levo</a>
 			<nav class="nav-links" aria-label="Levo">
-				<a href="#how">How it works</a>
+				<a href="#features">Features</a>
 				<a href="#agents">Agents</a>
-				<a href="#privacy">Privacy</a>
+				<a href="#settings">Settings</a>
 			</nav>
 			<div class="nav-end">
-				<button type="button" class="theme" data-theme-toggle aria-label="Switch appearance"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor" stroke="none"/></svg></button>
+				<button type="button" class="theme" data-theme-toggle aria-label="Switch appearance"><span data-sym="circle.lefthalf.filled" data-size="15"></span></button>
 				<!-- PLACEHOLDER: replace [DOWNLOAD LINK] with the real download URL. -->
 				<a class="btn btn-sm" href="[DOWNLOAD LINK]" data-placeholder>Download</a>
 			</div>
@@ -63,32 +66,38 @@
 	<main>
 
 		<section class="hero">
-			<h1 class="rv">Your Mac, lighter.</h1>
-			<p class="lede rv">Levo watches disk, memory, CPU and GPU from the menubar. When one runs high, your own agent has already worked out what&rsquo;s safe to clean.</p>
-			<div class="ctas rv">
+			<h1 class="ld ld-title" style="--d:1">Your Mac, lighter.</h1>
+			<p class="lede ld" style="--d:2">Levo watches disk, memory, CPU and GPU from the menubar. When one runs high, your own agent has already worked out what&rsquo;s safe to clean.</p>
+			<div class="ctas ld" style="--d:3">
 				<a class="btn" href="[DOWNLOAD LINK]" data-placeholder>Download</a>
 				<!-- PLACEHOLDER: replace [BUY LINK] with the checkout URL. The price comes from PRICE in levo.js. -->
 				<a class="btn btn-quiet" href="[BUY LINK]" data-placeholder data-buy>Buy</a>
+				<span class="req"><span data-sym="laptopcomputer" data-size="13"></span>macOS 26 or later</span>
 			</div>
-			<div class="stage rv">
+			<div class="stage ld" style="--d:4">
 				<div class="glow" aria-hidden="true"></div>
 				<div id="levo-demo" class="demo"></div>
 			</div>
+			<p class="hint ld" style="--d:6" aria-hidden="true"><span class="hint-arrow" data-sym="cursorarrow" data-size="12"></span><span data-hint>Psst&hellip; everything up there is clickable</span></p>
 		</section>
 
-		<section class="sect" id="how">
-			<h2 class="rv">How it works</h2>
-			<ol class="steps">
-				<li class="rv" data-tile="indigo" data-icon="speed"><b>Watches</b><p>Disk, memory, CPU and GPU, against limits you set.</p></li>
-				<li class="rv" data-tile="purple" data-icon="terminal"><b>Your agent looks first</b><p>Before the alert, it reads what&rsquo;s filling your Mac. Read-only, in a sandbox.</p></li>
-				<li class="rv" data-tile="green" data-icon="checkCircle"><b>You tick</b><p>What&rsquo;s safe to clean or quit, with sizes and reasons.</p></li>
-				<li class="rv" data-tile="orange" data-icon="trash"><b>Levo cleans</b><p>Only what you ticked. Anything that can&rsquo;t be rebuilt goes to the Trash.</p></li>
-			</ol>
+		<section class="sect" id="features">
+			<ul class="grid">
+				<li class="rv" data-fx="sweep" data-s="gauge.with.dots.needle.33percent gauge.with.dots.needle.67percent gauge.with.dots.needle.100percent"><b>Watches<br>your Mac</b></li>
+				<li class="rv" data-fx="draw" data-s="apple.terminal"><b>Works with<br><span class="circled">any agent<svg viewBox="0 0 176 55" preserveAspectRatio="none" aria-hidden="true"><path d="M131 9.5C104 2.4 50 3 23 12.6 2.6 19.8-4 34 18.6 42.4c27 10 99.4 11.2 133.5-2.7 27.3-11.1 25.8-25.3-6.9-32.4C122.6 2.5 92 1.4 70 3.7"/></svg></span></b></li>
+				<li class="rv" data-fx="ring" data-s="bell bell.badge"><b>Ready before<br>the alert</b></li>
+				<li class="rv" data-fx="tick" data-s="square checkmark.square"><b>You tick<br>what goes</b></li>
+				<li class="rv" data-fx="lid" data-s="trash trash.fill"><b>Trash,<br>not gone</b></li>
+				<li class="rv" data-fx="pop" data-s="lock.shield lock.shield.fill"><b>Private folders<br>stay hidden</b></li>
+				<li class="rv" data-fx="shake" data-s="person.slash"><b>No<br>account</b></li>
+				<li class="rv" data-fx="float" data-s="icloud.slash"><b>No<br>server</b></li>
+			</ul>
+			<p class="fine rv">Only the licence check leaves your Mac.</p>
 		</section>
 
 		<section class="sect" id="agents">
-			<h2 class="rv">Works with any agent</h2>
-			<p class="lede rv">Levo starts the CLI you already use, in the background, on your own plan or key.</p>
+			<h2 class="rv">Bring your own agent</h2>
+			<p class="lede rv">Levo starts the CLI you already use, in the background, read-only, on your own plan or key.</p>
 			<ul class="chips rv">
 				<li>claude</li>
 				<li>codex</li>
@@ -106,15 +115,6 @@
 		<section class="sect" id="settings">
 			<h2 class="rv">Every number is yours</h2>
 			<div class="settings rv" id="levo-settings"></div>
-		</section>
-
-		<section class="sect" id="privacy">
-			<h2 class="rv">No account. No server.</h2>
-			<ul class="facts">
-				<li class="rv" data-icon="user"><b>No Levo account</b><p>Nothing to sign up for.</p></li>
-				<li class="rv" data-icon="cloudOff"><b>Stays on your Mac</b><p>Only the licence check leaves it.</p></li>
-				<li class="rv" data-icon="shield"><b>Read-only agent</b><p>It runs in a sandbox and can&rsquo;t delete. Protected folders stay hidden from it.</p></li>
-			</ul>
 		</section>
 
 		<section class="sect get" id="get">
@@ -136,8 +136,11 @@
 	</main>
 
 	<footer class="foot">
-		<a href="../">Cntxt Labs</a>
-		<a href="../contact/">Contact</a>
+		<div class="foot-links">
+			<a href="../">Cntxt Labs</a>
+			<a href="../contact/">Contact</a>
+		</div>
+		<div class="wordmark" aria-hidden="true">Levo</div>
 	</footer>
 
 </body>

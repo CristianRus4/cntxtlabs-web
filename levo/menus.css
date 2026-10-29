@@ -1,0 +1,325 @@
+/*
+ * Levo demo: the menubar menus and the small windows they open (menus.js).
+ * macOS 26 look: glass menus, accent highlight with white text, hairline rim.
+ * Uses the scene's tokens (--fg, --accent, --panel, --red); html.dark flips them.
+ */
+
+.lvm-layer {
+	--lvm-glass: rgba(246, 246, 248, 0.74);
+	--lvm-rim: inset 0 0 0 0.5px rgba(255, 255, 255, 0.75), 0 0 0 0.5px rgba(0, 0, 0, 0.14);
+	--lvm-shadow: 0 2px 6px rgba(0, 0, 0, 0.06), 0 12px 34px -8px rgba(0, 0, 0, 0.24);
+	--lvm-hi: var(--accent);
+	--lvm-soft-hi: rgb(var(--fg) / 0.08);
+	--lvm-win: rgba(250, 250, 252, 0.92);
+	position: absolute;
+	inset: 0;
+	z-index: 30;
+	pointer-events: none;
+	overflow: hidden;
+	border-radius: inherit;
+}
+html.dark .lvm-layer {
+	--lvm-glass: rgba(38, 38, 42, 0.66);
+	--lvm-rim: inset 0 0 0 0.5px rgba(255, 255, 255, 0.16), 0 0 0 0.5px rgba(0, 0, 0, 0.6);
+	--lvm-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 14px 40px -8px rgba(0, 0, 0, 0.6);
+	--lvm-hi: color-mix(in srgb, var(--accent) 78%, #000);
+	--lvm-soft-hi: rgba(255, 255, 255, 0.1);
+	--lvm-win: rgba(40, 40, 43, 0.94);
+}
+.lvm-layer > * { pointer-events: auto; }
+
+.lvm-sym { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; line-height: 0; }
+.lvm-sym svg { display: block; overflow: visible; }
+
+/* The pressed menubar title. */
+.lv-menubar [data-menu].lvm-on { background: rgb(var(--fg) / 0.15); border-radius: 6px; outline: none !important; }
+html.dark .lv-menubar [data-menu].lvm-on { background: rgba(255, 255, 255, 0.2); }
+
+/* ------------------------------------------------------------ Menus */
+
+.lvm-menu {
+	position: absolute;
+	top: 30px;
+	left: 0;
+	z-index: 1000;
+	min-width: 196px;
+	max-width: 440px;
+	box-sizing: border-box;
+	padding: 5px;
+	border-radius: 12px;
+	background: var(--lvm-glass);
+	-webkit-backdrop-filter: blur(28px) saturate(1.9);
+	backdrop-filter: blur(28px) saturate(1.9);
+	box-shadow: var(--lvm-rim), var(--lvm-shadow);
+	color: rgb(var(--fg) / 0.86);
+	font-size: 13px;
+	line-height: 16px;
+	letter-spacing: -0.08px;
+	text-align: left;
+	white-space: nowrap;
+	overflow-x: hidden;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	scrollbar-width: none;
+	cursor: default;
+	transform-origin: 0 0;
+	animation: lvm-in .12s ease-out;
+}
+.lvm-menu::-webkit-scrollbar { display: none; }
+.lvm-menu.is-instant { animation: none; }
+html.dark .lvm-menu { color: rgb(255 255 255 / 0.88); }
+
+.lvm-item {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	height: 24px;
+	padding: 0 10px 0 20px;
+	border-radius: 6px;
+}
+.lvm-soft .lvm-item { padding-left: 9px; }
+.lvm-item.is-hi { background: var(--lvm-hi); color: #fff; }
+.lvm-soft .lvm-item.is-hi { background: var(--lvm-soft-hi); color: inherit; }
+.lvm-item.is-off { color: rgb(var(--fg) / 0.26); }
+.lvm-item.is-off.is-hi { background: transparent; color: rgb(var(--fg) / 0.26); }
+.lvm-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.lvm-bold { font-weight: 600; }
+.lvm-check { position: absolute; left: 5px; top: 0; bottom: 0; width: 12px; display: flex; align-items: center; justify-content: center; }
+.lvm-chev { margin: 0 -3px 0 22px; opacity: .75; }
+.lvm-item.is-off .lvm-chev { opacity: 1; }
+
+.lvm-keys { display: inline-flex; align-items: baseline; margin-left: 26px; color: rgb(var(--fg) / 0.42); font-variant-numeric: tabular-nums; }
+html.dark .lvm-keys { color: rgb(255 255 255 / 0.4); }
+.lvm-mods { letter-spacing: 1px; }
+.lvm-key { display: inline-block; min-width: 13px; text-align: left; padding-left: 1px; }
+.lvm-key.is-word { min-width: 0; padding-left: 2px; }
+.lvm-fn { font-size: 11px; margin-right: 3px; }
+.lvm-item.is-hi .lvm-keys, .lvm-item.is-hi .lvm-path { color: rgba(255, 255, 255, 0.78); }
+.lvm-soft .lvm-item.is-hi .lvm-keys { color: inherit; }
+.lvm-item.is-off .lvm-keys { color: inherit; }
+
+.lvm-sep { height: 1px; margin: 5px 9px; background: rgb(var(--fg) / 0.1); }
+html.dark .lvm-sep { background: rgba(255, 255, 255, 0.12); }
+.lvm-head { padding: 6px 9px 3px 20px; font-size: 11px; line-height: 14px; font-weight: 600; color: rgb(var(--fg) / 0.45); }
+.lvm-soft .lvm-head { padding-left: 9px; }
+.lvm-head.is-off { color: rgb(var(--fg) / 0.22); }
+.lvm-block { padding: 0; }
+.lvm-none { padding: 4px 9px 5px 20px; color: rgb(var(--fg) / 0.4); }
+.lvm-soft .lvm-none { padding-left: 9px; }
+.lvm-empty { padding: 2px 9px; min-height: 18px; }
+.lvm-sec { color: rgb(var(--fg) / 0.5); }
+.lvm-num { font-variant-numeric: tabular-nums; }
+
+.lvm-ic { color: rgb(var(--fg) / 0.6); margin-right: -1px; }
+.lvm-item.is-hi .lvm-ic { color: #fff; }
+.lvm-levo-icon { width: 16px; height: 16px; display: block; flex-shrink: 0; border-radius: 4px; }
+.lvm-item .lvm-levo-icon { margin-right: -1px; }
+.lvm-path { margin-left: 22px; font-size: 12px; color: rgb(var(--fg) / 0.45); }
+
+/* Help: Search and its field. */
+.lvm-m-help { min-width: 280px; }
+.lvm-hsearch { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 4px 4px 20px; }
+.lvm-field {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	height: 22px;
+	padding: 0 7px;
+	border-radius: 7px;
+	background: rgb(var(--fg) / 0.06);
+	box-shadow: inset 0 0 0 0.5px rgb(var(--fg) / 0.14);
+	cursor: text;
+}
+.lvm-field:focus-within { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent), inset 0 0 0 0.5px var(--accent); }
+.lvm-field-glass { color: rgb(var(--fg) / 0.5); }
+.lvm-field input, .lvm-goto-field input {
+	flex: 1;
+	min-width: 0;
+	height: 100%;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	background: transparent;
+	color: rgb(var(--fg));
+	font: inherit;
+	font-size: 13px;
+	-webkit-user-select: text;
+	user-select: text;
+}
+
+/* Wi-Fi, Battery, clock: the softer status menus. */
+.lvm-soft { border-radius: 14px; padding: 6px; }
+.lvm-m-wifi { width: 300px; }
+.lvm-m-battery { width: 270px; }
+.lvm-m-clock { width: 272px; }
+.lvm-row-head { height: 30px; }
+.lvm-row-head.is-hi { background: transparent !important; }
+.lvm-switch { position: relative; width: 26px; height: 15px; flex-shrink: 0; border-radius: 8px; background: rgb(var(--fg) / 0.14); transition: background-color .15s; }
+.lvm-switch i { position: absolute; top: 1.5px; left: 1.5px; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0.5px 2px rgba(0, 0, 0, 0.3); transition: transform .18s ease-out; }
+.lvm-switch.is-on { background: var(--accent); }
+.lvm-switch.is-on i { transform: translateX(11px); }
+.lvm-net { height: 34px; }
+.lvm-net-ic { width: 26px; height: 26px; margin-left: -3px; border-radius: 50%; background: rgb(var(--fg) / 0.09); color: rgb(var(--fg) / 0.8); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.lvm-net-ic.is-on { background: var(--accent); color: #fff; }
+.lvm-net-lock { color: rgb(var(--fg) / 0.45); }
+.lvm-item.is-off .lvm-net-ic, .lvm-item.is-off .lvm-net-lock { opacity: .45; }
+.lvm-row-title { display: flex; align-items: baseline; justify-content: space-between; padding: 5px 9px 1px; }
+.lvm-row-title b { font-weight: 600; }
+.lvm-row-note { padding: 1px 9px 4px; font-size: 12px; color: rgb(var(--fg) / 0.5); }
+.lvm-app { width: 20px; height: 20px; margin-left: -2px; border-radius: 6px; background: rgb(var(--fg) / 0.08); color: rgb(var(--fg) / 0.7); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.lvm-m-battery .lvm-item { height: 28px; }
+
+/* The clock. */
+.lvm-clock { padding: 6px 9px 6px; }
+.lvm-clock-date { font-size: 12px; font-weight: 600; color: rgb(var(--fg) / 0.55); }
+.lvm-clock-time { margin-top: 1px; font-size: 30px; line-height: 36px; font-weight: 600; letter-spacing: -0.4px; color: rgb(var(--fg)); font-variant-numeric: tabular-nums; font-family: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+.lvm-cal { margin-top: 10px; }
+.lvm-cal-head { display: flex; align-items: center; justify-content: space-between; height: 22px; }
+.lvm-cal-head b { font-size: 13px; font-weight: 600; color: rgb(var(--fg)); }
+.lvm-cal-nav { display: inline-flex; align-items: center; gap: 0; margin-right: -4px; }
+.lvm-cal-nav button { width: 20px; height: 20px; padding: 0; border: 0; border-radius: 5px; background: transparent; color: rgb(var(--fg) / 0.55); display: inline-flex; align-items: center; justify-content: center; }
+.lvm-cal-nav button:hover { background: rgb(var(--fg) / 0.08); color: rgb(var(--fg) / 0.9); }
+.lvm-cal-dot i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.lvm-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); margin-top: 2px; text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
+.lvm-cal-grid span { height: 26px; line-height: 26px; position: relative; z-index: 0; color: rgb(var(--fg) / 0.85); }
+.lvm-cal-wd span { height: 20px; line-height: 20px; font-size: 10.5px; font-weight: 600; color: rgb(var(--fg) / 0.45); }
+.lvm-cal-grid span.is-out { color: rgb(var(--fg) / 0.25); }
+.lvm-cal-grid span.is-today { color: #fff; font-weight: 600; }
+.lvm-cal-grid span.is-today::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 50%; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; background: var(--accent); }
+
+/* ------------------------------------------------------------ Windows */
+
+.lvm-win {
+	position: absolute;
+	box-sizing: border-box;
+	border-radius: 16px;
+	background: var(--lvm-win);
+	-webkit-backdrop-filter: blur(30px) saturate(1.6);
+	backdrop-filter: blur(30px) saturate(1.6);
+	box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.6), 0 0 0 0.5px rgba(0, 0, 0, 0.16), 0 26px 70px -14px rgba(0, 0, 0, 0.42), 0 8px 22px -10px rgba(0, 0, 0, 0.22);
+	color: rgb(var(--fg) / 0.88);
+	font-size: 13px;
+	line-height: 1.3;
+	text-align: left;
+	cursor: default;
+	animation: lvm-win .2s cubic-bezier(.2, .85, .25, 1);
+}
+html.dark .lvm-win { box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.7), 0 26px 70px -14px rgba(0, 0, 0, 0.7); }
+.lvm-tb { position: relative; display: flex; align-items: center; height: 40px; padding: 0 14px; }
+.lvm-tb-title { position: absolute; left: 0; right: 0; text-align: center; font-weight: 600; font-size: 13px; pointer-events: none; color: rgb(var(--fg) / 0.85); }
+.lvm-lights { position: relative; z-index: 1; display: flex; gap: 8px; }
+.lvm-light { width: 12px; height: 12px; padding: 0; border: 0; border-radius: 50%; box-sizing: border-box; background: rgb(var(--fg) / 0.12); box-shadow: inset 0 0 0 0.5px rgb(var(--fg) / 0.08); display: inline-flex; align-items: center; justify-content: center; color: rgba(0, 0, 0, 0.55); cursor: default !important; }
+.lvm-light.lvm-close { background: #FF5F57; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.14); }
+.lvm-light.lvm-min { background: #FEBC2E; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.14); }
+.lvm-light .lvm-sym { opacity: 0; transform: scale(.75); }
+.lvm-lights:hover .lvm-light .lvm-sym { opacity: 1; }
+.lvm-light .lvm-sym svg { width: 8px !important; height: 8px !important; }
+
+.lvm-btn {
+	height: 24px;
+	padding: 0 14px;
+	border: 0;
+	border-radius: 12px;
+	background: rgb(var(--fg) / 0.07);
+	box-shadow: inset 0 0 0 0.5px rgb(var(--fg) / 0.12), 0 0.5px 1px rgba(0, 0, 0, 0.06);
+	color: rgb(var(--fg) / 0.88) !important;
+	font-size: 13px !important;
+	font-weight: 500;
+	white-space: nowrap;
+	cursor: default !important;
+}
+html:not(.dark) .lvm-btn { background: #fff; }
+.lvm-btn:active { filter: brightness(.94); }
+.lvm-btn-primary, html:not(.dark) .lvm-btn-primary { background: var(--accent); color: #fff !important; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.08); }
+.lvm-btn:disabled { color: rgb(var(--fg) / 0.35) !important; filter: none; }
+
+/* About This Mac. */
+.lvm-about { width: 300px; padding-bottom: 22px; text-align: center; }
+.lvm-about .lvm-tb { position: absolute; top: 0; left: 0; right: 0; }
+.lvm-about-img { display: flex; justify-content: center; padding-top: 30px; height: 112px; align-items: center; color: rgb(var(--fg) / 0.62); }
+.lvm-about-name { margin-top: 14px; font-size: 22px; line-height: 26px; font-weight: 700; letter-spacing: -0.3px; color: rgb(var(--fg) / 0.88); }
+.lvm-about-sub { margin-top: 2px; font-size: 11px; color: rgb(var(--fg) / 0.5); }
+.lvm-rows { display: grid; grid-template-columns: 1fr 1.35fr; column-gap: 10px; row-gap: 5px; margin: 20px 16px 0; font-size: 11px; line-height: 14px; }
+.lvm-rows dt { text-align: right; color: rgb(var(--fg) / 0.85); }
+.lvm-rows dd { margin: 0; text-align: left; white-space: nowrap; color: rgb(var(--fg) / 0.5); font-variant-numeric: tabular-nums; }
+.lvm-wink { display: block; margin-top: 1px; font-style: italic; color: rgb(var(--fg) / 0.42); }
+.lvm-about .lvm-btn { margin-top: 20px; }
+
+/* Force Quit Applications. */
+.lvm-fq { width: 360px; }
+.lvm-fq-body { padding: 0 18px 16px; font-size: 12px; }
+.lvm-fq-body p { margin: 0 0 10px; color: rgb(var(--fg) / 0.8); line-height: 1.35; }
+.lvm-fq-list { height: 156px; overflow-y: auto; scrollbar-width: none; border-radius: 8px; background: rgb(var(--fg) / 0.04); box-shadow: inset 0 0 0 0.5px rgb(var(--fg) / 0.14); padding: 4px; }
+html:not(.dark) .lvm-fq-list { background: #fff; }
+.lvm-fq-row { display: flex; align-items: center; gap: 8px; height: 26px; padding: 0 6px; border-radius: 5px; font-size: 13px; }
+.lvm-fq-row.is-sel { background: var(--lvm-hi); color: #fff; }
+.lvm-fq-row.is-sel .lvm-app { background: rgba(255, 255, 255, 0.22); color: #fff; }
+.lvm-fq-row .lvm-app { margin-left: 0; }
+.lvm-fq-row .lvm-levo-icon { width: 20px; height: 20px; border-radius: 5px; }
+.lvm-fq-body .lvm-fq-foot { margin: 10px 0 12px; font-size: 11px; color: rgb(var(--fg) / 0.5); }
+.lvm-fq-btns { display: flex; justify-content: flex-end; }
+.lvm-fq-btns .lvm-btn { min-width: 96px; }
+
+/* Alerts: app-modal inside the scene. */
+.lvm-shield { position: absolute; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 150px; background: transparent; box-shadow: none; border-radius: 0; animation: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.lvm-alert {
+	width: 262px;
+	box-sizing: border-box;
+	padding: 18px 16px 16px;
+	border-radius: 22px;
+	background: var(--lvm-win);
+	-webkit-backdrop-filter: blur(30px) saturate(1.6);
+	backdrop-filter: blur(30px) saturate(1.6);
+	box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.6), 0 0 0 0.5px rgba(0, 0, 0, 0.16), 0 26px 70px -14px rgba(0, 0, 0, 0.45);
+	text-align: left;
+	transform-origin: 50% 0;
+	animation: lvm-pop .22s cubic-bezier(.2, .85, .25, 1);
+}
+html.dark .lvm-alert { box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.7), 0 26px 70px -14px rgba(0, 0, 0, 0.7); }
+.lvm-alert-ic { display: flex; width: 52px; height: 52px; align-items: center; justify-content: flex-start; color: rgb(var(--fg) / 0.6); }
+.lvm-alert-t { display: block; margin-top: 10px; font-size: 13px; line-height: 17px; font-weight: 700; color: rgb(var(--fg) / 0.9); }
+.lvm-alert-b { margin: 6px 0 0; font-size: 11px; line-height: 14px; color: rgb(var(--fg) / 0.7); }
+.lvm-alert-check { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 11px; color: rgb(var(--fg) / 0.8); }
+.lvm-cb { width: 14px; height: 14px; border-radius: 4px; box-sizing: border-box; background: rgb(var(--fg) / 0.06); box-shadow: inset 0 0 0 0.5px rgb(var(--fg) / 0.25); color: transparent; display: inline-flex; align-items: center; justify-content: center; }
+html:not(.dark) .lvm-cb { background: #fff; }
+.lvm-cb.is-on, html:not(.dark) .lvm-cb.is-on { background: var(--accent); box-shadow: none; color: #fff; }
+.lvm-alert-btns { display: flex; gap: 8px; margin-top: 16px; }
+.lvm-alert-btns .lvm-btn { flex: 1; height: 28px; border-radius: 14px; }
+
+/* Go to Folder. */
+.lvm-goto { width: 520px; padding: 0; border-radius: 16px; overflow: hidden; }
+.lvm-goto-field { display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 16px; cursor: text; }
+.lvm-goto-field input { font-size: 15px; }
+.lvm-goto-field input::placeholder { color: rgb(var(--fg) / 0.35); }
+.lvm-goto-ic { color: var(--accent); }
+.lvm-goto-list:not(:empty) { border-top: 0.5px solid rgb(var(--fg) / 0.12); padding: 5px; }
+.lvm-goto-row { display: flex; align-items: center; gap: 9px; height: 28px; padding: 0 10px; border-radius: 7px; font-size: 13px; white-space: nowrap; overflow: hidden; }
+.lvm-goto-row span:last-child { overflow: hidden; text-overflow: ellipsis; }
+.lvm-goto-row:hover { background: rgb(var(--fg) / 0.06); }
+.lvm-goto-row.is-hi { background: var(--lvm-hi); color: #fff; }
+.lvm-goto-f { color: #3DA8F5; }
+.lvm-goto-row.is-hi .lvm-goto-f { color: #fff; }
+.lvm-goto-err { padding: 5px 10px 6px; font-size: 12px; color: var(--red); }
+
+/* The screen, asleep for a moment. */
+.lvm-dim { position: absolute; inset: 0; z-index: 2000; background: #000; opacity: 0; transition: opacity .25s ease; }
+
+/* ------------------------------------------------------------ Compact (phones) */
+
+.lv-scene[data-mode="compact"] .lvm-menu { max-width: 380px; }
+.lv-scene[data-mode="compact"] .lvm-goto { width: 376px; }
+.lv-scene[data-mode="compact"] .lvm-fq { width: 340px; }
+.lv-scene[data-mode="compact"] .lvm-shield { padding-top: 90px; }
+.lv-scene[data-mode="compact"] .lvm-m-help { min-width: 260px; }
+
+@keyframes lvm-in { from { opacity: 0; transform: scale(.985); } }
+@keyframes lvm-fade { from { opacity: 0; } }
+@keyframes lvm-win { from { opacity: 0; transform: scale(.97); } }
+@keyframes lvm-pop { from { opacity: 0; transform: scale(.94); } }
+
+@media (prefers-reduced-motion: reduce) {
+	.lv-scene .lvm-menu:not(.is-instant), .lv-scene .lvm-win:not(.lvm-shield), .lv-scene .lvm-alert { animation: lvm-fade .12s ease-out !important; }
+	.lv-scene .lvm-switch i { transition: none !important; }
+}
