@@ -31,11 +31,11 @@
 			free: 16,
 			alert: 20,
 			used: [
-				{ id: "system", label: "System Data", gb: 64, color: ["#3D5AFE", "#7C8CFF"] },
+				{ id: "system", label: "System data", gb: 64, color: ["#3D5AFE", "#7C8CFF"] },
 				{ id: "apps", label: "Apps", gb: 96, color: ["#1F7AE0", "#4FA3F8"] },
 				{ id: "developer", label: "Developer", gb: 101, color: ["#6A3DEC", "#A485FF"] },
 				{ id: "documents", label: "Documents", gb: 70, color: ["#D99A00", "#FFC531"] },
-				{ id: "media", label: "Photos and Media", gb: 44, color: ["#C2307E", "#EC5FA8"] },
+				{ id: "media", label: "Photos and media", gb: 44, color: ["#C2307E", "#EC5FA8"] },
 				{ id: "other", label: "Other", gb: 29, color: ["#9A6A43", "#C99A72"] }
 			]
 		},
@@ -833,7 +833,7 @@
 		if (!accepted) {
 			sh.innerHTML = '<div class="lv-gate">' +
 				'<img src="img/dock/trash-full.png" width="64" height="64" alt="">' +
-				"<b>You\u2019re in Charge</b>" +
+				"<b>You\u2019re in charge</b>" +
 				"<p>Levo never deletes anything without your permission. Take care, and check what\u2019s ticked before you clean. Your own files go to the Trash.</p>" +
 				'<label class="lv-gate-box"><button type="button" class="lv-cb" role="checkbox" aria-checked="false" data-act="accept-tick"></button><span>I understand, and accept that Levo isn\u2019t responsible for what I choose to delete.</span></label>' +
 			"</div>" + confirmBar("Accept", false);
@@ -1074,23 +1074,23 @@
 			title = p.name;
 			if (!p.system) {
 				items.push({ symbol: "xmark.circle", label: "Quit " + p.name, keys: ["↵"], run: function () { quit(p.id); } });
-				items.push({ symbol: "xmark.circle", label: "Force Quit", keys: ["⌥", "⌘", "Q"], red: true, run: function () { quit(p.id); } });
+				items.push({ symbol: "xmark.circle", label: "Force quit", keys: ["⌥", "⌘", "Q"], red: true, run: function () { quit(p.id); } });
 			}
-			items.push({ symbol: "pin", label: "Always Keep", keys: ["⌘", "D"], run: function () { p.verdict = "Keep"; p.safe = false; renderProcs(); toast("info", "Keeping " + p.name); } });
+			items.push({ symbol: "pin", label: "Always keep", keys: ["⌘", "D"], run: function () { p.verdict = "Keep"; p.safe = false; renderProcs(); toast("info", "Keeping " + p.name); } });
 			items.push({ symbol: "gauge.with.dots.needle.33percent", label: "Show in Activity Monitor", keys: ["⌘", "↵"], run: function () { toast("info", "Opens Activity Monitor"); } });
 		} else {
 			var g = sel && group(sel.id);
 			title = g ? g.title : "Levo";
-			if (tickedGB() > 0) items.push({ symbol: "trash", label: "Clean Up " + gb(tickedGB()), keys: ["⌘", "⌫"], run: askClean });
+			if (tickedGB() > 0) items.push({ symbol: "trash", label: "Clean up " + gb(tickedGB()), keys: ["⌘", "⌫"], run: askClean });
 			if (g) {
 				items.push({ symbol: "folder", label: "Show in Finder", keys: ["⌘", "↵"], run: function () { toast("info", "Opens " + g.location.split(",")[0]); } });
-				items.push({ symbol: "pin", label: "Always Keep", keys: ["⌘", "D"], run: function () { keep(g.id); } });
+				items.push({ symbol: "pin", label: "Always keep", keys: ["⌘", "D"], run: function () { keep(g.id); } });
 			}
 		}
 		items.push(null);
 		items.push({ symbol: "checkmark.circle", label: "Select", sub: true, run: function () { S.panel = "select"; drawPanel(); } });
-		items.push({ symbol: "arrow.clockwise", label: "Analyse Now", keys: ["⌘", "R"], run: analyse });
-		items.push({ symbol: "pause.circle", label: "Pause Alerts for 1 Hour", keys: ["⌘", "P"], run: function () { toast("info", "Alerts paused for 1 hour"); } });
+		items.push({ symbol: "arrow.clockwise", label: "Analyse now", keys: ["⌘", "R"], run: analyse });
+		items.push({ symbol: "pause.circle", label: "Pause alerts for 1 hour", keys: ["⌘", "P"], run: function () { toast("info", "Alerts paused for 1 hour"); } });
 		items.push(null);
 		items.push({ symbol: "gearshape", label: "Settings…", keys: ["⌘", ","], run: function () { closePop(); var s = document.getElementById("settings"); if (s) s.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); } });
 		items.push({ symbol: "power", label: "Quit Levo", keys: ["⌘", "Q"], run: quitLevo });

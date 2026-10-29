@@ -302,7 +302,7 @@
 			width: 392, zmax: 1.5,
 			html: function () {
 				var levels = ["Careful", "Balanced", "Aggressive"];
-				return pop('<div class="bt-card"><div class="bt-srow"><span class="bt-slabel">Cleanup Level<span class="bt-q bt-info">' + sym("info.circle", 12) + "</span></span>" +
+				return pop('<div class="bt-card"><div class="bt-srow"><span class="bt-slabel">Cleanup level<span class="bt-q bt-info">' + sym("info.circle", 12) + "</span></span>" +
 					'<span class="bt-flex"></span><span class="bt-seg" data-level="1"><i class="bt-thumb"></i>' +
 					levels.map(function (l, i) { return '<span class="bt-segi" data-i="' + i + '">' + l + "</span>"; }).join("") + "</span></div></div>", "bt-win");
 			},

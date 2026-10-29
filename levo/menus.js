@@ -241,21 +241,21 @@
 	var MENUS = {
 		apple: function () {
 			return [
-				D("About This Mac", "", { act: openAbout }),
+				D("About this Mac", "", { act: openAbout }),
 				SEP,
 				D("System Settings…", "", { act: function () { openWindow("settings", { id: "settings" }); } }),
 				D("App Store…"),
 				SEP,
-				D("Recent Items", "", { sub: recentItems }),
+				D("Recent items", "", { sub: recentItems }),
 				SEP,
-				D("Force Quit…", "⌥⌘⎋", { act: openForceQuit }),
+				D("Force quit…", "⌥⌘⎋", { act: openForceQuit }),
 				SEP,
 				D("Sleep", "", { act: function () { dim(); } }),
 				D("Restart…", "", { act: function () { power("restart"); } }),
-				D("Shut Down…", "", { act: function () { power("shutdown"); } }),
+				D("Shut down…", "", { act: function () { power("shutdown"); } }),
 				SEP,
-				D("Lock Screen", "⌃⌘Q", { act: function () { if (hook("lock")) call("lock"); else dim(); } }),
-				D("Log Out…", "⇧⌘Q", { act: function () { power("logout"); } })
+				D("Lock screen", "⌃⌘Q", { act: function () { if (hook("lock")) call("lock"); else dim(); } }),
+				D("Log out…", "⇧⌘Q", { act: function () { power("logout"); } })
 			];
 		},
 		app: function () {
@@ -266,29 +266,29 @@
 				SEP,
 				D("Empty Trash…", "⇧⌘⌫", { act: askEmptyTrash }),
 				SEP,
-				D("Services", "", { sub: function () { return [off("No Services Apply"), D("Services Settings…")]; } }),
+				D("Services", "", { sub: function () { return [off("No services apply"), D("Services settings…")]; } }),
 				SEP,
 				D("Hide Finder", "⌘H"),
-				D("Hide Others", "⌥⌘H"),
-				off("Show All")
+				D("Hide others", "⌥⌘H"),
+				off("Show all")
 			];
 		},
 		file: function () {
 			return [
-				D("New Finder Window", "⌘N"),
-				D("New Folder", "⇧⌘N"),
-				off("New Folder with Selection", "⌃⌘N"),
-				D("New Smart Folder", "⌥⌘N"),
-				D("New Tab", "⌘T"),
+				D("New Finder window", "⌘N"),
+				D("New folder", "⇧⌘N"),
+				off("New folder with selection", "⌃⌘N"),
+				D("New smart folder", "⌥⌘N"),
+				D("New tab", "⌘T"),
 				off("Open", "⌘O"),
-				off("Open With", "", { sub: function () { return []; } }),
-				D("Close Window", "⌘W"),
+				off("Open with", "", { sub: function () { return []; } }),
+				D("Close window", "⌘W"),
 				SEP,
-				D("Get Info", "⌘I"),
+				D("Get info", "⌘I"),
 				off("Rename"),
 				off("Compress"),
 				off("Duplicate", "⌘D"),
-				off("Make Alias", "⌃⌘A"),
+				off("Make alias", "⌃⌘A"),
 				off("Quick Look", "⌘Y"),
 				SEP,
 				off("Move to Trash", "⌘⌫"),
@@ -305,12 +305,12 @@
 				off("Cut", "⌘X"),
 				off("Copy", "⌘C"),
 				off("Paste", "⌘V"),
-				D("Select All", "⌘A"),
+				D("Select all", "⌘A"),
 				SEP,
-				D("Show Clipboard"),
+				D("Show clipboard"),
 				SEP,
-				D("Start Dictation…"),
-				D("Emoji & Symbols", "fn E")
+				D("Start dictation…"),
+				D("Emoji & symbols", "fn E")
 			];
 		},
 		view: function () {
@@ -320,25 +320,25 @@
 				radio("view", "columns", "as Columns", "⌘3"),
 				radio("view", "gallery", "as Gallery", "⌘4"),
 				SEP,
-				check("stacks", "Use Stacks", "⌃⌘0"),
-				D("Sort By", "", { sub: sortBy }),
-				D("Clean Up"),
+				check("stacks", "Use stacks", "⌃⌘0"),
+				D("Sort by", "", { sub: sortBy }),
+				D("Clean up"),
 				SEP,
-				toggle("sidebar", "Hide Sidebar", "Show Sidebar", "⌃⌘S"),
-				toggle("preview", "Hide Preview", "Show Preview", "⇧⌘P"),
+				toggle("sidebar", "Hide sidebar", "Show sidebar", "⌃⌘S"),
+				toggle("preview", "Hide preview", "Show preview", "⇧⌘P"),
 				SEP,
-				toggle("toolbar", "Hide Toolbar", "Show Toolbar", "⌥⌘T"),
-				toggle("pathbar", "Hide Path Bar", "Show Path Bar", "⌥⌘P"),
-				toggle("statusbar", "Hide Status Bar", "Show Status Bar", "⌘/"),
+				toggle("toolbar", "Hide toolbar", "Show toolbar", "⌥⌘T"),
+				toggle("pathbar", "Hide path bar", "Show path bar", "⌥⌘P"),
+				toggle("statusbar", "Hide status bar", "Show status bar", "⌘/"),
 				SEP,
-				D("Enter Full Screen", "⌃⌘F")
+				D("Enter full screen", "⌃⌘F")
 			];
 		},
 		go: function () {
 			return [
 				off("Back", "⌘["),
 				off("Forward", "⌘]"),
-				off("Enclosing Folder", "⌘↑"),
+				off("Enclosing folder", "⌘↑"),
 				SEP,
 				D("Recents", "⇧⌘F"),
 				D("Documents", "⇧⌘O"),
@@ -352,25 +352,25 @@
 				D("Applications", "⇧⌘A"),
 				D("Utilities", "⇧⌘U"),
 				SEP,
-				D("Recent Folders", "", { sub: function () {
-					return [D("Downloads"), D("Developer"), D("Caches"), SEP, D("Clear Menu")];
+				D("Recent folders", "", { sub: function () {
+					return [D("Downloads"), D("Developer"), D("Caches"), SEP, D("Clear menu")];
 				} }),
 				SEP,
-				D("Go to Folder…", "⇧⌘G", { act: openGoTo }),
-				D("Connect to Server…", "⌘K")
+				D("Go to folder…", "⇧⌘G", { act: openGoTo }),
+				D("Connect to server…", "⌘K")
 			];
 		},
 		window: function () {
 			return [
 				off("Minimize", "⌘M"),
 				off("Zoom"),
-				off("Move & Resize", "", { sub: function () { return []; } }),
+				off("Move & resize", "", { sub: function () { return []; } }),
 				off("Fill", "fn⌃F"),
 				off("Center"),
 				SEP,
-				D("Cycle Through Windows", "⌘`"),
+				D("Cycle through windows", "⌘`"),
 				SEP,
-				D("Bring All to Front")
+				D("Bring all to front")
 			];
 		},
 		help: helpMenu,
@@ -386,20 +386,20 @@
 		return [
 			{ header: "Applications" }, D("Xcode"), D("Terminal"), D("System Settings"),
 			{ header: "Documents" }, D("Project Plan.pages"), D("Invoice 0412.pdf"), D("Screenshot 2026-10-28 at 9.41.12 am.png"),
-			SEP, D("Clear Menu")
+			SEP, D("Clear menu")
 		];
 	}
 	function sortBy() {
 		return [
 			radio("sort", "none", "None", "⌃⌥⌘0"),
-			check("snap", "Snap to Grid"),
+			check("snap", "Snap to grid"),
 			SEP,
 			radio("sort", "name", "Name", "⌃⌥⌘1"),
 			radio("sort", "kind", "Kind", "⌃⌥⌘2"),
-			radio("sort", "opened", "Date Last Opened", "⌃⌥⌘3"),
-			radio("sort", "added", "Date Added", "⌃⌥⌘4"),
-			radio("sort", "modified", "Date Modified", "⌃⌥⌘5"),
-			radio("sort", "created", "Date Created"),
+			radio("sort", "opened", "Date last opened", "⌃⌥⌘3"),
+			radio("sort", "added", "Date added", "⌃⌥⌘4"),
+			radio("sort", "modified", "Date modified", "⌃⌥⌘5"),
+			radio("sort", "created", "Date created"),
 			radio("sort", "size", "Size", "⌃⌥⌘6"),
 			radio("sort", "tags", "Tags", "⌃⌥⌘7")
 		];
@@ -409,7 +409,7 @@
 	function helpMenu() {
 		return {
 			head: '<div class="lvm-hsearch"><span>Search</span><label class="lvm-field">' + sym("magnifyingglass", 12, "lvm-field-glass") +
-				'<input type="text" data-lvm-help spellcheck="false" autocomplete="off" aria-label="Search Help"></label></div>',
+				'<input type="text" data-lvm-help spellcheck="false" autocomplete="off" aria-label="Search help"></label></div>',
 			defs: helpDefs("")
 		};
 	}
@@ -432,13 +432,13 @@
 				return t.label.toLowerCase().indexOf(q) >= 0 || (q.length > 1 && t.words.some(function (w) { return w.indexOf(q) === 0 || q.indexOf(w) === 0; }));
 			});
 			if (hits.length) {
-				d.push({ header: "Menu Items" });
+				d.push({ header: "Menu items" });
 				hits.slice(0, 6).forEach(function (h) {
 					d.push({ label: h.def.label, disabled: h.def.disabled, after: '<span class="lvm-path">' + esc(h.path) + "</span>", act: h.def.act });
 				});
 			}
 			if (topics.length) {
-				d.push({ header: "Help Topics" });
+				d.push({ header: "Help topics" });
 				topics.slice(0, 4).forEach(function (t) {
 					d.push(t.levo
 						? { label: "Levo", icon: levoIcon("lvm-levo-icon"), levo: true, act: function () { call("openLevo"); } }
@@ -448,7 +448,7 @@
 			if (!hits.length && !topics.length) d.push({ block: '<div class="lvm-none">No results</div>' });
 			d.push(SEP);
 		}
-		d.push(D("macOS Help"), D("Tips for Your Mac"), D("New to Mac"), D("See What’s New in macOS Tahoe"));
+		d.push(D("macOS Help"), D("Tips for your Mac"), D("New to Mac"), D("See what’s new in macOS Tahoe"));
 		return d;
 	}
 
@@ -459,11 +459,11 @@
 			html: '<span class="lvm-label lvm-bold">Wi-Fi</span><span class="lvm-switch' + (on ? " is-on" : "") + '" role="switch" aria-checked="' + on + '"><i></i></span>',
 			keep: true, cls: "lvm-row-head", act: toggleWifi
 		}];
-		d.push(SEP, { header: "Known Network", dim: !on });
+		d.push(SEP, { header: "Known network", dim: !on });
 		d.push({ html: net(WIFI_HOME, true), cls: "lvm-net", disabled: !on });
-		d.push({ header: "Other Networks", dim: !on });
+		d.push({ header: "Other networks", dim: !on });
 		WIFI_OTHER.forEach(function (n) { d.push({ html: net(n, false), cls: "lvm-net", disabled: !on }); });
-		d.push(SEP, D("Other…", "", { disabled: !on }), D("Wi-Fi Settings…"));
+		d.push(SEP, D("Other…", "", { disabled: !on }), D("Wi-Fi settings…"));
 		return { defs: d };
 	}
 	function net(name, home) {
@@ -477,22 +477,22 @@
 	function batteryMenu() {
 		var b = call("battery");
 		var lvl = b && typeof b.level === "number" ? numFmt(0).format(Math.round(b.level * 100)) + " %" : "";
-		var src = !b || b.charging ? "Power Adapter" : "Battery";
+		var src = !b || b.charging ? "Power adapter" : "Battery";
 		var d = [
 			{ block: '<div class="lvm-row-title"><b>Battery</b>' + (lvl ? '<span class="lvm-sec lvm-num">' + lvl + "</span>" : "") + "</div>" +
-				'<div class="lvm-row-note">Power Source: ' + src + "</div>" }
+				'<div class="lvm-row-note">Power source: ' + src + "</div>" }
 		];
-		d.push(SEP, { header: "Using Significant Energy" });
+		d.push(SEP, { header: "Using significant energy" });
 		var hungry = APPS.filter(function (a) { return a.energy && running(a.id); });
 		if (hungry.length) hungry.forEach(function (a) { d.push({ label: a.name, icon: '<span class="lvm-app">' + sym(a.sym, 12) + "</span>" }); });
-		else d.push({ block: '<div class="lvm-none">No Apps Using Significant Energy</div>' });
-		d.push(SEP, D("Battery Settings…"));
+		else d.push({ block: '<div class="lvm-none">No apps using significant energy</div>' });
+		d.push(SEP, D("Battery settings…"));
 		return { defs: d };
 	}
 
 	// The clock: date, time and this month, in the visitor's locale.
 	function clockMenu() {
-		return { defs: [{ block: '<div class="lvm-clock" data-lvm-clock></div>' }, SEP, D("Date & Time Settings…")], after: drawClock };
+		return { defs: [{ block: '<div class="lvm-clock" data-lvm-clock></div>' }, SEP, D("Date & time settings…")], after: drawClock };
 	}
 	function firstDay() {
 		try {
@@ -788,7 +788,7 @@
 				"<dt>Serial number</dt><dd>N0R00M4M0R3</dd>" +
 				"<dt>macOS</dt><dd>Tahoe 26.1</dd>" +
 			"</dl>" +
-			'<button type="button" class="lvm-btn">More Info…</button>');
+			'<button type="button" class="lvm-btn">More info…</button>');
 		drawStorage();
 		aboutTimer = setInterval(drawStorage, 1000);
 		placeCentre(w);
@@ -806,7 +806,7 @@
 	function openForceQuit() {
 		if (!running(fqSel)) fqSel = st.running[0];
 		var w = makeWin("fq", "lvm-fq",
-			'<div class="lvm-tb" data-lvm-drag>' + lights(true) + '<span class="lvm-tb-title">Force Quit Applications</span></div>' +
+			'<div class="lvm-tb" data-lvm-drag>' + lights(true) + '<span class="lvm-tb-title">Force quit applications</span></div>' +
 			'<div class="lvm-fq-body"><p>If an app doesn’t respond for a while, select its name and click Force Quit.</p>' +
 			'<div class="lvm-fq-list" role="listbox"></div>' +
 			'<p class="lvm-fq-foot">You can open this window by pressing Command + Option + Escape.</p>' +
@@ -823,7 +823,7 @@
 		}).join("");
 		var b = w.querySelector('[data-lvm="fq-go"]');
 		var levo = fqSel === "levo";
-		b.textContent = levo ? "Levo is fine." : fqSel === "finder" ? "Relaunch" : "Force Quit";
+		b.textContent = levo ? "Levo is fine." : fqSel === "finder" ? "Relaunch" : "Force quit";
 		b.disabled = levo;
 		b.classList.toggle("lvm-btn-primary", !levo);
 	}
@@ -884,8 +884,8 @@
 
 	var POWER = {
 		restart: { t: "Are you sure you want to restart your computer now?", b: "If you do nothing, the computer will restart automatically in {n} seconds.", ok: "Restart", sym: "power" },
-		shutdown: { t: "Are you sure you want to shut down your computer now?", b: "If you do nothing, the computer will shut down automatically in {n} seconds.", ok: "Shut Down", sym: "power" },
-		logout: { t: "Are you sure you want to quit all apps and log out now?", b: "If you do nothing, you will be logged out automatically in {n} seconds.", ok: "Log Out", sym: "power" }
+		shutdown: { t: "Are you sure you want to shut down your computer now?", b: "If you do nothing, the computer will shut down automatically in {n} seconds.", ok: "Shut down", sym: "power" },
+		logout: { t: "Are you sure you want to quit all apps and log out now?", b: "If you do nothing, you will be logged out automatically in {n} seconds.", ok: "Log out", sym: "power" }
 	};
 	FALLBACK.power = '<path d="M8 2v5.2"/><path d="M4.7 4.3a5 5 0 1 0 6.6 0"/>';
 	function power(kind) {
@@ -1012,13 +1012,13 @@
 				'<div class="lvm-cc-mod lvm-cc-conn">' +
 					ccRow("wifi", st.wifi, "Wi-Fi", st.wifi ? WIFI_HOME : "Off", "wifi") +
 					ccRow("bt", st.bt, "Bluetooth", st.bt ? "On" : "Off", "bluetooth") +
-					ccRow("airdrop", st.airdrop, "AirDrop", st.airdrop ? "Contacts Only" : "Off", "dot.radiowaves.left.and.right") +
+					ccRow("airdrop", st.airdrop, "AirDrop", st.airdrop ? "Contacts only" : "Off", "dot.radiowaves.left.and.right") +
 				"</div>" +
 				'<div class="lvm-cc-col">' +
 					'<button type="button" class="lvm-cc-mod lvm-cc-tile' + (st.focus ? " is-focus" : "") + '" data-lvm-cc="focus" aria-pressed="' + st.focus + '">' +
-						'<span class="lvm-cc-btn' + (st.focus ? " is-on" : "") + '">' + sym("moon.fill", 14) + '</span><span class="lvm-cc-txt"><b>' + (st.focus ? "Do Not Disturb" : "Focus") + "</b>" + (st.focus ? "<small>On</small>" : "") + "</span></button>" +
+						'<span class="lvm-cc-btn' + (st.focus ? " is-on" : "") + '">' + sym("moon.fill", 14) + '</span><span class="lvm-cc-txt"><b>' + (st.focus ? "Do not disturb" : "Focus") + "</b>" + (st.focus ? "<small>On</small>" : "") + "</span></button>" +
 					'<button type="button" class="lvm-cc-mod lvm-cc-tile" data-lvm-cc="dark" aria-pressed="' + dark + '">' +
-						'<span class="lvm-cc-btn lvm-cc-dark' + (dark ? " is-on" : "") + (spin ? " is-spin" : "") + '">' + sym("circle.lefthalf.filled", 15) + '</span><span class="lvm-cc-txt"><b>Dark Mode</b><small>' + (dark ? "On" : "Off") + "</small></span></button>" +
+						'<span class="lvm-cc-btn lvm-cc-dark' + (dark ? " is-on" : "") + (spin ? " is-spin" : "") + '">' + sym("circle.lefthalf.filled", 15) + '</span><span class="lvm-cc-txt"><b>Dark mode</b><small>' + (dark ? "On" : "Off") + "</small></span></button>" +
 				"</div>" +
 				'<div class="lvm-cc-mod lvm-cc-wide"><b>Display</b>' + slider("bright", "sun.max.fill", "Display brightness") + "</div>" +
 				'<div class="lvm-cc-mod lvm-cc-wide"><b>Sound</b><div class="lvm-cc-sound">' + slider("vol", "speaker.wave.2.fill", "Volume") +
@@ -1169,7 +1169,7 @@
 				["General", "grey", "gearshape.fill"], ["Appearance", "black", "circle.lefthalf.filled"], ["Control Centre", "grey", "switch.2"],
 				["Desktop & Dock", "black", "dock.rectangle"], ["Displays", "blue", "sun.max.fill"], ["Wallpaper", "cyan", "photo.fill"], 0,
 				["Notifications", "red", "bell.fill"], ["Sound", "pink", "speaker.wave.2.fill"], ["Focus", "indigo", "moon.fill"], 0,
-				["Lock Screen", "black", "lock.fill"], ["Privacy & Security", "blue", "hand.raised"]
+				["Lock screen", "black", "lock.fill"], ["Privacy & security", "blue", "hand.raised"]
 			];
 			var cards = [["auto", "Auto"], ["light", "Light"], ["dark", "Dark"]];
 			var accents = ["multi", "blue", "purple", "pink", "red", "orange", "yellow", "green", "graphite"];
@@ -1178,7 +1178,7 @@
 				html:
 					'<aside class="lvm-side" data-lvm-drag><div class="lvm-side-top"></div>' +
 						'<div class="lvm-ss-search">' + sym("magnifyingglass", 11) + "<span>Search</span></div>" +
-						'<div class="lvm-ss-user"><span class="lvm-ss-avatar">' + sym("person.crop.circle", 22) + '</span><span><b>Sign In</b><small>with your Apple Account</small></span></div>' +
+						'<div class="lvm-ss-user"><span class="lvm-ss-avatar">' + sym("person.crop.circle", 22) + '</span><span><b>Sign in</b><small>with your Apple Account</small></span></div>' +
 						'<div class="lvm-ss-list">' + panes.map(function (p) {
 							if (!p) return '<div class="lvm-ss-gap"></div>';
 							return '<div class="lvm-side-row' + (p[0] === "Appearance" ? " is-sel" : "") + '"><span class="lvm-ss-tile lvm-t-' + p[1] + '">' + sym(p[2], 11) + "</span><span>" + esc(p[0]) + "</span></div>";

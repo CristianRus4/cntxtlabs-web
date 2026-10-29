@@ -118,7 +118,7 @@
 	var MENUS = {
 		checkEvery: ["1 min", "5 min", "10 min", "15 min", "30 min", "1 hour"],
 		appearance: ["System", "Light", "Dark"],
-		menubarIcon: ["Outline", "Mark", "Mark + Free Space"],
+		menubarIcon: ["Outline", "Mark", "Mark + free space"],
 		model: ["Default", "Custom…"],
 		pressure: ["Warning", "Critical"]
 	};
@@ -260,7 +260,7 @@
 		}
 		function listCard(title, infoId, items, addAct, removeKey, icon) {
 			return '<div class="ls-card ls-list"><div class="ls-list-head">' + label(title, infoId) +
-				(addAct ? '<button type="button" class="ls-plus" data-act="' + addAct + '" aria-label="Add Folder">' + sym("plus", 13) + "</button>" : "") + "</div>" +
+				(addAct ? '<button type="button" class="ls-plus" data-act="' + addAct + '" aria-label="Add folder">' + sym("plus", 13) + "</button>" : "") + "</div>" +
 				items.map(function (it, i) {
 					return '<div class="ls-item">' + '<span class="ls-item-ic">' + sym(icon || "folder", 13) + "</span>" + '<span class="ls-item-title">' + esc(it[0]) + "</span>" +
 						(it[1] ? '<span class="ls-item-detail">' + esc(it[1]) + "</span>" : "") +
@@ -301,20 +301,20 @@
 			},
 			general: function () {
 				return section(null, null, [
-					row("Launch at Login", "launch", sw("launch", "Launch at Login")),
+					row("Launch at login", "launch", sw("launch", "Launch at login")),
 					row("Show in Dock", "dock", sw("dock", "Show in Dock")),
-					row("Check Every", "checkEvery", pop("checkEvery")),
+					row("Check every", "checkEvery", pop("checkEvery")),
 					row("Notifications", "notifications", sw("notifications", "Notifications")),
 					row("Welcome", "welcome", token("Show", "welcome"))
 				]) + section("Appearance", null, [
 					row("Appearance", "appearance", pop("appearance")),
-					row("Text Size", "textSize", seg("textSize", [[0, "Aa", 11], [1, "Aa", 13], [2, "Aa", 16]], "ls-seg-aa")),
-					row("Menubar Icon", "menubarIcon", pop("menubarIcon")),
+					row("Text size", "textSize", seg("textSize", [[0, "Aa", 11], [1, "Aa", 13], [2, "Aa", 16]], "ls-seg-aa")),
+					row("Menubar icon", "menubarIcon", pop("menubarIcon")),
 					'<div class="ls-row ls-row-pics"><div class="ls-row-main">' + label("Popover", "popover") + '<span class="ls-pics">' +
 						pictureCard("Compact", V.popover === "compact", popoverPicture("compact"), 'data-layout="compact"') +
 						pictureCard("Expanded", V.popover === "expanded", popoverPicture("expanded"), 'data-layout="expanded"') +
 					"</span></div></div>"
-				]) + section("Show in Popover", "showInPopover", [
+				]) + section("Show in popover", "showInPopover", [
 					row("Memory", null, sw("showMemory", "Memory")),
 					row("CPU", null, sw("showCPU", "CPU")),
 					row("GPU", null, sw("showGPU", "GPU"))
@@ -336,35 +336,35 @@
 				}
 				main.push(row("Test", "test", '<span class="ls-test">' + testStatus() + "</span>" +
 					'<button type="button" class="ls-round" data-act="detect" aria-label="Look for agents again"' + (S.detecting ? " disabled" : "") + ">" + sym("arrow.clockwise", 12) + "</button>" +
-					token("Run Test", "test", S.test === "testing" || (a && !a.found && !custom))));
+					token("Run test", "test", S.test === "testing" || (a && !a.found && !custom))));
 				return card(top, "ls-card-picker") + section(null, null, main) +
-					section(null, null, [row("Cleanup Level", "cleanup", seg("cleanup", [["careful", "Careful"], ["balanced", "Balanced"], ["aggressive", "Aggressive"]]))]) +
+					section(null, null, [row("Cleanup level", "cleanup", seg("cleanup", [["careful", "Careful"], ["balanced", "Balanced"], ["aggressive", "Aggressive"]]))]) +
 					section("Limits", null, [
-						row("Time per Run", "timePerRun", step("timePerRun", "min", "Time per Run")),
-						row("Steps per Run", "steps", step("steps", "", "Steps per Run")),
-						row("Runs per Day", "runs", step("runs", "", "Runs per Day"))
+						row("Time per run", "timePerRun", step("timePerRun", "min", "Time per run")),
+						row("Steps per run", "steps", step("steps", "", "Steps per run")),
+						row("Runs per day", "runs", step("runs", "", "Runs per day"))
 					]) + section("Background", null, [
-						row("Pause on Battery", "battery", sw("pauseBattery", "Pause on Battery"),
-							'<span class="ls-lockable" data-lock="battery"><span class="ls-sub">Below</span>' + step("batteryBelow", "%", "Pause on Battery Below") + "</span>"),
-						row("Add Levo’s Read-only Tools to My Agent", "tools", sw("tools", "Add Levo’s Read-only Tools to My Agent"))
+						row("Pause on battery", "battery", sw("pauseBattery", "Pause on battery"),
+							'<span class="ls-lockable" data-lock="battery"><span class="ls-sub">Below</span>' + step("batteryBelow", "%", "Pause on battery below") + "</span>"),
+						row("Add Levo’s read-only tools to my agent", "tools", sw("tools", "Add Levo’s read-only tools to my agent"))
 					]);
 			},
 			protected: function () {
-				return listCard("Protected Folders", "folders", V.folders.map(function (f) { return [f]; }), "addFolder", "folders") +
-					(V.kept.length ? listCard("Kept Processes", "kept", V.kept, null, "kept", "terminal") : "") +
-					section(null, null, [row("Keep What Changed Within", "keepWithin", step("keepWithin", "h", "Hours"))]) +
-					listCard("Also Index", "alsoIndex", V.roots.map(function (f) { return [f]; }), "addRoot", "roots") +
-					listCard("Always Protected", "always", NEVER, null, null, "lock");
+				return listCard("Protected folders", "folders", V.folders.map(function (f) { return [f]; }), "addFolder", "folders") +
+					(V.kept.length ? listCard("Kept processes", "kept", V.kept, null, "kept", "terminal") : "") +
+					section(null, null, [row("Keep what changed within", "keepWithin", step("keepWithin", "h", "Hours"))]) +
+					listCard("Also index", "alsoIndex", V.roots.map(function (f) { return [f]; }), "addRoot", "roots") +
+					listCard("Always protected", "always", NEVER, null, null, "lock");
 			},
 			autoClean: function () {
 				var out = "";
 				if (!S.licensed) out += '<div class="ls-section">' + card([linkRow("Licence", "Free", "licence")]) + "</div>";
 				if (S.acceptedAt) out += section(null, null, [row("Accepted", null, status(S.acceptedAt + " · 1.0"))]);
 				return out + '<div class="ls-lockable" data-lock="licence">' + section("When", null, [
-					row("Free Below", "acFree", diskLimit("acFree", "acUnit")),
-					row("At Most Every", "acEvery", step("acEvery", "h", "Hours")),
-					row("Only When It Frees", "acGain", step("acGain", "GB", "Gigabytes"))
-				]) + section("What", "what", [row("Regenerable Only", "regen", sw("acRegen", "Regenerable Only"))].concat(GROUPS.map(function (g, i) {
+					row("Free below", "acFree", diskLimit("acFree", "acUnit")),
+					row("At most every", "acEvery", step("acEvery", "h", "Hours")),
+					row("Only when it frees", "acGain", step("acGain", "GB", "Gigabytes"))
+				]) + section("What", "what", [row("Regenerable only", "regen", sw("acRegen", "Regenerable only"))].concat(GROUPS.map(function (g, i) {
 					return row(g, null, '<button type="button" class="ls-switch" role="switch" data-group="' + i + '" aria-checked="' + (V.acGroups.indexOf(g) >= 0) + '" aria-label="' + esc(g) + '"></button>');
 				}))) + "</div>";
 			},
@@ -377,8 +377,8 @@
 			disk: function () {
 				return section(null, null, [row(opts.volume || "Macintosh HD", null, status((opts.free != null ? opts.free : "32 GB") + " free"))]) +
 					section(null, null, [
-						row("Free Below", "diskFree", diskLimit("diskFree", "diskUnit"), check("diskNotify", "Send a Notification")),
-						row("Start Analysing Early", "early", step("early", "%", "Start analysing early"))
+						row("Free below", "diskFree", diskLimit("diskFree", "diskUnit"), check("diskNotify", "Send a notification")),
+						row("Start analysing early", "early", step("early", "%", "Start analysing early"))
 					], "diskWatch") +
 					'<div class="ls-section">' + card([linkRow("Auto-clean", V.autoClean ? "On" : "Off", "autoClean")]) + "</div>";
 			},
@@ -386,7 +386,7 @@
 				return section(null, null, [row("Now", null, status((opts.memory || "32 GB") + " · Normal"))]) +
 					section(null, null, [
 						row("Pressure", "pressure", pop("pressure")),
-						row("For", "forMinutes", step("memFor", "min", "Minutes"), check("memNotify", "Send a Notification"))
+						row("For", "forMinutes", step("memFor", "min", "Minutes"), check("memNotify", "Send a notification"))
 					], "memWatch");
 			},
 			cpu: function () { return load("cpu", opts.cpu != null ? opts.cpu : 30); },
@@ -395,9 +395,9 @@
 		function load(m, now) {
 			return section(null, null, [row("Now", null, status(now + " %"))]) +
 				section(null, null, [
-					row("Total Above", m + "Total", step(m + "Total", "%", "Total above")),
-					row("One Process Above", m + "Proc", step(m + "Proc", "%", "One process above")),
-					row("For", "forMinutes", step(m + "For", "min", "Minutes"), check(m + "Notify", "Send a Notification"))
+					row("Total above", m + "Total", step(m + "Total", "%", "Total above")),
+					row("One process above", m + "Proc", step(m + "Proc", "%", "One process above")),
+					row("For", "forMinutes", step(m + "For", "min", "Minutes"), check(m + "Notify", "Send a notification"))
 				], m + "Watch");
 		}
 		function diskLimit(k, unitKey) {
@@ -409,7 +409,7 @@
 			if (S.test === "testing" || S.detecting) return '<i class="ls-spin" aria-label="Testing"></i>';
 			if (S.test) return '<span class="ls-tag ls-green">' + sym("checkmark.circle", 11) + esc(S.test) + "</span>";
 			if (V.agent === "custom" || (a && a.found)) return status("Detected", "green");
-			return status("Not Installed", "orange");
+			return status("Not installed", "orange");
 		}
 
 		// ---------------------------------------------------------- the window
@@ -430,7 +430,7 @@
 				return '<div class="ls-group"' + (any ? "" : " hidden") + ">" + g.map(navRow).join("") + "</div>";
 			}).join("");
 			return '<div class="ls-lights" aria-hidden="true"><i class="ls-l-close"></i><i class="ls-l-min"></i><i class="ls-l-zoom"></i></div>' +
-				'<label class="ls-search">' + sym("magnifyingglass", 12) + '<input type="text" placeholder="Search" value="' + esc(S.query) + '" aria-label="Search Settings" spellcheck="false" autocomplete="off">' +
+				'<label class="ls-search">' + sym("magnifyingglass", 12) + '<input type="text" placeholder="Search" value="' + esc(S.query) + '" aria-label="Search settings" spellcheck="false" autocomplete="off">' +
 				'<button type="button" class="ls-clear" data-act="clear" aria-label="Clear"' + (S.query ? "" : " hidden") + ">" + sym("xmark.circle.fill", 12) + "</button></label>" +
 				'<div class="ls-navwrap">' +
 				'<button type="button" class="ls-account' + (S.pane === "licence" ? " is-on" : "") + '" data-pane="licence"' + (matches("licence", S.query) ? "" : " hidden") + '><img src="' + esc(opts.iconUrl || "img/icon-96.png") + '" width="26" height="26" alt=""><span><b>Levo</b><small>' + (S.licensed ? "Licensed" : "Free") + "</small></span>" + sym("chevron.right", 11, "ls-navchev") + "</button>" +
@@ -592,7 +592,7 @@
 			l.innerHTML = '<div class="ls-dim"></div><div class="ls-sheet" role="dialog" aria-modal="true" aria-label="Turn on Auto-clean"><p>' + esc(DISCLAIMER) + "</p>" +
 				'<div class="ls-form"><label class="ls-frow"><button type="button" class="ls-check ls-check-lg" role="checkbox" data-ack aria-checked="false">' + sym("checkmark", 10) + "</button><span>I accept</span></label>" +
 				'<label class="ls-frow"><span>Type confirm</span><input class="ls-confirm" type="text" placeholder="confirm" spellcheck="false" autocomplete="off" aria-label="Type confirm"></label></div>' +
-				'<div class="ls-sheetbtns"><button type="button" class="ls-btn" data-act="sheetCancel">Cancel</button><button type="button" class="ls-btn ls-btn-go" data-act="sheetOk" disabled>Turn On</button></div></div>';
+				'<div class="ls-sheetbtns"><button type="button" class="ls-btn" data-act="sheetCancel">Cancel</button><button type="button" class="ls-btn ls-btn-go" data-act="sheetOk" disabled>Turn on</button></div></div>';
 			var c = l.querySelector("[data-ack]");
 			if (c) c.focus({ preventScroll: true });
 		}
