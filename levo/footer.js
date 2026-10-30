@@ -1,14 +1,12 @@
 /*
- * The footer: the year, and a small scene run by Planck.js (1.5.1, a Box2D port, from cdnjs, pinned,
- * with its integrity hash, loaded only when the footer comes near). Box2D's solver keeps stacks
- * still and puts resting bodies to sleep; continuous collision keeps fast files out of the letters;
- * the letters are their real top outlines as chains, so the e's dome and the v's notch are exact.
+ * The footer: the year, and a small scene run by Matter.js (0.20.0 from cdnjs, pinned, with its
+ * integrity hash, loaded only when the footer comes near).
  *
  * "Levo" is the page's rounded heavy face (ui-rounded, "SF Pro Rounded", then the system font),
  * huge, its lower part below the page's bottom edge, fading out towards it. One source: each glyph
  * is drawn on one canvas, and its collider is that same glyph's outline, read from the same canvas
- * drawing: the top edge of every column of its pixels above the floor, as one chain (round tops, a
- * round e and o, the v's notch). The colliders keep the full shape; only the ink fades.
+ * drawing (the convex hull of the part above the floor: round tops, a round e and o, the v with its
+ * notch filled so nothing wedges there). The colliders keep the full shape; only the ink fades.
  * A resize (debounced) or document.fonts.ready rebuilds both together, and every body is moved and
  * scaled to match: positions follow the letters, clamped inside the walls and clear of the letters,
  * and gravity settles them.
@@ -41,7 +39,7 @@
 	if (!stage) return;
 	var word = stage.querySelector("[data-word]"), binEl = stage.querySelector("[data-bin]");
 	var REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-	var ENGINE = { src: "https://cdnjs.cloudflare.com/ajax/libs/planck-js/1.5.1/planck.min.js", sri: "sha512-nGiOcn+EAqGFIevDTKodpJBUWCj2HX7cV8hsaQ/ti7DCZUOl9Ikpzdz61Xswm0N6wD9p/8pS4iKDVvwBc6lrYQ==" };
+	var MATTER = { src: "https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js", sri: "sha384-ZRKYEXtLBVeqs9z1WxyeKutCqnkqolS/r1EUWuoUpG4ZKbnRAIXnHhHdnNuiB6CL" };
 	var BIN = { empty: "img/dock/trash-empty.png", full: "img/dock/trash-full.png" };
 	var FACE = 'ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
 	// The L's foot is under the page's edge, so "evo" sits closer to its stem than the face spaces it.
@@ -91,23 +89,10 @@
 		var k = peakL;
 		for (var i = peakL; i <= peakR; i++) if (pts[i].y > pts[k].y) k = i;
 		var parts = pts[k].y - Math.max(low(pts.slice(0, half)), low(pts.slice(half))) > F * 0.15 ? [pts.slice(0, k + 1), pts.slice(k)] : [pts];
-		var out = parts.map(function (q) {
+		return parts.map(function (q) {
 			q = q.concat([{ x: q[0].x, y: floor + 80 }, { x: q[q.length - 1].x, y: floor + 80 }]);
 			return hull(q);
 		});
-		out.profile = simplify(pts, 1.2);
-		return out;
-	}
-	// Fewer points on the same outline (Ramer-Douglas-Peucker, within tol pixels).
-	function simplify(p, tol) {
-		if (p.length < 3) return p.slice();
-		var a = p[0], b = p[p.length - 1], dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1, far = 0, at = 0;
-		for (var i = 1; i < p.length - 1; i++) {
-			var d = Math.abs(dy * p[i].x - dx * p[i].y + b.x * a.y - b.y * a.x) / len;
-			if (d > far) { far = d; at = i; }
-		}
-		if (far <= tol) return [a, b];
-		return simplify(p.slice(0, at + 1), tol).slice(0, -1).concat(simplify(p.slice(at), tol));
 	}
 	function hull(p) {
 		p = p.slice().sort(function (a, b) { return a.x - b.x || a.y - b.y; });
@@ -128,7 +113,7 @@
 		var floor = H, base = floor + Math.round(F * 0.2), x = Math.round((W - em * F) / 2);
 		var glyphs = WORD.split("").map(function (ch, i) {
 			var parts = outline(ch, x, base, F, floor);
-			var g = { ch: ch, x: x, hulls: parts || [], hull: parts ? [].concat.apply([], parts) : null, profile: parts ? parts.profile : null };
+			var g = { ch: ch, x: x, hulls: parts || [], hull: parts ? [].concat.apply([], parts) : null };
 			x += Math.round((adv[i] + TRACK + (i === 0 ? KERN_L : 0)) * F);
 			return g;
 		});
@@ -214,105 +199,92 @@
 		place(binEl, G.binX, G.binY, 0, SB);
 	}
 
-	// ---------------------------------------------------------------- With Planck.js (Box2D)
+	// ---------------------------------------------------------------- With Matter.js
 
-	// Box2D likes metres: 40 px to the metre; y runs down the page, as on screen.
-	var P = 40, GRAV = 30;
-	var pl, world, ground = null, bin = null, raf = 0, calm = 0, grab = null, started = false, frame = 0, hinge = null;
-	var FILE = { density: 1, friction: 0.14, restitution: 0.04 }, BINF = { density: 2.4, friction: 0.3, restitution: 0.03 };
-	var L_CAT = 0x0002;
+	var M, engine, world, statics = [], bin = null, raf = 0, calm = 0, grab = null, started = false, frame = 0;
+	// Matter pairs take the lower friction and the higher static friction of two bodies, so the
+	// moving bodies keep a low static friction: on the round letters they roll or slide off.
+	var SURFACE = { friction: 0.12, frictionStatic: 0.08, restitution: 0.04 };
 
-	function v2(x, y) { return pl.Vec2(x / P, y / P); }
-	function px(v) { return { x: v.x * P, y: v.y * P }; }
-	function pos(b) { return px(b.getPosition()); }
-	function vel(b) { var v = b.getLinearVelocity(); return { x: v.x * P / 60, y: v.y * P / 60 }; }
-	function setVel(b, v) { b.setLinearVelocity(pl.Vec2(v.x * 60 / P, v.y * 60 / P)); }
-	function speed(b) { var v = vel(b); return Math.hypot(v.x, v.y); }
-	function spin(b) { return b.getAngularVelocity() / 60; }
-	function setSpin(b, w) { b.setAngularVelocity(w * 60); }
-
-	function loadEngine(done) {
-		if (window.planck) { done(); return; }
-		var s = document.querySelector("script[data-physics]");
+	function loadMatter(done) {
+		if (window.Matter) { done(); return; }
+		var s = document.querySelector("script[data-matter]");
 		if (!s) {
 			s = document.createElement("script");
-			s.src = ENGINE.src; s.integrity = ENGINE.sri; s.crossOrigin = "anonymous"; s.referrerPolicy = "no-referrer";
-			s.setAttribute("data-physics", "");
+			s.src = MATTER.src; s.integrity = MATTER.sri; s.crossOrigin = "anonymous"; s.referrerPolicy = "no-referrer";
+			s.setAttribute("data-matter", "");
 			document.head.appendChild(s);
 		}
 		s.addEventListener("load", done);
 		s.addEventListener("error", function () { lieStill(); stage.classList.add("lf-still"); });
 	}
 
-	// The floor, the walls and a ceiling, and every letter as a chain along its real top outline.
 	function buildStatics() {
-		if (ground) world.destroyBody(ground);
-		ground = world.createBody();
-		var thick = 400, box = function (x, y, w, h) { ground.createFixture({ shape: pl.Box(w / 2 / P, h / 2 / P, v2(x, y), 0), friction: 0.5, restitution: 0.04 }); };
-		box(W / 2, G.floor + thick / 2, W * 3, thick);
-		box(-thick / 2, H / 2, thick, H * 4);
-		box(W + thick / 2, H / 2, thick, H * 4);
-		box(W / 2, -thick / 2 - H * 0.6, W * 3, thick);
+		var B = M.Bodies, thick = 400;
+		if (statics.length) M.Composite.remove(world, statics);
+		var LETTER = { isStatic: true, friction: 0.2, frictionStatic: 0.08, restitution: 0.04 };
+		var WALLS = { isStatic: true, friction: 0.5, frictionStatic: 0.14, restitution: 0.04 };
+		statics = [
+			B.rectangle(W / 2, G.floor + thick / 2, W * 3, thick, WALLS),
+			B.rectangle(-thick / 2, H / 2, thick, H * 4, WALLS),
+			B.rectangle(W + thick / 2, H / 2, thick, H * 4, WALLS),
+			B.rectangle(W / 2, -thick / 2 - H * 0.6, W * 3, thick, WALLS)
+		];
 		G.glyphs.forEach(function (g) {
-			if (!g.profile || g.profile.length < 2) return;
-			var pts = [{ x: g.profile[0].x, y: G.floor + 80 }].concat(g.profile, [{ x: g.profile[g.profile.length - 1].x, y: G.floor + 80 }]);
-			ground.createFixture({ shape: pl.Chain(pts.map(function (p) { return v2(p.x, p.y); }), false), friction: 0.2, restitution: 0.04,
-				filterCategoryBits: g.ch === "L" ? L_CAT : 0x0001 });
+			g.hulls.forEach(function (h) {
+				var c = M.Vertices.centre(h), b = M.Bodies.fromVertices(c.x, c.y, [h], LETTER);
+				if (g.ch === "L") b.parts.forEach(function (p) { p.collisionFilter.category = 0x0002; });
+				statics.push(b);
+			});
+		});
+		M.Composite.add(world, statics);
+	}
+	function rect(w, h, x, y) {
+		return M.Bodies.rectangle(x, y, w, h, {
+			friction: SURFACE.friction, frictionStatic: SURFACE.frictionStatic, restitution: SURFACE.restitution,
+			frictionAir: 0.02, density: 0.0016, chamfer: { radius: Math.min(w, h) * 0.06 }
 		});
 	}
-	function makeFile(w, h, x, y, angle) {
-		var b = world.createBody({ type: "dynamic", position: v2(x, y), angle: angle || 0, linearDamping: 0.4, angularDamping: 0.6 });
-		b.createFixture({ shape: pl.Box(w / 2 / P, h / 2 / P), density: FILE.density, friction: FILE.friction, restitution: FILE.restitution });
-		b.isFile = true;
-		return b;
-	}
-	// The bin: hollow, a floor and two walls, open at the top, as one body whose origin is the
-	// image's centre.
-	function binFixtures(b) {
-		var w = G.bw, h = G.bh, k = G.wall, f;
-		while ((f = b.getFixtureList())) b.destroyFixture(f);
-		[[0, h / 2 - k / 2, w, k], [-w / 2 + k / 2, 0, k, h], [w / 2 - k / 2, 0, k, h]].forEach(function (r) {
-			b.createFixture({ shape: pl.Box(r[2] / 2 / P, r[3] / 2 / P, v2(r[0], r[1]), 0), density: BINF.density, friction: BINF.friction, restitution: BINF.restitution });
-		});
-	}
+	// The bin: hollow, a floor and two walls, open at the top, as one body.
 	function makeBin(x, y) {
-		var b = world.createBody({ type: "dynamic", position: v2(x, y), linearDamping: 0.2, angularDamping: 0.2 });
-		binFixtures(b);
+		var w = G.bw, h = G.bh, k = G.wall, P = { friction: 0.3, frictionStatic: 0.14, restitution: 0.03, density: 0.003 };
+		var b = M.Body.create({
+			parts: [
+				M.Bodies.rectangle(x, y + h / 2 - k / 2, w, k, P),
+				M.Bodies.rectangle(x - w / 2 + k / 2, y, k, h, P),
+				M.Bodies.rectangle(x + w / 2 - k / 2, y, k, h, P)
+			],
+			frictionAir: 0.02, restitution: 0.03, friction: 0.3, frictionStatic: 0.14
+		});
+		b.imageOffset = { x: x - b.position.x, y: y - b.position.y };
 		b.inside = [];
 		return b;
 	}
-	function local(b, v) { var a = b.getAngle(), c = Math.cos(a), s = Math.sin(a); return { x: v.x * c - v.y * s, y: v.x * s + v.y * c }; }
-	function binCentre() { return pos(bin); }
-	function opening() { var a = bin.getAngle(); return Math.abs(Math.atan2(Math.sin(a), Math.cos(a))); }
-	// Whether a box at (x, y, angle) would overlap any fixture (letters, walls, the bin, files).
-	function overlaps(w, h, x, y, angle, skip) {
-		var shape = pl.Box(w / 2 / P, h / 2 / P), xf = pl.Transform(v2(x, y), angle), aabb = new pl.AABB(), hit = false;
-		shape.computeAABB(aabb, xf, 0);
-		world.queryAABB(aabb, function (fx) {
-			if (skip && fx.getBody() === skip) return true;
-			var s = fx.getShape(), n = s.getChildCount();
-			for (var i = 0; i < n; i++) if (pl.testOverlap(shape, 0, s, i, xf, fx.getBody().getTransform())) { hit = true; return false; }
-			return true;
-		});
-		return hit;
-	}
+	function local(b, v) { var c = Math.cos(b.angle), s = Math.sin(b.angle); return { x: v.x * c - v.y * s, y: v.x * s + v.y * c }; }
+	function binCentre() { var o = local(bin, bin.imageOffset); return { x: bin.position.x + o.x, y: bin.position.y + o.y }; }
+	function opening() { return Math.abs(Math.atan2(Math.sin(bin.angle), Math.cos(bin.angle))); }
 
 	// Past this tilt of the opening (45 degrees) the files start to slide out, one every ~80 ms.
 	var POUR = Math.PI / 4, EVERY = 5;
+	// Out at the rim: each file appears inside the bin, just inside the opening (or deeper when
+	// that's taken), in a spot where it overlaps nothing
+	// (the bin's walls, the letters, the files already out), with the bin's own velocity there, a
+	// small nudge out of the opening and a little spin; the bin's tilt does the rest. With no free
+	// spot (the opening against a letter or a pile), it waits, and after a few seconds gives up.
 	// A bin on its side still empties, as contents tumble out: what's in its opening or just past
 	// the rim drifts on outward, gently, so the next one can follow.
 	function spill() {
 		if (opening() < POUR) return;
-		var c = binCentre(), out = local(bin, { x: 0, y: -1 }), a = bin.getAngle();
+		var c = binCentre(), out = local(bin, { x: 0, y: -1 });
 		files.forEach(function (f) {
 			var b = f.body;
 			if (!b || (grab && grab.body === b)) return;
-			var p = pos(b), d = { x: p.x - c.x, y: p.y - c.y };
-			var lx = d.x * Math.cos(a) + d.y * Math.sin(a), ly = -d.x * Math.sin(a) + d.y * Math.cos(a);
+			var d = { x: b.position.x - c.x, y: b.position.y - c.y };
+			var lx = d.x * Math.cos(bin.angle) + d.y * Math.sin(bin.angle), ly = -d.x * Math.sin(bin.angle) + d.y * Math.cos(bin.angle);
 			if (Math.abs(lx) > G.bw / 2 || ly > -G.bh * 0.1 || ly < -G.bh / 2 - S * 1.7) return;
-			var v = vel(b), along = v.x * out.x + v.y * out.y;
+			var along = b.velocity.x * out.x + b.velocity.y * out.y;
 			b.spilled = (b.spilled || 0) + 1;
-			if (along < 3.4 && b.spilled < 180) { b.setAwake(true); setVel(b, { x: v.x + out.x * 0.35, y: v.y + out.y * 0.35 - 0.3 }); }
+			if (along < 3.4 && b.spilled < 180) M.Body.setVelocity(b, { x: b.velocity.x + out.x * 0.35, y: b.velocity.y + out.y * 0.35 - 0.3 });
 		});
 	}
 	// The jolt: what sits in the opening or just past it, as the bin stops, carries on out with a
@@ -322,40 +294,42 @@
 		var m = { x: c.x + mouth.x, y: c.y + mouth.y };
 		files.forEach(function (f) {
 			var b = f.body;
-			if (!b || (grab && grab.body === b)) return;
-			var p = pos(b);
-			if (Math.hypot(p.x - m.x, p.y - m.y) > G.bh * 0.8) return;
-			var v = vel(b);
-			setVel(b, { x: v.x + out.x * 3, y: v.y + out.y * 3 - 2.4 });
-			setSpin(b, spin(b) + (Math.random() - 0.5) * 0.2);
+			if (!b || (grab && grab.body === b) || Math.hypot(b.position.x - m.x, b.position.y - m.y) > G.bh * 0.8) return;
+			M.Body.setVelocity(b, { x: b.velocity.x + out.x * 3, y: b.velocity.y + out.y * 3 - 2.4 });
+			M.Body.setAngularVelocity(b, b.angularVelocity + (Math.random() - 0.5) * 0.2);
 			b.calmUntil = frame + 30;
 		});
 	}
-	// Out at the rim: each file appears inside the bin, just inside the opening (or deeper when the
-	// one before it is still leaving), where it overlaps nothing, with the bin's own velocity there,
-	// a small nudge out of the opening and a little spin. When it lands, the jolt throws the rest
-	// out quicker and harder, each still on its own.
+	// When it lands (or hits anything hard), the jolt throws what's left out quicker and harder:
+	// for a moment one file every ~50 ms, each on its own, with a firmer push and more spin.
 	function pour() {
 		var o = opening(), burst = bin.jolt && frame - bin.jolt < 70;
 		if (!bin.inside.length || o < POUR || frame - (bin.poured || 0) < (burst ? 3 : EVERY)) return;
-		var f = bin.inside[0], c = binCentre(), fh = S * f.h, fw = S * f.w, p = null, a = bin.getAngle();
-		var room = Math.max(0, (G.bw - 2 * G.wall - fw) / 2), deep = Math.max(0, G.bh - 2 * G.wall - fh);
+		var f = bin.inside[0], c = binCentre(), fh = S * f.h, fw = S * f.w, p = null;
+		var room = Math.max(0, (G.bw - 2 * G.wall - fw) / 2);
+		var others = statics.concat(bin.parts.slice(1), files.map(function (x) { return x.body; }).filter(Boolean));
+		// Always inside the bin, in its own frame: just inside the rim, or a little deeper when the
+		// file before it is still leaving. Every file visibly comes out through the opening.
+		var deep = Math.max(0, G.bh - 2 * G.wall - fh);
 		for (var t = 0, n = burst ? 12 : 6; t < n && !p; t++) {
 			var rim = local(bin, { x: (Math.random() * 2 - 1) * room, y: -G.bh / 2 + fh / 2 + 1 + deep * Math.min(1, t / (n - 1)) });
 			var q = { x: c.x + rim.x, y: c.y + rim.y };
-			if (!overlaps(fw * 1.02, fh * 1.02, q.x, q.y, a)) p = q;
+			if (!M.Query.collides(M.Bodies.rectangle(q.x, q.y, fw, fh, { angle: bin.angle }), others).length) p = q;
 		}
 		if (!p) { bin.blocked = (bin.blocked || 0) + 1; return; }
 		bin.blocked = 0;
 		bin.poured = frame;
 		bin.inside.shift();
-		var w0 = bin.getAngularVelocity(), bv = bin.getLinearVelocityFromWorldPoint(v2(p.x, p.y));
-		f.body = makeFile(fw, fh, p.x, p.y, a + (Math.random() - 0.5) * 0.2);
+		var r = { x: p.x - bin.position.x, y: p.y - bin.position.y };
+		f.body = rect(fw, fh, p.x, p.y);
+		f.body.isFile = true;
+		M.Body.setAngle(f.body, bin.angle + (Math.random() - 0.5) * 0.2);
 		var fan = (Math.random() - 0.5) * (burst ? 0.8 : 0.5), out = local(bin, { x: Math.sin(fan), y: -Math.cos(fan) });
-		var push = burst ? 3.4 + Math.random() * 2.2 : 1.2 + Math.random() * 1.6, b = { x: bv.x * P / 60, y: bv.y * P / 60 };
-		setVel(f.body, { x: b.x + out.x * push, y: b.y + out.y * push - (burst ? 1.6 : 0) });
-		f.body.setAngularVelocity(w0 * 0.6 + (Math.random() - 0.5) * (burst ? 14 : 7));
+		var push = burst ? 3.4 + Math.random() * 2.2 : 1.2 + Math.random() * 1.6;
+		M.Body.setVelocity(f.body, { x: bin.velocity.x - bin.angularVelocity * r.y + out.x * push, y: bin.velocity.y + bin.angularVelocity * r.x + out.y * push - (burst ? 1.6 : 0) });
+		M.Body.setAngularVelocity(f.body, bin.angularVelocity * 0.6 + (Math.random() - 0.5) * (burst ? 0.24 : 0.12));
 		f.body.calmUntil = frame + 30;
+		M.Composite.add(world, f.body);
 		f.el.classList.remove("is-in");
 	}
 	// In at the opening of the upright bin: a file that comes to its rim from above goes in.
@@ -365,9 +339,8 @@
 		files.forEach(function (f) {
 			var b = f.body;
 			if (!b || (grab && grab.body === b)) return;
-			var p = pos(b);
-			if (Math.abs(p.x - mouth.x) < G.bw * 0.34 && p.y < mouth.y + 6 && p.y > mouth.y - S && vel(b).y > -1) {
-				world.destroyBody(b);
+			if (Math.abs(b.position.x - mouth.x) < G.bw * 0.34 && b.position.y < mouth.y + 6 && b.position.y > mouth.y - S && b.velocity.y > -1) {
+				M.Composite.remove(world, b);
 				f.body = null;
 				f.el.classList.add("is-in");
 				bin.inside.push(f);
@@ -375,11 +348,13 @@
 		});
 	}
 	function setup() {
-		pl = window.planck;
-		world = new pl.World({ gravity: pl.Vec2(0, GRAV) });
+		M = window.Matter;
+		engine = M.Engine.create({ gravity: { x: 0, y: 1, scale: 0.0012 }, positionIterations: 10, velocityIterations: 8, enableSleeping: false });
+		world = engine.world;
 		buildStatics();
 		bin = makeBin(G.binX, G.binY);
 		bin.inside = files.slice();
+		M.Composite.add(world, bin);
 		lean();
 		wire(binEl, function () { return bin; });
 		files.forEach(function (f) { wire(f.el, function () { return f.body; }); });
@@ -388,75 +363,93 @@
 	// The lean: the bin turns on a hinge at its base, a hair left of its centre of mass, so it starts
 	// slowly and speeds up, as a bin balanced just past an edge does; past about 17 degrees it's let
 	// go and falls by itself. While it leans it passes over the L's round top (it stands on the hinge).
+	var hinge = null;
 	function lean() {
-		var cm = px(bin.getWorldCenter()), foot = { x: cm.x - 0.15, y: G.binY + G.bh / 2 };
-		hinge = world.createJoint(pl.RevoluteJoint({}, ground, bin, v2(foot.x, foot.y)));
-		for (var f = bin.getFixtureList(); f; f = f.getNext()) f.setFilterMaskBits(0xFFFF & ~L_CAT);
+		var foot = { x: bin.position.x - 0.15, y: G.binY + G.bh / 2 };
+		hinge = M.Constraint.create({ pointA: foot, bodyB: bin, pointB: { x: foot.x - bin.position.x, y: foot.y - bin.position.y }, length: 0, stiffness: 1, damping: 0 });
+		M.Composite.add(world, hinge);
+		bin.parts.forEach(function (b) { b.collisionFilter.mask = 0xFFFFFFFD; });
 	}
 	function letGo() {
 		if (!hinge) return;
-		world.destroyJoint(hinge);
+		M.Composite.remove(world, hinge);
 		hinge = null;
-		for (var f = bin.getFixtureList(); f; f = f.getNext()) f.setFilterMaskBits(0xFFFF);
+		bin.parts.forEach(function (b) { b.collisionFilter.mask = 0xFFFFFFFF; });
 	}
 	function standUp() {
 		if (!bin) return;
-		letGo();
+		M.Body.setAngle(bin, 0);
+		M.Body.setAngularVelocity(bin, 0);
+		M.Body.setVelocity(bin, { x: 0, y: 0 });
 		var c = binCentre();
-		bin.setTransform(v2(c.x, Math.min(c.y, G.floor - G.bh / 2) - 4), 0);
-		bin.setLinearVelocity(pl.Vec2(0, 0));
-		bin.setAngularVelocity(0);
-		bin.setAwake(true);
+		M.Body.translate(bin, { x: 0, y: Math.min(0, G.floor - (c.y + G.bh / 2)) - 4 });
 		wake();
+	}
+
+	function tilt(b) { var q = Math.PI / 2, d = ((b.angle % q) + q) % q; return d > q / 2 ? d - q : d; }
+	// At rest, a body with a clear tilt tips onto its nearest flat side, as a real one does with the
+	// smallest nudge; it gives up if something holds it.
+	function settle() {
+		M.Composite.allBodies(world).forEach(function (b) {
+			if (b.isStatic || b.parent !== b || (grab && grab.body === b) || b === bin && frame < 260) return;
+			var d = tilt(b);
+			if (b.speed > 0.25 || Math.abs(b.angularVelocity) > 0.02 || Math.abs(d) < 0.06) { if (b.speed > 1) b.tries = 0; return; }
+			b.tries = (b.tries || 0) + 1;
+			if (b.tries > 240) return;
+			M.Body.setAngularVelocity(b, -d * 0.08);
+		});
 	}
 	// Just out of the bin, a file can't be flung: its speed is capped for half a second.
 	function capSpeeds() {
 		files.forEach(function (f) {
 			var b = f.body;
-			if (!b || !(b.calmUntil > frame)) return;
-			var v = vel(b), s = Math.hypot(v.x, v.y);
-			if (s > 7.5) setVel(b, { x: v.x * 7.5 / s, y: v.y * 7.5 / s });
+			if (!b || !(b.calmUntil > frame) || b.speed < 7.5) return;
+			var k = 7.5 / b.speed;
+			M.Body.setVelocity(b, { x: b.velocity.x * k, y: b.velocity.y * k });
 		});
 	}
 	function render() {
 		var c = binCentre();
-		place(binEl, c.x, c.y, bin.getAngle(), SB);
-		files.forEach(function (f) { if (f.body) { var p = pos(f.body); place(f.el, p.x, p.y, f.body.getAngle(), S); } });
+		place(binEl, c.x, c.y, bin.angle, SB);
+		files.forEach(function (f) { if (f.body) place(f.el, f.body.position.x, f.body.position.y, f.body.angle, S); });
 		var src = bin.inside.length ? BIN.full : BIN.empty;
 		if (binEl.getAttribute("src") !== src) binEl.setAttribute("src", src);
 	}
 	function tick() {
 		frame++;
-		if (grab) grab.j.setTarget(v2(grab.x, grab.y));
-		var was = speed(bin);
-		world.step(1 / 60, 10, 4);
-		if (!hinge && was > 3 && was - speed(bin) > 2.2) { bin.jolt = frame; hop(); }
+		if (grab) grab.c.pointA = { x: grab.x, y: grab.y };
+		settle();
+		var was = bin.speed;
+		M.Engine.update(engine, 1000 / 60);
+		if (!hinge && was > 3 && was - bin.speed > 2.2) { bin.jolt = frame; hop(); }
 		capSpeeds();
-		if (hinge && (Math.abs(bin.getAngle()) > 0.3 || grab)) letGo();
+		if (hinge && (Math.abs(bin.angle) > 0.3 || grab)) letGo();
 		pour();
 		spill();
 		catchIn();
 		render();
-		// Box2D puts bodies that have come to rest to sleep; once they all sleep, so does the loop.
-		var awake = false;
-		for (var b = world.getBodyList(); b; b = b.getNext()) if (b.isDynamic() && b.isAwake()) { awake = true; break; }
-		calm = !awake && !grab && !hinge && !(bin.inside.length && opening() >= POUR && (bin.blocked || 0) < 240) ? calm + 1 : 0;
-		if (calm > 20) { raf = 0; return; }
+		var still = true;
+		M.Composite.allBodies(world).forEach(function (b) {
+			if (b.isStatic || b.parent !== b) return;
+			if (b.speed > 0.06 || Math.abs(b.angularVelocity) > 0.002 || (Math.abs(tilt(b)) > 0.06 && (b.tries || 0) <= 240)) still = false;
+		});
+		calm = still && !grab && !(bin.inside.length && opening() >= POUR && (bin.blocked || 0) < 240) ? calm + 1 : 0;
+		if (calm > 90 && frame > 300) { raf = 0; return; }
 		raf = requestAnimationFrame(tick);
 	}
-	function wake() { calm = 0; if (!raf && world) raf = requestAnimationFrame(tick); }
+	function wake() { calm = 0; if (!raf && engine) raf = requestAnimationFrame(tick); }
 
-	// Held at exactly the point grabbed: Box2D's mouse joint there, soft, with a little damping, and
-	// the body's own inertia, so it hangs and swings from the pointer. Mouse and touch alike.
+	// Held at exactly the point grabbed: a soft constraint there, the body's own inertia, so it
+	// hangs and swings from the pointer. Mouse and touch alike.
 	function wire(el, get) {
 		el.addEventListener("pointerdown", function (e) {
 			var b = get();
 			if (!b || REDUCED || e.button > 0) return;
 			e.preventDefault();
 			var r = stage.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-			b.setAwake(true);
-			var j = world.createJoint(pl.MouseJoint({ maxForce: 260 * b.getMass() * GRAV / 30, frequencyHz: 3.5, dampingRatio: 0.35 }, ground, b, v2(x, y)));
-			grab = { body: b, j: j, x: x, y: y };
+			var c = M.Constraint.create({ pointA: { x: x, y: y }, bodyB: b, pointB: { x: x - b.position.x, y: y - b.position.y }, length: 0, stiffness: 0.06, damping: 0.08 });
+			M.Composite.add(world, c);
+			grab = { body: b, c: c, x: x, y: y };
 			el.classList.add("lf-held");
 			try { el.setPointerCapture(e.pointerId); } catch (err) {}
 			var move = function (ev) { var r2 = stage.getBoundingClientRect(); grab.x = ev.clientX - r2.left; grab.y = ev.clientY - r2.top; wake(); };
@@ -465,7 +458,7 @@
 				el.removeEventListener("pointerup", up);
 				el.removeEventListener("pointercancel", up);
 				el.classList.remove("lf-held");
-				if (grab) world.destroyJoint(grab.j);
+				if (grab) M.Composite.remove(world, grab.c);
 				grab = null;
 				wake();
 			};
@@ -479,8 +472,8 @@
 	function start() {
 		if (started || REDUCED) return;
 		started = true;
-		loadEngine(function () {
-			if (world) return;
+		loadMatter(function () {
+			if (engine) return;
 			setup();
 			render();
 			wake();
@@ -489,34 +482,37 @@
 
 	// The stage's size rules everything: on any change, the drawing and the colliders are rebuilt
 	// together, and every body follows. Its height above the floor scales with the letters and its
-	// x with the width; it's rebuilt at the new sizes, kept inside the walls, lifted clear of the
+	// x with the width; it's scaled to the new sizes, kept inside the walls, lifted clear of the
 	// letters and of what's already placed, and left to gravity.
 	function relayout(force) {
-		var oldW = W, oldH = H, old = G;
+		var oldW = W, oldH = H, old = G, oldS = S, oldSB = SB;
 		geometry();
 		if (!force && oldW && W === oldW && H === oldH) return;
 		drawWord();
 		if (REDUCED) { lieStill(); return; }
-		if (!world) { poseStart(); return; }
-		if (grab) { world.destroyJoint(grab.j); grab = null; }
-		letGo();
+		if (!engine) { poseStart(); return; }
 		buildStatics();
 		if (!old || (W === oldW && H === oldH && G.F === old.F)) { wake(); return; }
-		var sx = W / oldW, sf = G.F / old.F, bodies = [];
-		for (var b = world.getBodyList(); b; b = b.getNext()) if (b.isDynamic()) bodies.push(b);
-		bodies.sort(function (p, q) { return pos(q).y - pos(p).y; });
+		if (grab) { M.Composite.remove(world, grab.c); grab = null; }
+		letGo();
+		var sx = W / oldW, sf = G.F / old.F, placed = statics.slice();
+		var bodies = M.Composite.allBodies(world).filter(function (b) { return !b.isStatic && b.parent === b; });
+		bodies.sort(function (p, q) { return q.position.y - p.position.y; });
 		bodies.forEach(function (b) {
-			var f = b === bin ? null : files.filter(function (x) { return x.body === b; })[0];
-			var w = f ? S * f.w : G.bw, h = f ? S * f.h : G.bh;
-			if (f) { b.destroyFixture(b.getFixtureList()); b.createFixture({ shape: pl.Box(w / 2 / P, h / 2 / P), density: FILE.density, friction: FILE.friction, restitution: FILE.restitution }); }
-			else binFixtures(b);
-			var p = pos(b), half = Math.max(w, h) / 2;
-			var x = Math.max(half + 1, Math.min(W - half - 1, p.x * sx)), y = Math.min(G.floor - half - 1, G.floor - (old.floor - p.y) * sf);
-			for (var i = 0; i < 200 && overlaps(w, h, x, y, b.getAngle(), b); i++) y -= 3;
-			b.setTransform(v2(x, y), b.getAngle());
-			b.setLinearVelocity(pl.Vec2(0, 0));
-			b.setAngularVelocity(0);
-			b.setAwake(true);
+			var k = b === bin ? SB / oldSB : S / oldS;
+			if (k !== 1) {
+				M.Body.scale(b, k, k);
+				if (b === bin) { bin.imageOffset.x *= k; bin.imageOffset.y *= k; }
+			}
+			var hx = (b.bounds.max.x - b.bounds.min.x) / 2, hy = (b.bounds.max.y - b.bounds.min.y) / 2;
+			var x = Math.max(hx + 1, Math.min(W - hx - 1, b.position.x * sx));
+			var y = Math.min(G.floor - hy - 1, G.floor - (old.floor - b.position.y) * sf);
+			M.Body.setPosition(b, { x: x, y: y });
+			for (var i = 0; i < 200 && M.Query.collides(b, placed).length; i++) M.Body.setPosition(b, { x: x, y: b.position.y - 3 });
+			M.Body.setVelocity(b, { x: 0, y: 0 });
+			M.Body.setAngularVelocity(b, 0);
+			b.tries = 0;
+			placed.push(b);
 		});
 		render();
 		wake();
@@ -534,9 +530,9 @@
 	if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { relayout(true); });
 
 	if (window.IntersectionObserver) {
-		// The engine loads as the footer comes near; the bin's moment starts once it's in view.
+		// Matter loads as the footer comes near; the bin's moment starts once it's in view.
 		var near = new IntersectionObserver(function (es) {
-			if (es.some(function (en) { return en.isIntersecting; })) { near.disconnect(); if (!REDUCED) loadEngine(function () {}); }
+			if (es.some(function (en) { return en.isIntersecting; })) { near.disconnect(); if (!REDUCED) loadMatter(function () {}); }
 		}, { rootMargin: "800px 0px" });
 		near.observe(stage);
 		new IntersectionObserver(function (es, io) {

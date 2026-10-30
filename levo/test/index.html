@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<!-- A private test page for the footer's physics: kept out of search and linked from nowhere. -->
+	<meta name="robots" content="noindex, nofollow">
+	<title>Levo footer physics test</title>
+	<base href="../">
+	<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+	<script>(function (r) { r.classList.add("js"); var t = /[?&]theme=(light|dark)\b/.exec(location.search); if (t ? t[1] === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) r.classList.add("dark"); })(document.documentElement);</script>
+	<link rel="stylesheet" href="levo.css?v=36">
+	<link rel="stylesheet" href="footer.css?v=36">
+	<style>
+		.pt-bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; padding: 14px 16px; font-size: 14px; color: var(--muted); background: var(--bg); }
+		.pt-seg { display: inline-flex; padding: 3px; border-radius: 10px; background: rgb(var(--ink) / 0.06); }
+		.pt-seg a { padding: 6px 12px; border-radius: 8px; color: var(--muted); text-decoration: none; font-weight: 500; }
+		.pt-seg a[aria-current] { background: var(--bg); color: var(--text); box-shadow: 0 1px 3px rgb(0 0 0 / 0.12); }
+		.pt-bar b { color: var(--text); font-weight: 600; }
+		.pt-gap { height: 40vh; }
+	</style>
+</head>
+<body>
+	<div class="pt-bar">
+		<span class="pt-seg" data-engines></span>
+		<span class="pt-seg" data-themes></span>
+		<a class="pt-seg" href="#" data-replay style="padding: 6px 12px; text-decoration: none; color: var(--text)">Play again</a>
+	</div>
+	<div class="pt-gap"></div>
+
+	<footer class="foot lf" data-lf>
+		<nav class="lf-links" aria-label="Levo">
+			<a href="../">Cntxt Labs</a>
+			<a href="mailto:support@cntxtlabs.co?subject=Levo%20support%20%26%20feedback">Contact</a>
+			<a href="legal/#privacy">Privacy</a>
+			<a href="legal/#terms">Terms</a>
+			<span class="lf-copy">© <span data-lf-year>2026</span></span>
+		</nav>
+		<div class="lf-stage" data-spill aria-hidden="true">
+			<canvas class="lf-word" data-word aria-hidden="true"></canvas>
+			<img class="lf-bin" data-bin src="img/dock/trash-full.png" width="128" height="128" alt="" draggable="false">
+		</div>
+	</footer>
+
+	<script>
+		// The switch: Current is the live footer (Matter.js); Planck.js is the candidate. The choice and
+		// the theme live in the address, so a reload or a shared link shows the same thing.
+		(function () {
+			var q = new URLSearchParams(location.search), engine = q.get("engine") === "planck" ? "planck" : "current";
+			var theme = document.documentElement.classList.contains("dark") ? "dark" : "light";
+			function link(k, v) { var p = new URLSearchParams(location.search); p.set(k, v); return "test/?" + p.toString(); }
+			document.querySelector("[data-engines]").innerHTML = [["current", "Current (Matter.js)"], ["planck", "Planck.js"]].map(function (e) {
+				return '<a href="' + link("engine", e[0]) + '"' + (e[0] === engine ? ' aria-current="page"' : "") + ">" + e[1] + "</a>";
+			}).join("");
+			document.querySelector("[data-themes]").innerHTML = [["light", "Light"], ["dark", "Dark"]].map(function (t) {
+				return '<a href="' + link("theme", t[0]) + '"' + (t[0] === theme ? ' aria-current="page"' : "") + ">" + t[1] + "</a>";
+			}).join("");
+			document.querySelector("[data-replay]").addEventListener("click", function (e) { e.preventDefault(); location.reload(); });
+			var s = document.createElement("script");
+			s.src = (engine === "planck" ? "footer-planck.js" : "footer.js") + "?v=36";
+			document.body.appendChild(s);
+		})();
+	</script>
+</body>
+</html>
