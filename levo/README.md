@@ -286,9 +286,12 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
 - Auto mode is told with the product's own UI: the popover's bar fills day by
   day, Levo cleans at the limit, and a notification says what it freed.
 - levo/test/ (noindex, linked from nowhere, not in the sitemap or llms.txt)
-  plays the footer scene on either engine for comparison: Current (Matter.js,
-  footer.js) or Planck.js (footer-planck.js, the candidate), in light or dark
-  (?engine=planck&theme=dark). The owner picks; then footer.js switches.
+  compares footer physics: one scene (test/scene.js, the live footer's story
+  on any engine), an adapter per engine (test/engines/, pinned CDN builds) and
+  the variants (test/variants.js: engine plus gravity, steps, friction,
+  bounce, the bin's weight, damping, sleep, drag and pour). ?n= picks one,
+  1-9 or the arrow keys switch, R replays; only that engine loads. The live
+  footer changes only when the owner picks a number.
 - The footer runs on Matter.js 0.20.0 (cdnjs, pinned with its integrity hash,
   loaded only near the footer). "Levo" is set in the rounded heavy face
   (ui-rounded, with the page's fallbacks), huge, its lower part under the
