@@ -8,7 +8,7 @@
             <sparkle:version>2026.11</sparkle:version>
             <sparkle:shortVersionString>2026.11</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="15856802" type="application/octet-stream" sparkle:edSignature="gfIChwg0eh79z/1BMybvaW4MhxhzNFLML6PNEViyovTX/YPxUZCreqjuknBbmP70k8IxanqSUyXUo1PrFCgMCg=="/>
+            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="17687417" type="application/octet-stream" sparkle:edSignature="qs3DI3trOS6fPeEtwiy3BY3JVpHtKak4m8yz6OW4HH2ljLq+gR4MfTPycCt/m/7cdXdanvhMD3jxgxFDezr2Cw=="/>
         </item>
     </channel>
 </rss>
