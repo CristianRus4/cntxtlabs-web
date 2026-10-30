@@ -285,12 +285,17 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   while a text window is open, and names the menubar while in front.
 - Auto mode is told with the product's own UI: the popover's bar fills day by
   day, Levo cleans at the limit, and a notification says what it freed.
-- The footer runs on Matter.js 0.20.0 (cdnjs, pinned with its integrity hash,
-  loaded only near the footer). "Levo" is set in the rounded heavy face
+- The footer runs on Planck.js 1.5.1, a Box2D port (cdnjs, pinned with its
+  integrity hash, loaded only near the footer; 53 KB gzipped, MIT). It replaced
+  Matter.js on 30 October 2026: Box2D keeps resting things still and puts
+  them to sleep (the loop stops), continuous collision keeps fast files out
+  of the letters, the letters are chains along their real top outlines (the
+  e's dome and the v's notch exact), dragging is a mouse joint at the grab
+  point, and the lean is a revolute joint. "Levo" is set in the rounded heavy face
   (ui-rounded, with the page's fallbacks), huge, its lower part under the
   page's bottom edge, its ink fading from the letters' top to nothing at the
-  edge. The letters are drawn on one canvas, and each collider is the convex
-  hull of the same glyph drawn the same way (full shape, whatever the fade), so
+  edge. The letters are drawn on one canvas, and each collider is the top
+  outline of the same glyph drawn the same way (full shape, whatever the fade), so
   the drawing and the colliders can't disagree in any browser. A resize
   (debounced) or the fonts loading rebuilds both; every body is then moved and
   scaled with the letters, kept inside the walls, lifted clear of the letters,
