@@ -10,7 +10,11 @@
 		binDensity: 2.4, linDamp: 0.4, angDamp: 0.6, sleep: true, pour: "stagger", pourEvery: 5, pourDeg: 45,
 		push: 1, spill: 1, hop: 1, settle: false, cap: 7.5
 	};
-	function v(engine, name, o) { var r = { engine: engine, name: name }; for (var k in base) r[k] = base[k]; for (var j in o) r[j] = o[j]; return r; }
+	function v(engine, name, o) {
+		var r = { engine: engine, name: name }; for (var k in base) r[k] = base[k]; for (var j in o) r[j] = o[j];
+		r.scene = r.throw ? "throw" : r.carry ? "carry" : "tip";
+		return r;
+	}
 	var MATTER = { velIter: 8, posIter: 10, fFile: 0.12, binDensity: 1.9, linDamp: 1.2, sleep: false, settle: true, drag: { k: 0.06, c: 0.08 } };
 	var BOX = { velIter: 10, posIter: 4, drag: { k: 3.5, c: 0.35, force: 260 } };
 	var RAPIER = { velIter: 8, drag: { k: 4, c: 0.7, force: 30 } };
@@ -52,7 +56,6 @@
 		v("planck", "7c · starts earlier, stronger hop", s7({ pourEvery: 4, push: 1, keepPour: 60, landEvery: 6, spill: 1.3, pourDeg: 35, hop: 1 })),
 		v("planck", "7d · rocks once on landing", s7({ pourEvery: 4, push: 1, keepPour: 60, landEvery: 6, spill: 1.3, pourDeg: 35, hop: 1, rock: 0.05 })),
 		v("planck", "7e · most generous", s7({ pourEvery: 4, push: 1.15, keepPour: 50, landEvery: 4, spill: 1.8, pourDeg: 35, hop: 1.2, rock: 0.06 })),
-		v("planck", "7e · with depth (ledges and shadows)", s7({ pourEvery: 4, push: 1.15, keepPour: 50, landEvery: 4, spill: 1.8, pourDeg: 35, hop: 1.2, rock: 0.06, depth: true })),
 		v("matter", "Matter · today's footer", m({})),
 		v("matter", "Matter · settles and sleeps", m({ sleep: true, sleepFrames: 40, substeps: 2, posIter: 14, velIter: 10 })),
 		v("matter", "Matter · heavy bin, slow pour", m({ binDensity: 4, pourEvery: 9, push: 0.7, hop: 0.5 })),

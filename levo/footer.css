@@ -46,6 +46,7 @@ html.dark .lf-word { --lf-front: #232326; --lf-front-low: #151517; --lf-ledge: #
 /* The carried bin's hand (the physics test): macOS's open and closed hand cursors. */
 .lf-hand { position: absolute; left: 0; top: 0; z-index: 3; width: 32px; height: 32px; pointer-events: none; opacity: 0; transition: opacity .3s ease; }
 html.dark .lf-shadow { background: radial-gradient(closest-side, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0)); }
+.lf-shadow.is-faint { filter: opacity(0.45); }
 .lf-bin, .lf-item {
 	position: absolute;
 	z-index: 1;

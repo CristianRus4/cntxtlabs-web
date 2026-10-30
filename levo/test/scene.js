@@ -132,7 +132,7 @@
 	// The same glyphs, drawn at the same place in the ink of .lf-word (footer.css), strong at the
 	// letters' top and fading to nothing at the page's bottom edge.
 	// Depth (V.depth): how thick the ledge on top of the letters looks, in pixels.
-	function ledge() { return V.depth && G ? Math.max(4, Math.min(20, Math.round(G.F * 0.035))) : 0; }
+	function ledge() { return (V.depth || V.look === "d1") && G ? Math.max(4, Math.min(20, Math.round(G.F * 0.035))) : 0; }
 	// How far up the colliders sit, so things stand on the middle of that ledge, not in front of it.
 	function lift() { return Math.round(ledge() * 0.55); }
 	function drawWord() {
@@ -514,13 +514,11 @@
 		el.style.transform = "translate(" + (p.x - sw / 2).toFixed(1) + "px," + (ground - sh * 0.55).toFixed(1) + "px)";
 		el.style.opacity = (near * near).toFixed(2);
 	}
+	// A very faint contact shadow under the bin only, with depth; none under the files.
 	function renderShadows() {
-		if (!V.depth) return;
-		if (!shadows) {
-			shadows = [bin].concat(files).map(function () { var d = document.createElement("div"); d.className = "lf-shadow"; stage.insertBefore(d, word.nextSibling); return d; });
-		}
+		if (!ledge()) return;
+		if (!shadows) { var d = document.createElement("div"); d.className = "lf-shadow is-faint"; stage.insertBefore(d, word.nextSibling); shadows = [d]; }
 		shadowFor(shadows[0], bin, G.bw, G.bh);
-		files.forEach(function (f, i) { shadowFor(shadows[i + 1], f.body, S * f.w, S * f.h); });
 	}
 	function render() {
 		renderShadows();
