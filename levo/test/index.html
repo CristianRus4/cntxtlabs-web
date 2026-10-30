@@ -9,8 +9,8 @@
 	<base href="../">
 	<link rel="icon" href="../favicon.svg" type="image/svg+xml">
 	<script>(function (r) { r.classList.add("js"); var t = /[?&]theme=(light|dark)\b/.exec(location.search); if (t ? t[1] === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) r.classList.add("dark"); })(document.documentElement);</script>
-	<link rel="stylesheet" href="levo.css?v=53">
-	<link rel="stylesheet" href="footer.css?v=53">
+	<link rel="stylesheet" href="levo.css?v=57">
+	<link rel="stylesheet" href="footer.css?v=57">
 	<style>
 		.pt-bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 14px; padding: 12px 16px 10px; font-size: 13px; color: var(--muted); background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
 		.pt-group { display: inline-flex; align-items: center; gap: 6px; }
@@ -54,7 +54,7 @@
 		</div>
 	</footer>
 
-	<script src="test/variants.js?v=53"></script>
+	<script src="test/variants.js?v=57"></script>
 	<script>
 		// The choice (scene, engine, variant, look) lives in the address's hash, so a link opens the
 		// exact combination; any change reloads, so only the chosen engine loads and each run is clean.
@@ -70,7 +70,6 @@
 			var engine = h.get("engine"); if (!list(scene, engine).length) engine = engines(scene)[0][0];
 			var group = list(scene, engine), n = Math.max(1, Math.min(group.length, parseInt(h.get("v"), 10) || 1));
 			var look = LOOKS.some(function (x) { return x[0] === h.get("look"); }) ? h.get("look") : "flat";
-			if (!{ flat: 1, d1: 1 }[look]) look = "flat";
 			var theme = document.documentElement.classList.contains("dark") ? "dark" : "light";
 			function go(o) {
 				var p = { scene: scene, engine: engine, v: n, look: look };
@@ -88,14 +87,15 @@
 			seg(document.querySelector("[data-scene]"), SCENES, scene, function (k) { go({ scene: k }); });
 			seg(document.querySelector("[data-engine]"), ENGINES, engine, function (k) { go({ engine: k }); }, function (k) { return list(scene, k).length > 0; });
 			seg(document.querySelector("[data-variant]"), group.map(function (x, i) { return [String(i + 1), String(i + 1)]; }), String(n), function (k) { go({ v: +k }); });
-			var READY = { flat: 1, d1: 1 };
+			var READY = { flat: 1, d1: 1, d2: 1, d3: 1, d4: 1, d5: 1 };
 			seg(document.querySelector("[data-look]"), LOOKS, look, function (k) { go({ look: k }); }, function (k) { return !!READY[k]; });
 			seg(document.querySelector("[data-theme]"), [["light", "Light"], ["dark", "Dark"]], theme, function (k) { var q = new URLSearchParams(location.search); q.set("theme", k); location.search = q.toString(); });
 			document.querySelector("[data-replay]").addEventListener("click", function () { location.reload(); });
 			var V = group[n - 1];
 			var short = SCENES.filter(function (x) { return x[0] === scene; })[0][1] + " · " + ENGINES.filter(function (x) { return x[0] === engine; })[0][1] + " · " + n + " · " + LOOKS.filter(function (x) { return x[0] === look; })[0][1];
 			var label = document.querySelector("[data-label]"), detail = V.name.replace(/^(Matter|Planck|Rapier|p2|Box2D v3|Throw \d+|Carry \d+) · /, "");
-			label.innerHTML = "<b>" + short + "</b> <span>— " + detail + "</span>";
+			var lookName = { d1: "lit 2D", d2: "soft studio", d3: "matte clay", d4: "frosted glass", d5: "soft satin" }[look];
+			label.innerHTML = "<b>" + short + "</b> <span>— " + detail + (lookName ? " · " + lookName : "") + "</span>";
 			document.addEventListener("keydown", function (e) {
 				if (e.metaKey || e.ctrlKey || e.altKey) return;
 				if (e.key === "ArrowRight") go({ v: n < group.length ? n + 1 : 1 });
@@ -110,7 +110,10 @@
 			V.look = look;
 			window.LF_VARIANT = V;
 			function load(src, done) { var s = document.createElement("script"); s.src = src; if (done) s.onload = done; document.body.appendChild(s); }
-			load("test/engines/common.js?v=53", function () { load("test/engines/" + engine + ".js?v=53", function () { load("test/scene.js?v=53"); }); });
+			var three = /^d[2-5]$/.test(look);
+			load("test/engines/common.js?v=57", function () { load("test/engines/" + engine + ".js?v=57", function () {
+				if (three) load("test/looks/three.js?v=57", function () { load("test/scene.js?v=57"); }); else load("test/scene.js?v=57");
+			}); });
 		})();
 	</script>
 </body>

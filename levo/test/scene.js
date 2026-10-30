@@ -132,7 +132,14 @@
 	// The same glyphs, drawn at the same place in the ink of .lf-word (footer.css), strong at the
 	// letters' top and fading to nothing at the page's bottom edge.
 	// Depth (V.depth): how thick the ledge on top of the letters looks, in pixels.
-	function ledge() { return V.look === "d1" && G ? Math.max(4, Math.min(20, Math.round(G.F * 0.035))) : 0; }
+	function ledge() {
+		if (!G) return 0;
+		if (V.look === "d1") return Math.max(4, Math.min(20, Math.round(G.F * 0.035)));
+		if (is3D) return Math.max(8, Math.min(34, Math.round(G.F * 0.055)));
+		return 0;
+	}
+	// D2 to D5: real 3D (test/looks/three.js), the letters' canvas replaced by a WebGL one.
+	var is3D = /^d[2-5]$/.test(V.look) && !!window.LF_LOOK3D, look3d = null;
 	// The extrusion's direction on screen, per pixel of depth: back, so up and a little to the right.
 	var UX = 0.35, UY = -1;
 	// How far up the colliders sit, so things stand on the middle of that ledge, not in front of it.
@@ -146,6 +153,11 @@
 		c.setTransform(dpr, 0, 0, dpr, 0, 0);
 		c.clearRect(0, 0, W, H);
 		var top = Math.min.apply(null, G.glyphs.map(function (g) { return g.hull ? Math.min.apply(null, g.hull.map(function (p) { return p.y; })) : H; })) - d;
+		if (is3D) {
+			word.style.visibility = "hidden";
+			if (look3d) look3d.build({ W: W, H: H, depth: d, top: top + d, floor: G.floor, base: G.base, glyphs: G.glyphs, font: font(G.F), ux: UX, uy: -UY });
+			return;
+		}
 		if (!d) {
 			var fade = c.createLinearGradient(0, top, 0, H);
 			fade.addColorStop(0, "rgba(" + rgb + "," + a + ")");
@@ -556,7 +568,12 @@
 		shadowFor(shadows[0], bin, G.bw, G.bh);
 	}
 	function render() {
-		renderShadows();
+		if (look3d) {
+			var bp = E.pos(bin);
+			look3d.place("bin", binSrc(binFull), SB, bp.x, bp.y, E.angle(bin), true);
+			files.forEach(function (f, i) { var fp = f.body ? E.pos(f.body) : { x: 0, y: 0 }; look3d.place("f" + i, f.el.getAttribute("src"), S, fp.x, fp.y, f.body ? E.angle(f.body) : 0, !!f.body); });
+			look3d.render();
+		} else renderShadows();
 		var c = E.pos(bin);
 		place(binEl, c.x, c.y, E.angle(bin), SB);
 		files.forEach(function (f) { if (f.body) { var p = E.pos(f.body); place(f.el, p.x, p.y, E.angle(f.body), S); } });
@@ -671,6 +688,10 @@
 	function onResize() { clearTimeout(resizeTimer); resizeTimer = setTimeout(function () { relayout(); }, 120); }
 
 	makeEls();
+	if (is3D) {
+		look3d = window.LF_LOOK3D_NOW = LF_LOOK3D.create({ stage: stage, word: word, look: V.look });
+		look3d.init().then(function () { drawWord(); if (bin) render(); }, function (err) { if (window.LF_STATS) LF_STATS.fail(err); });
+	}
 	relayout(true);
 	if (REDUCED) stage.classList.add("lf-still");
 	if (window.ResizeObserver) new ResizeObserver(onResize).observe(stage);

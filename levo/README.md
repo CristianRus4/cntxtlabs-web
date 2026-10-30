@@ -292,7 +292,15 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   bounce, the bin's weight, damping, sleep, drag and pour): 24 of them across
   Matter.js, Planck.js, Rapier 2D, p2.js and Box2D v3. ?n= picks one, typing
   a number or the arrow keys switch, R replays; only that engine loads. The
-  live footer changes only when the owner picks a number.
+  live footer changes only when the owner picks a number. The bar picks Scene
+  (Tip, Throw, Carry), Engine, Variant, Look and Theme, kept in the address's
+  hash (for example #scene=throw&engine=box2d3&v=4&look=d2). Looks: Flat; D1,
+  the letters lit as blocks in 2D (one light, each face shaded by where it
+  faces); D2 to D5, real 3D with Three.js 0.186.1 (test/looks/three.js: the
+  glyphs traced from their raster, extruded with a soft bevel, an oblique
+  orthographic camera so the 2D physics lines up, a soft key light and real
+  shadows; the bin and files cast theirs through matching planes), as soft
+  studio, matte clay, frosted glass and soft satin.
 - The footer runs on Matter.js 0.20.0 (cdnjs, pinned with its integrity hash,
   loaded only near the footer). "Levo" is set in the rounded heavy face
   (ui-rounded, with the page's fallbacks), huge, its lower part under the
