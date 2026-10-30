@@ -131,21 +131,70 @@
 	}
 	// The same glyphs, drawn at the same place in the ink of .lf-word (footer.css), strong at the
 	// letters' top and fading to nothing at the page's bottom edge.
+	// Depth (V.depth): how thick the ledge on top of the letters looks, in pixels.
+	function ledge() { return V.depth && G ? Math.max(4, Math.min(20, Math.round(G.F * 0.035))) : 0; }
+	// How far up the colliders sit, so things stand on the middle of that ledge, not in front of it.
+	function lift() { return Math.round(ledge() * 0.55); }
 	function drawWord() {
 		var dpr = Math.min(2, window.devicePixelRatio || 1);
 		word.width = Math.round(W * dpr); word.height = Math.round(H * dpr);
 		word.style.width = W + "px"; word.style.height = H + "px";
-		var c = word.getContext("2d"), ink = getComputedStyle(word).color.match(/[\d.]+/g) || [0, 0, 0, 0.1];
-		var rgb = ink.slice(0, 3).join(","), a = ink.length > 3 ? +ink[3] : 1;
+		var c = word.getContext("2d"), css = getComputedStyle(word), ink = css.color.match(/[\d.]+/g) || [0, 0, 0, 0.1];
+		var rgb = ink.slice(0, 3).join(","), a = ink.length > 3 ? +ink[3] : 1, d = ledge();
 		c.setTransform(dpr, 0, 0, dpr, 0, 0);
 		c.clearRect(0, 0, W, H);
-		var top = Math.min.apply(null, G.glyphs.map(function (g) { return g.hull ? Math.min.apply(null, g.hull.map(function (p) { return p.y; })) : H; }));
-		var fade = c.createLinearGradient(0, top, 0, H);
-		fade.addColorStop(0, "rgba(" + rgb + "," + a + ")");
-		fade.addColorStop(1, "rgba(" + rgb + ",0)");
-		c.fillStyle = fade;
-		c.font = font(G.F);
-		G.glyphs.forEach(function (g) { c.fillText(g.ch, g.x, G.base); });
+		var top = Math.min.apply(null, G.glyphs.map(function (g) { return g.hull ? Math.min.apply(null, g.hull.map(function (p) { return p.y; })) : H; })) - d;
+		if (!d) {
+			var fade = c.createLinearGradient(0, top, 0, H);
+			fade.addColorStop(0, "rgba(" + rgb + "," + a + ")");
+			fade.addColorStop(1, "rgba(" + rgb + ",0)");
+			c.fillStyle = fade;
+			c.font = font(G.F);
+			G.glyphs.forEach(function (g) { c.fillText(g.ch, g.x, G.base); });
+			return;
+		}
+		// The block: the ledge (copies stepping back and up), a one-pixel lit front edge, then the
+		// front face over them; drawn solid off screen, then faded towards the page's bottom.
+		var off = document.createElement("canvas");
+		off.width = word.width; off.height = word.height;
+		var o = off.getContext("2d");
+		o.setTransform(dpr, 0, 0, dpr, 0, 0);
+		o.font = font(G.F);
+		o.fillStyle = css.getPropertyValue("--lf-ledge").trim();
+		for (var k = d; k >= 1; k--) G.glyphs.forEach(function (g) { o.fillText(g.ch, g.x, G.base - k); });
+		o.fillStyle = css.getPropertyValue("--lf-edge").trim();
+		G.glyphs.forEach(function (g) { o.fillText(g.ch, g.x, G.base - 1); });
+		var face = o.createLinearGradient(0, top + d, 0, H);
+		face.addColorStop(0, css.getPropertyValue("--lf-front").trim());
+		face.addColorStop(1, css.getPropertyValue("--lf-front-low").trim());
+		o.fillStyle = face;
+		G.glyphs.forEach(function (g) { o.fillText(g.ch, g.x, G.base); });
+		o.setTransform(1, 0, 0, 1, 0, 0);
+		o.globalCompositeOperation = "destination-in";
+		var fadeOut = o.createLinearGradient(0, top * dpr, 0, H * dpr);
+		fadeOut.addColorStop(0, "rgba(0,0,0,1)");
+		fadeOut.addColorStop(0.35, "rgba(0,0,0,0.85)");
+		fadeOut.addColorStop(1, "rgba(0,0,0,0)");
+		o.fillStyle = fadeOut;
+		o.fillRect(0, 0, off.width, off.height);
+		c.setTransform(1, 0, 0, 1, 0, 0);
+		c.drawImage(off, 0, 0);
+	}
+	// The resting surface under x: the top of the letters' colliders there, or the floor.
+	function surfaceAt(x) {
+		var best = G.floor, up = lift();
+		G.glyphs.forEach(function (g) {
+			var p = g.profile;
+			if (!p || x < p[0].x || x > p[p.length - 1].x) return;
+			for (var i = 0; i + 1 < p.length; i++) {
+				if (x >= p[i].x && x <= p[i + 1].x) {
+					var t = p[i + 1].x === p[i].x ? 0 : (x - p[i].x) / (p[i + 1].x - p[i].x), y = p[i].y + (p[i + 1].y - p[i].y) * t - up;
+					if (y < best) best = y;
+					break;
+				}
+			}
+		});
+		return best;
 	}
 
 	// ---------------------------------------------------------------- Drawing bodies
@@ -220,8 +269,9 @@
 		E.addStaticBox(W / 2, -thick / 2 - H * 0.6, W * 3, thick, MAT.wall);
 		G.glyphs.forEach(function (g) {
 			if (!g.profile || g.profile.length < 2) return;
-			var outline = [{ x: g.profile[0].x, y: G.floor + 80 }].concat(g.profile, [{ x: g.profile[g.profile.length - 1].x, y: G.floor + 80 }]);
-			E.addLetter(outline, g.hulls, MAT.letter, g.ch === "L");
+			var up = lift(), raise = function (p) { return { x: p.x, y: p.y - up }; };
+			var outline = [{ x: g.profile[0].x, y: G.floor + 80 }].concat(g.profile.map(raise), [{ x: g.profile[g.profile.length - 1].x, y: G.floor + 80 }]);
+			E.addLetter(outline, g.hulls.map(function (h) { return h.map(function (p) { return p.y < G.floor ? raise(p) : p; }); }), MAT.letter, g.ch === "L");
 		});
 	}
 
@@ -366,7 +416,26 @@
 			if (s > cap) E.setVel(b, { x: v.x * cap / s, y: v.y * cap / s });
 		});
 	}
+	var shadows = null;
+	function shadowFor(el, b, w, h) {
+		if (!b) { el.style.opacity = "0"; return; }
+		var p = E.pos(b), a = E.angle(b), bottom = p.y + Math.abs(w / 2 * Math.sin(a)) + Math.abs(h / 2 * Math.cos(a));
+		var ground = surfaceAt(p.x), gap = Math.max(0, ground - bottom), near = Math.max(0, 1 - gap / (S * 1.4));
+		var sw = w * (0.8 + gap / S * 0.5), sh = Math.max(4, w * 0.16 * (1 + gap / S * 0.4));
+		el.style.width = sw.toFixed(1) + "px"; el.style.height = sh.toFixed(1) + "px";
+		el.style.transform = "translate(" + (p.x - sw / 2).toFixed(1) + "px," + (ground - sh * 0.55).toFixed(1) + "px)";
+		el.style.opacity = (near * near).toFixed(2);
+	}
+	function renderShadows() {
+		if (!V.depth) return;
+		if (!shadows) {
+			shadows = [bin].concat(files).map(function () { var d = document.createElement("div"); d.className = "lf-shadow"; stage.insertBefore(d, word.nextSibling); return d; });
+		}
+		shadowFor(shadows[0], bin, G.bw, G.bh);
+		files.forEach(function (f, i) { shadowFor(shadows[i + 1], f.body, S * f.w, S * f.h); });
+	}
 	function render() {
+		renderShadows();
 		var c = E.pos(bin);
 		place(binEl, c.x, c.y, E.angle(bin), SB);
 		files.forEach(function (f) { if (f.body) { var p = E.pos(f.body); place(f.el, p.x, p.y, E.angle(f.body), S); } });
@@ -446,6 +515,7 @@
 	function relayout(force) {
 		var oldW = W, oldH = H, old = G;
 		geometry();
+		G.binY -= lift();
 		if (!force && oldW && W === oldW && H === oldH) return;
 		drawWord();
 		if (REDUCED) { lieStill(); return; }

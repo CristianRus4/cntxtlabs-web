@@ -38,6 +38,12 @@
 /* The wordmark's ink at the letters' top; footer.js fades it to nothing at the page's bottom edge. */
 .lf-word { position: absolute; left: 0; top: 0; display: block; pointer-events: none; color: rgb(var(--ink) / 0.13); }
 html.dark .lf-word { color: rgb(var(--ink) / 0.15); }
+/* Depth (the physics test's "with depth" option): a lit ledge on top, a fine front edge, and a front
+   face that softens downwards, all fading out towards the page's edge; and soft contact shadows. */
+.lf-word { --lf-front: #DADADD; --lf-front-low: #E9E9EB; --lf-ledge: #ECECEE; --lf-edge: #F8F8F9; }
+html.dark .lf-word { --lf-front: #232326; --lf-front-low: #151517; --lf-ledge: #303035; --lf-edge: #3D3D43; }
+.lf-shadow { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0)); will-change: transform, opacity; }
+html.dark .lf-shadow { background: radial-gradient(closest-side, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0)); }
 .lf-bin, .lf-item {
 	position: absolute;
 	z-index: 1;

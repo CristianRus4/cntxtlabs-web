@@ -30,6 +30,7 @@
 		v("planck", "7c · starts earlier, stronger hop", s7({ pourEvery: 4, push: 1, keepPour: 60, landEvery: 6, spill: 1.3, pourDeg: 35, hop: 1 })),
 		v("planck", "7d · rocks once on landing", s7({ pourEvery: 4, push: 1, keepPour: 60, landEvery: 6, spill: 1.3, pourDeg: 35, hop: 1, rock: 0.05 })),
 		v("planck", "7e · most generous", s7({ pourEvery: 4, push: 1.15, keepPour: 50, landEvery: 4, spill: 1.8, pourDeg: 35, hop: 1.2, rock: 0.06 })),
+		v("planck", "7e · with depth (ledges and shadows)", s7({ pourEvery: 4, push: 1.15, keepPour: 50, landEvery: 4, spill: 1.8, pourDeg: 35, hop: 1.2, rock: 0.06, depth: true })),
 		v("matter", "Matter · today's footer", m({})),
 		v("matter", "Matter · settles and sleeps", m({ sleep: true, sleepFrames: 40, substeps: 2, posIter: 14, velIter: 10 })),
 		v("matter", "Matter · heavy bin, slow pour", m({ binDensity: 4, pourEvery: 9, push: 0.7, hop: 0.5 })),
