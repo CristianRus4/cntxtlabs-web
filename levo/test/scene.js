@@ -304,6 +304,8 @@
 		var cm = E.centreOfMass(bin);
 		hinge = E.hinge(bin, { x: cm.x - 0.15, y: G.binY + G.bh / 2 });
 		E.passOverL(bin, true);
+		// And a tiny rightward drift, so no engine's solver can hold it balanced at the top.
+		E.setSpin(bin, 0.0005);
 	}
 	function letGo() {
 		if (!hinge) return;
@@ -358,6 +360,8 @@
 		frame++;
 		if (grab) E.dragTarget(grab.j, { x: grab.x, y: grab.y });
 		settle();
+		// While it leans on its hinge the bin moves too slowly for some engines not to put it to sleep.
+		if (hinge) E.wake(bin);
 		var was = E.speed(bin);
 		E.step();
 		if (!hinge && was > 3 && was - E.speed(bin) > 2.2) { bin.jolt = frame; hop(); }

@@ -289,9 +289,10 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   compares footer physics: one scene (test/scene.js, the live footer's story
   on any engine), an adapter per engine (test/engines/, pinned CDN builds) and
   the variants (test/variants.js: engine plus gravity, steps, friction,
-  bounce, the bin's weight, damping, sleep, drag and pour). ?n= picks one,
-  1-9 or the arrow keys switch, R replays; only that engine loads. The live
-  footer changes only when the owner picks a number.
+  bounce, the bin's weight, damping, sleep, drag and pour): 24 of them across
+  Matter.js, Planck.js, Rapier 2D, p2.js and Box2D v3. ?n= picks one, typing
+  a number or the arrow keys switch, R replays; only that engine loads. The
+  live footer changes only when the owner picks a number.
 - The footer runs on Matter.js 0.20.0 (cdnjs, pinned with its integrity hash,
   loaded only near the footer). "Levo" is set in the rounded heavy face
   (ui-rounded, with the page's fallbacks), huge, its lower part under the

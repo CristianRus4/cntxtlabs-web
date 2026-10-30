@@ -13,6 +13,12 @@
 	function v(engine, name, o) { var r = { engine: engine, name: name }; for (var k in base) r[k] = base[k]; for (var j in o) r[j] = o[j]; return r; }
 	var MATTER = { velIter: 8, posIter: 10, fFile: 0.12, binDensity: 1.9, linDamp: 1.2, sleep: false, settle: true, drag: { k: 0.06, c: 0.08 } };
 	var BOX = { velIter: 10, posIter: 4, drag: { k: 3.5, c: 0.35, force: 260 } };
+	var RAPIER = { velIter: 8, drag: { k: 4, c: 0.7, force: 30 } };
+	function r(o) { var x = {}; for (var k in RAPIER) x[k] = RAPIER[k]; for (var j in o) x[j] = o[j]; return x; }
+	var P2 = { velIter: 12, drag: { k: 4, c: 0.7, force: 30 } };
+	function q(o) { var x = {}; for (var k in P2) x[k] = P2[k]; for (var j in o) x[j] = o[j]; return x; }
+	var B3 = { substeps: 4, drag: { k: 4, c: 0.7, force: 30 } };
+	function t(o) { var x = {}; for (var k in B3) x[k] = B3[k]; for (var j in o) x[j] = o[j]; return x; }
 	function m(o) { var r = {}; for (var k in MATTER) r[k] = MATTER[k]; for (var j in o) r[j] = o[j]; return r; }
 	function b(o) { var r = {}; for (var k in BOX) r[k] = BOX[k]; for (var j in o) r[j] = o[j]; return r; }
 	window.LF_VARIANTS = [
@@ -25,6 +31,20 @@
 		v("planck", "Planck · heavy bin, slow pour", b({ binDensity: 6, pourEvery: 9, push: 0.7, hop: 0.6 })),
 		v("planck", "Planck · slippery, files spread far", b({ fFile: 0.05, fLetter: 0.08, linDamp: 0.1, angDamp: 0.2, push: 1.3 })),
 		v("planck", "Planck · bouncy", b({ rFile: 0.4, rBin: 0.3, rLetter: 0.35 })),
-		v("planck", "Planck · all at once", b({ pour: "pile", hop: 1.5, push: 1.2 }))
+		v("planck", "Planck · all at once", b({ pour: "pile", hop: 1.5, push: 1.2 })),
+		v("rapier", "Rapier · balanced", r({})),
+		v("rapier", "Rapier · heavy bin, slow pour", r({ binDensity: 6, pourEvery: 9, push: 0.7, hop: 0.6 })),
+		v("rapier", "Rapier · grippy, files stay close", r({ fFile: 0.45, fLetter: 0.5, linDamp: 1.2 })),
+		v("rapier", "Rapier · bouncy", r({ rFile: 0.4, rBin: 0.3, rLetter: 0.35 })),
+		v("rapier", "Rapier · floaty, soft drag", r({ gravity: 800, linDamp: 0.9, angDamp: 0.4, drag: { k: 2, c: 0.3, force: 20 } })),
+		v("p2", "p2 · balanced", q({})),
+		v("p2", "p2 · heavy bin, slow pour", q({ binDensity: 6, pourEvery: 9, push: 0.7, hop: 0.6 })),
+		v("p2", "p2 · slippery, files spread far", q({ fFile: 0.05, fLetter: 0.08, linDamp: 0.1, angDamp: 0.2, push: 1.3 })),
+		v("p2", "p2 · bouncy", q({ rFile: 0.4, rBin: 0.3, rLetter: 0.35 })),
+		v("box2d3", "Box2D v3 · balanced", t({})),
+		v("box2d3", "Box2D v3 · heavy bin, slow pour", t({ binDensity: 6, pourEvery: 9, push: 0.7, hop: 0.6 })),
+		v("box2d3", "Box2D v3 · slippery, files spread far", t({ fFile: 0.05, fLetter: 0.08, linDamp: 0.1, angDamp: 0.2, push: 1.3 })),
+		v("box2d3", "Box2D v3 · bouncy", t({ rFile: 0.4, rBin: 0.3, rLetter: 0.35 })),
+		v("box2d3", "Box2D v3 · all at once, 8 substeps", t({ pour: "pile", hop: 1.5, push: 1.2, substeps: 8 }))
 	];
 })();
