@@ -2215,15 +2215,28 @@
 		dl.addEventListener("click", function () { download(dl); });
 		var app = $('[data-act="lwinapp"]', win), apps = $("[data-lwinapps]", win);
 		app.addEventListener("dblclick", function () { S.touched = true; openPop(); });
+		// Dragged as in Finder: a drag image follows the pointer the whole way, a little translucent,
+		// above every window, while the icon stays dimmed in its place. Dropped on Applications it
+		// goes into the folder and the copy plays; anywhere else it slides back.
 		app.addEventListener("pointerdown", function (e) {
 			if (e.button !== 0) return;
-			var x0 = e.clientX, y0 = e.clientY, moved = false, over = false;
+			var x0 = e.clientX, y0 = e.clientY, moved = false, over = false, ghost = null, home = null, gx = 0, gy = 0;
 			var mv = function (ev) {
 				var dx = ev.clientX - x0, dy = ev.clientY - y0;
 				if (!moved && Math.abs(dx) + Math.abs(dy) < 6) return;
-				moved = true; S.dragged = true;
-				app.classList.add("is-dragging");
-				app.style.transform = "translate(" + dx + "px," + dy + "px)";
+				if (!moved) {
+					moved = true; S.dragged = true;
+					var img = $$(".lv-lwin-ic img", app).filter(function (i) { return getComputedStyle(i).display !== "none"; })[0];
+					home = img.getBoundingClientRect();
+					gx = x0 - home.left; gy = y0 - home.top;
+					ghost = document.createElement("img");
+					ghost.src = img.currentSrc || img.src;
+					ghost.alt = ""; ghost.className = "lv-drag-ghost";
+					ghost.style.width = home.width + "px"; ghost.style.height = home.height + "px";
+					document.body.appendChild(ghost);
+					app.classList.add("is-dragging");
+				}
+				ghost.style.transform = "translate(" + (ev.clientX - gx) + "px," + (ev.clientY - gy) + "px)";
 				var r = apps.getBoundingClientRect();
 				over = ev.clientX > r.left && ev.clientX < r.right && ev.clientY > r.top && ev.clientY < r.bottom;
 				apps.classList.toggle("is-target", over);
@@ -2231,11 +2244,14 @@
 			var up = function () {
 				document.removeEventListener("pointermove", mv);
 				document.removeEventListener("pointerup", up);
-				app.classList.remove("is-dragging");
-				app.classList.add("is-snap");
-				app.style.transform = "";
-				later(function () { app.classList.remove("is-snap"); }, 500);
 				apps.classList.remove("is-target");
+				if (ghost) {
+					var g = ghost, to = over ? $(".lv-lwin-folder", apps).getBoundingClientRect() : home;
+					var k = over ? 0.5 : 1, tx = to.left + (to.width - home.width * k) / 2, ty = to.top + (to.height - home.height * k) / 2;
+					g.classList.add(over ? "is-in" : "is-back");
+					g.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + k + ")";
+					setTimeout(function () { g.remove(); app.classList.remove("is-dragging"); }, REDUCED ? 0 : 260);
+				}
 				if (over) dl.click();
 				setTimeout(function () { S.dragged = false; }, 0);
 			};
