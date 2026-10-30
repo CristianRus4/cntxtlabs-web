@@ -266,7 +266,7 @@
 		E.addStaticBox(W / 2, G.floor + thick / 2, W * 3, thick, MAT.wall);
 		if (!V.throw || leftWall) E.addStaticBox(-thick / 2, H / 2, thick, H * 4, MAT.wall);
 		E.addStaticBox(W + thick / 2, H / 2, thick, H * 4, MAT.wall);
-		E.addStaticBox(W / 2, -thick / 2 - H * (V.throw ? 1.6 : 0.6), W * 3, thick, MAT.wall);
+		E.addStaticBox(W / 2, -thick / 2 - H * (V.throw || V.carry ? 1.6 : 0.6), W * 3, thick, MAT.wall);
 		G.glyphs.forEach(function (g) {
 			if (!g.profile || g.profile.length < 2) return;
 			var up = lift(), raise = function (p) { return { x: p.x, y: p.y - up }; };
@@ -402,6 +402,73 @@
 		E.setSpin(bin, th.spin || 0);
 		E.wake(bin);
 	}
+	// The carry (V.carry): a hand comes in, takes the bin by its rim or a corner with the same joint a
+	// visitor's drag uses, lifts it and carries it along the word, swaying or shaking (h: how high
+	// above the letters, in bin heights; shake: up and down, px; swing: side to side, px; hz; speed:
+	// px a frame; grip: "rim", "corner", or "bottom" to hang it mouth down), and lets go past the o. Grabbing anything ends it.
+	var carry = null, hand = null, HAND = { open: "img/cursor/open-hand.png", closed: "img/cursor/closed-hand.png", hx: 15, hy: 16 };
+	function ease(t) { t = Math.max(0, Math.min(1, t)); return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+	function showHand(x, y, img, on) {
+		if (!hand) { hand = document.createElement("img"); hand.className = "lf-hand"; hand.alt = ""; hand.draggable = false; stage.appendChild(hand); }
+		if (hand.getAttribute("src") !== img) hand.setAttribute("src", img);
+		hand.style.transform = "translate(" + (x - HAND.hx).toFixed(1) + "px," + (y - HAND.hy).toFixed(1) + "px)";
+		hand.style.opacity = on ? "1" : "0";
+	}
+	function gripPoint() {
+		var c = V.carry, p = E.pos(bin), a = E.angle(bin);
+		var l = local(a, c.grip === "corner" ? { x: -G.bw / 2 + G.wall, y: -G.bh / 2 + 2 } : c.grip === "bottom" ? { x: -G.bw / 2 + G.wall, y: G.bh / 2 - 2 } : { x: 0, y: -G.bh / 2 + 2 });
+		return { x: p.x + l.x, y: p.y + l.y };
+	}
+	function carryIn() {
+		var x0 = Math.max(G.bw / 2 + 4, G.stemX - G.stemW / 2 - G.bw * 0.55 - 6);
+		E.setPose(bin, x0, G.floor - G.bh / 2 - 1, 0);
+		var last = G.glyphs[G.glyphs.length - 1].hull, top = Math.min.apply(null, G.glyphs.map(function (g) { return Math.min.apply(null, g.hull.map(function (p) { return p.y; })); }));
+		carry = { t0: frame, phase: "reach", endX: Math.max.apply(null, last.map(function (p) { return p.x; })), pathY: top - lift() - G.bh * (1 + V.carry.h) };
+		carry.from = { x: -40, y: top - 30 };
+	}
+	function endCarry() {
+		if (!carry || carry.phase === "done") return;
+		if (grab && grab.auto) { E.removeJoint(grab.j); grab = null; }
+		carry.phase = "done";
+		if (hand) hand.style.opacity = "0";
+	}
+	function carryStep() {
+		if (!carry || carry.phase === "done") return;
+		var c = V.carry, t = frame - carry.t0, p;
+		if (carry.phase === "reach") {
+			p = gripPoint();
+			var k = ease(t / 50), wob = Math.sin(t * 0.21) * 6 * (1 - k);
+			showHand(carry.from.x + (p.x - carry.from.x) * k, carry.from.y + (p.y - carry.from.y) * k + wob, HAND.open, true);
+			if (t >= 50) {
+				grab = { body: bin, j: E.drag(bin, p, V.drag), x: p.x, y: p.y, auto: true };
+				var o = E.pos(bin), a0 = E.angle(bin);
+				carry.local = local(-a0, { x: p.x - o.x, y: p.y - o.y });
+				carry.grab = p; carry.phase = "lift"; carry.t0 = frame; showHand(p.x, p.y, HAND.closed, true);
+			}
+			return;
+		}
+		if (carry.phase === "lift") {
+			var u = ease(t / 40);
+			grab.x = carry.grab.x + 24 * u; grab.y = carry.grab.y + (carry.pathY - carry.grab.y) * u;
+			if (t >= 40) { carry.phase = "carry"; carry.t0 = frame; carry.startX = grab.x; carry.dur = Math.max(60, (carry.endX - grab.x) / c.speed); }
+		} else if (carry.phase === "carry") {
+			var v = ease(t / carry.dur), w = 2 * Math.PI * c.hz * t / 60, fade = Math.sin(Math.PI * Math.min(1, t / carry.dur));
+			grab.x = carry.startX + (carry.endX - carry.startX) * v + (c.swing || 0) * Math.sin(w * 0.5) * fade + Math.sin(t * 0.13) * 2;
+			grab.y = carry.pathY + (c.shake || 0) * Math.sin(w) * fade + Math.sin(t * 0.29) * 2.5 + Math.sin(t * 0.071) * 4;
+			if (t >= carry.dur) {
+				E.removeJoint(grab.j); grab = null;
+				carry.phase = "leave"; carry.t0 = frame; carry.at = held();
+			}
+		} else if (carry.phase === "leave") {
+			var q = ease(t / 30);
+			showHand(carry.at.x + 10 * q, carry.at.y - 26 * q, HAND.open, t < 12);
+			if (t >= 30) carry.phase = "done";
+			return;
+		}
+		// The hand is drawn where it holds the bin, so it always looks attached; the joint's target leads.
+		if (grab) { var h = held(); showHand(h.x, h.y, HAND.closed, true); }
+	}
+	function held() { var o = E.pos(bin), l = local(E.angle(bin), carry.local); return { x: o.x + l.x, y: o.y + l.y }; }
 	function letGo() {
 		if (!hinge) return;
 		E.removeJoint(hinge);
@@ -472,6 +539,7 @@
 	}
 	function tick() {
 		frame++;
+		carryStep();
 		if (grab) E.dragTarget(grab.j, { x: grab.x, y: grab.y });
 		settle();
 		// While it leans on its hinge the bin moves too slowly for some engines not to put it to sleep.
@@ -494,7 +562,7 @@
 		catchIn();
 		render();
 		var patience = lyingTipped() ? 900 : 240;
-		calm = still() && !grab && !hinge && !(bin.inside.length && opening() >= POUR && (bin.blocked || 0) < patience) ? calm + 1 : 0;
+		calm = still() && !grab && !hinge && !(carry && carry.phase !== "done") && !(bin.inside.length && opening() >= POUR && (bin.blocked || 0) < patience) ? calm + 1 : 0;
 		if (calm > 30 && frame > 120) { raf = 0; if (window.LF_STATS) LF_STATS.rest(frame); return; }
 		raf = requestAnimationFrame(tick);
 	}
@@ -504,6 +572,7 @@
 			var b = get();
 			if (!b || REDUCED || e.button > 0) return;
 			e.preventDefault();
+			endCarry();
 			var r = stage.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
 			E.wake(b);
 			grab = { body: b, j: E.drag(b, { x: x, y: y }, V.drag), x: x, y: y };
@@ -523,11 +592,11 @@
 	}
 	function setup() {
 		E.create(V);
-		if (V.throw) stage.style.clipPath = "inset(-" + Math.round(H * 1.6) + "px 0 0 0)";
+		if (V.throw || V.carry) stage.style.clipPath = "inset(-" + Math.round(H * 1.6) + "px 0 0 0)";
 		buildStatics();
 		bin = E.addBin(G.binX, G.binY, G.bw, G.bh, G.wall, MAT.bin);
 		bin.inside = files.slice();
-		if (V.throw) throwIn(); else lean();
+		if (V.throw) throwIn(); else if (V.carry) carryIn(); else lean();
 		wire(binEl, function () { return bin; });
 		files.forEach(function (f) { wire(f.el, function () { return f.body; }); });
 		binEl.addEventListener("dblclick", standUp);

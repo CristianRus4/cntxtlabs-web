@@ -28,7 +28,15 @@
 	// heights above the L's top, aim along the L's top towards its right shoulder, tilt and spin), the bin's weight and bounce, and how
 	// readily the files fly out once it hits (release angle, interval, push, top speed).
 	function thr(th, o) { var x = { throw: th, keepPour: 40, landEvery: 4, spill: 1.5, hop: 1.2 }; for (var k in o) x[k] = o[k]; return t(x); }
+	// The carry, built on Box2D v3 · balanced: how high, how it shakes, how fast, where it's held,
+	// and how readily the files shake out (release angle and interval).
+	function car(c, o) { var x = { carry: c, keepPour: 45, landEvery: 4, spill: 1.3 }; for (var k in o) x[k] = o[k]; return t(x); }
 	window.LF_VARIANTS = [
+		v("box2d3", "Carry 1 · gentle sway, low", car({ h: 0.15, shake: 6, swing: 10, hz: 0.8, speed: 3.5, grip: "rim" }, { pourDeg: 40, pourEvery: 6 })),
+		v("box2d3", "Carry 2 · steady walk, small shakes", car({ h: 0.3, shake: 10, swing: 8, hz: 1.6, speed: 4.5, grip: "corner" }, { pourDeg: 38, pourEvery: 5 })),
+		v("box2d3", "Carry 3 · high and swinging", car({ h: 0.8, shake: 12, swing: 34, hz: 0.9, speed: 4, grip: "corner" }, { pourDeg: 35, pourEvery: 4 })),
+		v("box2d3", "Carry 4 · brisk and jittery", car({ h: 0.4, shake: 8, swing: 12, hz: 3, speed: 6, grip: "rim" }, { pourDeg: 35, pourEvery: 3 })),
+		v("box2d3", "Carry 5 · held upside down, shaken empty", car({ h: 0.6, shake: 18, swing: 22, hz: 1.8, speed: 3, grip: "bottom" }, { pourDeg: 20, pourEvery: 30, push: 1.1, spill: 1.4 })),
 		v("box2d3", "Throw 1 · lazy lob", thr({ T: 60, h: 1.2, aim: 0.55, run: 380, spin: 0 }, { rBin: 0.12, fling: 0.4, pourDeg: 45, pourEvery: 5, push: 0.9 })),
 		v("box2d3", "Throw 2 · easy toss", thr({ T: 52, h: 1, aim: 0.5, run: 420, spin: 0.03 }, { rBin: 0.12, fling: 0.45, pourDeg: 40, pourEvery: 4, push: 1 })),
 		v("box2d3", "Throw 3 · clips the L", thr({ T: 46, h: 0.8, aim: 0.6, run: 420, spin: -0.04 }, { rBin: 0.1, fling: 0.5, pourDeg: 40, pourEvery: 4, push: 1 })),
