@@ -170,13 +170,24 @@
 		Array.prototype.forEach.call(el.querySelectorAll(".lv-tick"), function (x) { x.classList.remove("is-dim"); });
 	}
 	// The gauges sweep round to their values.
+	// The gauges sweep round to their values in the app's colours. Each gauge's value is read once
+	// from the markup, so a play cut short (the tile leaving the view) can't leave it grey.
+	function gaugeLines(g) {
+		var lines = Array.prototype.slice.call(g.querySelectorAll("line"));
+		if (g.dataset.on == null) g.dataset.on = lines.filter(function (l) { return l.classList.contains("on"); }).length;
+		return lines.slice(0, +g.dataset.on);
+	}
+	function light(l, on) { l.classList.toggle("on", on); l.style.stroke = on ? l.getAttribute("data-c") : ""; }
 	function gaugesPlay(t) {
-		if (REDUCED) return;
 		Array.prototype.forEach.call(t.el.querySelectorAll(".lv-gauge"), function (g) {
-			var lines = Array.prototype.slice.call(g.querySelectorAll("line.on"));
-			lines.forEach(function (l) { l.classList.remove("on"); l.style.stroke = ""; });
-			lines.forEach(function (l, i) { t.later(function () { l.classList.add("on"); l.style.stroke = l.getAttribute("data-c"); }, 200 + i * 34); });
+			var lines = gaugeLines(g);
+			if (REDUCED) { lines.forEach(function (l) { light(l, true); }); return; }
+			lines.forEach(function (l) { light(l, false); });
+			lines.forEach(function (l, i) { t.later(function () { light(l, true); }, 200 + i * 34); });
 		});
+	}
+	function gaugesReset(el) {
+		Array.prototype.forEach.call(el.querySelectorAll(".lv-gauge"), function (g) { gaugeLines(g).forEach(function (l) { light(l, true); }); });
 	}
 	// A row's tick changes, and back.
 	function listPlay(t) {
@@ -253,7 +264,7 @@
 	var TILES = [
 		{ id: "auto", label: "Auto mode", sub: "Cleans on its own before your disk runs low.", cls: "bt-auto", inner: autoHTML, play: autoPlay, reset: autoReset },
 		{ id: "disk", label: "Disk by category", sub: "What fills your disk, and what can go.", inner: function () { return kit("bt-disk", P.disk()); }, play: diskPlay, reset: diskReset },
-		{ id: "gauges", label: "Memory, CPU, GPU", sub: "What your Mac is working on, at a glance.", inner: function () { return kit("bt-gauges", P.gauges()); }, play: gaugesPlay },
+		{ id: "gauges", label: "Memory, CPU, GPU", sub: "What your Mac is working on, at a glance.", inner: function () { return kit("bt-gauges", P.gauges()); }, play: gaugesPlay, reset: gaugesReset },
 		{ id: "list", label: "What can go", sub: "Each item with its size and why it\u2019s safe.", inner: function () { return kit("bt-list", '<div class="lv-scroll">' + P.list(5) + "</div>"); }, play: listPlay },
 		{ id: "confirm", label: "Confirm first", sub: "Nothing is cleaned until you say so.", inner: function () { return kit("bt-confirm", '<div class="lv-sheet lv-bsheet lv-confirm is-in bt-sheet">' + P.confirm() + "</div>"); } },
 		{ id: "actions", label: "Keyboard first", sub: "Every action is a keystroke away.", inner: function () {
