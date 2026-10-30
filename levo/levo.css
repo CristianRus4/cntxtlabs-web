@@ -146,19 +146,19 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 .price b { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
 .price > span:last-child { font-size: 17px; font-weight: 600; color: var(--muted); }
 
-/* The price rises: ten columns from the first price to the last on a faint baseline. Those passed
+/* The price rises: ten columns from the first price to the last. Those passed
    are the accent, softer; the current one is strongest, its price above it; later ones are faint.
    levo.js builds them from the live price; they grow in on arrival. */
 .tiers { margin: 26px auto 0; max-width: 320px; text-align: center; }
 .tiers-line { margin: 0; font-size: 15px; color: var(--muted); }
 .tiers-bar { margin: 44px auto 0; width: 100%; }
-.tiers-steps { display: flex; align-items: flex-end; gap: 6px; height: 84px; padding-bottom: 1px; box-shadow: 0 1px 0 rgb(var(--ink) / 0.12); }
+.tiers-steps { display: flex; align-items: flex-end; gap: 4px; height: 84px; }
 .tiers-steps i { position: relative; flex: 1; font-style: normal; border-radius: 5px 5px 2px 2px; background: rgb(var(--ink) / 0.07); transform-origin: 50% 100%; transition: transform .6s cubic-bezier(.22, 1, .36, 1) calc(.25s + var(--i) * 45ms); }
 .tiers-steps i.is-past { background: color-mix(in srgb, var(--lit) 42%, transparent); }
 .tiers-steps i.is-now { background: linear-gradient(180deg, var(--lit), color-mix(in srgb, var(--lit) 78%, transparent)); box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--lit) 70%, transparent); }
 .tiers-steps b { position: absolute; left: 50%; bottom: calc(100% + 8px); translate: -50% 0; font-size: 13px; font-weight: 700; color: var(--lit); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .tiers-ends { margin-top: 8px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
-.tiers-next { margin: 20px 0 0; font-size: 15px; color: var(--muted); }
+.tiers-next { position: relative; left: 50%; translate: -50% 0; width: max-content; max-width: calc(100vw - 40px); margin: 20px 0 0; font-size: 15px; color: var(--muted); }
 .tiers-next b { font-weight: 600; color: var(--text); }
 .tiers-left { margin: 6px 0 0; font-size: 15px; color: var(--muted); }
 .js .tiers:not(.in):not(.is-in) .tiers-steps i { transform: scaleY(0.12); }
@@ -182,6 +182,7 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 	.sect { padding-top: 80px; }
 }
 @media (max-width: 560px) {
+	.tiers-next { font-size: 14px; }
 	.ctas .btn { flex: 1; min-width: 0; }
 	.get .ctas { max-width: 360px; margin-left: auto; margin-right: auto; }
 }

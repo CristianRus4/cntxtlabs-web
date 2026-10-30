@@ -130,10 +130,10 @@ install prompt all read from it. The live price comes from `priceURL` (the
 live price Worker's price.json, CORS open; the sandbox Worker is for testing only); `price` is the fallback if it fails. The
 price section shows the price with "once", "Lifetime licence for 2 Macs. No
 subscription.", a track of the ten tiers ($4.99 to $49.99, step $5, from
-`tiers`): ten columns rising on a faint baseline, those passed in the accent
+`tiers`): ten columns rising, close together, those passed in the accent
 (softer), the current one strongest with its price above, later ones faint,
-the ends' prices under them, growing in on arrival; "Then" the next tier, and "Up $5 every 10
-licences." (the owner's call, 2026-10-30). How many licences are left is not
+the ends' prices under them, growing in on arrival; "Then" the next tier, and "Price
+increases every 10 licences sold." (the owner's call, 2026-10-30). How many licences are left is not
 shown: the Worker doesn't give it. `left` and the hidden `[data-left]` line are
 ready for "N left at $4.99" if the owner wants it.
 
@@ -263,7 +263,7 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   Strokes stay hidden until the cue appears, then words, rays and arrow draw
   on together at once (0.7 s) and pulse together;
   it fades once the icon is clicked.
-- Elevate and Amply sit in the dock, closed (no running dot). Clicking either
+- Levo is running in the dock from the start. Elevate and Amply sit in the dock, closed (no running dot). Clicking either
   opens its own installer window, like Levo's (the app and Applications; front
   on a click, drag, resize, lights), with "Coming soon" in place of the
   download; the app keeps its running dot while its window is open.

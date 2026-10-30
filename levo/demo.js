@@ -115,7 +115,7 @@
 			// Cntxt Labs' other apps: closed until clicked; each opens its own installer window, coming soon.
 			{ id: "elevate", name: "Elevate", img: "img/dock/elevate.png", soon: true },
 			{ id: "amply", name: "Amply", img: "img/dock/amply.png", soon: true },
-			{ id: "levo", name: "Levo", img: "img/dock/levo.png" },
+			{ id: "levo", name: "Levo", img: "img/dock/levo.png", open: true },
 			// In the dock only while a text window is open, as a running app that isn't kept there.
 			{ id: "textedit", name: "TextEdit", img: "img/dock/textedit.png", transient: true },
 			{ id: "trash", name: "Trash", img: "img/dock/trash-empty.png", full: "img/dock/trash-full.png" }
