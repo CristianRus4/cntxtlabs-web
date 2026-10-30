@@ -33,7 +33,8 @@
 	// ticks grow; when free space reaches the limit, Levo cleans, the green clears, free space grows
 	// back and a macOS notification slides in. Then the days go on, calmly, while it's in view.
 
-	var AUTO = { limit: (D.data && D.data.disk && D.data.disk.alert) || 20, total: 245, sys: 32, apps: 46, free: 31, ready: 4, perDay: 3.4, grow: 2, day: 900 };
+	// Auto mode keeps 5% of the disk free (the app's default): 12 GB of this one.
+	var AUTO = { limit: 12, total: 245, sys: 32, apps: 46, free: 31, ready: 4, perDay: 3.4, grow: 2, day: 900 };
 	var DAYNAMES = (function () {
 		var f = new Intl.DateTimeFormat("en-NZ", { weekday: "short" }), out = [], d = new Date(2026, 9, 26);
 		for (var i = 0; i < 7; i++) out.push(f.format(new Date(d.getTime() + i * 864e5)));
@@ -41,11 +42,6 @@
 	})();
 	function gbText(v) { return Math.round(v) + " GB"; }
 	function autoHTML() {
-		var groups = ((D.data && D.data.groups) || []).filter(function (g) { return g.items.every(function (it) { return it.level === 1; }); });
-		var shown = groups.length <= 2 ? groups : groups.slice(0, 1), more = groups.length - shown.length;
-		var chips = shown.map(function (g, i) {
-			return chip(tile(g.tile, g.symbol, "chip") + "<span>" + esc(g.title) + "</span>") + (i === shown.length + (more ? 1 : 0) - 2 ? words("and") : "");
-		}).join("") + (more ? chip("<span>" + more + " more</span>") : "");
 		var ticks = "";
 		for (var i = 0; i < 60; i++) ticks += '<i class="lv-tick"></i>';
 		return '<div class="bt-auto-card">' +
@@ -57,7 +53,7 @@
 					'<div class="lv-dbar"><div class="lv-ticks" data-autoticks>' + ticks + "</div></div>" +
 					'<div class="bt-auto-day"><span data-autoday>' + DAYNAMES[0] + "</span></div></section>" +
 					'<div class="lv-sep"></div>' +
-					'<div class="lv-sum"><p class="lv-sline">' + chip("<span>Auto mode</span>") + words("keeps") + chip("<span>" + gbText(AUTO.limit) + "</span>") + words("free: it cleans") + chips + words("on its own.") + "</p></div>") +
+					'<div class="lv-sum"><p class="lv-sline">' + chip("<span>Auto mode</span>") + words("keeps") + chip("<span>5%</span>") + words("free by cleaning what comes back on its own.") + "</p></div>") +
 			"</div>" +
 			// A slice of the Mac's screen, where the notification arrives.
 			// Its menubar, display only, as the simulator's at a smaller size.

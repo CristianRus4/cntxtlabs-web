@@ -339,6 +339,20 @@
 		M.Composite.add(world, f.body);
 		f.el.classList.remove("is-in");
 	}
+	// Into the bin: the file slides down through the opening, clipped at the rim line as it goes (as
+	// if behind the bin's front rim), then it's gone and the bin turns full. Each drop sinks on its
+	// own; with less motion, a quick fade.
+	function sink(f, from, mouth, a) {
+		var el = f.el, s = S, rim = mouth.y, to = { x: mouth.x, y: rim + s * 0.8 };
+		var tf = function (p, ang) { return "translate(" + (p.x - s / 2).toFixed(1) + "px," + (p.y - s / 2).toFixed(1) + "px) rotate(" + ang.toFixed(3) + "rad)"; };
+		var clip = function (y) { return "inset(0 0 " + Math.max(0, y + s / 2 - rim).toFixed(1) + "px 0)"; };
+		var done = function () { el.style.clipPath = ""; el.classList.add("is-in"); bin.inside.push(f); render(); wake(); };
+		if (REDUCED || !el.animate) { el.classList.add("is-in"); setTimeout(function () { bin.inside.push(f); render(); }, 150); return; }
+		var anim = el.animate([{ transform: tf(from, from.a), clipPath: clip(from.y) }, { transform: tf(to, a), clipPath: clip(to.y) }],
+			{ duration: 420, easing: "cubic-bezier(.45, 0, .85, .45)" });
+		el.style.transform = tf(to, a); el.style.clipPath = clip(to.y);
+		anim.onfinish = done;
+	}
 	// In at the opening of the upright bin: a file that comes to its rim from above goes in.
 	function catchIn() {
 		if (opening() > 0.35) return;
@@ -347,10 +361,10 @@
 			var b = f.body;
 			if (!b || (grab && grab.body === b)) return;
 			if (Math.abs(b.position.x - mouth.x) < G.bw * 0.34 && b.position.y < mouth.y + 6 && b.position.y > mouth.y - S && b.velocity.y > -1) {
+				var from = { x: b.position.x, y: b.position.y, a: b.angle };
 				M.Composite.remove(world, b);
 				f.body = null;
-				f.el.classList.add("is-in");
-				bin.inside.push(f);
+				sink(f, from, mouth, bin.angle);
 			}
 		});
 	}

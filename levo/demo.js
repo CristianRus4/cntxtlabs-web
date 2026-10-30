@@ -631,19 +631,10 @@
 	}
 	// Auto mode: Levo and the agent keep the limit free on their own, with what can always go.
 	function autoGroups() { return LEVO_DEMO.groups.filter(function (g) { return g.items.every(function (it) { return it.level === 1; }); }); }
-	// As the app (SummarySection.autoModeWords): two groups by name, or one and "N more".
+	// As the app (SummarySection.autoModeWords): "Auto mode keeps 5% free by cleaning what comes
+	// back on its own." No group chips.
 	function autoLine() {
-		var gs = autoGroups(), shown = gs.length <= 2 ? gs : gs.slice(0, 1), more = gs.length - shown.length;
-		var h = '<p class="lv-sline lv-autoline">' + chip("automode-open", "Auto mode") + w("keeps") + chip("automode-open", gb(S.disk.alert));
-		if (!gs.length) return h + w("free.") + "</p>";
-		h += w("free: it cleans");
-		var count = shown.length + (more > 0 ? 1 : 0);
-		shown.forEach(function (g, i) {
-			h += chip("chip", g.title, ' data-id="' + g.id + '"' + (S.openChips[g.id] ? ' data-lit=""' : ""), tile(g.tile, g.symbol, "chip"));
-			if (i === count - 2) h += w("and");
-		});
-		if (more > 0) h += chip("sumall", more + " more", S.showAll ? ' data-lit=""' : "");
-		return h + w("on its own.") + "</p>";
+		return '<p class="lv-sline lv-autoline">' + chip("automode-open", "Auto mode") + w("keeps") + chip("automode-open", "5%") + w("free by cleaning what comes back on its own.") + "</p>";
 	}
 	function setAuto(on) {
 		S.auto = !!on;
@@ -1911,7 +1902,7 @@
 				"- Holds anything a tool is still using",
 				"- Protected folders stay out of it",
 				"- Cleanup levels: careful, balanced, aggressive",
-				"- Auto mode keeps " + gb(S.disk.alert) + " free and cleans on its own",
+				"- Auto mode keeps 5% free by cleaning what comes back on its own",
 				"- No account, no server"
 			].join("\n") };
 		}
