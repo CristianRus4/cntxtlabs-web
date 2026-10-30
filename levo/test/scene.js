@@ -249,7 +249,7 @@
 
 	// ---------------------------------------------------------------- The story, on any engine
 
-	var bin = null, raf = 0, calm = 0, grab = null, started = false, frame = 0, hinge = null;
+	var bin = null, raf = 0, calm = 0, grab = null, started = false, frame = 0, hinge = null, leftWall = false;
 	var MAT = {
 		file: { friction: V.fFile, restitution: V.rFile, density: 1, damp: V.linDamp, angDamp: V.angDamp },
 		bin: { friction: V.fBin, restitution: V.rBin, density: V.binDensity, damp: V.linDamp * 0.5, angDamp: V.angDamp * 0.5 },
@@ -264,9 +264,9 @@
 		E.clearStatics();
 		var thick = 400;
 		E.addStaticBox(W / 2, G.floor + thick / 2, W * 3, thick, MAT.wall);
-		E.addStaticBox(-thick / 2, H / 2, thick, H * 4, MAT.wall);
+		if (!V.throw || leftWall) E.addStaticBox(-thick / 2, H / 2, thick, H * 4, MAT.wall);
 		E.addStaticBox(W + thick / 2, H / 2, thick, H * 4, MAT.wall);
-		E.addStaticBox(W / 2, -thick / 2 - H * 0.6, W * 3, thick, MAT.wall);
+		E.addStaticBox(W / 2, -thick / 2 - H * (V.throw ? 1.6 : 0.6), W * 3, thick, MAT.wall);
 		G.glyphs.forEach(function (g) {
 			if (!g.profile || g.profile.length < 2) return;
 			var up = lift(), raise = function (p) { return { x: p.x, y: p.y - up }; };
@@ -310,7 +310,7 @@
 	// Out through the opening: each file appears inside the bin just within the rim (deeper when the
 	// last is still leaving), where it overlaps nothing, with the bin's own velocity there, a nudge
 	// and a little spin. "pile" releases every file that fits at once; "stagger" one at a time.
-	function release(burst) {
+	function release(burst, carry) {
 		var f = bin.inside[0], c = E.pos(bin), a = E.angle(bin), fh = S * f.h, fw = S * f.w, p = null;
 		var room = Math.max(0, (G.bw - 2 * G.wall - fw) / 2), deep = Math.max(0, G.bh - 2 * G.wall - fh);
 		for (var t = 0, n = burst ? 12 : 6; t < n && !p; t++) {
@@ -324,7 +324,8 @@
 		f.body = E.addBox(fw, fh, p.x, p.y, a + (Math.random() - 0.5) * 0.2, MAT.file);
 		var fan = (Math.random() - 0.5) * (burst ? 0.8 : 0.5), out = local(a, { x: Math.sin(fan), y: -Math.cos(fan) });
 		var push = (burst ? 3.4 + Math.random() * 2.2 : 1.2 + Math.random() * 1.6) * V.push;
-		E.setVel(f.body, { x: bv.x + out.x * push, y: bv.y + out.y * push - (burst ? 1.6 : 0) });
+		var k = carry ? (V.fling || 0.6) : 0, cx = carry ? carry.x * k : 0, cy = carry ? carry.y * k : 0;
+		E.setVel(f.body, { x: bv.x + out.x * push + cx, y: bv.y + out.y * push - (burst ? 1.6 : 0) + cy });
 		E.setSpin(f.body, E.spin(bin) * 0.6 + (Math.random() - 0.5) * (burst ? 0.24 : 0.12));
 		f.body.calmUntil = frame + 30;
 		f.el.classList.remove("is-in");
@@ -334,6 +335,14 @@
 	// rim (landEvery frames apart) instead of giving up when the opening is crowded.
 	function lyingTipped() { return V.keepPour && bin.jolt && opening() >= V.keepPour * Math.PI / 180; }
 	function pour() {
+		if (V.throw && !bin.jolt) return;
+		// The fling: just after a thrown bin first hits, its files carry on with the speed it had, out
+		// through the opening whatever its angle, a couple of frames apart.
+		var fling = V.throw && bin.fling && frame < bin.fling.until;
+		if (fling && bin.inside.length && frame - (bin.poured || 0) >= (V.flingEvery || 2)) {
+			if (release(true, bin.fling.v)) { bin.poured = frame; bin.blocked = 0; }
+			return;
+		}
 		var burst = bin.jolt && frame - bin.jolt < 70, every = lyingTipped() && !burst ? (V.landEvery || EVERY) : EVERY;
 		if (!bin.inside.length || opening() < POUR || frame - (bin.poured || 0) < (burst ? 3 : every)) return;
 		var n = 0;
@@ -380,6 +389,18 @@
 		E.passOverL(bin, true);
 		// And a tiny rightward drift, so no engine's solver can hold it balanced at the top.
 		E.setSpin(bin, 0.0005);
+	}
+	// The throw (V.throw): from off the left edge (run px further out at 1440 wide, so it arrives with
+	// speed), h bin-heights above the L's top, on an arc
+	// that comes down on the L in T frames; aim moves the point it's aimed at towards the L's right
+	// shoulder, so the hit sends it on over "evo". A little tilt and spin.
+	function throwIn() {
+		var th = V.throw, x0 = -G.bw * 0.7 - (th.run || 0) * G.F / 576, y0 = G.stemTop - G.bh * th.h, tx = G.stemX + G.stemW * (th.aim || 0), ty = G.stemTop - G.bh / 2 - lift() - 2;
+		var g = V.gravity / 3600, T = th.T;
+		E.setPose(bin, x0, y0, th.tilt || -0.15);
+		E.setVel(bin, { x: (tx - x0) / T, y: (ty - y0 - 0.5 * g * T * T) / T });
+		E.setSpin(bin, th.spin || 0);
+		E.wake(bin);
 	}
 	function letGo() {
 		if (!hinge) return;
@@ -455,9 +476,13 @@
 		settle();
 		// While it leans on its hinge the bin moves too slowly for some engines not to put it to sleep.
 		if (hinge) E.wake(bin);
-		var was = E.speed(bin);
+		// Once a thrown bin is in, the left wall goes up behind it.
+		if (V.throw && !leftWall && E.pos(bin).x > G.bw) { leftWall = true; E.addStaticBox(-200, H / 2, 400, H * 4, MAT.wall); }
+		var was = E.speed(bin), wasV = E.vel(bin);
 		E.step();
-		if (!hinge && was > 3 && was - E.speed(bin) > 2.2) {
+		// An impact: the bin suddenly slows (a glancing hit counts sooner for a thrown one).
+		if (!hinge && was > 3 && was - E.speed(bin) > (V.throw ? 1.2 : 2.2)) {
+			if (V.throw && !bin.jolt) bin.fling = { until: frame + (V.flingFrames || 24), v: wasV };
 			bin.jolt = frame; hop();
 			// rock: on its first landing it rocks once further over, so the last few tumble out.
 			if (V.rock && !bin.rocked) { bin.rocked = true; var a = E.angle(bin); E.setSpin(bin, E.spin(bin) + V.rock * (a >= 0 ? 1 : -1)); }
@@ -498,10 +523,11 @@
 	}
 	function setup() {
 		E.create(V);
+		if (V.throw) stage.style.clipPath = "inset(-" + Math.round(H * 1.6) + "px 0 0 0)";
 		buildStatics();
 		bin = E.addBin(G.binX, G.binY, G.bw, G.bh, G.wall, MAT.bin);
 		bin.inside = files.slice();
-		lean();
+		if (V.throw) throwIn(); else lean();
 		wire(binEl, function () { return bin; });
 		files.forEach(function (f) { wire(f.el, function () { return f.body; }); });
 		binEl.addEventListener("dblclick", standUp);
