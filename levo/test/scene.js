@@ -19,7 +19,14 @@
 	var REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 	var E = window.LF_ENGINE, V = window.LF_VARIANT;
 	if (!E || !V) return;
-	var BIN = { empty: "img/dock/trash-empty.png", full: "img/dock/trash-full.png" };
+	// macOS's Trash, empty or full, in the page's appearance (img/dock/trash-*-dark.png are its dark
+	// renders); a theme change swaps the image in place. The documents and folder look the same in
+	// both appearances in macOS, so they have one image each.
+	var binFull = true;
+	function binSrc(full) {
+		binFull = full;
+		return "img/dock/trash-" + (full ? "full" : "empty") + (document.documentElement.classList.contains("dark") ? "-dark" : "") + ".png";
+	}
 	var FACE = 'ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
 	// The L's foot is under the page's edge, so "evo" sits closer to its stem than the face spaces it.
 	var WORD = "Levo", TRACK = -0.045, KERN_L = -0.3;
@@ -170,7 +177,7 @@
 	}
 	// Reduced motion: the bin on its side on top of the L, files on "evo" (one in the v's notch) and the floor.
 	function lieStill() {
-		binEl.src = BIN.empty;
+		binEl.src = binSrc(false);
 		place(binEl, G.stemX + G.bh * 0.1, G.stemTop - G.bw / 2, Math.PI / 2, SB);
 		var spots = [];
 		[1, 2, 3].forEach(function (k) {
@@ -187,7 +194,7 @@
 	}
 	// Before it plays: the bin upright and full on the L.
 	function poseStart() {
-		binEl.src = BIN.full;
+		binEl.src = binSrc(true);
 		place(binEl, G.binX, G.binY, 0, SB);
 	}
 
@@ -346,7 +353,7 @@
 		var c = E.pos(bin);
 		place(binEl, c.x, c.y, E.angle(bin), SB);
 		files.forEach(function (f) { if (f.body) { var p = E.pos(f.body); place(f.el, p.x, p.y, E.angle(f.body), S); } });
-		var src = bin.inside.length ? BIN.full : BIN.empty;
+		var src = binSrc(!!bin.inside.length);
 		if (binEl.getAttribute("src") !== src) binEl.setAttribute("src", src);
 	}
 	function still() {
@@ -448,7 +455,7 @@
 	if (REDUCED) stage.classList.add("lf-still");
 	if (window.ResizeObserver) new ResizeObserver(onResize).observe(stage);
 	else window.addEventListener("resize", onResize);
-	if (window.MutationObserver) new MutationObserver(function () { if (G) drawWord(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+	if (window.MutationObserver) new MutationObserver(function () { if (G) drawWord(); binEl.setAttribute("src", binSrc(binFull)); }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 	if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { relayout(true); });
 	E.load();
 	new IntersectionObserver(function (es, io) {

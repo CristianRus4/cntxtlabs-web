@@ -9,8 +9,8 @@
 	<base href="../">
 	<link rel="icon" href="../favicon.svg" type="image/svg+xml">
 	<script>(function (r) { r.classList.add("js"); var t = /[?&]theme=(light|dark)\b/.exec(location.search); if (t ? t[1] === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) r.classList.add("dark"); })(document.documentElement);</script>
-	<link rel="stylesheet" href="levo.css?v=38">
-	<link rel="stylesheet" href="footer.css?v=38">
+	<link rel="stylesheet" href="levo.css?v=39">
+	<link rel="stylesheet" href="footer.css?v=39">
 	<style>
 		.pt-bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; padding: 14px 16px; font-size: 14px; color: var(--muted); background: var(--bg); }
 		.pt-bar select, .pt-bar button, .pt-seg a { font: inherit; font-weight: 500; color: var(--text); background: rgb(var(--ink) / 0.06); border: 0; border-radius: 9px; padding: 7px 12px; text-decoration: none; cursor: pointer; }
@@ -47,7 +47,7 @@
 		</div>
 	</footer>
 
-	<script src="test/variants.js?v=38"></script>
+	<script src="test/variants.js?v=39"></script>
 	<script>
 		// One variant at a time: its number and the theme live in the address; switching or Replay
 		// reloads, so only the chosen engine is ever loaded and every run starts clean.
@@ -94,7 +94,7 @@
 			};
 			window.LF_VARIANT = V;
 			function load(src, done) { var s = document.createElement("script"); s.src = src; s.onload = done; document.body.appendChild(s); }
-			load("test/engines/common.js?v=38", function () { load("test/engines/" + V.engine + ".js?v=38", function () { t0 = performance.now(); load("test/scene.js?v=38"); }); });
+			load("test/engines/common.js?v=39", function () { load("test/engines/" + V.engine + ".js?v=39", function () { t0 = performance.now(); load("test/scene.js?v=39"); }); });
 		})();
 	</script>
 </body>

@@ -75,6 +75,25 @@ for (name, image) in [("trash-empty", NSImage(contentsOfFile: core + "TrashIcon.
     if let png = rep.representation(using: .png, properties: [:]) { try? png.write(to: out.appendingPathComponent(name + ".png")); print("wrote img/dock/\(name).png") }
 }
 
+// The Trash's dark renders (trash-empty-dark.png, trash-full-dark.png): AppKit's named Trash images
+// drawn with the app in the dark appearance, at the same 128 pt @2x. The CoreTypes .icns above has
+// no dark artwork; the named images do. (Documents and folders look the same in both in macOS.)
+for (name, image) in [("trash-empty", NSImage(named: NSImage.trashEmptyName)), ("trash-full", NSImage(named: NSImage.trashFullName))] {
+    guard let image else { continue }
+    NSApplication.shared.appearance = NSAppearance(named: .darkAqua)
+    let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 256, pixelsHigh: 256, bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true,
+                               isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
+    rep.size = NSSize(width: 128, height: 128)
+    NSGraphicsContext.saveGraphicsState()
+    NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
+    NSGraphicsContext.current?.imageInterpolation = .high
+    NSAppearance(named: .darkAqua)!.performAsCurrentDrawingAppearance {
+        image.draw(in: NSRect(x: 0, y: 0, width: 128, height: 128), from: .zero, operation: .copy, fraction: 1)
+    }
+    NSGraphicsContext.restoreGraphicsState()
+    if let png = rep.representation(using: .png, properties: [:]) { try? png.write(to: out.appendingPathComponent(name + "-dark.png")); print("wrote img/dock/\(name)-dark.png") }
+}
+
 // The mounted "Levo" disk image on the desktop: macOS's removable volume icon with
 // Levo's app icon centred on it, as app disk images do, in light and dark.
 typealias InitIcns = @convention(c) (AnyObject, Selector, NSURL) -> AnyObject

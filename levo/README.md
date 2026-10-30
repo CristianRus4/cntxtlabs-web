@@ -316,6 +316,11 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   usually ends nearly empty; the v is two bars, so its notch can
   catch one. With no free spot, the rest stay in. A file dropped into the
   upright bin goes in, and the bin turns full.
+- The footer's Trash follows the page's appearance: img/dock/trash-empty-dark.png
+  and trash-full-dark.png are macOS's own dark renders (AppKit's named Trash
+  images in the dark appearance; tools/export-dock-icons.swift), swapped in
+  place on a theme change. macOS draws documents and folders the same in both
+  appearances, so the files keep one image each.
 - Everything is grabbed at the exact point under the pointer (a soft spring
   with a little damping), so things hang and swing; mouse and touch alike. A
   gentle settle tips anything at rest onto its nearest flat side. Double-click
