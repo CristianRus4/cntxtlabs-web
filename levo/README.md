@@ -258,10 +258,10 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   along the arc, set as each line's stroke.
 - "Click here": "click" over "here" in handwriting above the simulator, turned
   about 10 degrees anticlockwise, three short rays on each side in the same ink,
-  and an arrow that leaves from just under the middle of "here", heads down,
-  then curves right and down to Levo's menubar mark (levo.js places the tip).
-  Strokes stay hidden until the cue appears, then words, rays and arrow draw
-  on together at once (0.7 s) and pulse together;
+  and an arrow that leaves from just right of "here", runs right with a gentle
+  fall, then curves down to Levo's menubar mark (levo.js places the tip).
+  Strokes stay hidden until they draw: the words and rays write themselves in
+  (0.6 s), the arrow follows straight on (0.7 s), then it all pulses gently;
   it fades once the icon is clicked.
 - Levo is running in the dock from the start. Elevate and Amply sit in the dock, closed (no running dot). Clicking either
   opens its own installer window, like Levo's (the app and Applications; front

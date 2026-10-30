@@ -281,10 +281,11 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 .first { padding-top: 104px; }
 
 /* "Click here": "click" over "here" in handwriting, turned a little anticlockwise, a few rays
-   around it in the same ink, and a short soft arc from just under "here" to Levo in the simulator's
-   menubar. Words, rays and arrow draw on together, then pulse together; it fades once the visitor
-   has clicked Levo. levo.js places the arrow's tip over the icon. */
-.cue { position: absolute; z-index: 5; top: 6px; left: 0; width: 130px; height: 100px; pointer-events: none; opacity: 0; transition: opacity .5s ease; transform-origin: 40% 40%; }
+   around it in the same ink, then an arrow from just right of "here" that runs right and curves
+   down to Levo in the simulator's menubar. The words and rays write themselves in, the arrow
+   follows straight on, then it all pulses gently; it fades once the visitor has clicked Levo.
+   levo.js places the arrow's tip over the icon. */
+.cue { position: absolute; z-index: 5; top: 6px; left: 0; width: 170px; height: 100px; pointer-events: none; opacity: 0; transition: opacity .5s ease; transform-origin: 40% 40%; }
 .cue.is-placed { opacity: 1; transition-duration: 0s; }
 .cue.is-done { opacity: 0; transition-duration: .4s; }
 .cue-word { position: absolute; left: 0; top: 0; width: 100px; height: 42px; transform: rotate(-10deg); }
@@ -292,10 +293,13 @@ li:nth-child(3n) .chip-p { color: #A485FF; }
 .cue-svg, .cue-rays { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
 /* Hidden until the pen starts (no round-cap dots waiting), then all of it draws at once. */
 .cue-svg path, .cue-rays path { fill: none; stroke: var(--text); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 2; stroke-dashoffset: 1; opacity: 0; }
-.cue.is-placed .cue-svg path, .cue.is-placed .cue-rays path { animation: cue-draw .7s cubic-bezier(.3, .7, .4, 1) forwards; }
+.cue.is-placed .cue-rays path { animation: cue-draw .6s cubic-bezier(.3, .7, .4, 1) both; }
 .cue-t { clip-path: inset(0 100% 0 0); }
-.cue.is-placed .cue-t { animation: cue-write .7s cubic-bezier(.3, .7, .4, 1) forwards; }
-.cue.is-placed { animation: cue-pulse 3.2s ease-in-out 1s infinite; }
+.cue.is-placed .cue-t { animation: cue-write .6s cubic-bezier(.3, .7, .4, 1) both; }
+/* The arrow, straight after the words: the line, then its head, 0.7 s in all. */
+.cue.is-placed .cue-line { animation: cue-draw .55s cubic-bezier(.4, .1, .45, 1) .6s both; }
+.cue.is-placed .cue-head { animation: cue-draw .15s ease-out 1.15s both; }
+.cue.is-placed { animation: cue-pulse 3.2s ease-in-out 1.4s infinite; }
 @keyframes cue-draw { from { stroke-dashoffset: 1; opacity: 1; } to { stroke-dashoffset: 0; opacity: 1; } }
 @keyframes cue-write { to { clip-path: inset(0 0 0 0); } }
 @keyframes cue-pulse { 0%, 100% { translate: 0 0; scale: 1; } 50% { translate: 0 5px; scale: 1.05; } }
