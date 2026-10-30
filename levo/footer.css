@@ -42,6 +42,9 @@ html.dark .lf-word { color: rgb(var(--ink) / 0.15); }
    face that softens downwards, all fading out towards the page's edge; and soft contact shadows. */
 .lf-word { --lf-front: #DADADD; --lf-front-low: #E9E9EB; --lf-ledge: #ECECEE; --lf-edge: #F8F8F9; }
 html.dark .lf-word { --lf-front: #232326; --lf-front-low: #151517; --lf-ledge: #303035; --lf-edge: #3D3D43; }
+/* D1 (the physics test): one light from the top-left; tops lightest, faces turned away darker. */
+.lf-word { --d1-top: #F2F2F4; --d1-side: #CFCFD4; --d1-front: #E1E1E4; --d1-front-low: #ECECEE; --d1-edge: #FFFFFF; }
+html.dark .lf-word { --d1-top: #3B3B41; --d1-side: #18181B; --d1-front: #26262A; --d1-front-low: #131315; --d1-edge: #5A5A62; }
 .lf-shadow { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0)); will-change: transform, opacity; }
 /* The carried bin's hand (the physics test): macOS's open and closed hand cursors. */
 .lf-hand { position: absolute; left: 0; top: 0; z-index: 3; width: 32px; height: 32px; pointer-events: none; opacity: 0; transition: opacity .3s ease; }

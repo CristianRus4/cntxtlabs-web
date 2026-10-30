@@ -132,7 +132,9 @@
 	// The same glyphs, drawn at the same place in the ink of .lf-word (footer.css), strong at the
 	// letters' top and fading to nothing at the page's bottom edge.
 	// Depth (V.depth): how thick the ledge on top of the letters looks, in pixels.
-	function ledge() { return (V.depth || V.look === "d1") && G ? Math.max(4, Math.min(20, Math.round(G.F * 0.035))) : 0; }
+	function ledge() { return V.look === "d1" && G ? Math.max(4, Math.min(20, Math.round(G.F * 0.035))) : 0; }
+	// The extrusion's direction on screen, per pixel of depth: back, so up and a little to the right.
+	var UX = 0.35, UY = -1;
 	// How far up the colliders sit, so things stand on the middle of that ledge, not in front of it.
 	function lift() { return Math.round(ledge() * 0.55); }
 	function drawWord() {
@@ -153,32 +155,65 @@
 			G.glyphs.forEach(function (g) { c.fillText(g.ch, g.x, G.base); });
 			return;
 		}
-		// The block: the ledge (copies stepping back and up), a one-pixel lit front edge, then the
-		// front face over them; drawn solid off screen, then faded towards the page's bottom.
-		var off = document.createElement("canvas");
-		off.width = word.width; off.height = word.height;
-		var o = off.getContext("2d");
-		o.setTransform(dpr, 0, 0, dpr, 0, 0);
-		o.font = font(G.F);
-		o.fillStyle = css.getPropertyValue("--lf-ledge").trim();
-		for (var k = d; k >= 1; k--) G.glyphs.forEach(function (g) { o.fillText(g.ch, g.x, G.base - k); });
-		o.fillStyle = css.getPropertyValue("--lf-edge").trim();
-		G.glyphs.forEach(function (g) { o.fillText(g.ch, g.x, G.base - 1); });
-		var face = o.createLinearGradient(0, top + d, 0, H);
-		face.addColorStop(0, css.getPropertyValue("--lf-front").trim());
-		face.addColorStop(1, css.getPropertyValue("--lf-front-low").trim());
-		o.fillStyle = face;
-		G.glyphs.forEach(function (g) { o.fillText(g.ch, g.x, G.base); });
-		o.setTransform(1, 0, 0, 1, 0, 0);
-		o.globalCompositeOperation = "destination-in";
-		var fadeOut = o.createLinearGradient(0, top * dpr, 0, H * dpr);
-		fadeOut.addColorStop(0, "rgba(0,0,0,1)");
-		fadeOut.addColorStop(0.35, "rgba(0,0,0,0.85)");
-		fadeOut.addColorStop(1, "rgba(0,0,0,0)");
-		o.fillStyle = fadeOut;
-		o.fillRect(0, 0, off.width, off.height);
+		litBlock(c, css, top, d, dpr);
+	}
+	function hexRGB(h) { h = h.trim().replace("#", ""); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
+	// D1: the letters as blocks lit by one light from the top-left. The front face is a smooth vertical
+	// gradient; each pixel of the extrusion takes the light of the edge it was pushed back from (its
+	// outward normal against the light), so tops come out lightest and faces turned away darker; a fine
+	// highlight runs along the edges that face the light. Then it all fades towards the page's bottom.
+	function litBlock(c, css, top, d, dpr) {
+		var w = word.width, h = word.height, D = Math.round(d * dpr), font2 = font(G.F * dpr);
+		var mask = document.createElement("canvas"); mask.width = w; mask.height = h;
+		var m = mask.getContext("2d", { willReadFrequently: true });
+		m.font = font2; m.fillStyle = "#000";
+		G.glyphs.forEach(function (g) { m.fillText(g.ch, g.x * dpr, G.base * dpr); });
+		var A = m.getImageData(0, 0, w, h).data;
+		var stack = document.createElement("canvas"); stack.width = w; stack.height = h;
+		var st = stack.getContext("2d", { willReadFrequently: true });
+		for (var k = 0; k <= D; k++) st.drawImage(mask, Math.round(k * UX), Math.round(k * UY));
+		var B = st.getImageData(0, 0, w, h).data;
+		var C = { top: hexRGB(css.getPropertyValue("--d1-top")), side: hexRGB(css.getPropertyValue("--d1-side")), front: hexRGB(css.getPropertyValue("--d1-front")),
+			low: hexRGB(css.getPropertyValue("--d1-front-low")), edge: hexRGB(css.getPropertyValue("--d1-edge")) };
+		var Lx = -0.45, Ly = -0.89, out = c.createImageData(w, h), O = out.data, y0 = Math.max(0, Math.floor(top * dpr) - D - 2);
+		function a(x, y) { return x < 0 || y < 0 || x >= w || y >= h ? 0 : A[(y * w + x) * 4 + 3]; }
+		// The outward normal from the mask's gradient, over a 5 px window so edges read smoothly.
+		function normal(x, y) {
+			var gx = 0, gy = 0;
+			for (var j = -2; j <= 2; j++) for (var i2 = -2; i2 <= 2; i2++) { gx += a(x + i2 + 1, y + j) - a(x + i2 - 1, y + j); gy += a(x + i2, y + j + 1) - a(x + i2, y + j - 1); }
+			var l = Math.hypot(gx, gy);
+			return l ? { x: -gx / l, y: -gy / l, l: l / 25 } : null;
+		}
+		function mix(p, q, t) { return [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t, p[2] + (q[2] - p[2]) * t]; }
+		var span = Math.max(1, h - y0);
+		for (var y = y0; y < h; y++) {
+			var fade = Math.max(0, 1 - Math.pow((y - y0) / span, 1.4)), front = mix(C.front, C.low, (y - y0) / span);
+			for (var x = 0; x < w; x++) {
+				var i = (y * w + x) * 4, af = A[i + 3], ab = B[i + 3], col = null, alpha = 0;
+				if (af > 8) {
+					col = front; alpha = af;
+					var n = normal(x, y);
+					if (n && n.l > 40) { var lit = n.x * Lx + n.y * Ly; if (lit > 0.2) col = mix(col, C.edge, Math.min(1, (lit - 0.2) * 1.1) * 0.8); }
+				}
+				if (ab > 8 && af < 250) {
+					// Back along the extrusion to the edge this pixel was pushed from.
+					var shade = null;
+					for (var s2 = 1; s2 <= D + 1; s2++) {
+						var qx = Math.round(x - s2 * UX), qy = Math.round(y - s2 * UY);
+						if (a(qx, qy) > 100) { var nn = normal(qx, qy) || normal(qx, qy - 1) || { x: 0, y: -1 }; shade = Math.max(0, Math.min(1, (nn.x * Lx + nn.y * Ly + 0.45) / 1.35)) * (1 - 0.12 * s2 / (D + 1)); break; }
+					}
+					if (shade === null) shade = 0.6;
+					var band = mix(C.side, C.top, shade);
+					// Solid inside the band (the stepped copies' soft edges would stripe it); soft at its rim.
+					var ba = ab > 120 ? 255 : ab * 2;
+					if (col) { var t = af / 255; col = mix(band, col, t); alpha = Math.max(af, ba); } else { col = band; alpha = ba; }
+				}
+				if (!col) continue;
+				O[i] = col[0]; O[i + 1] = col[1]; O[i + 2] = col[2]; O[i + 3] = alpha * fade;
+			}
+		}
 		c.setTransform(1, 0, 0, 1, 0, 0);
-		c.drawImage(off, 0, 0);
+		c.putImageData(out, 0, 0);
 	}
 	// The resting surface under x: the top of the letters' colliders there, or the floor.
 	function surfaceAt(x) {
@@ -269,7 +304,7 @@
 		E.addStaticBox(W / 2, -thick / 2 - H * (V.throw || V.carry ? 1.6 : 0.6), W * 3, thick, MAT.wall);
 		G.glyphs.forEach(function (g) {
 			if (!g.profile || g.profile.length < 2) return;
-			var up = lift(), raise = function (p) { return { x: p.x, y: p.y - up }; };
+			var up = lift(), raise = function (p) { return { x: p.x + up * UX, y: p.y + up * UY }; };
 			var outline = [{ x: g.profile[0].x, y: G.floor + 80 }].concat(g.profile.map(raise), [{ x: g.profile[g.profile.length - 1].x, y: G.floor + 80 }]);
 			E.addLetter(outline, g.hulls.map(function (h) { return h.map(function (p) { return p.y < G.floor ? raise(p) : p; }); }), MAT.letter, g.ch === "L");
 		});
@@ -608,7 +643,7 @@
 	function relayout(force) {
 		var oldW = W, oldH = H, old = G;
 		geometry();
-		G.binY -= lift();
+		G.binY -= lift(); G.binX += lift() * UX;
 		if (!force && oldW && W === oldW && H === oldH) return;
 		drawWord();
 		if (REDUCED) { lieStill(); return; }
