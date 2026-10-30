@@ -238,7 +238,7 @@
 			if (Math.abs(lx) > G.bw / 2 || ly > -G.bh * 0.1 || ly < -G.bh / 2 - S * 1.7) return;
 			var v = E.vel(b), along = v.x * out.x + v.y * out.y;
 			b.spilled = (b.spilled || 0) + 1;
-			if (along < 3.4 && b.spilled < 180) { E.wake(b); E.setVel(b, { x: v.x + out.x * 0.35 * V.spill, y: v.y + out.y * 0.35 * V.spill - 0.3 * V.spill }); }
+			if (along < 3.4 && b.spilled < (lyingTipped() ? 420 : 180)) { E.wake(b); E.setVel(b, { x: v.x + out.x * 0.35 * V.spill, y: v.y + out.y * 0.35 * V.spill - 0.3 * V.spill }); }
 		});
 	}
 	// The landing jolt: what sits in the opening carries on out with a little hop.
@@ -280,9 +280,12 @@
 		f.el.classList.remove("is-in");
 		return true;
 	}
+	// keepPour: once it has landed and lies tipped past that angle, it keeps releasing the rest at the
+	// rim (landEvery frames apart) instead of giving up when the opening is crowded.
+	function lyingTipped() { return V.keepPour && bin.jolt && opening() >= V.keepPour * Math.PI / 180; }
 	function pour() {
-		var burst = bin.jolt && frame - bin.jolt < 70;
-		if (!bin.inside.length || opening() < POUR || frame - (bin.poured || 0) < (burst ? 3 : EVERY)) return;
+		var burst = bin.jolt && frame - bin.jolt < 70, every = lyingTipped() && !burst ? (V.landEvery || EVERY) : EVERY;
+		if (!bin.inside.length || opening() < POUR || frame - (bin.poured || 0) < (burst ? 3 : every)) return;
 		var n = 0;
 		do { if (release(burst)) n++; else break; } while (V.pour === "pile" && bin.inside.length);
 		if (!n) { bin.blocked = (bin.blocked || 0) + 1; return; }
@@ -371,14 +374,19 @@
 		if (hinge) E.wake(bin);
 		var was = E.speed(bin);
 		E.step();
-		if (!hinge && was > 3 && was - E.speed(bin) > 2.2) { bin.jolt = frame; hop(); }
+		if (!hinge && was > 3 && was - E.speed(bin) > 2.2) {
+			bin.jolt = frame; hop();
+			// rock: on its first landing it rocks once further over, so the last few tumble out.
+			if (V.rock && !bin.rocked) { bin.rocked = true; var a = E.angle(bin); E.setSpin(bin, E.spin(bin) + V.rock * (a >= 0 ? 1 : -1)); }
+		}
 		capSpeeds();
 		if (hinge && (Math.abs(E.angle(bin)) > 0.3 || grab)) letGo();
 		pour();
 		spill();
 		catchIn();
 		render();
-		calm = still() && !grab && !hinge && !(bin.inside.length && opening() >= POUR && (bin.blocked || 0) < 240) ? calm + 1 : 0;
+		var patience = lyingTipped() ? 900 : 240;
+		calm = still() && !grab && !hinge && !(bin.inside.length && opening() >= POUR && (bin.blocked || 0) < patience) ? calm + 1 : 0;
 		if (calm > 30 && frame > 120) { raf = 0; if (window.LF_STATS) LF_STATS.rest(frame); return; }
 		raf = requestAnimationFrame(tick);
 	}

@@ -21,7 +21,15 @@
 	function t(o) { var x = {}; for (var k in B3) x[k] = B3[k]; for (var j in o) x[j] = o[j]; return x; }
 	function m(o) { var r = {}; for (var k in MATTER) r[k] = MATTER[k]; for (var j in o) r[j] = o[j]; return r; }
 	function b(o) { var r = {}; for (var k in BOX) r[k] = BOX[k]; for (var j in o) r[j] = o[j]; return r; }
+	// Built on #7 (Planck · heavy bin, slow pour): the same engine, weight and lean, each pouring more.
+	var SEVEN = { binDensity: 6, pourEvery: 9, push: 0.7, hop: 0.6 };
+	function s7(o) { var x = {}; for (var k in SEVEN) x[k] = SEVEN[k]; for (var j in o) x[j] = o[j]; return b(x); }
 	window.LF_VARIANTS = [
+		v("planck", "7a · faster pour", s7({ pourEvery: 4, push: 1 })),
+		v("planck", "7b · keeps pouring after it lands", s7({ pourEvery: 4, push: 1, keepPour: 60, landEvery: 6, spill: 1.3 })),
+		v("planck", "7c · starts earlier, stronger hop", s7({ pourEvery: 4, push: 1, keepPour: 60, landEvery: 6, spill: 1.3, pourDeg: 35, hop: 1 })),
+		v("planck", "7d · rocks once on landing", s7({ pourEvery: 4, push: 1, keepPour: 60, landEvery: 6, spill: 1.3, pourDeg: 35, hop: 1, rock: 0.05 })),
+		v("planck", "7e · most generous", s7({ pourEvery: 4, push: 1.15, keepPour: 50, landEvery: 4, spill: 1.8, pourDeg: 35, hop: 1.2, rock: 0.06 })),
 		v("matter", "Matter · today's footer", m({})),
 		v("matter", "Matter · settles and sleeps", m({ sleep: true, sleepFrames: 40, substeps: 2, posIter: 14, velIter: 10 })),
 		v("matter", "Matter · heavy bin, slow pour", m({ binDensity: 4, pourEvery: 9, push: 0.7, hop: 0.5 })),

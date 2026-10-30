@@ -9,8 +9,8 @@
 	<base href="../">
 	<link rel="icon" href="../favicon.svg" type="image/svg+xml">
 	<script>(function (r) { r.classList.add("js"); var t = /[?&]theme=(light|dark)\b/.exec(location.search); if (t ? t[1] === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) r.classList.add("dark"); })(document.documentElement);</script>
-	<link rel="stylesheet" href="levo.css?v=39">
-	<link rel="stylesheet" href="footer.css?v=39">
+	<link rel="stylesheet" href="levo.css?v=40">
+	<link rel="stylesheet" href="footer.css?v=40">
 	<style>
 		.pt-bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; padding: 14px 16px; font-size: 14px; color: var(--muted); background: var(--bg); }
 		.pt-bar select, .pt-bar button, .pt-seg a { font: inherit; font-weight: 500; color: var(--text); background: rgb(var(--ink) / 0.06); border: 0; border-radius: 9px; padding: 7px 12px; text-decoration: none; cursor: pointer; }
@@ -20,6 +20,7 @@
 		.pt-seg a[aria-current] { background: var(--bg); color: var(--text); box-shadow: 0 1px 3px rgb(0 0 0 / 0.12); }
 		.pt-stat { width: 100%; text-align: center; font-size: 13px; font-variant-numeric: tabular-nums; }
 		.pt-gap { height: 34vh; }
+		.pt-count { position: fixed; right: 16px; bottom: 16px; z-index: 10; padding: 8px 12px; border-radius: 10px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text); background: rgb(var(--ink) / 0.08); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 	</style>
 </head>
 <body>
@@ -32,6 +33,7 @@
 		<span class="pt-stat" data-stat>type a number or ← → to switch · R to replay</span>
 	</div>
 	<div class="pt-gap"></div>
+	<div class="pt-count" data-count aria-live="polite">0 of 9 out</div>
 
 	<footer class="foot lf" data-lf>
 		<nav class="lf-links" aria-label="Levo">
@@ -47,7 +49,7 @@
 		</div>
 	</footer>
 
-	<script src="test/variants.js?v=39"></script>
+	<script src="test/variants.js?v=40"></script>
 	<script>
 		// One variant at a time: its number and the theme live in the address; switching or Replay
 		// reloads, so only the chosen engine is ever loaded and every run starts clean.
@@ -82,6 +84,9 @@
 			});
 			var stat = document.querySelector("[data-stat]"), t0 = 0, rested = false;
 			function count() { return document.querySelectorAll(".lf-item:not(.is-in)").length + " of " + document.querySelectorAll(".lf-item").length + " out"; }
+			// The corner: how many files have left the bin, live, so runs compare at a glance.
+			var corner = document.querySelector("[data-count]");
+			setInterval(function () { corner.textContent = count(); }, 250);
 			// Engines that never quite settle say so, rather than leaving the line blank.
 			setInterval(function () { if (!rested && t0 && performance.now() - t0 > 10000) stat.textContent = V.name + " · still moving after " + Math.round((performance.now() - t0) / 1000) + " s · " + count() + " · number or ← → · R to replay"; }, 1000);
 			window.LF_STATS = {
@@ -94,7 +99,7 @@
 			};
 			window.LF_VARIANT = V;
 			function load(src, done) { var s = document.createElement("script"); s.src = src; s.onload = done; document.body.appendChild(s); }
-			load("test/engines/common.js?v=39", function () { load("test/engines/" + V.engine + ".js?v=39", function () { t0 = performance.now(); load("test/scene.js?v=39"); }); });
+			load("test/engines/common.js?v=40", function () { load("test/engines/" + V.engine + ".js?v=40", function () { t0 = performance.now(); load("test/scene.js?v=40"); }); });
 		})();
 	</script>
 </body>
