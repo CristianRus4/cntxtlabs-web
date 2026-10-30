@@ -18,8 +18,8 @@
 		download: "[DOWNLOAD LINK]",
 		buy: "https://buy.polar.sh/polar_cl_ACu47aORELy2GDDlJLR8s8ygIUCYfSlPLDwVu0696R3",
 		agents: "https://cntxtlabs.co/levo/agents.md",
-		privacy: "[PRIVACY LINK]",
-		terms: "[TERMS LINK]",
+		privacy: "../levo/legal/#privacy",
+		terms: "../levo/legal/#terms",
 		team: "5X94H5ZCD4"
 	};
 

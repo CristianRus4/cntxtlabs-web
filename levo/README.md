@@ -239,9 +239,10 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
   Undo puts the last move to the Trash back. The demo's user is Alex Rivers.
 - The notification has 18 px corners and macOS's round close button on hover.
   Control Centre has no Auto mode. Mail in the dock writes to support.
-- The footer: support, Privacy, Terms and Cntxt Labs, small, over a huge faint
-  "Levo" the page's bottom edge clips. Privacy and Terms are placeholders in
-  levo.js until their pages exist.
+- The footer: Cntxt Labs, Contact (a support email), Privacy and Terms, small,
+  over a huge faint "Levo" the page's bottom edge clips. Privacy and Terms are
+  one page, levo/legal/ (#privacy, #terms), in the site's own text layout,
+  drafted from how the app works; it needs the owner's or a lawyer's review.
 
 - The tiles: each tile is the component on top, then a title and one line at
   its bottom-leading corner, the same in every tile, over a soft wash of its
