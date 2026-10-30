@@ -15,10 +15,11 @@
  * mass just past where it stands: on a hinge at its base it leans, slowly and then faster, and past
  * about 17 degrees it's let go and falls onto "evo". Its files aren't bodies while they're inside
  * (hidden behind the bin, which shows macOS's full Trash icon): once its opening tilts past 45
- * degrees they come out one at a time, every ~80 ms, each in a spot just inside the rim (or just
- * past it) where it overlaps nothing, with the bin's own velocity there, a small nudge and a little
+ * degrees they come out one at a time, every ~80 ms, each from a spot inside the bin just within
+ * the rim where it overlaps nothing, with the bin's own velocity there, a small nudge and a little
  * spin, so they spread along the fall; when it lands, the jolt throws the rest out quicker and
- * harder, each still on its own. Files dropped into the upright bin's opening go in the same
+ * harder, each still on its own, and on its side what's in the opening drifts on out as tumbling
+ * contents do, so the next can follow. Nothing appears anywhere but inside the bin. Files dropped into the upright bin's opening go in the same
  * way, and come out the same way.
  *
  * Every body is its real rectangle with low bounce; low static friction lets things roll off the
@@ -265,11 +266,40 @@
 
 	// Past this tilt of the opening (45 degrees) the files start to slide out, one every ~80 ms.
 	var POUR = Math.PI / 4, EVERY = 5;
-	// Out at the rim: each file appears just inside the opening (deeper, or just past the rim, when
+	// Out at the rim: each file appears inside the bin, just inside the opening (or deeper when
 	// that's taken), in a spot where it overlaps nothing
 	// (the bin's walls, the letters, the files already out), with the bin's own velocity there, a
 	// small nudge out of the opening and a little spin; the bin's tilt does the rest. With no free
 	// spot (the opening against a letter or a pile), it waits, and after a few seconds gives up.
+	// A bin on its side still empties, as contents tumble out: what's in its opening or just past
+	// the rim drifts on outward, gently, so the next one can follow.
+	function spill() {
+		if (opening() < POUR) return;
+		var c = binCentre(), out = local(bin, { x: 0, y: -1 });
+		files.forEach(function (f) {
+			var b = f.body;
+			if (!b || (grab && grab.body === b)) return;
+			var d = { x: b.position.x - c.x, y: b.position.y - c.y };
+			var lx = d.x * Math.cos(bin.angle) + d.y * Math.sin(bin.angle), ly = -d.x * Math.sin(bin.angle) + d.y * Math.cos(bin.angle);
+			if (Math.abs(lx) > G.bw / 2 || ly > -G.bh * 0.1 || ly < -G.bh / 2 - S * 1.7) return;
+			var along = b.velocity.x * out.x + b.velocity.y * out.y;
+			b.spilled = (b.spilled || 0) + 1;
+			if (along < 3.4 && b.spilled < 180) M.Body.setVelocity(b, { x: b.velocity.x + out.x * 0.35, y: b.velocity.y + out.y * 0.35 - 0.3 });
+		});
+	}
+	// The jolt: what sits in the opening or just past it, as the bin stops, carries on out with a
+	// little hop, clearing the way for the rest.
+	function hop() {
+		var c = binCentre(), mouth = local(bin, { x: 0, y: -G.bh / 2 }), out = local(bin, { x: 0, y: -1 });
+		var m = { x: c.x + mouth.x, y: c.y + mouth.y };
+		files.forEach(function (f) {
+			var b = f.body;
+			if (!b || (grab && grab.body === b) || Math.hypot(b.position.x - m.x, b.position.y - m.y) > G.bh * 0.8) return;
+			M.Body.setVelocity(b, { x: b.velocity.x + out.x * 3, y: b.velocity.y + out.y * 3 - 2.4 });
+			M.Body.setAngularVelocity(b, b.angularVelocity + (Math.random() - 0.5) * 0.2);
+			b.calmUntil = frame + 30;
+		});
+	}
 	// When it lands (or hits anything hard), the jolt throws what's left out quicker and harder:
 	// for a moment one file every ~50 ms, each on its own, with a firmer push and more spin.
 	function pour() {
@@ -278,12 +308,11 @@
 		var f = bin.inside[0], c = binCentre(), fh = S * f.h, fw = S * f.w, p = null;
 		var room = Math.max(0, (G.bw - 2 * G.wall - fw) / 2);
 		var others = statics.concat(bin.parts.slice(1), files.map(function (x) { return x.body; }).filter(Boolean));
-		// Just inside the rim, a little deeper, or just past the rim when those are taken (the file
-		// before it is still leaving): wherever it fits without touching anything.
+		// Always inside the bin, in its own frame: just inside the rim, or a little deeper when the
+		// file before it is still leaving. Every file visibly comes out through the opening.
 		var deep = Math.max(0, G.bh - 2 * G.wall - fh);
-		for (var t = 0, n = burst ? 18 : 10; t < n && !p; t++) {
-			var rim = t < 4 ? local(bin, { x: (Math.random() * 2 - 1) * room, y: -G.bh / 2 + fh / 2 + 1 + deep * t / 3 })
-				: local(bin, { x: (Math.random() - 0.5) * G.bw * (burst ? 1.8 : 1.2), y: -G.bh / 2 - fh * (0.5 + (t - 4) * (burst ? 0.12 : 0.2)) });
+		for (var t = 0, n = burst ? 12 : 6; t < n && !p; t++) {
+			var rim = local(bin, { x: (Math.random() * 2 - 1) * room, y: -G.bh / 2 + fh / 2 + 1 + deep * Math.min(1, t / (n - 1)) });
 			var q = { x: c.x + rim.x, y: c.y + rim.y };
 			if (!M.Query.collides(M.Bodies.rectangle(q.x, q.y, fw, fh, { angle: bin.angle }), others).length) p = q;
 		}
@@ -297,7 +326,7 @@
 		M.Body.setAngle(f.body, bin.angle + (Math.random() - 0.5) * 0.2);
 		var fan = (Math.random() - 0.5) * (burst ? 0.8 : 0.5), out = local(bin, { x: Math.sin(fan), y: -Math.cos(fan) });
 		var push = burst ? 3.4 + Math.random() * 2.2 : 1.2 + Math.random() * 1.6;
-		M.Body.setVelocity(f.body, { x: bin.velocity.x - bin.angularVelocity * r.y + out.x * push, y: bin.velocity.y + bin.angularVelocity * r.x + out.y * push });
+		M.Body.setVelocity(f.body, { x: bin.velocity.x - bin.angularVelocity * r.y + out.x * push, y: bin.velocity.y + bin.angularVelocity * r.x + out.y * push - (burst ? 1.6 : 0) });
 		M.Body.setAngularVelocity(f.body, bin.angularVelocity * 0.6 + (Math.random() - 0.5) * (burst ? 0.24 : 0.12));
 		f.body.calmUntil = frame + 30;
 		M.Composite.add(world, f.body);
@@ -392,10 +421,11 @@
 		settle();
 		var was = bin.speed;
 		M.Engine.update(engine, 1000 / 60);
-		if (!hinge && was > 3 && was - bin.speed > 2.2) bin.jolt = frame;
+		if (!hinge && was > 3 && was - bin.speed > 2.2) { bin.jolt = frame; hop(); }
 		capSpeeds();
 		if (hinge && (Math.abs(bin.angle) > 0.3 || grab)) letGo();
 		pour();
+		spill();
 		catchIn();
 		render();
 		var still = true;
