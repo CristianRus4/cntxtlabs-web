@@ -3,118 +3,26 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-	<!-- A private test page for the footer's physics: kept out of search and linked from nowhere. -->
-	<meta name="robots" content="noindex, nofollow">
-	<title>Levo footer physics test</title>
-	<base href="../">
-	<link rel="icon" href="../favicon.svg" type="image/svg+xml">
-	<script>(function (r) { r.classList.add("js"); var t = /[?&]theme=(light|dark)\b/.exec(location.search); if (t ? t[1] === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) r.classList.add("dark"); })(document.documentElement);</script>
-	<link rel="stylesheet" href="levo.css?v=57">
-	<link rel="stylesheet" href="footer.css?v=57">
-	<style>
-		.pt-bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 14px; padding: 12px 16px 10px; font-size: 13px; color: var(--muted); background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
-		.pt-group { display: inline-flex; align-items: center; gap: 6px; }
-		.pt-group > b { font-size: 11px; font-weight: 600; letter-spacing: .02em; color: var(--muted); }
-		.pt-seg { display: inline-flex; gap: 2px; padding: 2px; border-radius: 9px; background: rgb(var(--ink) / 0.06); }
-		.pt-seg button { font: inherit; font-weight: 500; color: var(--muted); background: none; border: 0; border-radius: 7px; padding: 4px 9px; cursor: pointer; font-variant-numeric: tabular-nums; }
-		.pt-seg button[aria-pressed="true"] { background: var(--bg); color: var(--text); box-shadow: 0 1px 3px rgb(0 0 0 / 0.14); }
-		.pt-seg button:disabled { opacity: .35; cursor: default; }
-		.pt-act { font: inherit; font-weight: 500; color: var(--text); background: rgb(var(--ink) / 0.06); border: 0; border-radius: 9px; padding: 5px 11px; cursor: pointer; }
-		.pt-label { width: 100%; text-align: center; font-size: 13px; color: var(--text); }
-		.pt-label b { font-weight: 650; }
-		.pt-label span { color: var(--muted); }
-		.pt-count { font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
-		.pt-gap { height: 30vh; }
-	</style>
+	<meta name="robots" content="noindex">
+	<meta http-equiv="refresh" content="0; url=https://omggg.wtf/levo/test/">
+	<link rel="canonical" href="https://omggg.wtf/levo/test/">
+	<script>window.location.replace("https://omggg.wtf/levo/test/" + window.location.search + window.location.hash);</script>
+	<title>Redirecting to the Levo footer test</title>
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="Cntxt Labs">
+	<meta property="og:url" content="https://omggg.wtf/levo/test/">
+	<meta property="og:title" content="Redirecting to the Levo footer test">
+	<meta name="twitter:title" content="Redirecting to the Levo footer test">
+	<meta property="og:image" content="https://cntxtlabs.co/og.png">
+	<meta property="og:image:type" content="image/png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta property="og:image:alt" content="Cntxt Labs, with its cube mark">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:image" content="https://cntxtlabs.co/og.png">
+	<meta name="twitter:image:alt" content="Cntxt Labs, with its cube mark">
 </head>
 <body>
-	<div class="pt-bar">
-		<span class="pt-group"><b>Scene</b><span class="pt-seg" data-scene></span></span>
-		<span class="pt-group"><b>Engine</b><span class="pt-seg" data-engine></span></span>
-		<span class="pt-group"><b>Variant</b><span class="pt-seg" data-variant></span></span>
-		<span class="pt-group"><b>Look</b><span class="pt-seg" data-look></span></span>
-		<span class="pt-group"><b>Theme</b><span class="pt-seg" data-theme></span></span>
-		<button type="button" class="pt-act" data-replay>Replay</button>
-		<span class="pt-count" data-count aria-live="polite">0 of 9 out</span>
-		<div class="pt-label" data-label></div>
-	</div>
-	<div class="pt-gap"></div>
-
-	<footer class="foot lf" data-lf>
-		<nav class="lf-links" aria-label="Levo">
-			<a href="../">Cntxt Labs</a>
-			<a href="mailto:support@cntxtlabs.co?subject=Levo%20support%20%26%20feedback">Contact</a>
-			<a href="legal/#privacy">Privacy</a>
-			<a href="legal/#terms">Terms</a>
-			<span class="lf-copy">© <span data-lf-year>2026</span></span>
-		</nav>
-		<div class="lf-stage" data-spill aria-hidden="true">
-			<canvas class="lf-word" data-word aria-hidden="true"></canvas>
-			<img class="lf-bin" data-bin src="img/dock/trash-full.png" width="128" height="128" alt="" draggable="false">
-		</div>
-	</footer>
-
-	<script src="test/variants.js?v=57"></script>
-	<script>
-		// The choice (scene, engine, variant, look) lives in the address's hash, so a link opens the
-		// exact combination; any change reloads, so only the chosen engine loads and each run is clean.
-		(function () {
-			var all = window.LF_VARIANTS;
-			var SCENES = [["tip", "Tip"], ["throw", "Throw"], ["carry", "Carry"]];
-			var ENGINES = [["box2d3", "Box2D"], ["planck", "Planck"], ["rapier", "Rapier"], ["matter", "Matter"], ["p2", "p2"]];
-			var LOOKS = [["flat", "Flat"], ["d1", "D1"], ["d2", "D2"], ["d3", "D3"], ["d4", "D4"], ["d5", "D5"]];
-			function list(scene, engine) { return all.filter(function (x) { return x.scene === scene && x.engine === engine; }); }
-			function engines(scene) { return ENGINES.filter(function (e) { return list(scene, e[0]).length; }); }
-			var h = new URLSearchParams(location.hash.slice(1));
-			var scene = SCENES.some(function (x) { return x[0] === h.get("scene"); }) ? h.get("scene") : "tip";
-			var engine = h.get("engine"); if (!list(scene, engine).length) engine = engines(scene)[0][0];
-			var group = list(scene, engine), n = Math.max(1, Math.min(group.length, parseInt(h.get("v"), 10) || 1));
-			var look = LOOKS.some(function (x) { return x[0] === h.get("look"); }) ? h.get("look") : "flat";
-			var theme = document.documentElement.classList.contains("dark") ? "dark" : "light";
-			function go(o) {
-				var p = { scene: scene, engine: engine, v: n, look: look };
-				for (var k in o) p[k] = o[k];
-				if (o.scene && o.engine === undefined && !list(p.scene, p.engine).length) p.engine = engines(p.scene)[0][0];
-				if (o.scene || o.engine) p.v = o.v || 1;
-				var q = new URLSearchParams(location.search); q.delete("n");
-				history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "") + "#" + new URLSearchParams(p).toString());
-				location.reload();
-			}
-			function seg(el, items, current, pick, enabled) {
-				el.innerHTML = items.map(function (x) { return '<button type="button" data-k="' + x[0] + '" aria-pressed="' + (x[0] === current) + '"' + (enabled && !enabled(x[0]) ? " disabled" : "") + ">" + x[1] + "</button>"; }).join("");
-				el.addEventListener("click", function (e) { var b = e.target.closest("button"); if (b && !b.disabled && b.dataset.k !== String(current)) pick(b.dataset.k); });
-			}
-			seg(document.querySelector("[data-scene]"), SCENES, scene, function (k) { go({ scene: k }); });
-			seg(document.querySelector("[data-engine]"), ENGINES, engine, function (k) { go({ engine: k }); }, function (k) { return list(scene, k).length > 0; });
-			seg(document.querySelector("[data-variant]"), group.map(function (x, i) { return [String(i + 1), String(i + 1)]; }), String(n), function (k) { go({ v: +k }); });
-			var READY = { flat: 1, d1: 1, d2: 1, d3: 1, d4: 1, d5: 1 };
-			seg(document.querySelector("[data-look]"), LOOKS, look, function (k) { go({ look: k }); }, function (k) { return !!READY[k]; });
-			seg(document.querySelector("[data-theme]"), [["light", "Light"], ["dark", "Dark"]], theme, function (k) { var q = new URLSearchParams(location.search); q.set("theme", k); location.search = q.toString(); });
-			document.querySelector("[data-replay]").addEventListener("click", function () { location.reload(); });
-			var V = group[n - 1];
-			var short = SCENES.filter(function (x) { return x[0] === scene; })[0][1] + " · " + ENGINES.filter(function (x) { return x[0] === engine; })[0][1] + " · " + n + " · " + LOOKS.filter(function (x) { return x[0] === look; })[0][1];
-			var label = document.querySelector("[data-label]"), detail = V.name.replace(/^(Matter|Planck|Rapier|p2|Box2D v3|Throw \d+|Carry \d+) · /, "");
-			var lookName = { d1: "lit 2D", d2: "soft studio", d3: "matte clay", d4: "frosted glass", d5: "soft satin" }[look];
-			label.innerHTML = "<b>" + short + "</b> <span>— " + detail + (lookName ? " · " + lookName : "") + "</span>";
-			document.addEventListener("keydown", function (e) {
-				if (e.metaKey || e.ctrlKey || e.altKey) return;
-				if (e.key === "ArrowRight") go({ v: n < group.length ? n + 1 : 1 });
-				else if (e.key === "ArrowLeft") go({ v: n > 1 ? n - 1 : group.length });
-				else if (/^[0-5]$/.test(e.key) && READY[LOOKS[+e.key][0]]) go({ look: LOOKS[+e.key][0] });
-				else if (e.key === "r" || e.key === "R") location.reload();
-			});
-			var count = document.querySelector("[data-count]");
-			function out() { return document.querySelectorAll(".lf-item:not(.is-in)").length + " of " + document.querySelectorAll(".lf-item").length + " out"; }
-			setInterval(function () { count.textContent = out(); }, 250);
-			window.LF_STATS = { rest: function () {}, fail: function (err) { label.textContent = "Couldn't load " + engine + ": " + (err && err.message || err); } };
-			V.look = look;
-			window.LF_VARIANT = V;
-			function load(src, done) { var s = document.createElement("script"); s.src = src; if (done) s.onload = done; document.body.appendChild(s); }
-			var three = /^d[2-5]$/.test(look);
-			load("test/engines/common.js?v=57", function () { load("test/engines/" + engine + ".js?v=57", function () {
-				if (three) load("test/looks/three.js?v=57", function () { load("test/scene.js?v=57"); }); else load("test/scene.js?v=57");
-			}); });
-		})();
-	</script>
+	<p><a href="https://omggg.wtf/levo/test/">Continue to the Levo footer test</a></p>
 </body>
 </html>

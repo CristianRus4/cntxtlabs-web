@@ -145,10 +145,10 @@ Levo works with the agent CLI you already use: Claude Code, Codex, Gemini CLI, C
 
 Before anything is cleaned, Levo checks every finding again. Photos, Mail, Messages, iCloud Drive, Keychains, SSH keys and credentials are never touched, and neither are files in use, git worktrees with unfinished work, or anything changed recently. Auto-clean is off by default.
 
-There is no Levo account and no analytics. What leaves the Mac is the licence check with Polar, the price, a count of free cleanups filed under a salted hash of the Mac's hardware id, update checks, and what your agent reads, which goes to your agent's own provider. Levo is free to watch and suggest, with two free cleanups per Mac. A lifetime licence for 2 Macs, currently US$4.99 through Polar, unlocks cleaning; the price increases every 10 licences sold. Levo is signed and notarised by Cntxt Labs. Privacy and terms: https://cntxtlabs.co/levo/legal/
+There is no Levo account and no analytics. What leaves the Mac is the licence check with Polar, the price, a count of free cleanups filed under a salted hash of the Mac's hardware id, update checks, and what your agent reads, which goes to your agent's own provider. Levo is free to watch and suggest, with two free cleanups per Mac. A lifetime licence for 2 Macs, currently US$4.99 through Polar, unlocks cleaning; the price increases every 10 licences sold. Levo is signed and notarised by Cntxt Labs. Privacy and terms: https://omggg.wtf/levo/legal/
 
-- Page: https://cntxtlabs.co/levo
-- For agents: https://cntxtlabs.co/levo/agents.md
+- Page: https://omggg.wtf/levo
+- For agents: https://omggg.wtf/levo/agents.md
 - Platforms: Mac, macOS 26 or later
 - Needs: an agent CLI for suggestions; Full Disk Access is recommended
 
