@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>Levo</title>
+        <item>
+            <title>2026.11</title>
+            <pubDate>Fri, 30 Oct 2026 13:57:48 +1300</pubDate>
+            <sparkle:version>2026.11</sparkle:version>
+            <sparkle:shortVersionString>2026.11</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="15856802" type="application/octet-stream" sparkle:edSignature="gfIChwg0eh79z/1BMybvaW4MhxhzNFLML6PNEViyovTX/YPxUZCreqjuknBbmP70k8IxanqSUyXUo1PrFCgMCg=="/>
+        </item>
+    </channel>
+</rss>

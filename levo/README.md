@@ -137,10 +137,11 @@ increases every 10 licences sold." (the owner's call, 2026-10-30). How many lice
 shown: the Worker doesn't give it. `left` and the hidden `[data-left]` line are
 ready for "N left at $4.99" if the owner wants it.
 
-`buy` is the live Polar checkout. `[DOWNLOAD LINK]` is a placeholder until a
-build exists; until then Download only plays its animation in the demo.
-`agents.md` is a static file for agents, so it carries `[DOWNLOAD LINK]` too:
-replace it in both places (`grep -rn "DOWNLOAD LINK" levo/`).
+`buy` is the live Polar checkout. `download` is the disk image on the site's
+GitHub release for the build the appcast offers (now levo-v2026.11). `levo/appcast.xml` is Sparkle's signed update
+feed, copied byte for byte from the app's App/Release/appcast.xml: never edit it.
+`agents.md` is a static file for agents, so it carries the download link too:
+change it there whenever `download` changes.
 
 ## Agents
 

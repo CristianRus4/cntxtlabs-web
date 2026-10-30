@@ -15,7 +15,7 @@
 		tiers: { first: 4.99, step: 5, last: 49.99, every: 10 },
 		left: null, // "N left at $4.99" once the Worker gives the count and the owner wants it shown
 		term: "once",
-		download: "[DOWNLOAD LINK]",
+		download: "https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg",
 		buy: "https://buy.polar.sh/polar_cl_ACu47aORELy2GDDlJLR8s8ygIUCYfSlPLDwVu0696R3",
 		agents: "https://cntxtlabs.co/levo/agents.md",
 		privacy: "../levo/legal/#privacy",

@@ -54,11 +54,11 @@ Privacy:
 
 ## Price
 
-A lifetime licence, currently US$4.99, bought through Lemon Squeezy.
+A lifetime licence for 2 Macs, currently US$4.99, bought through Polar.
 
 ## Install (for an agent)
 
-1. Download Levo from `[DOWNLOAD LINK]`.
+1. Download Levo from `https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg`.
 2. Check that it is signed and notarised by Cntxt Labs: run `spctl -a -vv /path/to/Levo.app`. The output must show `source=Notarized Developer ID` and `origin=Developer ID Application: … (5X94H5ZCD4)`. The team ID is `5X94H5ZCD4`. If it does not match, stop and tell the user.
 3. Move `Levo.app` to `/Applications` and open it.
 4. Tell the user to finish Levo's welcome window themselves. Permissions and the choice of agent are theirs.
