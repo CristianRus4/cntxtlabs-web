@@ -60,8 +60,13 @@
 					'<div class="lv-sum"><p class="lv-sline">' + chip("<span>Auto mode</span>") + words("keeps") + chip("<span>" + gbText(AUTO.limit) + "</span>") + words("free: it cleans") + chips + words("on its own.") + "</p></div>") +
 			"</div>" +
 			// A slice of the Mac's screen, where the notification arrives.
-			'<div class="bt-auto-screen"><div class="lv-kit bt-kit"><div class="bt-auto-menubar"><span class="bt-auto-mark">' + (D.mark ? D.mark("bt-auto-m") : "") + "</span>" +
-				'<b data-automb>' + gbText(AUTO.free) + "</b></div>" +
+			// Its menubar, display only, as the simulator's at a smaller size.
+			'<div class="bt-auto-screen"><div class="lv-kit bt-kit"><div class="bt-auto-menubar">' +
+				'<span class="bt-mb-l"><span class="bt-mb-apple">' + sym("applelogo", 13) + "</span><b>Finder</b>" +
+					["File", "Edit", "View", "Go", "Window", "Help"].map(function (m) { return '<span class="bt-mb-menu">' + m + "</span>"; }).join("") + "</span>" +
+				'<span class="bt-mb-r"><span class="bt-mb-levo"><span class="bt-auto-mark">' + (D.mark ? D.mark("bt-auto-m") : "") + "</span>" +
+					'<b class="bt-roll" data-automb></b></span>' + sym("wifi", 13) + '<span class="bt-mb-cc">' + sym("switch.2", 12) + "</span>" +
+					'<span class="bt-mb-clock" data-autoclock></span></span></div>' +
 				'<div class="lv-note bt-auto-note" data-autonote><img class="lv-note-icon" src="img/icon-96.png" width="38" height="38" alt="">' +
 					'<span class="lv-note-text"><span class="lv-note-top"><b data-autonotetitle>Levo\u2019s Auto mode freed 12 GB</b><span class="lv-note-when">now</span></span><span data-autonotebody></span></span></div>' +
 			"</div></div>";
@@ -78,7 +83,6 @@
 	function autoShow(el, st) {
 		autoBar(el, st);
 		el.querySelector("[data-autofree]").textContent = gbText(st.free);
-		el.querySelector("[data-automb]").textContent = gbText(st.free);
 		el.querySelector("[data-autoready]").innerHTML = st.ready >= 0.5 ? "<b>" + gbText(st.ready) + "</b>\u2009ready" : "";
 		el.querySelector("[data-autoday]").textContent = DAYNAMES[st.day % 7];
 	}
@@ -90,14 +94,40 @@
 		el.querySelector("[data-autonotetitle]").textContent = "Levo\u2019s Auto mode freed " + gbText(freed);
 		el.querySelector("[data-autonotebody]").textContent = "Cleaned " + what + ". " + gbText(free) + " free now.";
 	}
+	// The menubar's free space rolls its digits as the app's does: down a day at a time as the disk
+	// fills, up when Auto mode cleans.
+	function roll(el, text, dir) {
+		if (el.dataset.v === text) return;
+		var old = el.dataset.v || "";
+		el.dataset.v = text;
+		// Aligned from the right; "\u0000" pads the shorter one, a real space stays a space.
+		var ch = function (c) { return c === " " ? "\u00a0" : esc(c); };
+		var cell = function (c) { return '<span class="bt-rd"><i>' + ch(c) + "</i></span>"; };
+		if (REDUCED || !old || !dir) { el.innerHTML = text.split("").map(cell).join(""); return; }
+		var n = Math.max(old.length, text.length), a = old.padStart(n, "\u0000"), b = text.padStart(n, "\u0000");
+		el.style.setProperty("--dy", dir === "down" ? "0.6em" : "-0.6em");
+		el.innerHTML = b.split("").map(function (c, i) {
+			if (c === a[i]) return c === "\u0000" ? "" : cell(c);
+			return '<span class="bt-rd">' + (a[i] !== "\u0000" ? '<i class="is-out">' + ch(a[i]) + "</i>" : "") + (c !== "\u0000" ? '<i class="is-in">' + ch(c) + "</i>" : "") + "</span>";
+		}).join("");
+		setTimeout(function () { if (el.dataset.v === text) el.innerHTML = text.split("").map(cell).join(""); }, 420);
+	}
+	function clock(el) {
+		var now = new Date(), lang = navigator.language || "en-NZ";
+		var day = new Intl.DateTimeFormat(lang, { weekday: "short", day: "numeric", month: "short" }).format(now).replace(/,/g, "");
+		el.querySelector("[data-autoclock]").textContent = day + "  " + new Intl.DateTimeFormat(lang, { hour: "numeric", minute: "2-digit" }).format(now);
+	}
 	function autoPlay(t) {
-		var el = t.el, note = el.querySelector("[data-autonote]");
+		var el = t.el, note = el.querySelector("[data-autonote]"), mb = el.querySelector("[data-automb]");
 		var st = { free: AUTO.free, ready: AUTO.ready, day: 0 };
+		clock(el);
 		autoShow(el, st);
+		roll(mb, gbText(st.free));
 		if (REDUCED) {
 			// The moment after a clean: the green cleared, the notification in.
 			st = { free: AUTO.limit + 12, ready: 0.6, day: 4 };
 			autoShow(el, st);
+			roll(mb, gbText(st.free));
 			autoNote(el, 12, st.free);
 			note.classList.add("is-in");
 			return;
@@ -119,11 +149,13 @@
 				// The limit: down to it, then Levo cleans what Auto mode may clean.
 				st.free = AUTO.limit; st.ready += AUTO.grow;
 				tween(from, st, 620);
+				t.later(function () { roll(mb, gbText(AUTO.limit), "down"); }, 300);
 				var freed = st.ready;
 				t.later(function () {
 					var before = { free: st.free, ready: st.ready, day: st.day };
 					st.free += freed; st.ready = 0;
 					tween(before, st, 1000);
+					roll(mb, gbText(st.free), "up");
 					autoNote(el, freed, st.free);
 					note.classList.add("is-in");
 					t.later(function () { note.classList.remove("is-in"); }, 3600);
@@ -133,6 +165,8 @@
 			}
 			st.free -= AUTO.perDay; st.ready += AUTO.grow;
 			tween(from, st, 620);
+			var to = gbText(st.free);
+			t.later(function () { roll(mb, to, "down"); }, 300);
 			t.later(day, AUTO.day);
 		};
 		t.later(day, 600);

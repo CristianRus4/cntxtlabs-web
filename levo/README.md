@@ -246,7 +246,11 @@ contextMenu(x, y, items) for this, and hooks trashItem, dragItem and dropItem.
 - The tiles: each tile is the component on top, then a title and one line at
   its bottom-leading corner, the same in every tile, over a soft wash of its
   own in the page's palette (bento.css, --bt-a to --bt-t, light and dark).
-  Auto mode's screen slice is exactly as tall as its popover. The disk tile's
+  Auto mode's screen slice is exactly as tall as its popover, with the whole
+  menubar (display only): Apple, Finder and its menus; Levo's mark and free
+  space, Wi-Fi, Control Centre, date and time; narrow slices drop menu titles
+  first. The free space rolls its digits as the app's numeric text does: down
+  a day at a time with the popover, up when Auto mode cleans. The disk tile's
   tip sits under the bar, so it never covers the numbers.
 
 ## Website round 9

@@ -209,9 +209,27 @@ html.dark .bt-auto-screen {
 		radial-gradient(70% 90% at 10% 100%, rgba(30, 90, 160, 0.7), rgba(30, 90, 160, 0) 70%),
 		linear-gradient(160deg, #141428, #1C1230);
 }
-.bt-auto-menubar { position: absolute; top: 0; left: 0; right: 0; height: 30px; padding: 0 14px; display: flex; align-items: center; justify-content: flex-end; gap: 6px; background: rgba(255, 255, 255, 0.32); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); font-size: 13px; color: #000; }
+.bt-auto-screen { container-type: inline-size; }
+.bt-auto-menubar { position: absolute; top: 0; left: 0; right: 0; height: 26px; padding: 0 12px 0 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: rgba(255, 255, 255, 0.32); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); font-size: 12px; color: #000; white-space: nowrap; }
 html.dark .bt-auto-menubar { background: rgba(0, 0, 0, 0.22); color: #fff; }
-.bt-auto-menubar b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.bt-mb-l, .bt-mb-r { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.bt-mb-l b { font-weight: 700; }
+.bt-mb-apple .lv-sym, .bt-mb-r .lv-sym { display: block; }
+.bt-mb-apple .lv-sym { margin-top: -2px; }
+.bt-mb-levo { display: inline-flex; align-items: center; gap: 5px; }
+.bt-auto-menubar b.bt-roll { font-weight: 600; }
+/* Rolling digits, as the app's numeric text: the changed ones slide and fade through. */
+.bt-roll { display: inline-flex; font-variant-numeric: tabular-nums; }
+.bt-rd { position: relative; display: inline-block; }
+.bt-rd i { display: inline-block; font-style: normal; }
+.bt-rd i.is-out { position: absolute; left: 0; top: 0; animation: bt-rd-out .38s cubic-bezier(.3, .7, .4, 1) forwards; }
+.bt-rd i.is-in { animation: bt-rd-in .38s cubic-bezier(.3, .7, .4, 1) both; }
+@keyframes bt-rd-out { to { transform: translateY(var(--dy)); opacity: 0; filter: blur(2px); } }
+@keyframes bt-rd-in { from { transform: translateY(calc(var(--dy) * -1)); opacity: 0; filter: blur(2px); } }
+/* Narrower slices keep the right side whole and drop menu titles from the end. */
+@container (max-width: 600px) { .bt-mb-menu:nth-of-type(n + 4) { display: none; } }
+@container (max-width: 470px) { .bt-mb-menu { display: none; } }
+@container (max-width: 330px) { .bt-mb-clock { display: none; } }
 .bt-auto-m { display: block; width: 17px; height: 10.87px; overflow: visible; }
 .bt-auto-m path { fill: currentColor; }
 .bt-auto-note.lv-note { width: min(344px, calc(100% - 24px)); top: 40px; right: 12px; }
