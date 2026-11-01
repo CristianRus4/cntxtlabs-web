@@ -3,12 +3,14 @@
     <channel>
         <title>Levo</title>
         <item>
-            <title>2026.11</title>
-            <pubDate>Sun, 01 Nov 2026 16:51:31 +1300</pubDate>
-            <sparkle:version>2026.11.3</sparkle:version>
-            <sparkle:shortVersionString>2026.11</sparkle:shortVersionString>
+            <title>2026.11.4</title>
+            <pubDate>Sun, 01 Nov 2026 18:56:07 +1300</pubDate>
+            <sparkle:version>2026.11.4</sparkle:version>
+            <sparkle:shortVersionString>2026.11.4</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="22478005" type="application/octet-stream" sparkle:edSignature="CeBAPOAZB4uBRMx+v/Xv5owuTmokD5nLLhwHyg2WhWmol7ZREAdmL93VfFKvUAkKYth8RUB4Dn6+NpMq1p3WBQ=="/>
+            <description><![CDATA[<ul><li>A cleaner installer window</li><li>“Used … ago” shows when you really last used something, not when Levo looked at it</li><li>Without a licence, the popover shows how many free cleanups you have left</li><li>What’s new, after each update</li><li>The welcome’s last step shows the full Trash</li><li>Settings › Agent says what to install when only the Claude desktop app is there</li></ul>
+]]></description>
+            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="22010861" type="application/octet-stream" sparkle:edSignature="747wu9DrwPnbLSmmqDWIBOXxgceK1p7CoXrSUWbKsV+ExKSvpye6skXxsL6IiBHUk5V6xOUwPHJbomNia6DXCQ=="/>
         </item>
     </channel>
 </rss>
