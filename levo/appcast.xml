@@ -4,11 +4,11 @@
         <title>Levo</title>
         <item>
             <title>2026.11</title>
-            <pubDate>Sat, 31 Oct 2026 22:16:55 +1300</pubDate>
-            <sparkle:version>2026.11.1</sparkle:version>
+            <pubDate>Sun, 01 Nov 2026 16:44:09 +1300</pubDate>
+            <sparkle:version>2026.11.2</sparkle:version>
             <sparkle:shortVersionString>2026.11</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="21382512" type="application/octet-stream" sparkle:edSignature="LhnXflNcmf8JtLPJ6TEwrDNhKMk8uUlhbbEXJ9ouSjSFPsaP1rOBTliorqXPXsuSYrywCVWXSEhzqouq6bdRCA=="/>
+            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="22478288" type="application/octet-stream" sparkle:edSignature="YzD7c0xOInjwt0D+s7rfxQkOEE899WMsLsFPQRq3VyDK3QATXYlejwXUoryGbAnL/R/XCdxYXHR7TY+rFfsEBw=="/>
         </item>
     </channel>
 </rss>
