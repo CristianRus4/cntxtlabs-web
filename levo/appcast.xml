@@ -3,14 +3,14 @@
     <channel>
         <title>Levo</title>
         <item>
-            <title>2026.11.4</title>
-            <pubDate>Sun, 01 Nov 2026 18:56:07 +1300</pubDate>
-            <sparkle:version>2026.11.4</sparkle:version>
-            <sparkle:shortVersionString>2026.11.4</sparkle:shortVersionString>
+            <title>2026.11.5</title>
+            <pubDate>Mon, 02 Nov 2026 08:35:11 +1300</pubDate>
+            <sparkle:version>2026.11.5</sparkle:version>
+            <sparkle:shortVersionString>2026.11.5</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<ul><li>A cleaner installer window</li><li>“Used … ago” shows when you really last used something, not when Levo looked at it</li><li>Without a licence, the popover shows how many free cleanups you have left</li><li>What’s new, after each update</li><li>The welcome’s last step shows the full Trash</li><li>Settings › Agent says what to install when only the Claude desktop app is there</li></ul>
+            <description><![CDATA[<p>Levo watches your disk, memory, CPU and GPU from the menubar. When space runs low, your own AI agent has already worked out what’s safe to delete, and Levo shows you the answer. You tick what goes, and Levo checks every item again right before it deletes it. Press ⌘K to clean up, quit an app or uninstall one.</p>
 ]]></description>
-            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="22010861" type="application/octet-stream" sparkle:edSignature="747wu9DrwPnbLSmmqDWIBOXxgceK1p7CoXrSUWbKsV+ExKSvpye6skXxsL6IiBHUk5V6xOUwPHJbomNia6DXCQ=="/>
+            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="22045218" type="application/octet-stream" sparkle:edSignature="ShL8uCuAOm6JRgtqmNvAcJdRbZPVRLStmYqT209caElFgNrQYv+k8BkTYMAb7vPHOrhGHT3ZlX6UTn95NleMAQ=="/>
         </item>
     </channel>
 </rss>
