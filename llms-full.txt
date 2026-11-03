@@ -108,6 +108,25 @@ It also includes 21 Australian road trips and more than 50 guides on free camps,
 - App Store: https://apps.apple.com/app/id6801098680
 - Platforms: iPhone, iPad
 
+### omggg.wtf
+
+omggg.wtf (https://omggg.wtf/) is where Cntxt Labs puts tools for developers and the Mac. The first is Levo.
+
+#### Levo
+
+Levo is a Mac menubar app that watches disk, memory, CPU and GPU against limits you set. When one runs high, your own agent has already looked at what is filling your Mac. Levo shows what is safe to clean or quit, with sizes and reasons, and cleans only what you tick.
+
+Levo works with the agent CLI you already use: Claude Code, Codex, Gemini CLI, Cursor, Copilot, opencode, Qwen Code, Kimi CLI, Grok CLI, or a custom command. It starts the CLI in the background, on your own plan or key, with caps on time, turns and runs per day. Every run is wrapped in the macOS sandbox: the agent can't write outside Levo's run folder, can't read your protected folders, and talks to Levo only through read-only tools plus one that submits findings. No tool can delete, quit, or change settings or the licence, and what the agent writes is treated as data, never as instructions. Every number in Settings is yours: thresholds, check interval, agent limits and protected folders.
+
+Before anything is cleaned, Levo checks every finding again. Photos, Mail, Messages, iCloud Drive, Keychains, SSH keys and credentials are never touched, and neither are files in use, git worktrees with unfinished work, or anything changed recently. Auto-clean is off by default.
+
+There is no Levo account. Levo and its website count anonymous use with Google Analytics; the app has a switch in Settings to turn it off. What leaves the Mac is the licence check with Polar, the price, a count of free cleanups filed under a salted hash of the Mac's hardware id, update checks, and what your agent reads, which goes to your agent's own provider. Levo is free to watch and suggest, with two free cleanups per Mac. A lifetime licence for 2 Macs, currently US$4.99 through Polar, unlocks cleaning; the price rises as more licences sell. Levo is signed and notarised by Cntxt Labs. Privacy and terms: https://omggg.wtf/levo/legal/
+
+- Page: https://omggg.wtf/levo
+- For agents: https://omggg.wtf/levo/agents.md
+- Platforms: Mac, macOS 26 or later
+- Needs: an agent CLI for suggestions; Full Disk Access is recommended
+
 ### txtpod
 
 txtpod is for people who save more than they have time to read. It turns articles, links and PDFs into episodes in your own private podcast feed, so the reading list becomes something you can listen to on a walk, a drive or while you cook.
@@ -136,21 +155,6 @@ There is no account, no email and no feed. NoSnus supports a behavioural plan an
 - Privacy policy: https://cntxtlabs.co/nosnus/privacy
 - App Store: https://apps.apple.com/us/app/quit-zyn-velo-snus-nosnus/id6791343296
 - Platforms: iPhone, iPad
-
-### Levo
-
-Levo is a Mac menubar app that watches disk, memory, CPU and GPU against limits you set. When one runs high, your own agent has already looked at what is filling your Mac. Levo shows what is safe to clean or quit, with sizes and reasons, and cleans only what you tick.
-
-Levo works with the agent CLI you already use: Claude Code, Codex, Gemini CLI, Cursor, Copilot, opencode, Qwen Code, Kimi CLI, Grok CLI, or a custom command. It starts the CLI in the background, on your own plan or key, with caps on time, turns and runs per day. Every run is wrapped in the macOS sandbox: the agent can't write outside Levo's run folder, can't read your protected folders, and talks to Levo only through read-only tools plus one that submits findings. No tool can delete, quit, or change settings or the licence, and what the agent writes is treated as data, never as instructions. Every number in Settings is yours: thresholds, check interval, agent limits and protected folders.
-
-Before anything is cleaned, Levo checks every finding again. Photos, Mail, Messages, iCloud Drive, Keychains, SSH keys and credentials are never touched, and neither are files in use, git worktrees with unfinished work, or anything changed recently. Auto-clean is off by default.
-
-There is no Levo account and no analytics. What leaves the Mac is the licence check with Polar, the price, a count of free cleanups filed under a salted hash of the Mac's hardware id, update checks, and what your agent reads, which goes to your agent's own provider. Levo is free to watch and suggest, with two free cleanups per Mac. A lifetime licence for 2 Macs, currently US$4.99 through Polar, unlocks cleaning; the price increases every 10 licences sold. Levo is signed and notarised by Cntxt Labs. Privacy and terms: https://omggg.wtf/levo/legal/
-
-- Page: https://omggg.wtf/levo
-- For agents: https://omggg.wtf/levo/agents.md
-- Platforms: Mac, macOS 26 or later
-- Needs: an agent CLI for suggestions; Full Disk Access is recommended
 
 ### More iOS apps
 
