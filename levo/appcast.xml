@@ -3,14 +3,14 @@
     <channel>
         <title>Levo</title>
         <item>
-            <title>2026.11.12</title>
-            <pubDate>Thu, 05 Nov 2026 14:57:12 +1300</pubDate>
-            <sparkle:version>2026.11.12</sparkle:version>
-            <sparkle:shortVersionString>2026.11.12</sparkle:shortVersionString>
+            <title>2026.11.13</title>
+            <pubDate>Thu, 05 Nov 2026 22:09:53 +1300</pubDate>
+            <sparkle:version>2026.11.13</sparkle:version>
+            <sparkle:shortVersionString>2026.11.13</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
             <description><![CDATA[<h3>Thank you for using Levo!</h3><p>This update brings small changes across the app:</p><ul><li>Every command in ⌘K has its own shortcut</li><li>Ask your agent from ⌘K, whichever agent you use</li><li>The Clean up list starts with the biggest items</li><li>A smoother welcome, ⌘K and popover</li></ul>
 ]]></description>
-            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="24948811" type="application/octet-stream" sparkle:edSignature="Vt6tQe4t7u3z0QQ/+pxtPCh+OWtsw27cFG6Dq19DyvRU9xrHVcfykerk9whFQc8RoISe0wAd0dHQQwQpLPR8Aw=="/>
+            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="26200245" type="application/octet-stream" sparkle:edSignature="toliTLY4ZkJflsAHU1JOIbbeom1pq9omaiSRGnbe29JUJuXG0eo9LvJrpZWWEBwcHFYjKhAYyvs8osE4mTN/Bg=="/>
         </item>
     </channel>
 </rss>
