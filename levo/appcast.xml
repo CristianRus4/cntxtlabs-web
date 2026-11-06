@@ -3,14 +3,14 @@
     <channel>
         <title>Levo</title>
         <item>
-            <title>2026.11.13</title>
-            <pubDate>Thu, 05 Nov 2026 22:09:53 +1300</pubDate>
-            <sparkle:version>2026.11.13</sparkle:version>
-            <sparkle:shortVersionString>2026.11.13</sparkle:shortVersionString>
+            <title>2026.11.14</title>
+            <pubDate>Fri, 06 Nov 2026 18:13:12 +1300</pubDate>
+            <sparkle:version>2026.11.14</sparkle:version>
+            <sparkle:shortVersionString>2026.11.14</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h3>Thank you for using Levo!</h3><p>This update brings small changes across the app:</p><ul><li>Every command in ⌘K has its own shortcut</li><li>Ask your agent from ⌘K, whichever agent you use</li><li>The Clean up list starts with the biggest items</li><li>A smoother welcome, ⌘K and popover</li></ul>
+            <description><![CDATA[<h3>Thank you for using Levo!</h3><p>This update brings:</p><ul><li>Breakdown: a new layout in Settings › General that shows memory, CPU and GPU as bars. Hovering a gauge shows the same breakdown.</li><li>Levo finds more: creative apps, local AI models, browsers and moved caches.</li><li>Analysing shows each step.</li><li>Now you can switch agents.</li><li>Many more small improvements across the app.</li></ul><p>Thank you for your feedback. Help improve Levo by reporting bugs and suggesting ideas from Settings › Send feedback.</p>
 ]]></description>
-            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="26200245" type="application/octet-stream" sparkle:edSignature="toliTLY4ZkJflsAHU1JOIbbeom1pq9omaiSRGnbe29JUJuXG0eo9LvJrpZWWEBwcHFYjKhAYyvs8osE4mTN/Bg=="/>
+            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="28449356" type="application/octet-stream" sparkle:edSignature="2a5BBHZ+c6NLUt/TSWXYd1560lgRr45J+BakIxxl7I90IqfCcDHk+CZsf0cLMPfB6NeZPl4hNvM0LA7PWahRDA=="/>
         </item>
     </channel>
 </rss>
