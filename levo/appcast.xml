@@ -3,14 +3,14 @@
     <channel>
         <title>Levo</title>
         <item>
-            <title>2026.11.14</title>
-            <pubDate>Fri, 06 Nov 2026 18:13:12 +1300</pubDate>
-            <sparkle:version>2026.11.14</sparkle:version>
-            <sparkle:shortVersionString>2026.11.14</sparkle:shortVersionString>
+            <title>2026.11.15</title>
+            <pubDate>Sat, 07 Nov 2026 21:39:23 +1300</pubDate>
+            <sparkle:version>2026.11.15</sparkle:version>
+            <sparkle:shortVersionString>2026.11.15</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h3>Thank you for using Levo!</h3><p>This update brings:</p><ul><li>Breakdown: a new layout in Settings › General that shows memory, CPU and GPU as bars. Hovering a gauge shows the same breakdown.</li><li>Levo finds more: creative apps, local AI models, browsers and moved caches.</li><li>Analysing shows each step.</li><li>Now you can switch agents.</li><li>Many more small improvements across the app.</li></ul><p>Thank you for your feedback. Help improve Levo by reporting bugs and suggesting ideas from Settings › Send feedback.</p>
+            <description><![CDATA[<h3>Thank you for using Levo!</h3><p>This update brings:</p><ul><li>Right-click anything Levo suggests and choose Never suggest. Levo won’t offer that type of item for deleting again. You can bring it back from Settings › Protected.</li><li>Breakdown: a new layout in Settings › General that shows memory, CPU and GPU as bars. Hovering a gauge shows the same breakdown.</li><li>Levo finds more: creative apps, local AI models, browsers and moved caches.</li><li>Analysing shows each step and is more clear on what it’s doing all the time.</li><li>Now you can switch agents.</li><li>Many more small improvements across the app.</li></ul><p>Thank you for your feedback. Help improve Levo by reporting bugs and suggesting ideas from Settings › Send feedback.</p>
 ]]></description>
-            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="28449356" type="application/octet-stream" sparkle:edSignature="2a5BBHZ+c6NLUt/TSWXYd1560lgRr45J+BakIxxl7I90IqfCcDHk+CZsf0cLMPfB6NeZPl4hNvM0LA7PWahRDA=="/>
+            <enclosure url="https://github.com/CristianRus4/cntxtlabs-web/releases/download/levo-v2026.11/Levo.dmg" length="29392470" type="application/octet-stream" sparkle:edSignature="80O+hiqbW66OySoAJUFHMyzpwLsYzsJFWSERPZfxT8YxHo/moli+FCh4VpJy+5spNGGLTKV141pzGA9+6hbMCg=="/>
         </item>
     </channel>
 </rss>
