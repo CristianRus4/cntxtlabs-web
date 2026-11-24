@@ -200,9 +200,11 @@ It reads Apple Calendar, Google Calendar and Outlook, and you share the picture 
 
 Left, txtpod and ftnss each publish their own policy: https://getleft.app/privacy, https://txtpod.app/privacy and https://ftnss.app/privacy. https://cntxtlabs.co/left/privacy, /txtpod/privacy and /ftnss/privacy lead there. ftnss sends some anonymised data to an AI model to produce plans and insights; identifiers are removed first.
 
-KiwiCamping, AussieCamps, Bites and NotSoBusy share this policy, published for each app at https://cntxtlabs.co/<app>/privacy (for example https://cntxtlabs.co/bites/privacy):
+KiwiCamping, AussieCamps and NotSoBusy share this policy, published for each app at https://cntxtlabs.co/<app>/privacy (for example https://cntxtlabs.co/kiwicamping/privacy):
 
 The app runs on your device. There is no account, and no personal data is collected or stored. Purchases go through RevenueCat, which keeps only what it needs to confirm a purchase and restore it if you reinstall the app. Google services are used for crash reports, anonymous usage statistics and a few features inside the app. None of it identifies you, and none of it is sold or shared.
+
+Bites has its own policy at https://cntxtlabs.co/bites/privacy. There is no account. Meals are saved in Apple Health and goals in your own iCloud. To estimate nutrition, the meal you type or the photo you take is sent to Google Gemini or Groq, or handled on your device with Apple Intelligence, depending on your setting. Nothing else is sent with it and no copy is kept. Purchases go through Apple and RevenueCat. No ads, analytics or tracking.
 
 NoSnus has its own policy at https://cntxtlabs.co/nosnus/privacy. Your plan, logs and settings stay on your phone, with no account, ads, analytics or tracking. Only purchases go through Apple and RevenueCat, which receives a random identifier and your purchase history. Delete everything in the app under Settings, then Your data, or by deleting the app.
 
